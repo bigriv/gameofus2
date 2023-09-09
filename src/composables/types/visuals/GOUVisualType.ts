@@ -1,0 +1,11 @@
+enum GOUVisualType {
+  DIAGRAM_CIERCLE,
+  DIAGRAM_POLYGON,
+  DIAGRAM_RECT,
+  DIAGRAM_LINE,
+  DIAGRAM_LINE_LIST,
+  DIAGRAM_TEXT,
+  IMAGE_SVG,
+}
+
+export default GOUVisualType

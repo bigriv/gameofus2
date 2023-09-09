@@ -1,5 +1,12 @@
 <template>
-  <canvas ref="canvas" :width="props.width" :height="props.height"></canvas>
+  <canvas
+    ref="canvas"
+    :width="props.width"
+    :height="props.height"
+    :class="{ 'u-clickable': isClickable }"
+    @click="onClick"
+    @mousemove="(event: MouseEvent) => onMouseMove(event, props.objects)"
+  ></canvas>
 </template>
 
 <script setup lang="ts">
@@ -154,18 +161,18 @@ const drawText = (obj: GOUText, position: GOUPosition) => {
 
 // 図形の描画
 const drawDiagram = (obj: GOUVisual, position?: GOUPosition) => {
-  if (obj.shape instanceof GOUCircle) {
-    drawCircle(obj.shape, obj.position.add(position));
-  } else if (obj.shape instanceof GOURect) {
-    drawRect(obj.shape, obj.position.add(position));
-  } else if (obj.shape instanceof GOUPolygon) {
-    drawPolygon(obj.shape, obj.position.add(position));
-  } else if (obj.shape instanceof GOULine) {
-    drawLine(obj.shape, obj.position.add(position));
-  } else if (obj.shape instanceof GOULineList) {
-    drawLines(obj.shape, obj.position.add(position));
-  } else if (obj.shape instanceof GOUText) {
-    drawText(obj.shape, obj.position.add(position));
+  if (obj instanceof GOUCircle) {
+    drawCircle(obj, obj.position.add(position));
+  } else if (obj instanceof GOURect) {
+    drawRect(obj, obj.position.add(position));
+  } else if (obj instanceof GOUPolygon) {
+    drawPolygon(obj, obj.position.add(position));
+  } else if (obj instanceof GOULine) {
+    drawLine(obj, obj.position.add(position));
+  } else if (obj instanceof GOULineList) {
+    drawLines(obj, obj.position.add(position));
+  } else if (obj instanceof GOUText) {
+    drawText(obj, obj.position.add(position));
   }
   if (!obj.children) {
     return;
@@ -201,5 +208,55 @@ watch(
   },
   { deep: true }
 );
+
+// クリック可能フラグ
+const isClickable = ref(false);
+
+// クリック時の処理
+const onClick = (event: MouseEvent) => {
+  for (const object of props.objects) {
+    if (!object.isClickable) {
+      continue;
+    }
+    if (object.judgeHover?.(event)) {
+      object.onClick(event);
+    }
+  }
+};
+// マウスホバー時の処理
+const onMouseMove = (event: MouseEvent, list: Array<GOUVisual>) => {
+  for (const obj of list) {
+    if (!obj.isClickable) {
+      continue;
+    }
+    const isHoverBefore = obj.isHover?.() ?? false;
+    const isHoverNow = obj.isClickable && (obj.judgeHover?.(event) ?? false);
+    if (!isHoverNow) {
+      if (isHoverBefore) {
+        // ホバーが外れた場合
+        obj.onMouseLeave();
+        isClickable.value = isHoverNow;
+      }
+      continue;
+    }
+
+    if (!isHoverBefore) {
+      // 初めてオブジェクトにマウスがホバーしたとき
+      obj.onMouseEnter();
+    }
+
+    isClickable.value = isHoverNow;
+  }
+};
+
+// オブジェクトの変更を監視し、配列の中身が空になっていたらホバー状態を解除する
+watch(
+  () => [...props.objects],
+  () => {
+    if (props.objects.length == 0) {
+      isClickable.value = false;
+      return;
+    }
+  }
+);
 </script>
-@/composables/types/shape/diagrams/GOUCircle@/composables/types/shape/diagrams/GOURect@/composables/types/shape/diagrams/GOUPolygon@/composables/types/shape/diagrams/GOULine@/composables/types/shape/diagrams/GOULineList@/composables/types/shape/diagrams/GOUText

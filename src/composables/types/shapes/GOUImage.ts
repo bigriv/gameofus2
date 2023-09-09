@@ -1,7 +1,7 @@
 import GOUPosition from "../GOUPosition";
-import GOUShape from "./GOUShape";
+import GOUVisual from "../visuals/GOUVisual";
 
-class GOUImage extends GOUShape {
+class GOUImage extends GOUVisual {
   path: string;
   width: number;
   height: number;

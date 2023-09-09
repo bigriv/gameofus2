@@ -8,15 +8,15 @@
     }"
   >
     <template v-for="image in images">
-      <template v-if="(image.shape instanceof GOUImage)">
+      <template v-if="(image instanceof GOUImage)">
         <img
-          v-if="image instanceof ClickableVisual && image.isClickable"
-          :src="image.shape.path"
+          v-if="image.isClickable"
+          :src="image.path"
           :style="{
             '--x': image.position.px,
             '--y': image.position.py,
-            '--width': image.shape.width,
-            '--height': image.shape.height,
+            '--width': image.width,
+            '--height': image.height,
           }"
           class="u-clickable"
           @click="image.onClick()"
@@ -25,12 +25,12 @@
         />
         <img
           v-else
-          :src="image.shape.path"
+          :src="image.path"
           :style="{
             '--x': image.position.px,
             '--y': image.position.py,
-            '--width': image.shape.width,
-            '--height': image.shape.height,
+            '--width': image.width,
+            '--height': image.height,
           }"
         />
       </template>
@@ -40,7 +40,6 @@
 
 <script setup lang="ts">
 import GOUImage from "@/composables/types/shapes/GOUImage";
-import ClickableVisual from "@/composables/types/visuals/ClickableVisual";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { computed } from "vue";
 
@@ -63,7 +62,7 @@ const props = defineProps({
   },
 });
 const images = computed(() => {
-  return props.objects.filter((object) => object.shape instanceof GOUImage);
+  return props.objects.filter((object) => object instanceof GOUImage);
 });
 </script>
 

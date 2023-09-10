@@ -9,41 +9,63 @@ import GOUText from "../shapes/diagrams/GOUText";
 import GOUVisual from "./GOUVisual";
 import GOUVisualDefinition from "./GOUVisualDefinition";
 import GOUDiagram from "../shapes/GOUDiagram";
+import { GOUColor } from "../GOUColor";
+import GOUPosition from "../GOUPosition";
 
 const ConstructGOUVisual = (definition: GOUVisualDefinition): GOUVisual => {
   let visual = null;
+  let color = undefined;
+  if (definition.color) {
+    color = new GOUColor(definition.color.code, definition.color.opacity);
+  }
+
   switch (definition.type) {
     case GOUVisualType.DIAGRAM_CIERCLE:
-      visual = new GOUCircle(definition.radius, definition.color);
+      visual = new GOUCircle(definition.radius, color);
       break;
     case GOUVisualType.DIAGRAM_POLYGON:
-      visual = new GOUPolygon(definition.points, definition.color);
+      const points = definition.points.map((p) => new GOUPosition(p.x, p.y));
+      visual = new GOUPolygon(points, color);
       break;
     case GOUVisualType.DIAGRAM_RECT:
-      visual = new GOURect(
-        definition.width,
-        definition.height,
-        definition.color,
-        definition.border
-      );
+      let border = undefined;
+      if (definition.border) {
+        border = {
+          thick: definition.border.thick,
+          color: new GOUColor(
+            definition.border.color.code,
+            definition.border.color.opacity
+          ),
+        };
+      }
+      visual = new GOURect(definition.width, definition.height, color, border);
       break;
     case GOUVisualType.DIAGRAM_LINE:
       visual = new GOULine(
-        definition.start,
-        definition.end,
+        new GOUPosition(definition.start.x, definition.start.y),
+        new GOUPosition(definition.end.x, definition.end.y),
         definition.thick,
-        definition.color
+        color
       );
       break;
     case GOUVisualType.DIAGRAM_LINE_LIST:
-      visual = new GOULineList(definition.lines);
+      const lines = definition.lines.map(
+        (l) =>
+          new GOULine(
+            new GOUPosition(l.start.x, l.start.y),
+            new GOUPosition(l.end.x, l.end.y),
+            l.thick,
+            new GOUColor(l.color.code, l.color.opacity)
+          )
+      );
+      visual = new GOULineList(lines);
       break;
     case GOUVisualType.DIAGRAM_TEXT:
       visual = new GOUText(
         definition.text,
         definition.fontSize,
         definition.fontFamilly,
-        definition.color
+        color
       );
       break;
     case GOUVisualType.IMAGE_SVG:
@@ -54,11 +76,15 @@ const ConstructGOUVisual = (definition: GOUVisualDefinition): GOUVisual => {
       );
       break;
   }
-  if (visual instanceof GOUDiagram && definition.color) {
-    visual.color = definition.color;
+
+  if (visual instanceof GOUDiagram && color) {
+    visual.color = color;
   }
   if (definition.position) {
-    visual.position = definition.position;
+    visual.position = new GOUPosition(
+      definition.position.x,
+      definition.position.y
+    );
   }
   if (definition.children) {
     for (const key of Object.keys(definition.children)) {

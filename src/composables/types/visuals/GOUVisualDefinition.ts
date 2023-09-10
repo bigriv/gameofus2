@@ -1,7 +1,5 @@
-import GOUVisual from "./GOUVisual";
-import GOUPosition from "../GOUPosition";
+import { COLOR } from "../GOUColor";
 import GOUVisualType from "./GOUVisualType";
-import { GOUColor } from "../GOUColor";
 
 type GOUVisualDefinition = (
   | {
@@ -10,7 +8,10 @@ type GOUVisualDefinition = (
       height: number;
       border?: {
         thick: number;
-        color: GOUColor;
+        color: {
+          code?: COLOR;
+          opacity?: number;
+        };
       };
     }
   | {
@@ -18,30 +19,39 @@ type GOUVisualDefinition = (
       radius: number;
       border?: {
         thick: number;
-        color: GOUColor;
+        color: {
+          code?: COLOR;
+          opacity?: number;
+        };
       };
     }
   | {
       type: GOUVisualType.DIAGRAM_POLYGON;
-      points: Array<GOUPosition>;
+      points: Array<{ x: number; y: number }>;
       border?: {
         thick: number;
-        color: GOUColor;
+        color: {
+          code?: COLOR;
+          opacity?: number;
+        };
       };
     }
   | {
       type: GOUVisualType.DIAGRAM_LINE;
-      start: GOUPosition;
-      end: GOUPosition;
+      start: { x: number; y: number };
+      end: { x: number; y: number };
       thick: number;
     }
   | {
       type: GOUVisualType.DIAGRAM_LINE_LIST;
       lines: Array<{
-        start: GOUPosition;
-        end: GOUPosition;
+        start: { x: number; y: number };
+        end: { x: number; y: number };
         thick: number;
-        color: GOUColor;
+        color: {
+          code?: COLOR;
+          opacity?: number;
+        };
       }>;
     }
   | {
@@ -57,8 +67,11 @@ type GOUVisualDefinition = (
       height: number;
     }
 ) & {
-  color?: GOUColor;
-  position?: GOUPosition;
+  color?: {
+    code?: COLOR;
+    opacity?: number;
+  };
+  position?: { x: number; y: number };
   children?: {
     [index: string]: GOUVisualDefinition;
   };

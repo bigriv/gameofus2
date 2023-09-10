@@ -5,31 +5,23 @@ import {
   WAS_EVENT_TIMMING,
   WAS_SKILL_ID,
 } from "./const";
-import {
-  WAS_HERO,
-  WAS_PRINCESS,
-  WAS_ENEMY,
-  WAS_BOSS,
-  WAS_AREA,
-  WAS_MAP_BACKGROUND,
-} from "./defines";
-import { WasNonPlayerCharacter } from "./types/character";
 import { useWasButton } from "./buttons";
 import { WAS_BATTLE_MOVE, WAS_BATTLE_STATUS, WasBattleUtil } from "./battle";
 import { WAS_SKILL } from "./skill";
 import { WAS_ITEM, WAS_ITEM_TYPE } from "./item";
 import WAS_SERIF_DEFINE from "./defines/serif";
+import { WasNonPlayerCharacter } from "./types/nonPlayerCharacter";
 
 export const useWasMain = () => {
-  let timming = WAS_EVENT_TIMMING.OPENING;
-  const area = ref();
+  // let timming = WAS_EVENT_TIMMING.OPENING;
+  // const area = ref();
 
   const layer: any = reactive({
     background: [],
     objects: [],
   });
-  const player = ref(WAS_HERO);
-  const enemy = ref();
+  // const player = ref(WAS_SATAN);
+  // const enemy = ref();
   const displayMessage: Ref<Array<string>> = ref([]);
   const onClickMessageFrame: Ref<Function> = ref(() => {});
   const buttonList = ref();

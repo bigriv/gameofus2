@@ -1,10 +1,8 @@
-import {
-  WasCharacter,
-  WasNonPlayerCharacter,
-  WasPlayerCharacter,
-} from "./types/character";
 import { WAS_ELEMENT } from "./const";
 import { WAS_SKILL_TYPE } from "./skill";
+import { WasCharacter } from "./types/character";
+import { WasNonPlayerCharacter } from "./types/nonPlayerCharacter";
+import { WasPlayerCharacter } from "./types/palyerCharacter";
 
 enum WAS_BATTLE_MOVE {
   ATTACK,

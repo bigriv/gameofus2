@@ -96,7 +96,7 @@ import ImageCanvas from "@/components/atoms/canvases/ImageCanvas.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import GameStatusBar from "@/components/atoms/interfaces/GameStatusBar.vue";
 import { COLOR } from "@/composables/types/GOUColor";
-import { useWas } from "@/composables/games/was/main";
+import { useWasMain } from "@/composables/games/was/main";
 import {
   GAME_DISPLAY_WIDTH,
   GAME_DISPLAY_HEIGHT,
@@ -107,21 +107,22 @@ import { hoverSE } from "@/composables/sounds/seDefinition";
 
 const {
   layer,
-  player,
   displayMessage,
-  onClickMessageFrame,
   buttonList,
-  onClickButton,
   isShowStatusBar,
+  player,
+  onClickMessageFrame,
+  onClickButton,
   showMap,
   showArea,
-} = useWas();
+} = useWasMain();
 
 // const emits = defineEmits(["end"])
 
 onMounted(() => {
   showMap();
   for (const key of Object.keys(WAS_AREA)) {
+    WAS_AREA[key].outside.isClickable = true
     WAS_AREA[key].outside.onClick = () => {
       showArea(key as WAS_AREA_ID);
     };

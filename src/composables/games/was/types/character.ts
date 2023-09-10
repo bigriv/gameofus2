@@ -10,7 +10,7 @@ import { WAS_ITEM_ID, WAS_SKILL_ID } from "../const";
  */
 class WasCharacter {
   name: string;
-  visual: GOUVisual;
+  visual: GOUVisual | null;
   status: WasStatus;
   defaultStatus: WasStatus;
   skills: Array<WAS_SKILL_ID>;
@@ -23,7 +23,7 @@ class WasCharacter {
 
   constructor(
     name: string,
-    visual: GOUVisual,
+    visual: GOUVisual | null,
     status: WasStatus,
     skills?: Array<WAS_SKILL_ID>,
     items?: Array<WAS_ITEM_ID>
@@ -86,12 +86,11 @@ class WasCharacter {
 class WasPlayerCharacter extends WasCharacter {
   constructor(
     name: string,
-    visual: GOUVisual,
     status: WasStatus,
     skills?: Array<WAS_SKILL_ID>,
     items?: Array<WAS_ITEM_ID>
   ) {
-    super(name, visual, status, skills, items);
+    super(name, null, status, skills, items);
   }
 }
 

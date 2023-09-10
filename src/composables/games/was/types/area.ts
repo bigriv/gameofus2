@@ -2,18 +2,17 @@ import GOUPosition from "@/composables/types/GOUPosition";
 import { GAME_DISPLAY_HEIGHT, GAME_DISPLAY_WIDTH } from "../const";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WasCharacter, WasNonPlayerCharacter } from "./character";
-import ClickableVisual from "@/composables/types/visuals/ClickableVisual";
 
 class WasArea {
   readonly name: string;
-  readonly outside: ClickableVisual;
+  readonly outside: GOUVisual;
   readonly inside: GOUVisual;
   readonly character: WasCharacter;
   readonly boss?: WasCharacter;
   isClear: boolean;
   constructor(
     name: string,
-    outside: ClickableVisual,
+    outside: GOUVisual,
     inside: GOUVisual,
     character: WasCharacter,
     boss?: WasCharacter
@@ -22,20 +21,22 @@ class WasArea {
     this.outside = outside;
     this.inside = inside;
     this.character = character;
-    // キャラクターを画面中央に配置
-    this.character.visual.move(
-      new GOUPosition(
-        GAME_DISPLAY_WIDTH / 2 - character.visual.shape.getMaxX() / 2,
-        GAME_DISPLAY_HEIGHT - character.visual.shape.getMaxY()
-      )
-    );
-    if (boss) {
-      this.boss = boss;
+    if (this.character.visual) {
+      // キャラクターを画面中央に配置
+      this.character.visual.move(
+        new GOUPosition(
+          GAME_DISPLAY_WIDTH / 2 - this.character.visual.getMaxX() / 2,
+          GAME_DISPLAY_HEIGHT - this.character.visual.getMaxY()
+        )
+      );
+    }
+    this.boss = boss;
+    if (this.boss && this.boss.visual) {
       // キャラクターを画面中央に配置
       this.boss.visual.move(
         new GOUPosition(
-          GAME_DISPLAY_WIDTH / 2 - boss.visual.shape.getMaxX() / 2,
-          GAME_DISPLAY_HEIGHT - boss.visual.shape.getMaxY()
+          GAME_DISPLAY_WIDTH / 2 - this.boss.visual.getMaxX() / 2,
+          GAME_DISPLAY_HEIGHT - this.boss.visual.getMaxY()
         )
       );
     }

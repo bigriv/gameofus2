@@ -4,11 +4,8 @@ import {
   WasNonPlayerCharacter,
   WasPlayerCharacter,
 } from "./types/character";
-import GOUPosition from "@/composables/types/GOUPosition";
 import WasStatus from "./types/status";
 import { WAS_ELEMENT } from "./const";
-import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import { GOUShapeType } from "@/composables/types/shapes/GOUShapeDefinition";
 import WAS_SERIF_DEFINE from "./defines/serif";
 import WasArea from "./types/area";
 import {
@@ -17,28 +14,26 @@ import {
   WAS_ITEM_ID,
   WAS_SKILL_ID,
 } from "./const";
-import ClickableVisual from "@/composables/types/visuals/ClickableVisual";
+import ConstructGOUVisual from "@/composables/types/visuals/ConstructGOUVisual";
+import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
 
 /**
  * 各エリア以外の背景定義
  */
 // マップ背景
-const WAS_MAP_BACKGROUND = new GOUVisual({
-  shape: {
-    type: GOUShapeType.IMAGE_SVG,
-    path: "/games/was/Map.svg",
-    width: GAME_DISPLAY_WIDTH,
-    height: GAME_DISPLAY_HEIGHT,
-  },
+const WAS_MAP_BACKGROUND = ConstructGOUVisual({
+  type: GOUVisualType.IMAGE_SVG,
+  path: "/games/was/Map.svg",
+  width: GAME_DISPLAY_WIDTH,
+  height: GAME_DISPLAY_HEIGHT,
 });
+
 // エンディング背景
-const WAS_ENDING_BACKGROUND = new GOUVisual({
-  shape: {
-    type: GOUShapeType.DIAGRAM_RECT,
-    color: new GOUColor(COLOR.BLACK),
-    width: GAME_DISPLAY_WIDTH,
-    height: GAME_DISPLAY_HEIGHT,
-  },
+const WAS_ENDING_BACKGROUND = ConstructGOUVisual({
+  type: GOUVisualType.DIAGRAM_RECT,
+  color: new GOUColor(COLOR.BLACK),
+  width: GAME_DISPLAY_WIDTH,
+  height: GAME_DISPLAY_HEIGHT,
 });
 
 /**
@@ -47,11 +42,6 @@ const WAS_ENDING_BACKGROUND = new GOUVisual({
 // 主人公
 const WAS_HERO = new WasPlayerCharacter(
   "私",
-  new GOUVisual({
-    shape: {
-      type: GOUShapeType.DIAGRAM_RECT,
-    },
-  }),
   new WasStatus({
     life: 100,
     satiety: 10,
@@ -67,26 +57,22 @@ const WAS_HERO = new WasPlayerCharacter(
 // 姫
 const WAS_PRINCESS = new WasCharacter(
   "姫",
-  new GOUVisual({
-    shape: {
-      type: GOUShapeType.IMAGE_SVG,
-      path: "/games/was/characters/Princess.svg",
-      width: 150,
-      height: 300,
-    },
+  ConstructGOUVisual({
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/characters/Princess.svg",
+    width: 150,
+    height: 300,
   }),
   new WasStatus()
 );
 const WAS_ENEMY: { [key: string]: WasNonPlayerCharacter } = {
   CAVE: new WasNonPlayerCharacter(
     "ゴブリン",
-    new GOUVisual({
-      shape: {
-        type: GOUShapeType.IMAGE_SVG,
-        path: "/games/was/characters/Goblin.svg",
-        width: 150,
-        height: 300,
-      },
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/characters/Goblin.svg",
+      width: 150,
+      height: 300,
     }),
     new WasStatus({
       life: 10,
@@ -109,13 +95,11 @@ const WAS_ENEMY: { [key: string]: WasNonPlayerCharacter } = {
   ),
   SEA: new WasNonPlayerCharacter(
     "サハギン",
-    new GOUVisual({
-      shape: {
-        type: GOUShapeType.IMAGE_SVG,
-        path: "/games/was/characters/Sahagin.svg",
-        width: 150,
-        height: 300,
-      },
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/characters/Sahagin.svg",
+      width: 150,
+      height: 300,
     }),
     new WasStatus({
       life: 10,
@@ -138,13 +122,11 @@ const WAS_ENEMY: { [key: string]: WasNonPlayerCharacter } = {
   ),
   VILLAGE: new WasNonPlayerCharacter(
     "エルフ",
-    new GOUVisual({
-      shape: {
-        type: GOUShapeType.IMAGE_SVG,
-        path: "/games/was/characters/Elf.svg",
-        width: 150,
-        height: 300,
-      },
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/characters/Elf.svg",
+      width: 150,
+      height: 300,
     }),
     new WasStatus({
       life: 10,
@@ -167,13 +149,11 @@ const WAS_ENEMY: { [key: string]: WasNonPlayerCharacter } = {
   ),
   MOUNTAIN: new WasNonPlayerCharacter(
     "スライム",
-    new GOUVisual({
-      shape: {
-        type: GOUShapeType.IMAGE_SVG,
-        path: "/games/was/characters/Slime.svg",
-        width: 150,
-        height: 150,
-      },
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/characters/Slime.svg",
+      width: 150,
+      height: 150,
     }),
     new WasStatus({
       life: 10,
@@ -196,13 +176,11 @@ const WAS_ENEMY: { [key: string]: WasNonPlayerCharacter } = {
   ),
   KINGDOM_CASTLE: new WasNonPlayerCharacter(
     "兵士",
-    new GOUVisual({
-      shape: {
-        type: GOUShapeType.IMAGE_SVG,
-        path: "/games/was/characters/Soldier.svg",
-        width: 150,
-        height: 300,
-      },
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/characters/Soldier.svg",
+      width: 150,
+      height: 300,
     }),
     new WasStatus({
       life: 10,
@@ -227,13 +205,11 @@ const WAS_ENEMY: { [key: string]: WasNonPlayerCharacter } = {
 const WAS_BOSS: { [key: string]: WasNonPlayerCharacter } = {
   CAVE: new WasNonPlayerCharacter(
     "ボスゴブリン",
-    new GOUVisual({
-      shape: {
-        type: GOUShapeType.IMAGE_SVG,
-        path: "/games/was/characters/BossGoblin.svg",
-        width: 300,
-        height: 400,
-      },
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/characters/BossGoblin.svg",
+      width: 300,
+      height: 400,
     }),
     new WasStatus({
       life: 10,
@@ -258,13 +234,11 @@ const WAS_BOSS: { [key: string]: WasNonPlayerCharacter } = {
   ),
   SEA: new WasNonPlayerCharacter(
     "クラーケン",
-    new GOUVisual({
-      shape: {
-        type: GOUShapeType.IMAGE_SVG,
-        path: "/games/was/characters/Kraken.svg",
-        width: 300,
-        height: 400,
-      },
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/characters/Kraken.svg",
+      width: 300,
+      height: 400,
     }),
     new WasStatus({
       life: 10,
@@ -289,13 +263,11 @@ const WAS_BOSS: { [key: string]: WasNonPlayerCharacter } = {
   ),
   VILLAGE: new WasNonPlayerCharacter(
     "ダークエルフ",
-    new GOUVisual({
-      shape: {
-        type: GOUShapeType.IMAGE_SVG,
-        path: "/games/was/characters/DarkElf.svg",
-        width: 150,
-        height: 300,
-      },
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/characters/DarkElf.svg",
+      width: 150,
+      height: 300,
     }),
     new WasStatus({
       life: 10,
@@ -320,13 +292,11 @@ const WAS_BOSS: { [key: string]: WasNonPlayerCharacter } = {
   ),
   MOUNTAIN: new WasNonPlayerCharacter(
     "ドラゴン",
-    new GOUVisual({
-      shape: {
-        type: GOUShapeType.IMAGE_SVG,
-        path: "/games/was/characters/Dragon.svg",
-        width: 300,
-        height: 300,
-      },
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/characters/Dragon.svg",
+      width: 300,
+      height: 300,
     }),
     new WasStatus({
       life: 10,
@@ -351,13 +321,11 @@ const WAS_BOSS: { [key: string]: WasNonPlayerCharacter } = {
   ),
   KINGDOM_CASTLE: new WasNonPlayerCharacter(
     "勇者",
-    new GOUVisual({
-      shape: {
-        type: GOUShapeType.IMAGE_SVG,
-        path: "/games/was/characters/Hero.svg",
-        width: 150,
-        height: 300,
-      },
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/characters/Hero.svg",
+      width: 150,
+      height: 300,
     }),
     new WasStatus({
       life: 10,
@@ -388,149 +356,107 @@ const WAS_BOSS: { [key: string]: WasNonPlayerCharacter } = {
 const WAS_AREA: { [key: string]: WasArea } = {
   SATAN_CASTLE: new WasArea(
     "魔王城",
-    new ClickableVisual(
-      {
-        shape: {
-          type: GOUShapeType.IMAGE_SVG,
-          path: "/games/was/buildings/outside/SatanCastle.svg",
-          width: 70,
-          height: 70,
-        },
-        position: new GOUPosition(50, 30),
-      },
-      true
-    ),
-    new GOUVisual({
-      shape: {
-        type: GOUShapeType.IMAGE_SVG,
-        path: "/games/was/buildings/inside/SatanCastle.svg",
-        width: GAME_DISPLAY_WIDTH,
-        height: GAME_DISPLAY_HEIGHT,
-      },
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/buildings/outside/SatanCastle.svg",
+      width: 70,
+      height: 70,
+      position: { x: 50, y: 30 },
+    }),
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/buildings/inside/SatanCastle.svg",
+      width: GAME_DISPLAY_WIDTH,
+      height: GAME_DISPLAY_HEIGHT,
     }),
     WAS_PRINCESS
   ),
   CAVE: new WasArea(
     "洞窟",
-    new ClickableVisual(
-      {
-        shape: {
-          type: GOUShapeType.IMAGE_SVG,
-          path: "/games/was/buildings/outside/Cave.svg",
-          width: 70,
-          height: 40,
-        },
-        position: new GOUPosition(200, 125),
-      },
-      true
-    ),
-    new GOUVisual({
-      shape: {
-        type: GOUShapeType.IMAGE_SVG,
-        path: "/games/was/buildings/inside/Cave.svg",
-        width: GAME_DISPLAY_WIDTH,
-        height: GAME_DISPLAY_HEIGHT,
-      },
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/buildings/outside/Cave.svg",
+      width: 70,
+      height: 40,
+      position: { x: 200, y: 125 },
+    }),
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/buildings/inside/Cave.svg",
+      width: GAME_DISPLAY_WIDTH,
+      height: GAME_DISPLAY_HEIGHT,
     }),
     WAS_ENEMY.CAVE,
     WAS_BOSS.CAVE
   ),
   SEA: new WasArea(
     "海岸",
-    new ClickableVisual(
-      {
-        shape: {
-          type: GOUShapeType.IMAGE_SVG,
-          path: "/games/was/buildings/outside/Sea.svg",
-          width: 100,
-          height: 100,
-        },
-        position: new GOUPosition(45, 290),
-      },
-      true
-    ),
-    new GOUVisual({
-      shape: {
-        type: GOUShapeType.IMAGE_SVG,
-        path: "/games/was/buildings/inside/Sea.svg",
-        width: GAME_DISPLAY_WIDTH,
-        height: GAME_DISPLAY_HEIGHT,
-      },
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/buildings/outside/Sea.svg",
+      width: 100,
+      height: 100,
+      position: { x: 45, y: 290 },
+    }),
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/buildings/inside/Sea.svg",
+      width: GAME_DISPLAY_WIDTH,
+      height: GAME_DISPLAY_HEIGHT,
     }),
     WAS_ENEMY.SEA,
     WAS_BOSS.SEA
   ),
   VILLAGE: new WasArea(
     "エルフ村",
-    new ClickableVisual(
-      {
-        shape: {
-          type: GOUShapeType.IMAGE_SVG,
-          path: "/games/was/buildings/outside/Village.svg",
-          width: 60,
-          height: 60,
-        },
-        position: new GOUPosition(420, 75),
-      },
-      true
-    ),
-    new GOUVisual({
-      shape: {
-        type: GOUShapeType.IMAGE_SVG,
-        path: "/games/was/buildings/inside/Village.svg",
-        width: GAME_DISPLAY_WIDTH,
-        height: GAME_DISPLAY_HEIGHT,
-      },
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/buildings/outside/Village.svg",
+      width: 60,
+      height: 60,
+      position: { x: 420, y: 75 },
+    }),
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/buildings/inside/Village.svg",
+      width: GAME_DISPLAY_WIDTH,
+      height: GAME_DISPLAY_HEIGHT,
     }),
     WAS_ENEMY.VILLAGE,
     WAS_BOSS.VILLAGE
   ),
   MOUNTAIN: new WasArea(
     "山",
-    new ClickableVisual(
-      {
-        shape: {
-          type: GOUShapeType.IMAGE_SVG,
-          path: "/games/was/buildings/outside/Mountain.svg",
-          width: 150,
-          height: 70,
-        },
-        position: new GOUPosition(280, 200),
-      },
-      true
-    ),
-    new GOUVisual({
-      shape: {
-        type: GOUShapeType.IMAGE_SVG,
-        path: "/games/was/buildings/inside/Mountain.svg",
-        width: GAME_DISPLAY_WIDTH,
-        height: GAME_DISPLAY_HEIGHT,
-      },
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/buildings/outside/Mountain.svg",
+      width: 150,
+      height: 70,
+      position: { x: 280, y: 200 },
+    }),
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/buildings/inside/Mountain.svg",
+      width: GAME_DISPLAY_WIDTH,
+      height: GAME_DISPLAY_HEIGHT,
     }),
     WAS_ENEMY.MOUNTAIN,
     WAS_BOSS.MOUNTAIN
   ),
   KINGDOM_CASTLE: new WasArea(
     "王国",
-    new ClickableVisual(
-      {
-        shape: {
-          type: GOUShapeType.IMAGE_SVG,
-          path: "/games/was/buildings/outside/KingdomCastle.svg",
-          width: 70,
-          height: 70,
-        },
-        position: new GOUPosition(465, 300),
-      },
-      true
-    ),
-    new GOUVisual({
-      shape: {
-        type: GOUShapeType.IMAGE_SVG,
-        path: "/games/was/buildings/inside/KingdomCastle.svg",
-        width: GAME_DISPLAY_WIDTH,
-        height: GAME_DISPLAY_HEIGHT,
-      },
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/buildings/outside/KingdomCastle.svg",
+      width: 70,
+      height: 70,
+      position: { x: 465, y: 300 },
+    }),
+    ConstructGOUVisual({
+      type: GOUVisualType.IMAGE_SVG,
+      path: "/games/was/buildings/inside/KingdomCastle.svg",
+      width: GAME_DISPLAY_WIDTH,
+      height: GAME_DISPLAY_HEIGHT,
     }),
     WAS_ENEMY.KINGDOM_CASTLE,
     WAS_BOSS.KINGDOM_CASTLE

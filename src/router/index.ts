@@ -11,16 +11,6 @@ const routes = [
     component: () => import("@/components/views/games/was.vue"),
   },
   {
-    path: "/was/debug/character",
-    name: "WasDebugCharacter",
-    component: () => import("@/components/views/games/wasDebugCharacter.vue"),
-  },
-  {
-    path: "/was/debug/building",
-    name: "WasDebugBuilding",
-    component: () => import("@/components/views/games/wasDebugBuilding.vue"),
-  },
-  {
     path: "/was/tool/audio",
     name: "WasAudioTool",
     component: () => import("@/components/views/games/wasAudioTool.vue"),

@@ -1,7 +1,5 @@
 import { Ref, reactive, ref } from "vue";
 import {
-  GAME_DISPLAY_WIDTH,
-  GAME_DISPLAY_HEIGHT,
   WAS_AREA_ID,
   WAS_BUTTON_EVENT,
   WAS_EVENT_TIMMING,
@@ -14,17 +12,15 @@ import {
   WAS_BOSS,
   WAS_AREA,
   WAS_MAP_BACKGROUND,
-  WAS_ENDING_BACKGROUND,
 } from "./defines";
 import { WasNonPlayerCharacter } from "./types/character";
 import { useWasButton } from "./buttons";
 import { WAS_BATTLE_MOVE, WAS_BATTLE_STATUS, WasBattleUtil } from "./battle";
-import WasStoryManager from "./story";
 import { WAS_SKILL } from "./skill";
 import { WAS_ITEM, WAS_ITEM_TYPE } from "./item";
 import WAS_SERIF_DEFINE from "./defines/serif";
 
-export const useWas = () => {
+export const useWasMain = () => {
   let timming = WAS_EVENT_TIMMING.OPENING;
   const area = ref();
 
@@ -409,14 +405,7 @@ export const useWas = () => {
   };
   const showEnd = (type: string) => {
     console.log(type);
-    layer.background = [WAS_ENDING_BACKGROUND];
-    layer.objects = [
-      WasStoryManager.getMessageArea(
-        GAME_DISPLAY_WIDTH,
-        GAME_DISPLAY_HEIGHT,
-        "ゲームオーバー"
-      ),
-    ];
+    // TODO:エンディング画面表示
   };
   return {
     layer,

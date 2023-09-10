@@ -1,10 +1,4 @@
 <template>
-  <div>
-    <input type="radio" name="display" v-model="ending.type" value="good" />
-    <input type="radio" name="display" v-model="ending.type" value="bad" />
-    <input type="radio" name="display" v-model="ending.type" value="dead" />
-  </div>
-
   <div class="c-game">
     <Title
       v-if="display === 'title'"

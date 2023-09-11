@@ -1,9 +1,6 @@
-import { NotImplementedError } from "@/composables/types/errors/NotImplementedError";
-import { WAS_EVENT_TIMMING } from "./const";
+import { WAS_AREA_ID, WAS_EVENT_TIMMING } from "./const";
 import { WasCharacter } from "./types/character";
-import {
-  WasNonPlayerCharacter,
-} from "./types/nonPlayerCharacter";
+import { WasNonPlayerCharacter } from "./types/nonPlayerCharacter";
 import { WasPlayerCharacter } from "./types/palyerCharacter";
 import WasArea from "./types/area";
 import {
@@ -22,6 +19,17 @@ import {
 } from "./defines/character";
 import WasStatus from "./types/status";
 import ConstructGOUVisual from "@/composables/types/visuals/ConstructGOUVisual";
+import {
+  WAS_CAVE,
+  WAS_KINGDOM_CASTLE,
+  WAS_MOUNTAIN,
+  WAS_SATAN_CASTLE,
+  WAS_SEA,
+  WAS_VILLAGE,
+} from "./defines/area";
+import { reactive } from "vue";
+import { WAS_MAP } from "./defines/map";
+import GOUVisual from "@/composables/types/visuals/GOUVisual";
 
 export const useWasInit = () => {
   // プレイヤーの初期化
@@ -57,19 +65,38 @@ export const useWasInit = () => {
 
   // エリアの初期化
   const initArea = (): { [key: string]: WasArea } => {
-    throw new NotImplementedError();
+    let areas: { [key: string]: WasArea } = {};
+    areas["SATAN_CASTLE"] = new WasArea(
+      WAS_SATAN_CASTLE.name,
+      ConstructGOUVisual(WAS_SATAN_CASTLE.outside),
+      ConstructGOUVisual(WAS_SATAN_CASTLE.inside),
+      PRINCESS
+    );
+    const defines: { [key: string]: any } = {
+      CAVE: WAS_CAVE,
+      SEA: WAS_SEA,
+      VILLAGE: WAS_VILLAGE,
+      MOUNTAIN: WAS_MOUNTAIN,
+      KINGDOM_CASTLE: WAS_KINGDOM_CASTLE,
+    };
+    for (const key of Object.keys(defines)) {
+      areas[key] = new WasArea(
+        defines[key].name,
+        ConstructGOUVisual(defines[key].outside),
+        ConstructGOUVisual(defines[key].inside),
+        CHARACTERS[key],
+        BOSSES[key]
+      );
+    }
+    return areas;
   };
 
-  let timming = WAS_EVENT_TIMMING.OPENING;
-  let area = null;
-  let player = initPlayer();
-  let enemy = null;
-  const princess = new WasCharacter(
+  const PRINCESS: WasCharacter = new WasCharacter(
     WAS_PRINCESS.name,
     ConstructGOUVisual(WAS_PRINCESS.visual),
     new WasStatus()
   );
-  const WAS_CHARACTER = initCharacter(
+  const CHARACTERS: { [key: string]: WasNonPlayerCharacter } = initCharacter(
     {
       CAVE: WAS_GOBLIN,
       SEA: WAS_SAHAGIN,
@@ -79,7 +106,7 @@ export const useWasInit = () => {
     },
     false
   );
-  const WAS_BOSS = initCharacter(
+  const BOSSES: { [key: string]: WasNonPlayerCharacter } = initCharacter(
     {
       CAVE: WAS_BOSS_GOBLIN,
       SEA: WAS_KRAKEN,
@@ -89,16 +116,27 @@ export const useWasInit = () => {
     },
     true
   );
-  const WAS_AREA = initArea();
+  const MAP: GOUVisual = ConstructGOUVisual(WAS_MAP);
+  const AREAS: { [key: string]: WasArea } = initArea();
+
+  const state: {
+    timming: WAS_EVENT_TIMMING;
+    area: WAS_AREA_ID | null;
+    player: WasPlayerCharacter;
+    character: WasCharacter | null;
+  } = reactive({
+    timming: WAS_EVENT_TIMMING.OPENING,
+    area: null,
+    player: initPlayer(),
+    character: null,
+  });
 
   return {
-    timming,
-    area,
-    player,
-    enemy,
-    princess,
-    WAS_CHARACTER,
-    WAS_BOSS,
-    WAS_AREA,
+    PRINCESS,
+    CHARACTERS,
+    BOSSES,
+    MAP,
+    AREAS,
+    state,
   };
 };

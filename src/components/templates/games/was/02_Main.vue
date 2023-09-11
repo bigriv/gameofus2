@@ -102,43 +102,45 @@ import {
   GAME_DISPLAY_HEIGHT,
   WAS_AREA_ID,
 } from "@/composables/games/was/const";
-import { WAS_AREA } from "@/composables/games/was/defines";
 import { hoverSE } from "@/composables/sounds/seDefinition";
+
+const emits = defineEmits<{
+  (event: "end", endType: string): void;
+}>();
 
 const {
   layer,
   displayMessage,
   buttonList,
   isShowStatusBar,
-  player,
   onClickMessageFrame,
   onClickButton,
+  AREAS,
+  player,
   showMap,
   showArea,
-} = useWasMain();
-
-// const emits = defineEmits(["end"])
+} = useWasMain(emits);
 
 onMounted(() => {
-  showMap();
-  for (const key of Object.keys(WAS_AREA)) {
-    WAS_AREA[key].outside.isClickable = true
-    WAS_AREA[key].outside.onClick = () => {
+  for (const key of Object.keys(AREAS)) {
+    AREAS[key].outside.isClickable = true;
+    AREAS[key].outside.onClick = () => {
       showArea(key as WAS_AREA_ID);
     };
-    WAS_AREA[key].outside.onMouseEnter = () => {
-      if (displayMessage.value[0] === WAS_AREA[key].name) {
+    AREAS[key].outside.onMouseEnter = () => {
+      if (displayMessage.value[0] === AREAS[key].name) {
         return;
       }
       hoverSE.play();
-      displayMessage.value = [WAS_AREA[key].name];
+      displayMessage.value = [AREAS[key].name];
     };
-    WAS_AREA[key].outside.onMouseLeave = () => {
-      if (displayMessage.value[0] === WAS_AREA[key].name) {
+    AREAS[key].outside.onMouseLeave = () => {
+      if (displayMessage.value[0] === AREAS[key].name) {
         displayMessage.value = [];
       }
     };
   }
+  showMap();
 });
 </script>
 

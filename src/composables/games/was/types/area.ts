@@ -1,7 +1,8 @@
 import GOUPosition from "@/composables/types/GOUPosition";
 import { GAME_DISPLAY_HEIGHT, GAME_DISPLAY_WIDTH } from "../const";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import { WasCharacter, WasNonPlayerCharacter } from "./character";
+import { WasCharacter } from "./character";
+import { WasNonPlayerCharacter } from "./nonPlayerCharacter";
 
 class WasArea {
   readonly name: string;

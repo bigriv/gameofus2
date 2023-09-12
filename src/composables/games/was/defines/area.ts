@@ -1,0 +1,112 @@
+import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
+import { GAME_DISPLAY_HEIGHT, GAME_DISPLAY_WIDTH } from "../const";
+
+/**
+ * エリア定義
+ */
+const WAS_SATAN_CASTLE = {
+  name: "魔王城",
+  outside: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/buildings/outside/SatanCastle.svg",
+    width: 70,
+    height: 70,
+    position: { x: 50, y: 30 },
+  },
+  inside: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/buildings/inside/SatanCastle.svg",
+    width: GAME_DISPLAY_WIDTH,
+    height: GAME_DISPLAY_HEIGHT,
+  },
+};
+
+const WAS_CAVE = {
+  name: "洞窟",
+  outside: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/buildings/outside/Cave.svg",
+    width: 70,
+    height: 40,
+    position: { x: 200, y: 125 },
+  },
+  inside: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/buildings/inside/Cave.svg",
+    width: GAME_DISPLAY_WIDTH,
+    height: GAME_DISPLAY_HEIGHT,
+  },
+};
+const WAS_SEA = {
+  name: "海岸",
+  outside: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/buildings/outside/Sea.svg",
+    width: 100,
+    height: 100,
+    position: { x: 45, y: 290 },
+  },
+  inside: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/buildings/inside/Sea.svg",
+    width: GAME_DISPLAY_WIDTH,
+    height: GAME_DISPLAY_HEIGHT,
+  },
+};
+const WAS_VILLAGE = {
+  name: "エルフ村",
+  outside: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/buildings/outside/Village.svg",
+    width: 60,
+    height: 60,
+    position: { x: 420, y: 75 },
+  },
+  inside: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/buildings/inside/Village.svg",
+    width: GAME_DISPLAY_WIDTH,
+    height: GAME_DISPLAY_HEIGHT,
+  },
+};
+const WAS_MOUNTAIN = {
+  name: "山",
+  outside: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/buildings/outside/Mountain.svg",
+    width: 150,
+    height: 70,
+    position: { x: 280, y: 200 },
+  },
+  inside: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/buildings/inside/Mountain.svg",
+    width: GAME_DISPLAY_WIDTH,
+    height: GAME_DISPLAY_HEIGHT,
+  },
+};
+const WAS_KINGDOM_CASTLE = {
+  name: "王国",
+  outside: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/buildings/outside/KingdomCastle.svg",
+    width: 70,
+    height: 70,
+    position: { x: 465, y: 300 },
+  },
+  inside: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/buildings/inside/KingdomCastle.svg",
+    width: GAME_DISPLAY_WIDTH,
+    height: GAME_DISPLAY_HEIGHT,
+  },
+};
+
+export {
+  WAS_SATAN_CASTLE,
+  WAS_CAVE,
+  WAS_SEA,
+  WAS_VILLAGE,
+  WAS_MOUNTAIN,
+  WAS_KINGDOM_CASTLE,
+};

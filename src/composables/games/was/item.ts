@@ -1,4 +1,5 @@
-import { WasCharacter, WasPlayerCharacter } from "./types/character";
+import { WasCharacter } from "./types/character";
+import { WasPlayerCharacter } from "./types/palyerCharacter";
 
 type WAS_ITEM_TYPE = {
   name: string;

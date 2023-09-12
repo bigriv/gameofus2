@@ -1,8 +1,8 @@
 import { computed } from "vue";
-import { WasPlayerCharacter } from "./types/character";
 import { WAS_BUTTON_EVENT } from "./const";
 import { WAS_ITEM } from "./item";
 import { WAS_SKILL } from "./skill";
+import { WasPlayerCharacter } from "./types/palyerCharacter";
 
 export const useWasButton = (player: WasPlayerCharacter) => {
   const EXLPORE_BUTTON_LIST = [

@@ -16,16 +16,6 @@ const routes = [
     component: () => import("@/components/views/games/wasAudioTool.vue"),
   },
   {
-    path: "/was/tool/visual",
-    name: "WasVisualTool",
-    component: () => import("@/components/views/games/wasVisualTool.vue"),
-  },
-  {
-    path: "/was/tool/audio",
-    name: "WasAudioTool",
-    component: () => import("@/components/views/games/wasAudioTool.vue"),
-  },
-  {
     path: "/blessing/birthday/:date",
     name: "BlessingBirthday",
     props: (route: RouteLocationNormalized) => ({

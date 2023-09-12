@@ -1,39 +1,30 @@
-import { Ref, reactive, ref } from "vue";
 import {
   WAS_AREA_ID,
   WAS_BUTTON_EVENT,
   WAS_EVENT_TIMMING,
   WAS_SKILL_ID,
 } from "./const";
-import {
-  WAS_HERO,
-  WAS_PRINCESS,
-  WAS_ENEMY,
-  WAS_BOSS,
-  WAS_AREA,
-  WAS_MAP_BACKGROUND,
-} from "./defines";
-import { WasNonPlayerCharacter } from "./types/character";
 import { useWasButton } from "./buttons";
 import { WAS_BATTLE_MOVE, WAS_BATTLE_STATUS, WasBattleUtil } from "./battle";
 import { WAS_SKILL } from "./skill";
 import { WAS_ITEM, WAS_ITEM_TYPE } from "./item";
 import WAS_SERIF_DEFINE from "./defines/serif";
+import { WasNonPlayerCharacter } from "./types/nonPlayerCharacter";
+import { useWasInit } from "./init";
+import { useWasDispay } from "./display";
+import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 
-export const useWasMain = () => {
-  let timming = WAS_EVENT_TIMMING.OPENING;
-  const area = ref();
+export const useWasMain = (emits: Function) => {
+  const { PRINCESS, CHARACTERS, BOSSES, MAP, AREAS, state } = useWasInit();
 
-  const layer: any = reactive({
-    background: [],
-    objects: [],
-  });
-  const player = ref(WAS_HERO);
-  const enemy = ref();
-  const displayMessage: Ref<Array<string>> = ref([]);
-  const onClickMessageFrame: Ref<Function> = ref(() => {});
-  const buttonList = ref();
-  const isShowStatusBar = ref(false);
+  const {
+    layer,
+    displayMessage,
+    onClickMessageFrame,
+    buttonList,
+    isShowStatusBar,
+    chainMessage,
+  } = useWasDispay();
 
   const {
     EXLPORE_BUTTON_LIST,
@@ -42,7 +33,7 @@ export const useWasMain = () => {
     BATTLE_BUTTON_LIST,
     SKILL_BUTTON_LIST,
     BATTLE_ITEM_BUTTON_LIST,
-  } = useWasButton(player.value);
+  } = useWasButton(state.player);
 
   const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
     buttonList.value = [];
@@ -55,23 +46,26 @@ export const useWasMain = () => {
         buttonList.value = PERSUADE_BUTTON_LIST.value;
         return;
       case WAS_BUTTON_EVENT.USE_PERSUADE_ITEM:
-        if (enemy.value.persuadItem !== args) {
+        if (!state.area) {
+          throw new WrongImplementationError("Area is not set.");
+        }
+        const area = state.area as WAS_AREA_ID;
+        const character = state.character as WasNonPlayerCharacter;
+        if (character.persuadItem !== args) {
           chainMessage(["なにそれ"], showFace);
           return;
         }
-        enemy.value.isPersuaded = true;
-        if (enemy.value.isBoss) {
-          WAS_AREA[area.value].isClear = true;
+        character.isPersuaded = true;
+        if (character.isBoss) {
+          AREAS[area].isClear = true;
         }
-        let occupySkill = WAS_SKILL[enemy.value.occupySkill];
-        player.value.skills.push(enemy.value.occupySkill);
-        chainMessage(
-          [
-            ...enemy.value.serif.PERSUADE_SUCCESS,
-            `${occupySkill.name}を習得した！`,
-          ],
-          () => showArea(area.value)
-        );
+        let messages = [...character.serif.PERSUADE_SUCCESS];
+        if (character.occupySkill) {
+          let occupySkill = WAS_SKILL[character.occupySkill];
+          state.player.skills.push(character.occupySkill);
+          messages.push(`${occupySkill.name}を習得した！`);
+        }
+        chainMessage(messages, () => showArea(area));
         return;
       case WAS_BUTTON_EVENT.BATTLE:
         showBattle();
@@ -88,16 +82,22 @@ export const useWasMain = () => {
       case WAS_BUTTON_EVENT.NONE:
         return;
       case WAS_BUTTON_EVENT.ATTACK:
-        player.value.move = {
+        if (!state.character) {
+          throw new WrongImplementationError("Character is not set.");
+        }
+        state.player.move = {
           type: WAS_BATTLE_MOVE.ATTACK,
-          target: enemy.value,
+          target: state.character,
         };
         break;
       case WAS_BUTTON_EVENT.SKILL:
         buttonList.value = SKILL_BUTTON_LIST.value;
         return;
       case WAS_BUTTON_EVENT.ACTIVATE_SKILL:
-        let target = enemy.value;
+        if (!state.character) {
+          throw new WrongImplementationError("Character is not set.");
+        }
+        let target = state.character;
         if (
           [
             WAS_SKILL_ID.HEAL,
@@ -106,9 +106,9 @@ export const useWasMain = () => {
           ].includes(args)
         ) {
           // サポートスキルは対象をプレイヤーに書き換える
-          target = player.value;
+          target = state.player;
         }
-        player.value.move = {
+        state.player.move = {
           type: WAS_BATTLE_MOVE.SKILL,
           target: target,
           skillId: args,
@@ -118,9 +118,12 @@ export const useWasMain = () => {
         buttonList.value = BATTLE_ITEM_BUTTON_LIST.value;
         return;
       case WAS_BUTTON_EVENT.USE_BATTLE_ITEM:
-        player.value.move = {
+        if (!state.character) {
+          throw new WrongImplementationError("Character is not set.");
+        }
+        state.player.move = {
           type: WAS_BATTLE_MOVE.ITEM,
-          target: enemy.value,
+          target: state.character,
           itemId: args,
         };
         break;
@@ -135,148 +138,152 @@ export const useWasMain = () => {
     ) {
       return;
     }
-    // 戦闘中の場合の処理
-    if (!enemy.value) {
-      console.warn("Enemy is not initialized.");
-      return;
-    }
 
+    if (state.character == PRINCESS) {
+      throw new WrongImplementationError();
+    }
+    const character = state.character as WasNonPlayerCharacter;
     // 敵の行動を設定
     // TODO: ターンごとに行動が変わるように修正
-    enemy.value.move = {
+    character.move = {
       type: WAS_BATTLE_MOVE.ATTACK,
-      target: player.value,
+      target: state.player,
     };
-    const result = WasBattleUtil.mainFlow(player.value, enemy.value);
+    const result = WasBattleUtil.mainFlow(state.player, character);
     const messages = result.progresses.map((p) => p.message);
     let afterFunction = showBattle;
     if (result.status == WAS_BATTLE_STATUS.WIN) {
       // 勝利時の処理
       afterFunction = () => {
-        if (!area.value) {
-          console.warn("Area is not initialized.");
-          return;
-        }
-        if (!enemy.value) {
-          console.warn("Enemy is not initialized.");
-          return;
-        }
-
         let afterMessages = [];
-        if (!enemy.value.persuadItem && WAS_ENEMY[area.value].isPersuaded) {
+        if (!state.area) {
+          throw new WrongImplementationError("Area is not set.");
+        }
+        const area = state.area as WAS_AREA_ID;
+        if (!character.persuadItem && CHARACTERS[area].isPersuaded) {
           // 説得アイテムが未設定で雑魚キャラが説得済みの場合は説得成功として処理する
-          enemy.value.isPersuaded = true;
-          let occupySkill = WAS_SKILL[enemy.value.occupySkill];
-          player.value.skills.push(enemy.value.occupySkill);
-          afterMessages = [
-            ...(enemy.value as WasNonPlayerCharacter).serif.PERSUADE_SUCCESS,
-            `${occupySkill.name}を習得した！`,
-          ];
-        } else {
-          let dropItem: WAS_ITEM_TYPE = WAS_ITEM[enemy.value.dropItem];
-          player.value.items.push(enemy.value.dropItem);
-          if (dropItem.passive instanceof Function) {
-            dropItem.passive(player.value);
+          character.isPersuaded = true;
+          afterMessages = [...character.serif.PERSUADE_SUCCESS];
+          if (character.occupySkill) {
+            let occupySkill = WAS_SKILL[character.occupySkill];
+            state.player.skills.push(character.occupySkill);
+            afterMessages.push(`${occupySkill.name}を習得した！`);
           }
-          afterMessages = [
-            ...(enemy.value as WasNonPlayerCharacter).serif.BATTLE_WIN,
-            `${dropItem.name}を手に入れた！`,
-          ];
+        } else {
+          afterMessages = [...character.serif.BATTLE_WIN];
+          if (character.dropItem) {
+            let dropItem: WAS_ITEM_TYPE = WAS_ITEM[character.dropItem];
+            state.player.items.push(character.dropItem);
+            if (dropItem.passive instanceof Function) {
+              dropItem.passive(state.player);
+            }
+            afterMessages.push(`${dropItem.name}を手に入れた！`);
+          }
         }
 
         // ボスの場合はタイミングを攻略済みに更新する
-        if (enemy.value.isBoss) {
-          if (area.value === WAS_AREA_ID.CAVE) {
-            WAS_AREA.CAVE.isClear = true;
-            timming = WAS_EVENT_TIMMING.AFTER_CLEAR_CAVE;
-          } else if (area.value === WAS_AREA_ID.SEA) {
-            WAS_AREA.SEA.isClear = true;
-            timming = WAS_EVENT_TIMMING.AFTER_CLEAR_SEA;
-          } else if (area.value === WAS_AREA_ID.VILLAGE) {
-            WAS_AREA.VILLAGE.isClear = true;
-            timming = WAS_EVENT_TIMMING.AFTER_CLEAR_VILLAGE;
-          } else if (area.value === WAS_AREA_ID.MOUNTAIN) {
-            WAS_AREA.MOUNTAIN.isClear = true;
-            timming = WAS_EVENT_TIMMING.AFTER_CLEAR_MOUNTAIN;
+        if (character.isBoss) {
+          if (area === WAS_AREA_ID.CAVE) {
+            AREAS.CAVE.isClear = true;
+            state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_CAVE;
+          } else if (area === WAS_AREA_ID.SEA) {
+            AREAS.SEA.isClear = true;
+            state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_SEA;
+          } else if (area === WAS_AREA_ID.VILLAGE) {
+            AREAS.VILLAGE.isClear = true;
+            state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_VILLAGE;
+          } else if (area === WAS_AREA_ID.MOUNTAIN) {
+            AREAS.MOUNTAIN.isClear = true;
+            state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_MOUNTAIN;
+          } else if (area === WAS_AREA_ID.KINGDOM_CASTLE) {
+            AREAS.KINGDOM_CASTLE.isClear = true;
+            state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_KINGDOM_CASTLE;
           }
 
           // ラスダン以外の全てのエリアを攻略済みの場合はラスダン攻略前にタイミングを更新する
           if (
-            WAS_AREA.CAVE.isClear &&
-            WAS_AREA.SEA.isClear &&
-            WAS_AREA.VILLAGE.isClear &&
-            WAS_AREA.MOUNTAIN.isClear
+            AREAS.CAVE.isClear &&
+            AREAS.SEA.isClear &&
+            AREAS.VILLAGE.isClear &&
+            AREAS.MOUNTAIN.isClear
           ) {
-            timming = WAS_EVENT_TIMMING.AFTER_CLEAR_ALL_AREA;
+            state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_ALL_AREA;
           }
         }
-        chainMessage(afterMessages, () => showArea(area.value));
+
+        let afterFunction = () => showArea(area);
+        // 王国クリア時はエンディング画面に遷移する
+        if ((AREAS.KINGDOM_CASTLE.isClear = true)) {
+          const bossWithoutLast = [
+            BOSSES.CAVE,
+            BOSSES.SEA,
+            BOSSES.VILLAGE,
+            BOSSES.MOUNTAIN,
+          ];
+          const persuadeCount = bossWithoutLast.filter(
+            (boss) => boss.isPersuaded
+          ).length;
+
+          // 説得で攻略したボスがエリア数 - 1以上ならグッドエンドそれ以外はバッドエンドにする
+          const endType =
+            persuadeCount >= bossWithoutLast.length - 1 ? "good" : "bad";
+          afterFunction = () => showEnd(endType);
+        }
+        chainMessage(afterMessages, afterFunction);
       };
     } else if (result.status == WAS_BATTLE_STATUS.LOSE) {
       // 敗北時の処理
-      afterFunction = () => showEnd("bad");
+      afterFunction = () => showEnd("dead");
     }
 
     chainMessage(messages, afterFunction);
   };
 
-  const chainMessage: Function = (
-    messages: Array<string>,
-    afterFunction: Function
-  ) => {
-    const message = messages.shift();
-    if (!message) {
-      displayMessage.value = [];
-      onClickMessageFrame.value = () => {};
-      afterFunction();
-      return;
-    }
-    displayMessage.value = [message];
-    onClickMessageFrame.value = () => chainMessage(messages, afterFunction);
-  };
-
   const showAreaSatanCasle = () => {
-    layer.background = [WAS_AREA.SATAN_CASTLE.inside];
-    layer.objects = [WAS_PRINCESS.visual];
+    layer.background = [AREAS.SATAN_CASTLE.inside];
+    if (!PRINCESS.visual) {
+      throw new WrongImplementationError("Princess visual is not initialized.");
+    }
+    layer.objects = [PRINCESS.visual];
     let messages = new Array<string>();
-    switch (timming) {
+    switch (state.timming) {
       case WAS_EVENT_TIMMING.OPENING:
         messages = WAS_SERIF_DEFINE.PRINCESS_OPENING;
-        timming = WAS_EVENT_TIMMING.AFTER_OPENING;
+        state.timming = WAS_EVENT_TIMMING.AFTER_OPENING;
         break;
       case WAS_EVENT_TIMMING.AFTER_OPENING:
         messages = WAS_SERIF_DEFINE.PRINCESS_AFTER_OPENING;
         break;
       case WAS_EVENT_TIMMING.AFTER_CLEAR_CAVE:
-        if (WAS_BOSS.CAVE.isPersuaded) {
+        if (BOSSES.CAVE.isPersuaded) {
           messages = WAS_SERIF_DEFINE.PRINCESS_AFTER_CAVE1;
         } else {
           messages = WAS_SERIF_DEFINE.PRINCESS_AFTER_CAVE2;
         }
         break;
       case WAS_EVENT_TIMMING.AFTER_CLEAR_CAVE:
-        if (WAS_BOSS.CAVE.isPersuaded) {
+        if (BOSSES.CAVE.isPersuaded) {
           messages = WAS_SERIF_DEFINE.PRINCESS_AFTER_CAVE1;
         } else {
           messages = WAS_SERIF_DEFINE.PRINCESS_AFTER_CAVE2;
         }
         break;
       case WAS_EVENT_TIMMING.AFTER_CLEAR_SEA:
-        if (WAS_BOSS.SEA.isPersuaded) {
+        if (BOSSES.SEA.isPersuaded) {
           messages = WAS_SERIF_DEFINE.PRINCESS_AFTER_SEA1;
         } else {
           messages = WAS_SERIF_DEFINE.PRINCESS_AFTER_SEA2;
         }
         break;
       case WAS_EVENT_TIMMING.AFTER_CLEAR_VILLAGE:
-        if (WAS_BOSS.VILLAGE.isPersuaded) {
+        if (BOSSES.VILLAGE.isPersuaded) {
           messages = WAS_SERIF_DEFINE.PRINCESS_AFTER_VILLAGE1;
         } else {
           messages = WAS_SERIF_DEFINE.PRINCESS_AFTER_VILLAGE2;
         }
         break;
       case WAS_EVENT_TIMMING.AFTER_CLEAR_MOUNTAIN:
-        if (WAS_BOSS.MOUNTAIN.isPersuaded) {
+        if (BOSSES.MOUNTAIN.isPersuaded) {
           messages = WAS_SERIF_DEFINE.PRINCESS_AFTER_MOUNTAIN1;
         } else {
           messages = WAS_SERIF_DEFINE.PRINCESS_AFTER_MOUNTAIN2;
@@ -284,10 +291,10 @@ export const useWasMain = () => {
         break;
       case WAS_EVENT_TIMMING.AFTER_CLEAR_ALL_AREA:
         const bossWithoutLast = [
-          WAS_BOSS.CAVE,
-          WAS_BOSS.SEA,
-          WAS_BOSS.VILLAGE,
-          WAS_BOSS.MOUNTAIN,
+          BOSSES.CAVE,
+          BOSSES.SEA,
+          BOSSES.VILLAGE,
+          BOSSES.MOUNTAIN,
         ];
         const persuadeCount = bossWithoutLast.filter(
           (boss) => boss.isPersuaded
@@ -308,46 +315,42 @@ export const useWasMain = () => {
 
   // マップの表示
   const showMap = () => {
-    layer.background = [WAS_MAP_BACKGROUND];
+    layer.background = [MAP];
 
     // 進行状況によって表示するエリアを制御
-    if (timming < WAS_EVENT_TIMMING.AFTER_OPENING) {
-      layer.objects = [WAS_AREA.SATAN_CASTLE.outside];
-    } else if (timming < WAS_EVENT_TIMMING.AFTER_CLEAR_CAVE) {
-      layer.objects = [WAS_AREA.SATAN_CASTLE.outside, WAS_AREA.CAVE.outside];
-    } else if (timming < WAS_EVENT_TIMMING.AFTER_CLEAR_ALL_AREA) {
+    if (state.timming < WAS_EVENT_TIMMING.AFTER_OPENING) {
+      layer.objects = [AREAS.SATAN_CASTLE.outside];
+    } else if (state.timming < WAS_EVENT_TIMMING.AFTER_CLEAR_CAVE) {
+      layer.objects = [AREAS.SATAN_CASTLE.outside, AREAS.CAVE.outside];
+    } else if (state.timming < WAS_EVENT_TIMMING.AFTER_CLEAR_ALL_AREA) {
       layer.objects = [
-        WAS_AREA.SATAN_CASTLE.outside,
-        WAS_AREA.CAVE.outside,
-        WAS_AREA.SEA.outside,
-        WAS_AREA.VILLAGE.outside,
-        WAS_AREA.MOUNTAIN.outside,
+        AREAS.SATAN_CASTLE.outside,
+        AREAS.CAVE.outside,
+        AREAS.SEA.outside,
+        AREAS.VILLAGE.outside,
+        AREAS.MOUNTAIN.outside,
       ];
     } else {
       layer.objects = [
-        WAS_AREA.SATAN_CASTLE.outside,
-        WAS_AREA.CAVE.outside,
-        WAS_AREA.SEA.outside,
-        WAS_AREA.VILLAGE.outside,
-        WAS_AREA.MOUNTAIN.outside,
-        WAS_AREA.KINGDOM_CASTLE.outside,
+        AREAS.SATAN_CASTLE.outside,
+        AREAS.CAVE.outside,
+        AREAS.SEA.outside,
+        AREAS.VILLAGE.outside,
+        AREAS.MOUNTAIN.outside,
+        AREAS.KINGDOM_CASTLE.outside,
       ];
     }
   };
 
   // エリアの表示
   const showArea = (argArea: WAS_AREA_ID) => {
-    if (!argArea) {
-      console.warn("Area is not initialized.");
-      return;
-    }
-    area.value = argArea;
-    if (area.value == WAS_AREA_ID.SATAN_CASTLE) {
+    state.area = argArea;
+    if (state.area == WAS_AREA_ID.SATAN_CASTLE) {
       // 魔王城の場合は特殊処理
       showAreaSatanCasle();
       return;
     }
-    layer.background = [WAS_AREA[area.value].inside];
+    layer.background = [AREAS[state.area].inside];
     layer.objects = [];
     displayMessage.value = [];
     buttonList.value = EXLPORE_BUTTON_LIST;
@@ -355,31 +358,31 @@ export const useWasMain = () => {
 
   // エリアとキャラクターの表示
   const showCharacterInArea = () => {
-    if (!area.value) {
-      console.warn("Area is not initialized.");
-      return;
-    }
     let messages = [];
-    enemy.value = WAS_AREA[area.value].encount();
+    if (!state.area) {
+      throw new WrongImplementationError("Area is not set.");
+    }
+    state.character = AREAS[state.area].encount();
 
-    if (!enemy.value) {
+    if (!state.character) {
       chainMessage(["誰もいないようだ..."], showMap);
       return;
     }
-    layer.objects = [enemy.value.visual];
-    if (!enemy.value.isPersuaded) {
-      messages.push(`${enemy.value.name}が現れた`);
+    const character = state.character as WasNonPlayerCharacter;
+    if (character.visual) layer.objects = [character.visual];
+    if (!character.isPersuaded) {
+      messages.push(`${character.name}が現れた`);
     }
 
     let afteFuntion = () => {};
 
-    const serif = (enemy.value as WasNonPlayerCharacter).serif;
-    if (enemy.value.isBoss) {
-      if (WAS_BOSS[area.value].isPersuaded) {
+    const serif = character.serif;
+    if (character.isBoss) {
+      if (BOSSES[state.area].isPersuaded) {
         // ボス敵を説得済みの場合
         messages.push(...(serif.CHAT ?? []));
         afteFuntion = showMap;
-      } else if (WAS_ENEMY[area.value].isPersuaded) {
+      } else if (CHARACTERS[state.area].isPersuaded) {
         // 雑魚敵を説得済みの場合
         messages.push(...serif.FACE1);
         afteFuntion = showFace;
@@ -405,15 +408,16 @@ export const useWasMain = () => {
   };
   const showEnd = (type: string) => {
     console.log(type);
-    // TODO:エンディング画面表示
+    emits("end", type);
   };
   return {
     layer,
-    player,
     displayMessage,
     onClickMessageFrame,
     buttonList,
     onClickButton,
+    AREAS,
+    player: state.player,
     isShowStatusBar,
     showMap,
     showArea,

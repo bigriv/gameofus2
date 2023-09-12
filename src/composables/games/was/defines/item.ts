@@ -1,5 +1,5 @@
-import { WasCharacter } from "./types/character";
-import { WasPlayerCharacter } from "./types/palyerCharacter";
+import { WasCharacter } from "../types/character";
+import { WasPlayerCharacter } from "../types/palyerCharacter";
 
 type WAS_ITEM_TYPE = {
   name: string;
@@ -128,7 +128,7 @@ const WAS_ITEM: { [index: string]: WAS_ITEM_TYPE } = {
       } else {
         target.status.life += defaultLife * HEAL_RATIO;
       }
-      return `${target.name}は体力を${defaultLife * HEAL_RATIO}回復した`;
+      return `${target.name}は体力を${defaultLife * HEAL_RATIO}回復した。`;
     },
   },
   EMERGENCY_SET: {
@@ -142,7 +142,7 @@ const WAS_ITEM: { [index: string]: WAS_ITEM_TYPE } = {
       } else {
         target.status.life += defaultLife * HEAL_RATIO;
       }
-      return `${target.name}は体力を${defaultLife * HEAL_RATIO}回復した`;
+      return `${target.name}は体力を${defaultLife * HEAL_RATIO}回復した。`;
     },
   },
   RICE_BALL: {
@@ -159,7 +159,7 @@ const WAS_ITEM: { [index: string]: WAS_ITEM_TYPE } = {
       } else {
         target.status.satiety += defaultSatiety * HEAL_RATIO;
       }
-      return `${target.name}の満腹度が${defaultSatiety * HEAL_RATIO}回復した`;
+      return `${target.name}の満腹度が${defaultSatiety * HEAL_RATIO}回復した。`;
     },
   },
   BIG_RICE_BALL: {
@@ -176,7 +176,7 @@ const WAS_ITEM: { [index: string]: WAS_ITEM_TYPE } = {
       } else {
         target.status.satiety += defaultSatiety * HEAL_RATIO;
       }
-      return `${target.name}の満腹度が${defaultSatiety * HEAL_RATIO}回復した`;
+      return `${target.name}の満腹度が${defaultSatiety * HEAL_RATIO}回復した。`;
     },
   },
 } as const;

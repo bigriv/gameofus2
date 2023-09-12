@@ -1,7 +1,7 @@
 import { computed } from "vue";
 import { WAS_BUTTON_EVENT } from "./const";
-import { WAS_ITEM } from "./item";
-import { WAS_SKILL } from "./skill";
+import { WAS_ITEM } from "./defines/item";
+import { WAS_SKILL } from "./defines/skill";
 import { WasPlayerCharacter } from "./types/palyerCharacter";
 
 export const useWasButton = (player: WasPlayerCharacter) => {

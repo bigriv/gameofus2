@@ -1,19 +1,21 @@
 import {
   WAS_AREA_ID,
+  WAS_BATTLE_MOVE,
+  WAS_BATTLE_STATUS,
   WAS_BUTTON_EVENT,
   WAS_ENDING,
   WAS_EVENT_TIMMING,
   WAS_SKILL_ID,
 } from "./const";
 import { useWasButton } from "./buttons";
-import { WAS_BATTLE_MOVE, WAS_BATTLE_STATUS, WasBattleUtil } from "./battle";
-import { WAS_SKILL } from "./skill";
-import { WAS_ITEM, WAS_ITEM_TYPE } from "./item";
+import { WAS_SKILL } from "./defines/skill";
+import { WAS_ITEM, WAS_ITEM_TYPE } from "./defines/item";
 import WAS_SERIF_DEFINE from "./defines/serif";
 import { WasNonPlayerCharacter } from "./types/nonPlayerCharacter";
 import { useWasInit } from "./init";
 import { useWasDispay } from "./display";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
+import { useWasBattle } from "./battle";
 
 export const useWasMain = (emits: Function) => {
   const { PRINCESS, CHARACTERS, BOSSES, MAP, AREAS, state } = useWasInit();
@@ -35,6 +37,8 @@ export const useWasMain = (emits: Function) => {
     SKILL_BUTTON_LIST,
     BATTLE_ITEM_BUTTON_LIST,
   } = useWasButton(state.player);
+
+  const { battle } = useWasBattle();
 
   const isUnified = () => {
     const bossWithoutLast = [
@@ -199,7 +203,7 @@ export const useWasMain = (emits: Function) => {
       type: WAS_BATTLE_MOVE.ATTACK,
       target: state.player,
     };
-    const result = WasBattleUtil.mainFlow(state.player, character);
+    const result = battle(state.player, character);
     const messages = result.progresses.map((p) => p.message);
     let afterFunction = showBattle;
     if (result.status == WAS_BATTLE_STATUS.WIN) {
@@ -429,6 +433,10 @@ export const useWasMain = (emits: Function) => {
     console.log(type);
     emits("end", type);
   };
+
+  const save = () => {};
+
+  const load = () => {};
   return {
     layer,
     displayMessage,
@@ -440,5 +448,7 @@ export const useWasMain = (emits: Function) => {
     isShowStatusBar,
     showMap,
     showArea,
+    save,
+    load,
   };
 };

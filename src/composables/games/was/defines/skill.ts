@@ -1,5 +1,5 @@
-import { WasCharacter } from "./types/character";
-import { WAS_ELEMENT } from "./const";
+import { WasCharacter } from "../types/character";
+import { WAS_ELEMENT } from "../const";
 
 type WAS_SKILL_TYPE = {
   name: string;

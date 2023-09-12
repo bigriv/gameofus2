@@ -1,9 +1,8 @@
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import WasStatus from "./status";
-import { WAS_SKILL, WAS_SKILL_TYPE } from "../skill";
-import { WAS_ITEM, WAS_ITEM_TYPE } from "../item";
-import { WAS_BATTLE_MOVE } from "../battle";
-import { WAS_ITEM_ID, WAS_SKILL_ID } from "../const";
+import { WAS_SKILL, WAS_SKILL_TYPE } from "../defines/skill";
+import { WAS_ITEM, WAS_ITEM_TYPE } from "../defines/item";
+import { WAS_BATTLE_MOVE, WAS_ITEM_ID, WAS_SKILL_ID } from "../const";
 
 /**
  * WAS用のキャラクタークラス

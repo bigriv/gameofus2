@@ -18,27 +18,29 @@
 
 <script setup lang="ts">
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
+import { WAS_ENDING } from "@/composables/games/was/const";
 import { COLOR } from "@/composables/types/GOUColor";
-import { computed } from "vue";
+import { PropType, computed } from "vue";
 
 const props = defineProps({
   type: {
-    type: String,
+    type: String as PropType<WAS_ENDING>,
     required: true,
-    validator: (value: string) => {
-      return ["good", "bad", "dead"].includes(value);
-    },
   },
 });
 const emits = defineEmits(["back"]);
 
 const header = computed(() => {
   switch (props.type) {
-    case "good":
-      return "Good End";
-    case "bad":
+    case WAS_ENDING.WORST:
+      return "Worst End";
+    case WAS_ENDING.BAD:
       return "Bad End";
-    case "dead":
+    case WAS_ENDING.GOOD:
+      return "Good End";
+    case WAS_ENDING.BEST:
+      return "Best End";
+    case WAS_ENDING.DEAD:
       return "Game Over";
     default:
       return "";
@@ -46,11 +48,15 @@ const header = computed(() => {
 });
 const body = computed(() => {
   switch (props.type) {
-    case "good":
-      return "こうして世界は平和になりましたとさ";
-    case "bad":
+    case WAS_ENDING.WORST:
       return "こうして世界は魔王に支配されましたとさ";
-    case "dead":
+    case WAS_ENDING.BAD:
+      return "こうして魔族に平和が訪れましたとさ";
+    case WAS_ENDING.GOOD:
+      return "こうして世界は人間が支配しましたとさ";
+    case WAS_ENDING.BEST:
+      return "こうして世界は平和になりましたとさ";
+    case WAS_ENDING.DEAD:
       return "魔王は倒れ世界は人間に支配されましたとさ";
     default:
       return "";
@@ -96,11 +102,13 @@ const onBackTitle = () => {
     transform: translate(-50%, -50%);
   }
 }
-.good {
+.good,
+.best {
   background-color: white;
   color: orange;
 }
-.bad {
+.bad,
+.worst {
   background-color: indigo;
   color: white;
 }

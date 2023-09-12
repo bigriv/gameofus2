@@ -156,7 +156,7 @@ const WAS_SOLDIER = {
     element: WAS_ELEMENT.NONE,
   },
   dropItem: WAS_ITEM_ID.EMERGENCY_SET,
-  persuadItem: null,
+  persuadItem: WAS_ITEM_ID.SATAN_SOUL,
   occupySkill: WAS_SKILL_ID.SATAN_SPACIAL,
   serif: {
     FACE1: WAS_SERIF_DEFINE.FACE_SOLDIER,
@@ -299,7 +299,7 @@ const WAS_HERO = {
     element: WAS_ELEMENT.WIND,
   },
   dropItem: null,
-  persuadItem: null,
+  persuadItem: WAS_ITEM_ID.DRAGON_WING,
   occupySkill: null,
   serif: {
     FACE1: WAS_SERIF_DEFINE.FACE1_HERO,

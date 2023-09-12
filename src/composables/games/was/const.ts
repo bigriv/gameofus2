@@ -83,6 +83,14 @@ enum WAS_ELEMENT {
   SHINE = "shine",
 }
 
+enum WAS_ENDING {
+  WORST = "WORST",
+  BAD = "BAD",
+  GOOD = "GOOD",
+  BEST = "BEST",
+  DEAD = "DEAD",
+}
+
 export {
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
@@ -94,4 +102,5 @@ export {
   WAS_ITEM_ID,
   WAS_SKILL_ID,
   WAS_ELEMENT,
+  WAS_ENDING,
 };

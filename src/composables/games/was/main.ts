@@ -1,6 +1,7 @@
 import {
   WAS_AREA_ID,
   WAS_BUTTON_EVENT,
+  WAS_ENDING,
   WAS_EVENT_TIMMING,
   WAS_SKILL_ID,
 } from "./const";
@@ -35,6 +36,55 @@ export const useWasMain = (emits: Function) => {
     BATTLE_ITEM_BUTTON_LIST,
   } = useWasButton(state.player);
 
+  const isUnified = () => {
+    const bossWithoutLast = [
+      BOSSES.CAVE,
+      BOSSES.SEA,
+      BOSSES.VILLAGE,
+      BOSSES.MOUNTAIN,
+    ];
+    const persuadeCount = bossWithoutLast.filter(
+      (boss) => boss.isPersuaded
+    ).length;
+    // 1体以外のボスを説得済みの場合は統率されているとする
+    return persuadeCount >= bossWithoutLast.length - 1;
+  };
+
+  const updateTimming = (
+    area: WAS_AREA_ID,
+    character: WasNonPlayerCharacter
+  ) => {
+    // ボスの場合はタイミングを攻略済みに更新する
+    if (!character.isBoss) {
+      return;
+    }
+    if (area === WAS_AREA_ID.CAVE) {
+      AREAS.CAVE.isClear = true;
+      state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_CAVE;
+    } else if (area === WAS_AREA_ID.SEA) {
+      AREAS.SEA.isClear = true;
+      state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_SEA;
+    } else if (area === WAS_AREA_ID.VILLAGE) {
+      AREAS.VILLAGE.isClear = true;
+      state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_VILLAGE;
+    } else if (area === WAS_AREA_ID.MOUNTAIN) {
+      AREAS.MOUNTAIN.isClear = true;
+      state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_MOUNTAIN;
+    } else if (area === WAS_AREA_ID.KINGDOM_CASTLE) {
+      AREAS.KINGDOM_CASTLE.isClear = true;
+      state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_KINGDOM_CASTLE;
+    }
+
+    // ラスダン以外の全てのエリアを攻略済みの場合はラスダン攻略前にタイミングを更新する
+    if (
+      AREAS.CAVE.isClear &&
+      AREAS.SEA.isClear &&
+      AREAS.VILLAGE.isClear &&
+      AREAS.MOUNTAIN.isClear
+    ) {
+      state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_ALL_AREA;
+    }
+  };
   const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
     buttonList.value = [];
     isShowStatusBar.value = false;
@@ -56,15 +106,15 @@ export const useWasMain = (emits: Function) => {
           return;
         }
         character.isPersuaded = true;
-        if (character.isBoss) {
-          AREAS[area].isClear = true;
-        }
+        updateTimming(area, character);
+
         let messages = [...character.serif.PERSUADE_SUCCESS];
         if (character.occupySkill) {
           let occupySkill = WAS_SKILL[character.occupySkill];
           state.player.skills.push(character.occupySkill);
           messages.push(`${occupySkill.name}を習得した！`);
         }
+
         chainMessage(messages, () => showArea(area));
         return;
       case WAS_BUTTON_EVENT.BATTLE:
@@ -181,59 +231,18 @@ export const useWasMain = (emits: Function) => {
           }
         }
 
-        // ボスの場合はタイミングを攻略済みに更新する
-        if (character.isBoss) {
-          if (area === WAS_AREA_ID.CAVE) {
-            AREAS.CAVE.isClear = true;
-            state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_CAVE;
-          } else if (area === WAS_AREA_ID.SEA) {
-            AREAS.SEA.isClear = true;
-            state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_SEA;
-          } else if (area === WAS_AREA_ID.VILLAGE) {
-            AREAS.VILLAGE.isClear = true;
-            state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_VILLAGE;
-          } else if (area === WAS_AREA_ID.MOUNTAIN) {
-            AREAS.MOUNTAIN.isClear = true;
-            state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_MOUNTAIN;
-          } else if (area === WAS_AREA_ID.KINGDOM_CASTLE) {
-            AREAS.KINGDOM_CASTLE.isClear = true;
-            state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_KINGDOM_CASTLE;
-          }
-
-          // ラスダン以外の全てのエリアを攻略済みの場合はラスダン攻略前にタイミングを更新する
-          if (
-            AREAS.CAVE.isClear &&
-            AREAS.SEA.isClear &&
-            AREAS.VILLAGE.isClear &&
-            AREAS.MOUNTAIN.isClear
-          ) {
-            state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_ALL_AREA;
-          }
-        }
+        updateTimming(area, character);
 
         let afterFunction = () => showArea(area);
-        // 王国クリア時はエンディング画面に遷移する
-        if ((AREAS.KINGDOM_CASTLE.isClear = true)) {
-          const bossWithoutLast = [
-            BOSSES.CAVE,
-            BOSSES.SEA,
-            BOSSES.VILLAGE,
-            BOSSES.MOUNTAIN,
-          ];
-          const persuadeCount = bossWithoutLast.filter(
-            (boss) => boss.isPersuaded
-          ).length;
-
-          // 説得で攻略したボスがエリア数 - 1以上ならグッドエンドそれ以外はバッドエンドにする
-          const endType =
-            persuadeCount >= bossWithoutLast.length - 1 ? "good" : "bad";
-          afterFunction = () => showEnd(endType);
+        // 王国クリア時はエンディングに遷移する
+        if (AREAS.KINGDOM_CASTLE.isClear) {
+          afterFunction = showAreaSatanCasle;
         }
         chainMessage(afterMessages, afterFunction);
       };
     } else if (result.status == WAS_BATTLE_STATUS.LOSE) {
       // 敗北時の処理
-      afterFunction = () => showEnd("dead");
+      afterFunction = () => showEnd(WAS_ENDING.DEAD);
     }
 
     chainMessage(messages, afterFunction);
@@ -246,6 +255,7 @@ export const useWasMain = (emits: Function) => {
     }
     layer.objects = [PRINCESS.visual];
     let messages = new Array<string>();
+    let afterFunction = showMap;
     switch (state.timming) {
       case WAS_EVENT_TIMMING.OPENING:
         messages = WAS_SERIF_DEFINE.PRINCESS_OPENING;
@@ -290,27 +300,36 @@ export const useWasMain = (emits: Function) => {
         }
         break;
       case WAS_EVENT_TIMMING.AFTER_CLEAR_ALL_AREA:
-        const bossWithoutLast = [
-          BOSSES.CAVE,
-          BOSSES.SEA,
-          BOSSES.VILLAGE,
-          BOSSES.MOUNTAIN,
-        ];
-        const persuadeCount = bossWithoutLast.filter(
-          (boss) => boss.isPersuaded
-        ).length;
-        // 説得済みの数によってセリフを変える
-        if (persuadeCount == bossWithoutLast.length) {
+        if (isUnified()) {
           messages = WAS_SERIF_DEFINE.PRINCESS_BEFORE_LAST_AREA1;
-        } else if (persuadeCount == 0) {
-          messages = WAS_SERIF_DEFINE.PRINCESS_BEFORE_LAST_AREA3;
         } else {
           messages = WAS_SERIF_DEFINE.PRINCESS_BEFORE_LAST_AREA2;
         }
         break;
+      case WAS_EVENT_TIMMING.AFTER_CLEAR_KINGDOM_CASTLE:
+        // 種族の統一ができていなければワーストエンド
+        let endType = WAS_ENDING.WORST;
+        messages = WAS_SERIF_DEFINE.PRINCESS_WORST_END;
+        if (BOSSES.KINGDOM_CASTLE.isPersuaded) {
+          // 勇者が説得済みの場合はグッドエンド
+          endType = WAS_ENDING.GOOD;
+          messages = WAS_SERIF_DEFINE.PRINCESS_GOOD_END;
+        } else if (isUnified()) {
+          if (CHARACTERS.KINGDOM_CASTLE.isPersuaded) {
+            // 説得で攻略したボスがエリア数 - 1以上で兵士を説得済みならベストエンド
+            endType = WAS_ENDING.BEST;
+            messages = WAS_SERIF_DEFINE.PRINCESS_BEST_END;
+          } else {
+            // 説得で攻略したボスがエリア数 - 1以上で兵士を説得していなけばバッドエンド
+            endType = WAS_ENDING.BAD;
+            messages = WAS_SERIF_DEFINE.PRINCESS_BAD_END;
+          }
+        }
+        afterFunction = () => showEnd(endType);
+        break;
     }
 
-    chainMessage(messages, showMap);
+    chainMessage(messages, afterFunction);
   };
 
   // マップの表示
@@ -406,7 +425,7 @@ export const useWasMain = (emits: Function) => {
     buttonList.value = BATTLE_BUTTON_LIST;
     isShowStatusBar.value = true;
   };
-  const showEnd = (type: string) => {
+  const showEnd = (type: WAS_ENDING) => {
     console.log(type);
     emits("end", type);
   };

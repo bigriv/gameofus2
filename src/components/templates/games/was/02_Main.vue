@@ -101,11 +101,12 @@ import {
   GAME_DISPLAY_WIDTH,
   GAME_DISPLAY_HEIGHT,
   WAS_AREA_ID,
+  WAS_ENDING,
 } from "@/composables/games/was/const";
 import { hoverSE } from "@/composables/sounds/seDefinition";
 
 const emits = defineEmits<{
-  (event: "end", endType: string): void;
+  (event: "end", endType: WAS_ENDING): void;
 }>();
 
 const {

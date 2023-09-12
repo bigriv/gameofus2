@@ -63,7 +63,7 @@ const WAS_SKILL: { [index: string]: WAS_SKILL_TYPE } = {
     power: 10,
   },
   DARK_SORD: {
-    name: "魔王剣",
+    name: "暗黒剣",
     element: WAS_ELEMENT.DARK,
     cost: 10,
     power: 10,

@@ -9,22 +9,21 @@
     <Main v-else-if="display === 'main'" @end="onEnd" />
     <Ending
       v-else-if="display === 'end'"
-      :type="ending.type"
+      :type="endingType"
       @back="onBackTitle"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { ref } from "vue";
 import Title from "@/components/templates/games/was/01_Title.vue";
 import Main from "@/components/templates/games/was/02_Main.vue";
 import Ending from "@/components/templates/games/was/03_Ending.vue";
+import { WAS_ENDING } from "@/composables/games/was/const";
 
 const display = ref("title");
-const ending = reactive({
-  type: "",
-});
+const endingType = ref();
 
 const onStart = () => {
   display.value = "main";
@@ -32,9 +31,9 @@ const onStart = () => {
 const onLoad = () => {
   display.value = "main";
 };
-const onEnd = (endType: string) => {
-  console.log(endType);
-  ending.type = endType;
+const onEnd = (type: WAS_ENDING) => {
+  console.log(type);
+  endingType.value = type;
   display.value = "end";
 };
 const onBackTitle = () => {

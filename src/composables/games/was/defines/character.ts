@@ -1,11 +1,38 @@
 import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
-import { WAS_ELEMENT, WAS_ITEM_ID, WAS_SKILL_ID } from "../const";
-import WAS_SERIF_DEFINE from "./serif";
+import {
+  WAS_ELEMENT,
+  WAS_ITEM_ID,
+  WAS_SKILL_ID,
+} from "@/composables/games/was/const";
+import WAS_SERIF_DEFINE from "@/composables/games/was/defines/serif";
+import GOUVisualDefinition from "@/composables/types/visuals/GOUVisualDefinition";
 
+type WAS_PLAYER_CHARACTER_DEFINITION_TYPE = {
+  name: string;
+  initStatus: {
+    life: number;
+    satiety: number;
+    attack?: number;
+    defense?: number;
+    speed?: number;
+    magic?: number;
+    element?: WAS_ELEMENT;
+  };
+  skills?: Array<WAS_SKILL_ID>;
+  items?: Array<WAS_ITEM_ID>;
+};
+type WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE =
+  WAS_PLAYER_CHARACTER_DEFINITION_TYPE & {
+    visual: GOUVisualDefinition;
+    dropItem?: WAS_ITEM_ID | null;
+    persuadItem?: WAS_ITEM_ID | null;
+    occupySkill?: WAS_SKILL_ID | null;
+    serif?: { [key: string]: Array<string> };
+  };
 /**
  * キャラクター定義
  */
-const WAS_SATAN = {
+const WAS_SATAN: WAS_PLAYER_CHARACTER_DEFINITION_TYPE = {
   name: "魔王",
   initStatus: {
     life: 100,
@@ -20,8 +47,12 @@ const WAS_SATAN = {
   items: [WAS_ITEM_ID.SATAN_SOUL, WAS_ITEM_ID.HERB],
 };
 
-const WAS_PRINCESS = {
+const WAS_PRINCESS: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   name: "姫",
+  initStatus: {
+    life: 100,
+    satiety: 100,
+  },
   visual: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/characters/Princess.svg",
@@ -30,7 +61,7 @@ const WAS_PRINCESS = {
   },
 };
 
-const WAS_GOBLIN = {
+const WAS_GOBLIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   name: "ゴブリン",
   visual: {
     type: GOUVisualType.IMAGE_SVG,
@@ -57,7 +88,7 @@ const WAS_GOBLIN = {
   },
 };
 
-const WAS_SAHAGIN = {
+const WAS_SAHAGIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   name: "サハギン",
   visual: {
     type: GOUVisualType.IMAGE_SVG,
@@ -84,7 +115,7 @@ const WAS_SAHAGIN = {
   },
 };
 
-const WAS_ELF = {
+const WAS_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   name: "エルフ",
   visual: {
     type: GOUVisualType.IMAGE_SVG,
@@ -111,7 +142,7 @@ const WAS_ELF = {
   },
 };
 
-const WAS_SLIME = {
+const WAS_SLIME: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   name: "スライム",
   visual: {
     type: GOUVisualType.IMAGE_SVG,
@@ -138,7 +169,7 @@ const WAS_SLIME = {
   },
 };
 
-const WAS_SOLDIER = {
+const WAS_SOLDIER: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   name: "兵士",
   visual: {
     type: GOUVisualType.IMAGE_SVG,
@@ -165,7 +196,7 @@ const WAS_SOLDIER = {
   },
 };
 
-const WAS_BOSS_GOBLIN = {
+const WAS_BOSS_GOBLIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   name: "ボスゴブリン",
   visual: {
     type: GOUVisualType.IMAGE_SVG,
@@ -194,7 +225,7 @@ const WAS_BOSS_GOBLIN = {
   },
 };
 
-const WAS_KRAKEN = {
+const WAS_KRAKEN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   name: "クラーケン",
   visual: {
     type: GOUVisualType.IMAGE_SVG,
@@ -223,7 +254,7 @@ const WAS_KRAKEN = {
   },
 };
 
-const WAS_DARK_ELF = {
+const WAS_DARK_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   name: "ダークエルフ",
   visual: {
     type: GOUVisualType.IMAGE_SVG,
@@ -252,7 +283,7 @@ const WAS_DARK_ELF = {
   },
 };
 
-const WAS_DORAGON = {
+const WAS_DORAGON: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   name: "ドラゴン",
   visual: {
     type: GOUVisualType.IMAGE_SVG,
@@ -281,7 +312,7 @@ const WAS_DORAGON = {
   },
 };
 
-const WAS_HERO = {
+const WAS_HERO: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   name: "勇者",
   visual: {
     type: GOUVisualType.IMAGE_SVG,

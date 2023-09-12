@@ -1,8 +1,7 @@
-import { WAS_AREA_ID, WAS_EVENT_TIMMING } from "./const";
-import { WasCharacter } from "./types/character";
-import { WasNonPlayerCharacter } from "./types/nonPlayerCharacter";
-import { WasPlayerCharacter } from "./types/palyerCharacter";
-import WasArea from "./types/area";
+import { WAS_AREA_ID, WAS_EVENT_TIMMING } from "@/composables/games/was/const";
+import { WasCharacter } from "@/composables/games/was/types/character";
+import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
+import { WasPlayerCharacter } from "@/composables/games/was/types/palyerCharacter";
 import {
   WAS_BOSS_GOBLIN,
   WAS_DARK_ELF,
@@ -16,8 +15,8 @@ import {
   WAS_SATAN,
   WAS_SLIME,
   WAS_SOLDIER,
-} from "./defines/character";
-import WasStatus from "./types/status";
+} from "@/composables/games/was/defines/character";
+import WasStatus from "@/composables/games/was/types/status";
 import ConstructGOUVisual from "@/composables/types/visuals/ConstructGOUVisual";
 import {
   WAS_CAVE,
@@ -26,10 +25,11 @@ import {
   WAS_SATAN_CASTLE,
   WAS_SEA,
   WAS_VILLAGE,
-} from "./defines/area";
+} from "@/composables/games/was/defines/area";
 import { reactive } from "vue";
-import { WAS_MAP } from "./defines/map";
+import { WAS_MAP } from "@/composables/games/was/defines/map";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
+import { WasArea } from "@/composables/games/was/types/area";
 
 export const useWasInit = () => {
   // プレイヤーの初期化

@@ -1,6 +1,6 @@
 import { GOUColor } from "@/composables/types/GOUColor";
 import GOUPosition from "@/composables/types/GOUPosition";
-import GOUDiagram from "@/composables/types/shapes/GOUDiagram";
+import GOUDiagram from "@/composables/types/visuals/GOUDiagram";
 
 /**
  * 描画用の多角形図形クラス

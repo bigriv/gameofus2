@@ -1,10 +1,19 @@
 import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
-import { GAME_DISPLAY_HEIGHT, GAME_DISPLAY_WIDTH } from "../const";
+import {
+  GAME_DISPLAY_HEIGHT,
+  GAME_DISPLAY_WIDTH,
+} from "@/composables/games/was/const";
+import GOUVisualDefinition from "@/composables/types/visuals/GOUVisualDefinition";
 
+type WAS_AREA_DEFINITION_TYPE = {
+  name: string;
+  outside: GOUVisualDefinition;
+  inside: GOUVisualDefinition;
+};
 /**
  * エリア定義
  */
-const WAS_SATAN_CASTLE = {
+const WAS_SATAN_CASTLE: WAS_AREA_DEFINITION_TYPE = {
   name: "魔王城",
   outside: {
     type: GOUVisualType.IMAGE_SVG,
@@ -21,7 +30,7 @@ const WAS_SATAN_CASTLE = {
   },
 };
 
-const WAS_CAVE = {
+const WAS_CAVE: WAS_AREA_DEFINITION_TYPE = {
   name: "洞窟",
   outside: {
     type: GOUVisualType.IMAGE_SVG,
@@ -37,7 +46,7 @@ const WAS_CAVE = {
     height: GAME_DISPLAY_HEIGHT,
   },
 };
-const WAS_SEA = {
+const WAS_SEA: WAS_AREA_DEFINITION_TYPE = {
   name: "海岸",
   outside: {
     type: GOUVisualType.IMAGE_SVG,
@@ -53,7 +62,7 @@ const WAS_SEA = {
     height: GAME_DISPLAY_HEIGHT,
   },
 };
-const WAS_VILLAGE = {
+const WAS_VILLAGE: WAS_AREA_DEFINITION_TYPE = {
   name: "エルフ村",
   outside: {
     type: GOUVisualType.IMAGE_SVG,
@@ -69,7 +78,7 @@ const WAS_VILLAGE = {
     height: GAME_DISPLAY_HEIGHT,
   },
 };
-const WAS_MOUNTAIN = {
+const WAS_MOUNTAIN: WAS_AREA_DEFINITION_TYPE = {
   name: "山",
   outside: {
     type: GOUVisualType.IMAGE_SVG,
@@ -85,7 +94,7 @@ const WAS_MOUNTAIN = {
     height: GAME_DISPLAY_HEIGHT,
   },
 };
-const WAS_KINGDOM_CASTLE = {
+const WAS_KINGDOM_CASTLE: WAS_AREA_DEFINITION_TYPE = {
   name: "王国",
   outside: {
     type: GOUVisualType.IMAGE_SVG,

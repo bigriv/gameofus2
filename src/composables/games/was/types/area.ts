@@ -1,10 +1,13 @@
 import GOUPosition from "@/composables/types/GOUPosition";
-import { GAME_DISPLAY_HEIGHT, GAME_DISPLAY_WIDTH } from "../const";
+import {
+  GAME_DISPLAY_HEIGHT,
+  GAME_DISPLAY_WIDTH,
+} from "@/composables/games/was/const";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import { WasCharacter } from "./character";
-import { WasNonPlayerCharacter } from "./nonPlayerCharacter";
+import { WasCharacter } from "@/composables/games/was/types/character";
+import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 
-class WasArea {
+export class WasArea {
   readonly name: string;
   readonly outside: GOUVisual;
   readonly inside: GOUVisual;
@@ -64,5 +67,3 @@ class WasArea {
     }
   }
 }
-
-export default WasArea;

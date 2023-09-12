@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import GOUImage from "@/composables/types/shapes/GOUImage";
+import GOUImage from "@/composables/types/visuals/GOUImage";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { computed } from "vue";
 

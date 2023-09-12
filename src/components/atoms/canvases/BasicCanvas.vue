@@ -11,13 +11,13 @@
 
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from "vue";
-import GOUCircle from "@/composables/types/shapes/diagrams/GOUCircle";
-import GOURect from "@/composables/types/shapes/diagrams/GOURect";
-import GOUPolygon from "@/composables/types/shapes/diagrams/GOUPolygon";
+import GOUCircle from "@/composables/types/visuals/diagrams/GOUCircle";
+import GOURect from "@/composables/types/visuals/diagrams/GOURect";
+import GOUPolygon from "@/composables/types/visuals/diagrams/GOUPolygon";
 import GOUPosition from "@/composables/types/GOUPosition";
-import GOULine from "@/composables/types/shapes/diagrams/GOULine";
-import GOULineList from "@/composables/types/shapes/diagrams/GOULineList";
-import GOUText from "@/composables/types/shapes/diagrams/GOUText";
+import GOULine from "@/composables/types/visuals/diagrams/GOULine";
+import GOULineList from "@/composables/types/visuals/diagrams/GOULineList";
+import GOUText from "@/composables/types/visuals/diagrams/GOUText";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 
 const props = defineProps({

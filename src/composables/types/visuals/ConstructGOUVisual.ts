@@ -1,16 +1,16 @@
-import GOUImage from "../shapes/GOUImage";
-import GOUVisualType from "./GOUVisualType";
-import GOUCircle from "../shapes/diagrams/GOUCircle";
-import GOULine from "../shapes/diagrams/GOULine";
-import GOULineList from "../shapes/diagrams/GOULineList";
-import GOUPolygon from "../shapes/diagrams/GOUPolygon";
-import GOURect from "../shapes/diagrams/GOURect";
-import GOUText from "../shapes/diagrams/GOUText";
-import GOUVisual from "./GOUVisual";
-import GOUVisualDefinition from "./GOUVisualDefinition";
-import GOUDiagram from "../shapes/GOUDiagram";
-import { GOUColor } from "../GOUColor";
-import GOUPosition from "../GOUPosition";
+import GOUImage from "@/composables/types/visuals/GOUImage";
+import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
+import GOUCircle from "@/composables/types/visuals/diagrams/GOUCircle";
+import GOULine from "@/composables/types/visuals/diagrams/GOULine";
+import GOULineList from "@/composables/types/visuals/diagrams/GOULineList";
+import GOUPolygon from "@/composables/types/visuals/diagrams/GOUPolygon";
+import GOURect from "@/composables/types/visuals/diagrams/GOURect";
+import GOUText from "@/composables/types/visuals/diagrams/GOUText";
+import GOUVisual from "@/composables/types/visuals/GOUVisual";
+import GOUVisualDefinition from "@/composables/types/visuals/GOUVisualDefinition";
+import GOUDiagram from "@/composables/types/visuals/GOUDiagram";
+import { GOUColor } from "@/composables/types/GOUColor";
+import GOUPosition from "@/composables/types/GOUPosition";
 
 const ConstructGOUVisual = (definition: GOUVisualDefinition): GOUVisual => {
   let visual = null;

@@ -1,5 +1,5 @@
 import GOUPosition from "../GOUPosition";
-import GOUVisual from "../visuals/GOUVisual";
+import GOUVisual from "./GOUVisual";
 
 class GOUImage extends GOUVisual {
   path: string;

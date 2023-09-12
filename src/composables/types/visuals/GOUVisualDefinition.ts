@@ -3,6 +3,7 @@ import GOUVisualType from "./GOUVisualType";
 
 type GOUVisualDefinition = (
   | {
+      type: GOUVisualType.DIAGRAM_RECT;
       width: number;
       height: number;
       border?: {
@@ -14,6 +15,7 @@ type GOUVisualDefinition = (
       };
     }
   | {
+      type: GOUVisualType.DIAGRAM_CIERCLE;
       radius: number;
       border?: {
         thick: number;
@@ -24,6 +26,7 @@ type GOUVisualDefinition = (
       };
     }
   | {
+      type: GOUVisualType.DIAGRAM_POLYGON;
       points: Array<{ x: number; y: number }>;
       border?: {
         thick: number;
@@ -34,11 +37,13 @@ type GOUVisualDefinition = (
       };
     }
   | {
+      type: GOUVisualType.DIAGRAM_LINE;
       start: { x: number; y: number };
       end: { x: number; y: number };
       thick: number;
     }
   | {
+      type: GOUVisualType.DIAGRAM_LINE_LIST;
       lines: Array<{
         start: { x: number; y: number };
         end: { x: number; y: number };
@@ -50,17 +55,18 @@ type GOUVisualDefinition = (
       }>;
     }
   | {
+      type: GOUVisualType.DIAGRAM_TEXT;
       text: string;
       fontSize: number;
       fontFamilly: string;
     }
   | {
+      type: GOUVisualType.IMAGE_SVG;
       path: string;
       width: number;
       height: number;
     }
 ) & {
-  type: GOUVisualType,
   color?: {
     code?: COLOR;
     opacity?: number;

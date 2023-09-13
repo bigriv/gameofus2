@@ -44,4 +44,15 @@ export class WasNonPlayerCharacter extends WasCharacter {
     this.serif = serif;
     this.isPersuaded = false;
   }
+
+  /**
+   * 保持データをjson形式に変換する
+   * @returns json形式のデータ
+   */
+  toJson() {
+    const json = super.toJson();
+    return Object.assign(json, {
+      isPersuaded: this.isPersuaded,
+    });
+  }
 }

@@ -30,7 +30,7 @@ export class WasCharacter {
     this.name = name;
     this.visual = visual;
     this.status = status ?? new WasStatus();
-    this.defaultStatus = { ...this.status };
+    this.defaultStatus = new WasStatus(this.status.toJson());
     this.skills = skills ?? [];
     this.items = items ?? [];
   }
@@ -76,5 +76,17 @@ export class WasCharacter {
     this.status = JSON.parse(JSON.stringify(this.defaultStatus));
     this.status.life = life;
     this.status.satiety = satiety;
+  }
+
+  /**
+   * 保持データをjson形式に変換する
+   * @returns json形式のデータ
+   */
+  toJson() {
+    return {
+      name: this.name,
+      status: this.status.toJson(),
+      defaultStatus: this.defaultStatus.toJson(),
+    };
   }
 }

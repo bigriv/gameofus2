@@ -27,6 +27,22 @@ class WasStatus {
     this.magic = arg?.magic ?? 0;
     this.element = arg?.element ?? WAS_ELEMENT.NONE;
   }
+
+  /**
+   * 保持データをjson形式に変換する
+   * @returns json形式のデータ
+   */
+  toJson() {
+    return {
+      life: this.life,
+      satiety: this.satiety,
+      attack: this.attack,
+      defense: this.defense,
+      speed: this.speed,
+      magic: this.magic,
+      element: this.element,
+    };
+  }
 }
 
 export default WasStatus;

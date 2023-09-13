@@ -14,4 +14,16 @@ export class WasPlayerCharacter extends WasCharacter {
   ) {
     super(name, null, status, skills, items);
   }
+
+  /**
+   * 保持データをjson形式に変換する
+   * @returns json形式のデータ
+   */
+  toJson() {
+    const json = super.toJson();
+    return Object.assign(json, {
+      skills: this.skills,
+      items: this.items,
+    });
+  }
 }

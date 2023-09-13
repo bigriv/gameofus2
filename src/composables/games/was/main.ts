@@ -434,7 +434,33 @@ export const useWasMain = (emits: Function) => {
     emits("end", type);
   };
 
-  const save = () => {};
+  const save = () => {
+    const data = {
+      timming: state.timming,
+      player: state.player.toJson(),
+      characters: {
+        goblin: CHARACTERS.CAVE.toJson(),
+        sahagin: CHARACTERS.SEA.toJson(),
+        elf: CHARACTERS.VILLAGE.toJson(),
+        slime: CHARACTERS.MOUNTAIN.toJson(),
+        soldier: CHARACTERS.KINGDOM_CASTLE.toJson(),
+      },
+      bosses: {
+        bossGoblin: BOSSES.CAVE.toJson(),
+        kraken: BOSSES.SEA.toJson(),
+        darkElf: BOSSES.VILLAGE.toJson(),
+        doragon: BOSSES.MOUNTAIN.toJson(),
+        hero: BOSSES.KINGDOM_CASTLE.toJson(),
+      },
+      areas: {
+        cave: AREAS.CAVE.isClear,
+        sea: AREAS.SEA.isClear,
+        village: AREAS.VILLAGE.isClear,
+        mountain: AREAS.MOUNTAIN.isClear,
+      },
+    };
+    localStorage.setItem("wasSave", JSON.stringify(data));
+  };
 
   const load = () => {};
   return {

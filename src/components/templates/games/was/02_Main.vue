@@ -102,10 +102,27 @@ import {
   GAME_DISPLAY_HEIGHT,
   WAS_AREA_ID,
   WAS_ENDING,
+  WAS_EVENT_TIMMING,
 } from "@/composables/games/was/const";
 import { hoverSE } from "@/composables/sounds/seDefinition";
+import { WasPlayerCharacter } from "@/composables/games/was/types/palyerCharacter";
+import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
+import { WasArea } from "@/composables/games/was/types/area";
 
+const props = defineProps({
+  loadData: {
+    default: undefined,
+  },
+});
 const emits = defineEmits<{
+  (
+    event: "save",
+    timming: WAS_EVENT_TIMMING,
+    player: WasPlayerCharacter,
+    characters: { [key: string]: WasNonPlayerCharacter },
+    bosses: { [key: string]: WasNonPlayerCharacter },
+    areas: { [key: string]: WasArea }
+  ): void;
   (event: "end", endType: WAS_ENDING): void;
 }>();
 
@@ -120,7 +137,8 @@ const {
   player,
   showMap,
   showArea,
-} = useWasMain(emits);
+  save
+} = useWasMain(props.loadData, emits);
 
 onMounted(() => {
   for (const key of Object.keys(AREAS)) {
@@ -142,6 +160,7 @@ onMounted(() => {
     };
   }
   showMap();
+  save()
 });
 </script>
 

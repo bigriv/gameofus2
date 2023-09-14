@@ -17,8 +17,8 @@ import { useWasDispay } from "./display";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 import { useWasBattle } from "./battle";
 
-export const useWasMain = (emits: Function) => {
-  const { PRINCESS, CHARACTERS, BOSSES, MAP, AREAS, state } = useWasInit();
+export const useWasMain = (loadData: any, emits: Function) => {
+  const { PRINCESS, CHARACTERS, BOSSES, MAP, AREAS, state } = useWasInit(loadData);
 
   const {
     layer,
@@ -435,34 +435,8 @@ export const useWasMain = (emits: Function) => {
   };
 
   const save = () => {
-    const data = {
-      timming: state.timming,
-      player: state.player.toJson(),
-      characters: {
-        goblin: CHARACTERS.CAVE.toJson(),
-        sahagin: CHARACTERS.SEA.toJson(),
-        elf: CHARACTERS.VILLAGE.toJson(),
-        slime: CHARACTERS.MOUNTAIN.toJson(),
-        soldier: CHARACTERS.KINGDOM_CASTLE.toJson(),
-      },
-      bosses: {
-        bossGoblin: BOSSES.CAVE.toJson(),
-        kraken: BOSSES.SEA.toJson(),
-        darkElf: BOSSES.VILLAGE.toJson(),
-        doragon: BOSSES.MOUNTAIN.toJson(),
-        hero: BOSSES.KINGDOM_CASTLE.toJson(),
-      },
-      areas: {
-        cave: AREAS.CAVE.isClear,
-        sea: AREAS.SEA.isClear,
-        village: AREAS.VILLAGE.isClear,
-        mountain: AREAS.MOUNTAIN.isClear,
-      },
-    };
-    localStorage.setItem("wasSave", JSON.stringify(data));
-  };
-
-  const load = () => {};
+    emits("save", state.timming, state.player, CHARACTERS, BOSSES, AREAS)
+  }
   return {
     layer,
     displayMessage,
@@ -474,7 +448,6 @@ export const useWasMain = (emits: Function) => {
     isShowStatusBar,
     showMap,
     showArea,
-    save,
-    load,
+    save
   };
 };

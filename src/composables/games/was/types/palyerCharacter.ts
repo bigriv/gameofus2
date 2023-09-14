@@ -1,6 +1,6 @@
 import { WAS_ITEM_ID, WAS_SKILL_ID } from "../const";
 import { WasCharacter } from "./character";
-import WasStatus from "./status";
+import { WasStatus } from "./status";
 
 /**
  * WAS用のPlayer操作キャラクタークラス

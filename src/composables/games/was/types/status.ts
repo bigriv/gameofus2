@@ -9,7 +9,7 @@ type WAS_STATUS_TYPE = {
   magic?: number;
   element?: WAS_ELEMENT;
 };
-class WasStatus {
+export class WasStatus {
   life: number;
   satiety: number;
   attack: number;
@@ -44,5 +44,3 @@ class WasStatus {
     };
   }
 }
-
-export default WasStatus;

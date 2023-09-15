@@ -1,7 +1,7 @@
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WAS_ITEM_ID, WAS_SKILL_ID } from "../const";
 import { WasCharacter } from "./character";
-import WasStatus from "./status";
+import { WasStatus } from "./status";
 
 /**
  * WAS用のNPCクラス
@@ -43,5 +43,16 @@ export class WasNonPlayerCharacter extends WasCharacter {
     this.occupySkill = occupySkill;
     this.serif = serif;
     this.isPersuaded = false;
+  }
+
+  /**
+   * 保持データをjson形式に変換する
+   * @returns json形式のデータ
+   */
+  toJson() {
+    const json = super.toJson();
+    return Object.assign(json, {
+      isPersuaded: this.isPersuaded,
+    });
   }
 }

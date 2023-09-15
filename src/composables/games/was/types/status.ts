@@ -9,7 +9,7 @@ type WAS_STATUS_TYPE = {
   magic?: number;
   element?: WAS_ELEMENT;
 };
-class WasStatus {
+export class WasStatus {
   life: number;
   satiety: number;
   attack: number;
@@ -27,6 +27,20 @@ class WasStatus {
     this.magic = arg?.magic ?? 0;
     this.element = arg?.element ?? WAS_ELEMENT.NONE;
   }
-}
 
-export default WasStatus;
+  /**
+   * 保持データをjson形式に変換する
+   * @returns json形式のデータ
+   */
+  toJson() {
+    return {
+      life: this.life,
+      satiety: this.satiety,
+      attack: this.attack,
+      defense: this.defense,
+      speed: this.speed,
+      magic: this.magic,
+      element: this.element,
+    };
+  }
+}

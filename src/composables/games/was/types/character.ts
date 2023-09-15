@@ -1,8 +1,8 @@
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import WasStatus from "./status";
 import { WAS_SKILL, WAS_SKILL_TYPE } from "../defines/skill";
 import { WAS_ITEM, WAS_ITEM_TYPE } from "../defines/item";
 import { WAS_BATTLE_MOVE, WAS_ITEM_ID, WAS_SKILL_ID } from "../const";
+import { WasStatus } from "@/composables/games/was/types/status";
 
 /**
  * WAS用のキャラクタークラス
@@ -30,7 +30,7 @@ export class WasCharacter {
     this.name = name;
     this.visual = visual;
     this.status = status ?? new WasStatus();
-    this.defaultStatus = { ...this.status };
+    this.defaultStatus = new WasStatus(status.toJson());
     this.skills = skills ?? [];
     this.items = items ?? [];
   }
@@ -73,8 +73,20 @@ export class WasCharacter {
   resetStatus(): void {
     const life = this.status.life;
     const satiety = this.status.satiety;
-    this.status = JSON.parse(JSON.stringify(this.defaultStatus));
+    this.status = JSON.parse(JSON.stringify(this.defaultStatus)) as WasStatus;
     this.status.life = life;
     this.status.satiety = satiety;
+  }
+
+  /**
+   * 保持データをjson形式に変換する
+   * @returns json形式のデータ
+   */
+  toJson() {
+    return {
+      name: this.name,
+      status: this.status.toJson(),
+      defaultStatus: this.defaultStatus.toJson(),
+    };
   }
 }

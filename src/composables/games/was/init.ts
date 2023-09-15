@@ -1,4 +1,4 @@
-import { WAS_AREA_ID, WAS_EVENT_TIMMING } from "@/composables/games/was/const";
+import { WAS_AREA_ID, WAS_EVENT_TIMMING, WAS_ITEM_ID, WAS_SKILL_ID } from "@/composables/games/was/const";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { WasPlayerCharacter } from "@/composables/games/was/types/palyerCharacter";
@@ -16,7 +16,6 @@ import {
   WAS_SLIME,
   WAS_SOLDIER,
 } from "@/composables/games/was/defines/character";
-import WasStatus from "@/composables/games/was/types/status";
 import ConstructGOUVisual from "@/composables/types/visuals/ConstructGOUVisual";
 import {
   WAS_CAVE,
@@ -30,8 +29,9 @@ import { reactive } from "vue";
 import { WAS_MAP } from "@/composables/games/was/defines/map";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WasArea } from "@/composables/games/was/types/area";
+import { WasStatus } from "./types/status";
 
-export const useWasInit = () => {
+export const useWasInit = (loadData?: any) => {
   // プレイヤーの初期化
   const initPlayer = (): WasPlayerCharacter => {
     return new WasPlayerCharacter(
@@ -52,7 +52,7 @@ export const useWasInit = () => {
       characters[key] = new WasNonPlayerCharacter(
         defines[key].name,
         ConstructGOUVisual(defines[key].visual),
-        defines[key].initStatus,
+        new WasStatus(defines[key].initStatus),
         isBoss,
         defines[key].dropItem,
         defines[key].persuadItem,
@@ -60,6 +60,7 @@ export const useWasInit = () => {
         defines[key].serif
       );
     }
+
     return characters;
   };
 
@@ -130,6 +131,61 @@ export const useWasInit = () => {
     player: initPlayer(),
     character: null,
   });
+
+  const load = () => {
+    if (!loadData) {
+      return;
+    }
+    // TODO:ロード処理
+    console.log("load start");
+    if (loadData.player) {
+      console.log("player", loadData.player);
+      state.player.status = new WasStatus(loadData.status);
+      state.player.defaultStatus = new WasStatus(loadData.defaultStatus);
+      state.player.skills = loadData.skills as Array<WAS_SKILL_ID>;
+      state.player.items = loadData.items as Array<WAS_ITEM_ID>;
+    }
+
+    if (loadData.timming) {
+      console.log("timming", loadData.timming);
+      state.timming = loadData.timming as WAS_EVENT_TIMMING
+    }
+
+    if (loadData.bosses) {
+      console.log("bosses", loadData.bosses);
+      for (const key of Object.keys(BOSSES)) {
+        if (!loadData.bosses[key]) {
+          continue
+        }
+        BOSSES[key].defaultStatus = new WasStatus(loadData.bosses[key].defaultStatus)
+        BOSSES[key].status = new WasStatus(loadData.bosses[key].status)
+        BOSSES[key].isPersuaded = loadData.bosses[key].isPersuaded
+      }
+    }
+
+    if (loadData.charachters) {
+      console.log("charachters", loadData.charachters);
+      for (const key of Object.keys(CHARACTERS)) {
+        if (!loadData.charachters[key]) {
+          continue
+        }
+        CHARACTERS[key].defaultStatus = new WasStatus(loadData.charachters[key].defaultStatus)
+        CHARACTERS[key].status = new WasStatus(loadData.charachters[key].status)
+        CHARACTERS[key].isPersuaded = loadData.charachters[key].isPersuaded
+      }
+    }
+
+    if (loadData.areas) {
+      console.log("areas", loadData.areas);
+      for (const key of Object.keys(AREAS)) {
+        if (!loadData.areas[key]) {
+          continue
+        }
+        AREAS[key].isClear = loadData.areas[key].isClear
+      }
+    }
+  };
+  load();
 
   return {
     PRINCESS,

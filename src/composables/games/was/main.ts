@@ -17,8 +17,8 @@ import { useWasDispay } from "./display";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 import { useWasBattle } from "./battle";
 
-export const useWasMain = (emits: Function) => {
-  const { PRINCESS, CHARACTERS, BOSSES, MAP, AREAS, state } = useWasInit();
+export const useWasMain = (loadData: any, emits: Function) => {
+  const { PRINCESS, CHARACTERS, BOSSES, MAP, AREAS, state } = useWasInit(loadData);
 
   const {
     layer,
@@ -434,9 +434,9 @@ export const useWasMain = (emits: Function) => {
     emits("end", type);
   };
 
-  const save = () => {};
-
-  const load = () => {};
+  const save = () => {
+    emits("save", state.timming, state.player, CHARACTERS, BOSSES, AREAS)
+  }
   return {
     layer,
     displayMessage,
@@ -448,7 +448,6 @@ export const useWasMain = (emits: Function) => {
     isShowStatusBar,
     showMap,
     showArea,
-    save,
-    load,
+    save
   };
 };

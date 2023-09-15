@@ -5,20 +5,21 @@ import {
   WAS_BUTTON_EVENT,
   WAS_ENDING,
   WAS_EVENT_TIMMING,
-  WAS_SKILL_ID,
-} from "./const";
-import { useWasButton } from "./buttons";
-import { WAS_SKILL } from "./defines/skill";
-import { WAS_ITEM, WAS_ITEM_TYPE } from "./defines/item";
-import WAS_SERIF_DEFINE from "./defines/serif";
-import { WasNonPlayerCharacter } from "./types/nonPlayerCharacter";
-import { useWasInit } from "./init";
-import { useWasDispay } from "./display";
+  WAS_SKILL_TYPE,
+} from "@/composables/games/was/const";
+import { useWasButton } from "@/composables/games/was/buttons";
+import { WAS_SKILL } from "@/composables/games/was/defines/skill";
+import { WAS_ITEM, WAS_ITEM_TYPE } from "@/composables/games/was/defines/item";
+import WAS_SERIF_DEFINE from "@/composables/games/was/defines/serif";
+import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
+import { useWasInit } from "@/composables/games/was/init";
+import { useWasDispay } from "@/composables/games/was/display";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
-import { useWasBattle } from "./battle";
+import { useWasBattle } from "@/composables/games/was/battle";
 
 export const useWasMain = (loadData: any, emits: Function) => {
-  const { PRINCESS, CHARACTERS, BOSSES, MAP, AREAS, state } = useWasInit(loadData);
+  const { PRINCESS, CHARACTERS, BOSSES, MAP, AREAS, state } =
+    useWasInit(loadData);
 
   const {
     layer,
@@ -152,13 +153,8 @@ export const useWasMain = (loadData: any, emits: Function) => {
           throw new WrongImplementationError("Character is not set.");
         }
         let target = state.character;
-        if (
-          [
-            WAS_SKILL_ID.HEAL,
-            // WAS_SKILL_ID.HIGH_HEAL,
-            WAS_SKILL_ID.SATAN_SPACIAL,
-          ].includes(args)
-        ) {
+        const skill = WAS_SKILL[args];
+        if (skill.type == WAS_SKILL_TYPE.HEAL || skill.type == WAS_SKILL_TYPE.BUFF) {
           // サポートスキルは対象をプレイヤーに書き換える
           target = state.player;
         }
@@ -334,6 +330,9 @@ export const useWasMain = (loadData: any, emits: Function) => {
     }
 
     chainMessage(messages, afterFunction);
+
+    // 魔王城に帰還したタイミングでオートセーブを行う
+    save();
   };
 
   // マップの表示
@@ -435,8 +434,8 @@ export const useWasMain = (loadData: any, emits: Function) => {
   };
 
   const save = () => {
-    emits("save", state.timming, state.player, CHARACTERS, BOSSES, AREAS)
-  }
+    emits("save", state.timming, state.player, CHARACTERS, BOSSES, AREAS);
+  };
   return {
     layer,
     displayMessage,
@@ -448,6 +447,6 @@ export const useWasMain = (loadData: any, emits: Function) => {
     isShowStatusBar,
     showMap,
     showArea,
-    save
+    save,
   };
 };

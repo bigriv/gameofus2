@@ -1,9 +1,8 @@
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
-import { WAS_BATTLE_MOVE, WAS_BATTLE_STATUS, WAS_ELEMENT } from "./const";
-import { WAS_SKILL_TYPE } from "./defines/skill";
-import { WasCharacter } from "./types/character";
-import { WasNonPlayerCharacter } from "./types/nonPlayerCharacter";
-import { WasPlayerCharacter } from "./types/palyerCharacter";
+import { WAS_BATTLE_MOVE, WAS_BATTLE_STATUS } from "@/composables/games/was/const";
+import { WasCharacter } from "@/composables/games/was/types/character";
+import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
+import { WasPlayerCharacter } from "@/composables/games/was/types/palyerCharacter";
 
 type WAS_BATTLE_PROGRESS = {
   message: string;
@@ -48,20 +47,7 @@ export const useWasBattle = () => {
    * @param enemy 敵キャラクター
    * @returns プレイヤーの体力が0以下または敵の体力が0より大きい場合はfalse それ以外はtrue
    */
-  const isBattleWin = (
-    player?: WasCharacter,
-    enemy?: WasCharacter
-  ): boolean => {
-    if (!player) {
-      throw new WrongImplementationError(
-        "Player is empty in isBattleWin method"
-      );
-    }
-    if (!enemy) {
-      throw new WrongImplementationError(
-        "Enemy is empty in isBattleWin method"
-      );
-    }
+  const isBattleWin = (player: WasCharacter, enemy: WasCharacter): boolean => {
     if (player.status.life <= 0) {
       return false;
     }
@@ -73,50 +59,8 @@ export const useWasBattle = () => {
    * @param player プレイヤーキャラクター
    * @returns プレイヤーの体力が0以下の場合はtrue それ以外はfalse
    */
-  const isBattleLose = (player?: WasCharacter): boolean => {
-    if (!player) {
-      throw new WrongImplementationError(
-        "Player is empty in isBattleLose method"
-      );
-    }
+  const isBattleLose = (player: WasCharacter): boolean => {
     return player.status.life <= 0;
-  };
-  /**
-   * スキルによるダメージの計算を行う
-   * @param activist 発動者
-   * @param target 対象
-   * @param power 技の威力
-   * @returns 与えるダメージ(威力が負の場合はすべて0として扱い、小数点以下は切り捨てる)
-   */
-  const calcSkillDamage = (
-    activist: WasCharacter,
-    target: WasCharacter,
-    skill: WAS_SKILL_TYPE
-  ): number => {
-    const power = skill.power ?? 0;
-    if (power < 0) {
-      return 0;
-    }
-    let damage = activist.status.magic * power * 0.01;
-    // 属性の弱点判定
-    if (isWeekness(skill.element, target.status.element)) {
-      damage *= 1.5;
-    }
-    // 属性の抵抗判定
-    if (isWeekness(target.status.element, skill.element)) {
-      damage *= 0.5;
-    }
-    damage = Math.floor(damage) - target.status.defense;
-    if (damage < 0) {
-      damage = 0;
-    }
-    // ダメージの1%を最大値とする乱数を加算して返却
-    // ダメージが0の場合でも50%の確率でダメージが発生するように1を加算する
-    return (
-      damage +
-      Math.floor(damage * 0.01 * Math.random()) +
-      (Math.random() % 2 == 0 ? 0 : 1)
-    );
   };
 
   /**
@@ -130,6 +74,9 @@ export const useWasBattle = () => {
     target: WasCharacter
   ): number => {
     let damage = attacker.status.attack - target.status.defense;
+    if (damage < 0) {
+      damage = 0;
+    }
     // ダメージの10%を最大値とする乱数を加算して返却
     // ダメージが0の場合でも50%の確率でダメージが発生するように1を加算する
     return (
@@ -137,33 +84,6 @@ export const useWasBattle = () => {
       Math.floor(damage * 0.1 * Math.random()) +
       (Math.random() < 0.5 ? 0 : 1)
     );
-  };
-
-  /**
-   * 相手の属性が弱点か判定する
-   * @param target 判定する対象
-   * @param enemy 相手の属性
-   * @returns 弱点属性の場合はtrue それ以外はfalse
-   */
-  const isWeekness = (target: WAS_ELEMENT, enemy: WAS_ELEMENT): boolean => {
-    switch (target) {
-      case WAS_ELEMENT.NONE:
-        return false;
-      case WAS_ELEMENT.FIRE:
-        return enemy == WAS_ELEMENT.WATER;
-      case WAS_ELEMENT.WATER:
-        return enemy == WAS_ELEMENT.THUNDER;
-      case WAS_ELEMENT.THUNDER:
-        return enemy == WAS_ELEMENT.SOIL;
-      case WAS_ELEMENT.SOIL:
-        return enemy == WAS_ELEMENT.WIND;
-      case WAS_ELEMENT.WIND:
-        return enemy == WAS_ELEMENT.FIRE;
-      case WAS_ELEMENT.DARK:
-        return enemy == WAS_ELEMENT.SHINE;
-      case WAS_ELEMENT.SHINE:
-        return enemy == WAS_ELEMENT.DARK;
-    }
   };
 
   /**
@@ -195,19 +115,23 @@ export const useWasBattle = () => {
         throw new WrongImplementationError("Character move is not set.");
       }
       if (character.move.type == WAS_BATTLE_MOVE.ITEM) {
+        // アイテム使用時の処理
         const item = character.getItem(character.move.itemId);
         if (!item) {
           throw new WrongImplementationError(
             `Item is not found. itemId: ${character.move.itemId}`
           );
         }
-        //アイテム使用時の処理
         if (!(item.effect instanceof Function)) {
           progressList.push({
             message: `${item.name}は今使っても効果がない。`,
           });
           continue;
         }
+        progressList.push({
+          message: `${character.name}は${item.name}を使用した！`,
+        });
+
         const result = item.effect(character, character.move.target);
         if (!result.length) {
           continue;
@@ -217,6 +141,7 @@ export const useWasBattle = () => {
           message: result,
         });
       } else if (character.move.type == WAS_BATTLE_MOVE.SKILL) {
+        // スキル使用時の処理
         const skill = character.getSkill(character.move.skillId);
         if (!skill) {
           throw new WrongImplementationError(
@@ -227,41 +152,54 @@ export const useWasBattle = () => {
         // コストの消費
         if (character.status.satiety < skill.cost) {
           progressList.push({
-            message: `${character.move.target.name}は${skill.name}を発動する力が出ない。`,
+            message: `${character.name}は${skill.name}を発動する力が出ない。`,
           });
           continue;
         }
         character.status.satiety -= skill.cost;
+        progressList.push({
+          message: `${character.name}は${skill.name}を発動した！`,
+        });
 
-        // スキル使用時の処理
-        // ダメージ計算(パワーが設定されてないスキルはサポートスキルのためダメージ計算をスキップ)
-        if (skill.power !== undefined) {
-          const damage = calcSkillDamage(
-            character,
-            character.move.target,
-            skill
-          );
-          character.move.target.status.life -= damage;
-          if (character.move.target.status.life < 0) {
-            // 体力がマイナスになった場合はバグ回避のため明示的に0にする
-            character.move.target.status.life = 0;
+        // ダメージ計算
+        const target = character.move.target;
+        const damage = skill.calcDamage(character, target);
+        target.status.life -= damage;
+        if (damage < 0) {
+          // ダメージがマイナスの場合は回復処理を行う
+          if (target.status.life > target.defaultStatus.life) {
+            // 体力が初期値を超えた場合は初期値を入れなおす
+            target.status.life = target.defaultStatus.life;
           }
+
           // 結果詰め込み処理
-          if (character.move.target instanceof WasPlayerCharacter) {
-            progressList.push({
-              message: `${character.move.target.name}は${damage}のダメージを受けた。`,
-            });
-          } else if (character.move.target instanceof WasNonPlayerCharacter) {
+          progressList.push({
+            message: `${target.name}は体力を${-damage}回復した`,
+          });
+        } else {
+          // ダメージがプラスの場合は攻撃処理を行う
+          if (target.status.life < 0) {
+            // 体力がマイナスになった場合はバグ回避のため明示的に0にする
+            target.status.life = 0;
+          }
+
+          // 結果詰め込み処理
+          if (character instanceof WasPlayerCharacter) {
             progressList.push({
               message: `${character.move.target.name}に${damage}のダメージを与えた！`,
             });
+          } else if (character instanceof WasNonPlayerCharacter) {
+            progressList.push({
+              message: `${character.move.target.name}は${damage}のダメージを受けた。`,
+            });
           }
         }
 
+        // 追加効果処理
         if (!(skill.effect instanceof Function)) {
           continue;
         }
-        const result = skill.effect(character, character.move.target);
+        const result = skill.effect(character, target);
         if (!result.length) {
           continue;
         }
@@ -279,39 +217,33 @@ export const useWasBattle = () => {
         }
 
         // 結果詰め込み処理
-        if (character.move.target instanceof WasPlayerCharacter) {
-          progressList.push({
-            message: `${character.move.target.name}は${damage}のダメージを受けた。`,
-          });
-        } else if (character.move.target instanceof WasNonPlayerCharacter) {
+        if (character instanceof WasPlayerCharacter) {
           progressList.push({
             message: `${character.move.target.name}に${damage}のダメージを与えた！`,
+          });
+        } else if (character instanceof WasNonPlayerCharacter) {
+          progressList.push({
+            message: `${character.move.target.name}は${damage}のダメージを受けた。`,
           });
         }
       }
 
       // 戦闘終了判定
-      if (
-        isBattleWin(
-          characters.find((c) => c instanceof WasPlayerCharacter),
-          characters.find((c) => c instanceof WasNonPlayerCharacter)
-        )
-      ) {
-        isBattleEnd = true;
-        progressList.push({
-          message: "戦闘に勝利した！",
-        });
-        status = WAS_BATTLE_STATUS.WIN;
-        break;
-      }
-      if (
-        isBattleLose(characters.find((c) => c instanceof WasPlayerCharacter))
-      ) {
+      if (isBattleLose(player)) {
         isBattleEnd = true;
         progressList.push({
           message: "戦闘に敗北した...。",
         });
         status = WAS_BATTLE_STATUS.LOSE;
+        break;
+      }
+
+      if (isBattleWin(player, enemy)) {
+        isBattleEnd = true;
+        progressList.push({
+          message: "戦闘に勝利した！",
+        });
+        status = WAS_BATTLE_STATUS.WIN;
         break;
       }
     }

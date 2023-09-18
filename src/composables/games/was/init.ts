@@ -36,12 +36,6 @@ import { WAS_MAP } from "@/composables/games/was/defines/map";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WasArea } from "@/composables/games/was/types/area";
 import { WasStatus } from "@/composables/games/was/types/status";
-import { WasSkill } from "@/composables/games/was/types/skill";
-import { WAS_SKILL } from "@/composables/games/was/defines/skill";
-import { WasPhysicalAttackSkill } from "@/composables/games/was/types/phisicalAttackSkill";
-import { WasMagicalAttackSkill } from "@/composables/games/was/types/magicalAttackSkill";
-import { WasHealSkill } from "@/composables/games/was/types/healSkill";
-import { WasBuffSkill } from "@/composables/games/was/types/buffSkill";
 
 export const useWasInit = (loadData?: any) => {
   // プレイヤーの初期化
@@ -69,6 +63,7 @@ export const useWasInit = (loadData?: any) => {
         defines[key].dropItem,
         defines[key].persuadItem,
         defines[key].occupySkill,
+        defines[key].chooseMove,
         defines[key].serif
       );
     }
@@ -104,58 +99,6 @@ export const useWasInit = (loadData?: any) => {
     return areas;
   };
 
-  // スキルの初期化
-  const initSkill = () => {
-    let skills: { [key: string]: WasSkill } = {};
-    for (const key of Object.keys(WAS_SKILL)) {
-      switch (WAS_SKILL[key].type) {
-        case WAS_SKILL_TYPE.PHISICAL_ATTACK:
-          skills[key] = new WasPhysicalAttackSkill(
-            WAS_SKILL[key].name,
-            WAS_SKILL[key].element,
-            WAS_SKILL[key].cost,
-            WAS_SKILL[key].power,
-            WAS_SKILL[key].beforeEffect,
-            WAS_SKILL[key].effect,
-            WAS_SKILL[key].afterEffect
-          );
-          break;
-        case WAS_SKILL_TYPE.MAGICAL_ATTACK:
-          skills[key] = new WasMagicalAttackSkill(
-            WAS_SKILL[key].name,
-            WAS_SKILL[key].element,
-            WAS_SKILL[key].cost,
-            WAS_SKILL[key].power,
-            WAS_SKILL[key].beforeEffect,
-            WAS_SKILL[key].effect,
-            WAS_SKILL[key].afterEffect
-          );
-          break;
-        case WAS_SKILL_TYPE.HEAL:
-          skills[key] = new WasHealSkill(
-            WAS_SKILL[key].name,
-            WAS_SKILL[key].element,
-            WAS_SKILL[key].cost,
-            WAS_SKILL[key].power,
-            WAS_SKILL[key].beforeEffect,
-            WAS_SKILL[key].effect,
-            WAS_SKILL[key].afterEffect
-          );
-          break;
-        case WAS_SKILL_TYPE.BUFF:
-          skills[key] = new WasBuffSkill(
-            WAS_SKILL[key].name,
-            WAS_SKILL[key].element,
-            WAS_SKILL[key].cost,
-            WAS_SKILL[key].beforeEffect,
-            WAS_SKILL[key].effect,
-            WAS_SKILL[key].afterEffect
-          );
-          break;
-      }
-    }
-    return skills;
-  };
   const PRINCESS: WasCharacter = new WasCharacter(
     WAS_PRINCESS.name,
     ConstructGOUVisual(WAS_PRINCESS.visual),
@@ -183,7 +126,6 @@ export const useWasInit = (loadData?: any) => {
   );
   const MAP: GOUVisual = ConstructGOUVisual(WAS_MAP);
   const AREAS: { [key: string]: WasArea } = initArea();
-  const SKILLS: { [key: string]: WasSkill } = initSkill();
 
   const state: {
     timming: WAS_EVENT_TIMMING;

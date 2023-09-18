@@ -48,7 +48,7 @@ const WAS_SKILL: {
     },
   },
   GARD_ATTACK: {
-    name: "シールドアタック",
+    name: "ガードアタック",
     type: WAS_SKILL_TYPE.PHISICAL_ATTACK,
     element: WAS_ELEMENT.NONE,
     cost: 10,

@@ -1,8 +1,18 @@
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
-import { WAS_BATTLE_MOVE, WAS_BATTLE_STATUS } from "@/composables/games/was/const";
+import {
+  WAS_BATTLE_MOVE,
+  WAS_BATTLE_STATUS,
+  WAS_SKILL_TYPE,
+} from "@/composables/games/was/const";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { WasPlayerCharacter } from "@/composables/games/was/types/palyerCharacter";
+import { WasSkill } from "@/composables/games/was/types/skill";
+import { WasPhysicalAttackSkill } from "@/composables/games/was/types/phisicalAttackSkill";
+import { WasMagicalAttackSkill } from "@/composables/games/was/types/magicalAttackSkill";
+import { WasHealSkill } from "@/composables/games/was/types/healSkill";
+import { WasBuffSkill } from "@/composables/games/was/types/buffSkill";
+import { WasItem } from "./types/item";
 
 type WAS_BATTLE_PROGRESS = {
   message: string;
@@ -116,12 +126,19 @@ export const useWasBattle = () => {
       }
       if (character.move.type == WAS_BATTLE_MOVE.ITEM) {
         // アイテム使用時の処理
-        const item = character.getItem(character.move.itemId);
-        if (!item) {
+        const itemDefine = character.getItem(character.move.itemId);
+        if (!itemDefine) {
           throw new WrongImplementationError(
             `Item is not found. itemId: ${character.move.itemId}`
           );
         }
+        const item = new WasItem(
+          itemDefine.name,
+          itemDefine.passive,
+          itemDefine.beforeEffect,
+          itemDefine.effect,
+          itemDefine.afterEffect
+        );
         if (!(item.effect instanceof Function)) {
           progressList.push({
             message: `${item.name}は今使っても効果がない。`,
@@ -142,11 +159,57 @@ export const useWasBattle = () => {
         });
       } else if (character.move.type == WAS_BATTLE_MOVE.SKILL) {
         // スキル使用時の処理
-        const skill = character.getSkill(character.move.skillId);
-        if (!skill) {
+        const skillDefine = character.getSkill(character.move.skillId);
+        if (!skillDefine) {
           throw new WrongImplementationError(
             `Skill is not found. skillId: ${character.move.skillId}`
           );
+        }
+        let skill: WasSkill;
+        switch (skillDefine.type) {
+          case WAS_SKILL_TYPE.PHISICAL_ATTACK:
+            skill = new WasPhysicalAttackSkill(
+              skillDefine.name,
+              skillDefine.element,
+              skillDefine.cost,
+              skillDefine.power,
+              skillDefine.beforeEffect,
+              skillDefine.effect,
+              skillDefine.afterEffect
+            );
+            break;
+          case WAS_SKILL_TYPE.MAGICAL_ATTACK:
+            skill = new WasMagicalAttackSkill(
+              skillDefine.name,
+              skillDefine.element,
+              skillDefine.cost,
+              skillDefine.power,
+              skillDefine.beforeEffect,
+              skillDefine.effect,
+              skillDefine.afterEffect
+            );
+            break;
+          case WAS_SKILL_TYPE.HEAL:
+            skill = new WasHealSkill(
+              skillDefine.name,
+              skillDefine.element,
+              skillDefine.cost,
+              skillDefine.power,
+              skillDefine.beforeEffect,
+              skillDefine.effect,
+              skillDefine.afterEffect
+            );
+            break;
+          case WAS_SKILL_TYPE.BUFF:
+            skill = new WasBuffSkill(
+              skillDefine.name,
+              skillDefine.element,
+              skillDefine.cost,
+              skillDefine.beforeEffect,
+              skillDefine.effect,
+              skillDefine.afterEffect
+            );
+            break;
         }
 
         // コストの消費

@@ -1,8 +1,9 @@
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import { WAS_SKILL, WAS_SKILL_TYPE } from "../defines/skill";
-import { WAS_ITEM, WAS_ITEM_TYPE } from "../defines/item";
-import { WAS_BATTLE_MOVE, WAS_ITEM_ID, WAS_SKILL_ID } from "../const";
+import { WAS_SKILL } from "@/composables/games/was/defines/skill";
+import { WAS_ITEM, WAS_ITEM_TYPE } from "@/composables/games/was/defines/item";
+import { WAS_BATTLE_MOVE, WAS_ITEM_ID, WAS_SKILL_ID } from "@/composables/games/was/const";
 import { WasStatus } from "@/composables/games/was/types/status";
+import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 
 /**
  * WAS用のキャラクタークラス
@@ -39,13 +40,14 @@ export class WasCharacter {
    * @param key スキルのID
    * @returns スキル(習得していないスキルの場合はnullを返却する)
    */
-  getSkill(key: WAS_SKILL_ID): WAS_SKILL_TYPE | null {
+  getSkill(key: WAS_SKILL_ID) {
     const skill = this.skills.find((skill) => skill == key);
     if (!skill) {
-      // 取得していないスキルのIDが指定される場合は実装誤りのためWarnを出力する
-      console.warn(
+      throw new WrongImplementationError(
         `Occured in in the method 'getSkill' in the class 'WasCharacter', key which value is '${key}' is not in SKILL_ID.`
       );
+    }
+    if (this.status.satiety - WAS_SKILL[skill].cost < 0) {
       return null;
     }
     return WAS_SKILL[skill];
@@ -58,10 +60,6 @@ export class WasCharacter {
   getItem(key: WAS_ITEM_ID): WAS_ITEM_TYPE | null {
     const item = this.items.find((item) => item == key);
     if (!item) {
-      // 取得していないスキルのIDが指定される場合は実装誤りのためWarnを出力する
-      console.warn(
-        `Occured in in the method 'getItem' in the class 'WasCharacter', key which value is '${key}' is not in ITEM_ID.`
-      );
       return null;
     }
     return WAS_ITEM[item];

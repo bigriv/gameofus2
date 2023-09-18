@@ -1,15 +1,15 @@
 import { WasCharacter } from "../types/character";
 import { WasPlayerCharacter } from "../types/palyerCharacter";
 
-type WAS_ITEM_TYPE = {
-  name: string;
-  passive?: Function; // パッシブ効果
-  beforeEffect?: Function; // ターン開始時に発動する効果（速度の補正など）
-  effect?: Function; // メイン効果
-  afterEffect?: Function; // ターン終了時に発動する効果（ステータスのリセットなど）
-};
-
-const WAS_ITEM: { [index: string]: WAS_ITEM_TYPE } = {
+const WAS_ITEM: {
+  [index: string]: {
+    name: string;
+    passive?: Function; // パッシブ効果
+    beforeEffect?: Function; // ターン開始時に発動する効果（速度の補正など）
+    effect?: Function; // メイン効果
+    afterEffect?: Function; // ターン終了時に発動する効果（ステータスのリセットなど）
+  };
+} = {
   SATAN_SOUL: {
     name: "魔王の魂",
   },
@@ -131,11 +131,11 @@ const WAS_ITEM: { [index: string]: WAS_ITEM_TYPE } = {
       return `${target.name}は体力を${defaultLife * HEAL_RATIO}回復した。`;
     },
   },
-  EMERGENCY_SET: {
-    name: "救急セット",
-    // 体力40%回復
+  SUPER_HERB: {
+    name: "超薬草",
+    // 体力50%回復
     effect: (target: WasCharacter) => {
-      const HEAL_RATIO = 0.4;
+      const HEAL_RATIO = 0.5;
       const defaultLife = target.defaultStatus.life;
       if (target.status.life + defaultLife * HEAL_RATIO >= defaultLife) {
         target.status.life = defaultLife;
@@ -162,24 +162,56 @@ const WAS_ITEM: { [index: string]: WAS_ITEM_TYPE } = {
       return `${target.name}の満腹度が${defaultSatiety * HEAL_RATIO}回復した。`;
     },
   },
-  BIG_RICE_BALL: {
-    name: "特大おにぎり",
-    // 満腹度50%回復
+  FISH: {
+    name: "焼き魚",
+    // 体力10%満腹度15%回復
     effect: (target: WasCharacter) => {
-      const HEAL_RATIO = 0.5;
+      const defaultLife = target.defaultStatus.life;
+      const lifeHealAmount = defaultLife * 0.1;
       const defaultSatiety = target.defaultStatus.satiety;
-      if (
-        target.status.satiety + defaultSatiety * HEAL_RATIO >=
-        defaultSatiety
-      ) {
+      const satifyHealAmount = defaultSatiety * 0.15;
+
+      // 体力の回復
+      if (target.status.life + lifeHealAmount >= defaultLife) {
+        target.status.life = defaultLife;
+      } else {
+        target.status.life += lifeHealAmount;
+      }
+
+      // 満腹度の回復
+      if (target.status.satiety + satifyHealAmount >= defaultSatiety) {
         target.status.satiety = defaultSatiety;
       } else {
-        target.status.satiety += defaultSatiety * HEAL_RATIO;
+        target.status.satiety += satifyHealAmount;
       }
-      return `${target.name}の満腹度が${defaultSatiety * HEAL_RATIO}回復した。`;
+      return `${target.name}の体力が${lifeHealAmount}、満腹度が${satifyHealAmount}回復した。`;
+    },
+  },
+  MEAT: {
+    name: "骨付き肉",
+    // 体力15%満腹度10%回復
+    effect: (target: WasCharacter) => {
+      const defaultLife = target.defaultStatus.life;
+      const lifeHealAmount = defaultLife * 0.15;
+      const defaultSatiety = target.defaultStatus.satiety;
+      const satifyHealAmount = defaultSatiety * 0.1;
+
+      // 体力の回復
+      if (target.status.life + lifeHealAmount >= defaultLife) {
+        target.status.life = defaultLife;
+      } else {
+        target.status.life += lifeHealAmount;
+      }
+
+      // 満腹度の回復
+      if (target.status.satiety + satifyHealAmount >= defaultSatiety) {
+        target.status.satiety = defaultSatiety;
+      } else {
+        target.status.satiety += satifyHealAmount;
+      }
+      return `${target.name}の体力が${lifeHealAmount}、満腹度が${satifyHealAmount}回復した。`;
     },
   },
 } as const;
 
 export { WAS_ITEM };
-export type { WAS_ITEM_TYPE };

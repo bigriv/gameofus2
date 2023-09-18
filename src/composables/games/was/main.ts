@@ -5,7 +5,6 @@ import {
   WAS_BUTTON_EVENT,
   WAS_ENDING,
   WAS_EVENT_TIMMING,
-  WAS_SKILL_TYPE,
 } from "@/composables/games/was/const";
 import { useWasButton } from "@/composables/games/was/buttons";
 import { WAS_SKILL } from "@/composables/games/was/defines/skill";
@@ -140,10 +139,9 @@ export const useWasMain = (loadData: any, emits: Function) => {
         if (!state.character) {
           throw new WrongImplementationError("Character is not set.");
         }
-        state.player.move = {
+        state.player.setBattleMove(state.player, state.character, {
           type: WAS_BATTLE_MOVE.ATTACK,
-          target: state.character,
-        };
+        });
         break;
       case WAS_BUTTON_EVENT.SKILL:
         buttonList.value = SKILL_BUTTON_LIST.value;
@@ -152,17 +150,10 @@ export const useWasMain = (loadData: any, emits: Function) => {
         if (!state.character) {
           throw new WrongImplementationError("Character is not set.");
         }
-        let target = state.character;
-        const skill = WAS_SKILL[args];
-        if (skill.type == WAS_SKILL_TYPE.HEAL || skill.type == WAS_SKILL_TYPE.BUFF) {
-          // サポートスキルは対象をプレイヤーに書き換える
-          target = state.player;
-        }
-        state.player.move = {
+        state.player.setBattleMove(state.player, state.character, {
           type: WAS_BATTLE_MOVE.SKILL,
-          target: target,
           skillId: args,
-        };
+        });
         break;
       case WAS_BUTTON_EVENT.BATTLE_ITEM:
         buttonList.value = BATTLE_ITEM_BUTTON_LIST.value;
@@ -171,11 +162,10 @@ export const useWasMain = (loadData: any, emits: Function) => {
         if (!state.character) {
           throw new WrongImplementationError("Character is not set.");
         }
-        state.player.move = {
+        state.player.setBattleMove(state.player, state.character, {
           type: WAS_BATTLE_MOVE.ITEM,
-          target: state.character,
           itemId: args,
-        };
+        });
         break;
     }
 
@@ -194,11 +184,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
     }
     const character = state.character as WasNonPlayerCharacter;
     // 敵の行動を設定
-    // TODO: ターンごとに行動が変わるように修正
-    character.move = {
-      type: WAS_BATTLE_MOVE.ATTACK,
-      target: state.player,
-    };
+    character.setBattleMove(character, state.player);
     const result = battle(state.player, character);
     const messages = result.progresses.map((p) => p.message);
     let afterFunction = showBattle;

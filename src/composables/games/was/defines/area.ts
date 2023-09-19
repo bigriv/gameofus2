@@ -2,6 +2,7 @@ import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
 import {
   GAME_DISPLAY_HEIGHT,
   GAME_DISPLAY_WIDTH,
+  WAS_ITEM_ID,
 } from "@/composables/games/was/const";
 import GOUVisualDefinition from "@/composables/types/visuals/GOUVisualDefinition";
 
@@ -9,6 +10,7 @@ type WAS_AREA_DEFINITION_TYPE = {
   name: string;
   outside: GOUVisualDefinition;
   inside: GOUVisualDefinition;
+  dropItems?: Array<{ probability: number; id: WAS_ITEM_ID }>;
 };
 /**
  * エリア定義
@@ -45,6 +47,11 @@ const WAS_CAVE: WAS_AREA_DEFINITION_TYPE = {
     width: GAME_DISPLAY_WIDTH,
     height: GAME_DISPLAY_HEIGHT,
   },
+  dropItems: [
+    { probability: 0.1, id: WAS_ITEM_ID.GOBLIN_HANMER },
+    { probability: 0.3, id: WAS_ITEM_ID.RICE_BALL },
+    { probability: 0.5, id: WAS_ITEM_ID.HERB },
+  ],
 };
 const WAS_SEA: WAS_AREA_DEFINITION_TYPE = {
   name: "海岸",
@@ -61,6 +68,10 @@ const WAS_SEA: WAS_AREA_DEFINITION_TYPE = {
     width: GAME_DISPLAY_WIDTH,
     height: GAME_DISPLAY_HEIGHT,
   },
+  dropItems: [
+    { probability: 0.1, id: WAS_ITEM_ID.HOLY_WATER },
+    { probability: 0.4, id: WAS_ITEM_ID.FISH },
+  ],
 };
 const WAS_VILLAGE: WAS_AREA_DEFINITION_TYPE = {
   name: "エルフ村",
@@ -77,6 +88,11 @@ const WAS_VILLAGE: WAS_AREA_DEFINITION_TYPE = {
     width: GAME_DISPLAY_WIDTH,
     height: GAME_DISPLAY_HEIGHT,
   },
+  dropItems: [
+    { probability: 0.1, id: WAS_ITEM_ID.ELF_MEDICINE },
+    { probability: 0.3, id: WAS_ITEM_ID.SUPER_HERB },
+    { probability: 0.5, id: WAS_ITEM_ID.HERB },
+  ],
 };
 const WAS_MOUNTAIN: WAS_AREA_DEFINITION_TYPE = {
   name: "山",
@@ -93,6 +109,10 @@ const WAS_MOUNTAIN: WAS_AREA_DEFINITION_TYPE = {
     width: GAME_DISPLAY_WIDTH,
     height: GAME_DISPLAY_HEIGHT,
   },
+  dropItems: [
+    { probability: 0.1, id: WAS_ITEM_ID.DRAGON_SCALE },
+    { probability: 0.4, id: WAS_ITEM_ID.MEAT },
+  ],
 };
 const WAS_KINGDOM_CASTLE: WAS_AREA_DEFINITION_TYPE = {
   name: "王国",
@@ -109,6 +129,10 @@ const WAS_KINGDOM_CASTLE: WAS_AREA_DEFINITION_TYPE = {
     width: GAME_DISPLAY_WIDTH,
     height: GAME_DISPLAY_HEIGHT,
   },
+  dropItems: [
+    { probability: 0.3, id: WAS_ITEM_ID.SUPER_HERB },
+    { probability: 0.3, id: WAS_ITEM_ID.RICE_BALL },
+  ],
 };
 
 export {

@@ -8,13 +8,15 @@ import {
 } from "@/composables/games/was/const";
 import { useWasButton } from "@/composables/games/was/buttons";
 import { WAS_SKILL } from "@/composables/games/was/defines/skill";
-import { WAS_ITEM, WAS_ITEM_TYPE } from "@/composables/games/was/defines/item";
+import { WAS_ITEM } from "@/composables/games/was/defines/item";
 import WAS_SERIF_DEFINE from "@/composables/games/was/defines/serif";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { useWasInit } from "@/composables/games/was/init";
 import { useWasDispay } from "@/composables/games/was/display";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 import { useWasBattle } from "@/composables/games/was/battle";
+import { WasCharacter } from "@/composables/games/was/types/character";
+import { WasItem } from "@/composables/games/was/types/item";
 
 export const useWasMain = (loadData: any, emits: Function) => {
   const { PRINCESS, CHARACTERS, BOSSES, MAP, AREAS, state } =
@@ -94,15 +96,26 @@ export const useWasMain = (loadData: any, emits: Function) => {
     isShowStatusBar.value = false;
     switch (id) {
       case WAS_BUTTON_EVENT.EXPLORE:
-        showCharacterInArea();
+        if (!state.area) {
+          throw new WrongImplementationError("Area is not set.");
+        }
+        const exploreResult = state.player.explore(AREAS[state.area]);
+        if (!exploreResult) {
+          // 探索失敗
+          chainMessage(["何もみつからない...。"], () => showArea(state.area));
+        } else if (exploreResult instanceof WasCharacter) {
+          // キャラクター遭遇
+          state.character = exploreResult;
+          showCharacterInArea();
+        } else if (exploreResult instanceof WasItem) {
+          // アイテム発見
+          chainMessage(`${exploreResult.name}をみつけた！`, () => showArea(state.area));
+        }
         return;
       case WAS_BUTTON_EVENT.PERSUADE:
         buttonList.value = PERSUADE_BUTTON_LIST.value;
         return;
       case WAS_BUTTON_EVENT.USE_PERSUADE_ITEM:
-        if (!state.area) {
-          throw new WrongImplementationError("Area is not set.");
-        }
         const area = state.area as WAS_AREA_ID;
         const character = state.character as WasNonPlayerCharacter;
         if (character.persuadItem !== args) {
@@ -180,7 +193,9 @@ export const useWasMain = (loadData: any, emits: Function) => {
     }
 
     if (state.character == PRINCESS) {
-      throw new WrongImplementationError();
+      throw new WrongImplementationError(
+        "Character is princess, but she can not fight."
+      );
     }
     const character = state.character as WasNonPlayerCharacter;
     // 敵の行動を設定
@@ -192,9 +207,6 @@ export const useWasMain = (loadData: any, emits: Function) => {
       // 勝利時の処理
       afterFunction = () => {
         let afterMessages = [];
-        if (!state.area) {
-          throw new WrongImplementationError("Area is not set.");
-        }
         const area = state.area as WAS_AREA_ID;
         if (!character.persuadItem && CHARACTERS[area].isPersuaded) {
           // 説得アイテムが未設定で雑魚キャラが説得済みの場合は説得成功として処理する
@@ -208,8 +220,8 @@ export const useWasMain = (loadData: any, emits: Function) => {
         } else {
           afterMessages = [...character.serif.BATTLE_WIN];
           if (character.dropItem) {
-            let dropItem: WAS_ITEM_TYPE = WAS_ITEM[character.dropItem];
-            state.player.items.push(character.dropItem);
+            let dropItem = WAS_ITEM[character.dropItem];
+            state.player.addItem(character.dropItem);
             if (dropItem.passive instanceof Function) {
               dropItem.passive(state.player);
             }
@@ -351,7 +363,10 @@ export const useWasMain = (loadData: any, emits: Function) => {
   };
 
   // エリアの表示
-  const showArea = (argArea: WAS_AREA_ID) => {
+  const showArea = (argArea: WAS_AREA_ID | null) => {
+    if (!argArea) {
+      throw new WrongImplementationError("Area is not set.");
+    }
     state.area = argArea;
     if (state.area == WAS_AREA_ID.SATAN_CASTLE) {
       // 魔王城の場合は特殊処理
@@ -367,24 +382,18 @@ export const useWasMain = (loadData: any, emits: Function) => {
   // エリアとキャラクターの表示
   const showCharacterInArea = () => {
     let messages = [];
-    if (!state.area) {
-      throw new WrongImplementationError("Area is not set.");
-    }
-    state.character = AREAS[state.area].encount();
-
-    if (!state.character) {
-      chainMessage(["誰もいないようだ..."], showMap);
-      return;
-    }
     const character = state.character as WasNonPlayerCharacter;
     if (character.visual) layer.objects = [character.visual];
     if (!character.isPersuaded) {
-      messages.push(`${character.name}が現れた`);
+      messages.push(`${character.name}が現れた。`);
     }
 
     let afteFuntion = () => {};
 
     const serif = character.serif;
+    if (!state.area) {
+      throw new WrongImplementationError("Area is not set.");
+    }
     if (character.isBoss) {
       if (BOSSES[state.area].isPersuaded) {
         // ボス敵を説得済みの場合
@@ -405,6 +414,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
     }
 
     chainMessage(messages, afteFuntion);
+    return;
   };
   const showFace = () => {
     buttonList.value = FACE_BUTTON_DEFINE_LIST;

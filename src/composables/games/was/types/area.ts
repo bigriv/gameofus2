@@ -2,6 +2,7 @@ import GOUPosition from "@/composables/types/GOUPosition";
 import {
   GAME_DISPLAY_HEIGHT,
   GAME_DISPLAY_WIDTH,
+  WAS_ITEM_ID,
 } from "@/composables/games/was/const";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WasCharacter } from "@/composables/games/was/types/character";
@@ -14,12 +15,14 @@ export class WasArea {
   readonly character: WasCharacter;
   readonly boss?: WasCharacter;
   isClear: boolean;
+  readonly dropItems: Array<{ probability: number; id: WAS_ITEM_ID }>;;
   constructor(
     name: string,
     outside: GOUVisual,
     inside: GOUVisual,
     character: WasCharacter,
-    boss?: WasCharacter
+    boss?: WasCharacter,
+    dropItems?: Array<{ probability: number; id: WAS_ITEM_ID }>
   ) {
     this.name = name;
     this.outside = outside;
@@ -44,8 +47,10 @@ export class WasArea {
         )
       );
     }
+    this.dropItems = dropItems ?? [];
     this.isClear = false;
   }
+
   // 進行状況に応じてキャラクターを返す
   encount() {
     // ボスが設定されていない場合は会話のみのエリアとみなして、キャラクターを強制で返す

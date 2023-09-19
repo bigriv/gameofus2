@@ -3,7 +3,6 @@ import {
   WAS_EVENT_TIMMING,
   WAS_ITEM_ID,
   WAS_SKILL_ID,
-  WAS_SKILL_TYPE,
 } from "@/composables/games/was/const";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
@@ -93,7 +92,8 @@ export const useWasInit = (loadData?: any) => {
         ConstructGOUVisual(defines[key].outside),
         ConstructGOUVisual(defines[key].inside),
         CHARACTERS[key],
-        BOSSES[key]
+        BOSSES[key],
+        defines[key].dropItems
       );
     }
     return areas;
@@ -147,7 +147,7 @@ export const useWasInit = (loadData?: any) => {
       state.player.status = new WasStatus(loadData.status);
       state.player.defaultStatus = new WasStatus(loadData.defaultStatus);
       state.player.skills = loadData.skills as Array<WAS_SKILL_ID>;
-      state.player.items = loadData.items as Array<WAS_ITEM_ID>;
+      state.player.items = loadData.items as Array<{amount: number, id: WAS_ITEM_ID}>;
     }
 
     if (loadData.timming) {

@@ -7,8 +7,8 @@ import {
 } from "@/composables/games/was/const";
 import WAS_SERIF_DEFINE from "@/composables/games/was/defines/serif";
 import GOUVisualDefinition from "@/composables/types/visuals/GOUVisualDefinition";
-import { WasNonPlayerCharacter } from "../types/nonPlayerCharacter";
-import { WasCharacter } from "../types/character";
+import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
+import { WasCharacter } from "@/composables/games/was/types/character";
 
 type WAS_PLAYER_CHARACTER_DEFINITION_TYPE = {
   name: string;
@@ -22,7 +22,7 @@ type WAS_PLAYER_CHARACTER_DEFINITION_TYPE = {
     element?: WAS_ELEMENT;
   };
   skills?: Array<WAS_SKILL_ID>;
-  items?: Array<WAS_ITEM_ID>;
+  items?: Array<{ amount: number; id: WAS_ITEM_ID }>;
 };
 type WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE =
   WAS_PLAYER_CHARACTER_DEFINITION_TYPE & {
@@ -47,8 +47,8 @@ const WAS_SATAN: WAS_PLAYER_CHARACTER_DEFINITION_TYPE = {
     magic: 10,
     element: WAS_ELEMENT.DARK,
   },
-  skills: [WAS_SKILL_ID.HEAL],
-  items: [WAS_ITEM_ID.SATAN_SOUL, WAS_ITEM_ID.HERB],
+  skills: [],
+  items: [],
 };
 
 const WAS_PRINCESS: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
@@ -130,7 +130,7 @@ const WAS_SAHAGIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   persuadItem: WAS_ITEM_ID.GOBLIN_HANMER,
   occupySkill: WAS_SKILL_ID.SPEED_ATTACK,
   skills: [WAS_SKILL_ID.SPEED_ATTACK],
-  items: [WAS_ITEM_ID.FISH],
+  items: [{ amount: 100, id: WAS_ITEM_ID.FISH }],
   serif: {
     FACE1: WAS_SERIF_DEFINE.FACE_SAHAGIN,
     BATTLE_WIN: WAS_SERIF_DEFINE.BATTLE_WIN_SAHAGIN,
@@ -282,7 +282,7 @@ const WAS_SOLDIER: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     WAS_SKILL_ID.GARD_ATTACK,
     WAS_SKILL_ID.SPEED_ATTACK,
   ],
-  items: [WAS_ITEM_ID.HERB],
+  items: [{ amount: 100, id: WAS_ITEM_ID.HERB }],
   serif: {
     FACE1: WAS_SERIF_DEFINE.FACE_SOLDIER,
     BATTLE_WIN: WAS_SERIF_DEFINE.BATTLE_WIN_SOLDIER,
@@ -470,7 +470,7 @@ const WAS_DARK_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     WAS_SKILL_ID.SPEED_ATTACK,
     WAS_SKILL_ID.DARK_SORD,
   ],
-  items: [WAS_ITEM_ID.MEAT],
+  items: [{ amount: 100, id: WAS_ITEM_ID.MEAT }],
   serif: {
     FACE1: WAS_SERIF_DEFINE.FACE1_DARK_ELF,
     FACE2: WAS_SERIF_DEFINE.FACE2_DARK_ELF,

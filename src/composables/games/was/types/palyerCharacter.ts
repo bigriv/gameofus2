@@ -7,6 +7,9 @@ import {
 import { WAS_SKILL } from "@/composables/games/was/defines/skill";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasStatus } from "@/composables/games/was/types/status";
+import { WasArea } from "@/composables/games/was/types/area";
+import { WasItem } from "@/composables/games/was/types/item";
+import { WAS_ITEM } from "@/composables/games/was/defines/item";
 
 /**
  * WAS用のPlayer操作キャラクタークラス
@@ -16,7 +19,7 @@ export class WasPlayerCharacter extends WasCharacter {
     name: string,
     status: WasStatus,
     skills?: Array<WAS_SKILL_ID>,
-    items?: Array<WAS_ITEM_ID>
+    items?: Array<{ amount: number; id: WAS_ITEM_ID }>
   ) {
     super(name, null, status, skills, items);
   }
@@ -60,6 +63,37 @@ export class WasPlayerCharacter extends WasCharacter {
         };
         break;
     }
+  }
+
+  /**
+   * 探索処理
+   * @param area 探索するエリア
+   * @returns エンカウント時はキャラクター、ドロップ判定にかかればアイテム、それ以外はnull
+   */
+  explore(area: WasArea): WasCharacter | WasItem | null {
+    const rnd = Math.random();
+    if (rnd < 0.5) {
+      // アイテムのドロップ判定
+      for (const dropItem of area.dropItems) {
+        const dropRnd = Math.random();
+        if (dropRnd < dropItem.probability) {
+          this.addItem(dropItem.id);
+          return new WasItem(
+            WAS_ITEM[dropItem.id].name,
+            WAS_ITEM[dropItem.id].passive,
+            WAS_ITEM[dropItem.id].beforeEffect,
+            WAS_ITEM[dropItem.id].effect,
+            WAS_ITEM[dropItem.id].afterEffect
+          );
+        }
+      }
+    } else if (rnd < 0.8) {
+      return area.encount();
+    }
+    return null;
+  }
+  useItemInPersuade() {
+
   }
   /**
    * 保持データをjson形式に変換する

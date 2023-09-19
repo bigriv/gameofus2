@@ -36,9 +36,10 @@ export class WasNonPlayerCharacter extends WasCharacter {
       PERSUADE_SUCCESS: Array<string>;
       CHAT?: Array<string>;
     },
-    skills?: Array<WAS_SKILL_ID>
+    skills?: Array<WAS_SKILL_ID>,
+    items?: Array<{amount: number, id: WAS_ITEM_ID}>
   ) {
-    super(name, visual, status, skills);
+    super(name, visual, status, skills, items);
     this.isBoss = isBoss;
     this.dropItem = dropItem;
     this.persuadItem = persuadItem;

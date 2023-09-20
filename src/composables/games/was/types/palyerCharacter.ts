@@ -32,7 +32,6 @@ export class WasPlayerCharacter extends WasCharacter {
       | { type: WAS_BATTLE_MOVE.SKILL; skillId: WAS_SKILL_ID }
       | { type: WAS_BATTLE_MOVE.ITEM; itemId: WAS_ITEM_ID }
   ) {
-    let target;
     switch (move.type) {
       case WAS_BATTLE_MOVE.ATTACK:
         this.move = {
@@ -41,6 +40,7 @@ export class WasPlayerCharacter extends WasCharacter {
         };
         break;
       case WAS_BATTLE_MOVE.SKILL:
+        let target;
         const skill = WAS_SKILL[move.type];
         if (
           skill.type == WAS_SKILL_TYPE.HEAL ||
@@ -71,29 +71,29 @@ export class WasPlayerCharacter extends WasCharacter {
    * @returns エンカウント時はキャラクター、ドロップ判定にかかればアイテム、それ以外はnull
    */
   explore(area: WasArea): WasCharacter | WasItem | null {
+    if (area.isClear) {
+      // クリア済みの場合は探索不可とする
+      return area.encount();
+    }
     const rnd = Math.random();
     if (rnd < 0.5) {
       // アイテムのドロップ判定
-      for (const dropItem of area.dropItems) {
-        const dropRnd = Math.random();
-        if (dropRnd < dropItem.probability) {
-          this.addItem(dropItem.id);
-          return new WasItem(
-            WAS_ITEM[dropItem.id].name,
-            WAS_ITEM[dropItem.id].passive,
-            WAS_ITEM[dropItem.id].beforeEffect,
-            WAS_ITEM[dropItem.id].effect,
-            WAS_ITEM[dropItem.id].afterEffect
-          );
-        }
+      const itemId = area.drop();
+      if (itemId) {
+        this.addItem(itemId);
+        return new WasItem(
+          WAS_ITEM[itemId].name,
+          WAS_ITEM[itemId].passive,
+          WAS_ITEM[itemId].beforeEffect,
+          WAS_ITEM[itemId].effect,
+          WAS_ITEM[itemId].afterEffect
+        );
       }
-    } else if (rnd < 0.8) {
+    }
+    if (rnd < 0.8) {
       return area.encount();
     }
     return null;
-  }
-  useItemInPersuade() {
-
   }
   /**
    * 保持データをjson形式に変換する

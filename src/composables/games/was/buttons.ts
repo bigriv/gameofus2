@@ -19,6 +19,7 @@ export const useWasButton = (player: WasPlayerCharacter) => {
     const ROW_NUM = 4;
     const COL_NUM = 4;
     let buttons = new Array(COL_NUM);
+    const items = player.items.filter((item) => item.amount > 0);
     for (let i = 0; i < COL_NUM; i++) {
       buttons[i] = new Array(ROW_NUM);
       for (let j = 0; j < ROW_NUM; j++) {
@@ -29,12 +30,12 @@ export const useWasButton = (player: WasPlayerCharacter) => {
           };
           break;
         }
-        const itemId = player.items[i * ROW_NUM + j];
-        if (itemId) {
+        const item = items[i * ROW_NUM + j];
+        if (item) {
           buttons[i][j] = {
-            label: WAS_ITEM[itemId].name,
+            label: WAS_ITEM[item.id].name,
             eventId: WAS_BUTTON_EVENT.USE_PERSUADE_ITEM,
-            eventArgs: itemId,
+            eventArgs: item.id,
           };
         } else {
           buttons[i][j] = {
@@ -95,6 +96,7 @@ export const useWasButton = (player: WasPlayerCharacter) => {
     const ROW_NUM = 4;
     const COL_NUM = 4;
     let buttons = new Array(COL_NUM);
+    const items = player.items.filter((item) => item.amount > 0);
     for (let i = 0; i < COL_NUM; i++) {
       buttons[i] = new Array(ROW_NUM);
       for (let j = 0; j < ROW_NUM; j++) {
@@ -105,12 +107,12 @@ export const useWasButton = (player: WasPlayerCharacter) => {
           };
           break;
         }
-        const itemId = player.items[i * ROW_NUM + j];
-        if (itemId) {
+        const item = items[i * ROW_NUM + j];
+        if (item) {
           buttons[i][j] = {
-            label: WAS_ITEM[itemId].name,
+            label: WAS_ITEM[item.id].name,
             eventId: WAS_BUTTON_EVENT.USE_BATTLE_ITEM,
-            eventArgs: itemId,
+            eventArgs: item.id,
           };
         } else {
           buttons[i][j] = {

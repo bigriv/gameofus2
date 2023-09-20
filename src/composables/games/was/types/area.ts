@@ -15,7 +15,7 @@ export class WasArea {
   readonly character: WasCharacter;
   readonly boss?: WasCharacter;
   isClear: boolean;
-  readonly dropItems: Array<{ probability: number; id: WAS_ITEM_ID }>;;
+  readonly dropItems: Array<{ probability: number; id: WAS_ITEM_ID }>;
   constructor(
     name: string,
     outside: GOUVisual,
@@ -70,5 +70,20 @@ export class WasArea {
       // 上記以外は雑魚敵を表示
       return character;
     }
+  }
+
+  /**
+   * ドロップするアイテムを返す
+   * @returns ドロップしたアイテム（ドロップしない場合はnullを返却する）
+   */
+  drop(): WAS_ITEM_ID | null {
+    for (const dropItem of this.dropItems) {
+      const dropRnd = Math.random();
+      console.log("アイテムドロップ乱数", dropRnd);
+      if (dropRnd < dropItem.probability) {
+        return dropItem.id;
+      }
+    }
+    return null;
   }
 }

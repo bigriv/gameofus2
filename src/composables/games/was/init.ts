@@ -146,8 +146,8 @@ export const useWasInit = (loadData?: any) => {
     if (loadData.player) {
       state.player.status = new WasStatus(loadData.status);
       state.player.defaultStatus = new WasStatus(loadData.defaultStatus);
-      state.player.skills = loadData.skills as Array<WAS_SKILL_ID>;
-      state.player.items = loadData.items as Array<{amount: number, id: WAS_ITEM_ID}>;
+      state.player.skills = loadData.skills as Array<WAS_SKILL_ID> ?? [];
+      state.player.items = loadData.items as Array<{amount: number, id: WAS_ITEM_ID}> ?? [];
     }
 
     if (loadData.timming) {

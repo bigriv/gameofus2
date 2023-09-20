@@ -48,7 +48,7 @@ const WAS_CAVE: WAS_AREA_DEFINITION_TYPE = {
     height: GAME_DISPLAY_HEIGHT,
   },
   dropItems: [
-    { probability: 0.1, id: WAS_ITEM_ID.GOBLIN_HANMER },
+    { probability: 0.05, id: WAS_ITEM_ID.GOBLIN_HANMER },
     { probability: 0.3, id: WAS_ITEM_ID.RICE_BALL },
     { probability: 0.5, id: WAS_ITEM_ID.HERB },
   ],
@@ -69,7 +69,7 @@ const WAS_SEA: WAS_AREA_DEFINITION_TYPE = {
     height: GAME_DISPLAY_HEIGHT,
   },
   dropItems: [
-    { probability: 0.1, id: WAS_ITEM_ID.HOLY_WATER },
+    { probability: 0.05, id: WAS_ITEM_ID.HOLY_WATER },
     { probability: 0.4, id: WAS_ITEM_ID.FISH },
   ],
 };
@@ -89,7 +89,7 @@ const WAS_VILLAGE: WAS_AREA_DEFINITION_TYPE = {
     height: GAME_DISPLAY_HEIGHT,
   },
   dropItems: [
-    { probability: 0.1, id: WAS_ITEM_ID.ELF_MEDICINE },
+    { probability: 0.05, id: WAS_ITEM_ID.ELF_MEDICINE },
     { probability: 0.3, id: WAS_ITEM_ID.SUPER_HERB },
     { probability: 0.5, id: WAS_ITEM_ID.HERB },
   ],

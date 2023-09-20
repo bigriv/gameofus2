@@ -19,15 +19,15 @@ export class WasMagicalAttackSkill extends WasSkill {
     if (power < 0) {
       return 0;
     }
-    let damage = activist.status.magic * power * 0.01;
+    let damage = Math.floor(activist.status.magic * power * 0.01);
     if (super.isWeekness(this.element, target.status.element)) {
       // 属性の弱点判定
-      damage -= Math.floor(target.status.magic * 0.5);
+      damage -= Math.floor(target.status.magic * 0.25);
     } else if (super.isWeekness(target.status.element, this.element)) {
       // 属性の抵抗判定
-      damage -= Math.floor(target.status.magic * 1.5);
+      damage -= Math.floor(target.status.magic *0.75);
     } else {
-      damage -= target.status.magic;
+      damage -= target.status.magic * 0.5;
     }
 
     if (damage < 0) {

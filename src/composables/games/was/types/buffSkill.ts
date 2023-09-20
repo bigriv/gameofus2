@@ -13,7 +13,7 @@ export class WasBuffSkill extends WasSkill {
   ) {
     super(name, element, cost, 0, beforeEffect, effect, afterEffect);
   }
-  calcDamage(activist: WasCharacter, target: WasCharacter): number {
+  calcDamage(_activist: WasCharacter, _target: WasCharacter): number {
     return 0;
   }
 }

@@ -14,68 +14,71 @@ const WAS_SKILL: {
   };
 } = {
   HEAL: {
-    type: WAS_SKILL_TYPE.HEAL,
     name: "ヒール",
-    power: 1,
+    type: WAS_SKILL_TYPE.HEAL,
     element: WAS_ELEMENT.NONE,
+    power: 200,
     cost: 10,
   },
   HIGH_HEAL: {
     name: "ハイヒール",
     type: WAS_SKILL_TYPE.HEAL,
-    power: 2,
     element: WAS_ELEMENT.NONE,
-    cost: 20,
+    power: 500,
+    cost: 30,
   },
   POWER_ATTACK: {
     name: "力任せ",
     type: WAS_SKILL_TYPE.PHISICAL_ATTACK,
     element: WAS_ELEMENT.NONE,
-    power: 1.2,
+    power: 120,
     cost: 10,
   },
   SPEED_ATTACK: {
     name: "疾風剣",
     type: WAS_SKILL_TYPE.PHISICAL_ATTACK,
     element: WAS_ELEMENT.NONE,
+    power: 100,
     cost: 10,
-    power: 1,
-    beforeEffect: (activist: WasCharacter, target: WasCharacter) => {
-      activist.status.speed += activist.defaultStatus.speed * 0.2;
+    beforeEffect: (activist: WasCharacter, _target: WasCharacter) => {
+      activist.status.speed += activist.status.speed * 0.2;
     },
-    afterEffect: (activist: WasCharacter, target: WasCharacter) => {
-      activist.status.speed = activist.defaultStatus.speed;
+    afterEffect: (activist: WasCharacter, _target: WasCharacter) => {
+      activist.status.speed = activist.status.speed;
     },
   },
   GARD_ATTACK: {
     name: "ガードアタック",
     type: WAS_SKILL_TYPE.PHISICAL_ATTACK,
     element: WAS_ELEMENT.NONE,
+    power: 100,
     cost: 10,
-    power: 1,
-    beforeEffect: (activist: WasCharacter, target: WasCharacter) => {
-      activist.status.defense += activist.defaultStatus.defense * 0.2;
+    beforeEffect: (activist: WasCharacter, _target: WasCharacter) => {
+      activist.status.defense += activist.status.defense * 0.2;
     },
-    afterEffect: (activist: WasCharacter, target: WasCharacter) => {
-      activist.status.defense = activist.defaultStatus.defense;
+    afterEffect: (activist: WasCharacter, _target: WasCharacter) => {
+      activist.status.defense = activist.status.defense;
     },
   },
   DARK_SORD: {
     name: "暗黒剣",
     type: WAS_SKILL_TYPE.PHISICAL_ATTACK,
     element: WAS_ELEMENT.DARK,
-    cost: 10,
-    power: 1.5,
+    power: 400,
+    cost: 30,
   },
   FIRE: {
     name: "メラメラ",
     type: WAS_SKILL_TYPE.MAGICAL_ATTACK,
     element: WAS_ELEMENT.FIRE,
-    cost: 10,
-    power: 1,
-    effect: (activist: WasCharacter, target: WasCharacter) => {
-      if (Math.random() < 0.5) {
-        target.status.attack -= target.status.attack * 0.1;
+    power: 100,
+    cost: 20,
+    effect: (_activist: WasCharacter, target: WasCharacter) => {
+      if (Math.random() < 0.5 && 0 < target.status.attack) {
+        target.status.attack -= Math.floor(target.defaultStatus.attack * 0.1);
+        if (target.status.attack < 0) {
+          target.status.attack = 0;
+        }
         return `${target.name}はひるんだ！（攻撃力10%ダウン）`;
       }
     },
@@ -84,11 +87,14 @@ const WAS_SKILL: {
     name: "ぶるぶる",
     type: WAS_SKILL_TYPE.MAGICAL_ATTACK,
     element: WAS_ELEMENT.WATER,
-    cost: 10,
-    power: 1,
-    effect: (activist: WasCharacter, target: WasCharacter) => {
-      if (Math.random() < 0.5) {
-        target.status.magic -= target.status.magic * 0.1;
+    power: 100,
+    cost: 20,
+    effect: (_activist: WasCharacter, target: WasCharacter) => {
+      if (Math.random() < 0.5 && 0 < target.status.magic) {
+        target.status.magic -= Math.floor(target.defaultStatus.magic * 0.1);
+        if (target.status.magic < 0) {
+          target.status.magic = 0;
+        }
         return `${target.name}はひるんだ！（魔力10%ダウン）`;
       }
     },
@@ -97,11 +103,14 @@ const WAS_SKILL: {
     name: "ガチガチ",
     type: WAS_SKILL_TYPE.MAGICAL_ATTACK,
     element: WAS_ELEMENT.SOIL,
-    cost: 10,
-    power: 1,
-    effect: (activist: WasCharacter, target: WasCharacter) => {
-      if (Math.random() < 0.5) {
-        target.status.defense -= target.status.defense * 0.1;
+    power: 100,
+    cost: 20,
+    effect: (_activist: WasCharacter, target: WasCharacter) => {
+      if (Math.random() < 0.5 && 0 < target.status.defense) {
+        target.status.defense -= Math.floor(target.defaultStatus.defense * 0.1);
+        if (target.status.defense < 0) {
+          target.status.defense = 0;
+        }
         return `${target.name}はひるんだ！（防御力10%ダウン）`;
       }
     },
@@ -110,12 +119,44 @@ const WAS_SKILL: {
     name: "ひゅーひゅー",
     type: WAS_SKILL_TYPE.MAGICAL_ATTACK,
     element: WAS_ELEMENT.WIND,
-    cost: 10,
-    power: 1,
-    effect: (activist: WasCharacter, target: WasCharacter) => {
-      if (Math.random() < 0.5) {
-        target.status.speed -= target.status.speed * 0.1;
+    power: 100,
+    cost: 20,
+    effect: (_activist: WasCharacter, target: WasCharacter) => {
+      if (Math.random() < 0.5 && 0 < target.status.speed) {
+        target.status.speed -= Math.floor(target.defaultStatus.speed * 0.1);
+        if (target.status.speed < 0) {
+          target.status.speed = 0;
+        }
+        target.status.speed -= target.defaultStatus.speed * 0.1;
         return `${target.name}はひるんだ！（素早さ10%ダウン）`;
+      }
+    },
+  },
+  THUNDER: {
+    name: "ビリビリ",
+    type: WAS_SKILL_TYPE.MAGICAL_ATTACK,
+    element: WAS_ELEMENT.THUNDER,
+    power: 100,
+    cost: 30,
+    effect: (_activist: WasCharacter, target: WasCharacter) => {
+      if (
+        Math.random() < 0.5 &&
+        (0 < target.status.attack || 0 < target.status.defense)
+      ) {
+        // 攻撃力減少
+        target.status.attack -= Math.floor(target.defaultStatus.attack * 0.1);
+        if (target.status.attack < 0) {
+          target.status.attack = 0;
+        }
+        target.status.attack -= target.defaultStatus.attack * 0.1;
+
+        // 魔力減少
+        target.status.magic -= Math.floor(target.defaultStatus.magic * 0.1);
+        if (target.status.magic < 0) {
+          target.status.magic = 0;
+        }
+        target.status.magic -= target.defaultStatus.magic * 0.1;
+        return `${target.name}はひるんだ！（攻撃力&防御力10%ダウン）`;
       }
     },
   },
@@ -126,11 +167,11 @@ const WAS_SKILL: {
     power: 0,
     cost: 50,
     effect: (activist: WasCharacter, target: WasCharacter) => {
-      target.status.attack = activist.status.attack * 1.2;
-      target.status.defense = activist.status.defense * 1.2;
-      target.status.magic = activist.status.magic * 1.2;
-      target.status.speed = activist.status.speed * 1.2;
-      return `${target.name}は魔王として覚醒した！（全ステータス20%アップ！）`;
+      target.status.attack = activist.defaultStatus.attack * 1.4;
+      target.status.defense = activist.defaultStatus.defense * 1.4;
+      target.status.magic = activist.defaultStatus.magic * 1.4;
+      target.status.speed = activist.defaultStatus.speed * 1.4;
+      return `${target.name}は魔王として覚醒した！（能力低下を解除！さらに全ステータス40%アップ！）`;
     },
   },
   JUSTICE_SPACIAL: {
@@ -140,19 +181,19 @@ const WAS_SKILL: {
     power: 0,
     cost: 50,
     effect: (activist: WasCharacter, target: WasCharacter) => {
-      target.status.attack = activist.status.attack * 1.2;
-      target.status.defense = activist.status.defense * 1.2;
-      target.status.magic = activist.status.magic * 1.2;
-      target.status.speed = activist.status.speed * 1.2;
-      return `${target.name}の正義が覚醒した！（全ステータス20%アップ！）`;
+      target.status.attack = activist.defaultStatus.attack * 1.2;
+      target.status.defense = activist.defaultStatus.defense * 1.2;
+      target.status.magic = activist.defaultStatus.magic * 1.2;
+      target.status.speed = activist.defaultStatus.speed * 1.2;
+      return `${target.name}の正義が覚醒した！（能力低下を解除！さらに全ステータス20%アップ！）`;
     },
   },
   JUSTICE_ATTACK: {
     name: "正義の鉄槌",
     type: WAS_SKILL_TYPE.PHISICAL_ATTACK,
     element: WAS_ELEMENT.SHINE,
-    cost: 50,
-    power: 2,
+    power: 500,
+    cost: 40,
   },
 } as const;
 

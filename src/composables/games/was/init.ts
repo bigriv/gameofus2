@@ -1,3 +1,4 @@
+import { reactive } from "vue";
 import {
   WAS_AREA_ID,
   WAS_EVENT_TIMMING,
@@ -30,7 +31,6 @@ import {
   WAS_SEA,
   WAS_VILLAGE,
 } from "@/composables/games/was/defines/area";
-import { reactive } from "vue";
 import { WAS_MAP } from "@/composables/games/was/defines/map";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WasArea } from "@/composables/games/was/types/area";
@@ -146,8 +146,9 @@ export const useWasInit = (loadData?: any) => {
     if (loadData.player) {
       state.player.status = new WasStatus(loadData.status);
       state.player.defaultStatus = new WasStatus(loadData.defaultStatus);
-      state.player.skills = loadData.skills as Array<WAS_SKILL_ID> ?? [];
-      state.player.items = loadData.items as Array<{amount: number, id: WAS_ITEM_ID}> ?? [];
+      state.player.skills = (loadData.skills as Array<WAS_SKILL_ID>) ?? [];
+      state.player.items =
+        (loadData.items as Array<{ amount: number; id: WAS_ITEM_ID }>) ?? [];
     }
 
     if (loadData.timming) {
@@ -188,6 +189,12 @@ export const useWasInit = (loadData?: any) => {
           continue;
         }
         AREAS[key].isClear = loadData.areas[key].isClear;
+        AREAS[key].dropItems =
+          (loadData.areas[key].dropItems as Array<{
+            probability: number;
+            amount: number;
+            id: WAS_ITEM_ID;
+          }>) ?? [];
       }
     }
   };

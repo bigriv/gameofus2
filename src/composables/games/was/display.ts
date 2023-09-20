@@ -1,5 +1,5 @@
-import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { Ref, reactive, ref } from "vue";
+import GOUVisual from "@/composables/types/visuals/GOUVisual";
 
 export const useWasDispay = () => {
   const layer: {

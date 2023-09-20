@@ -15,14 +15,18 @@ export class WasArea {
   readonly character: WasCharacter;
   readonly boss?: WasCharacter;
   isClear: boolean;
-  readonly dropItems: Array<{ probability: number; id: WAS_ITEM_ID }>;
+  dropItems: Array<{
+    probability: number;
+    amount: number;
+    id: WAS_ITEM_ID;
+  }>;
   constructor(
     name: string,
     outside: GOUVisual,
     inside: GOUVisual,
     character: WasCharacter,
     boss?: WasCharacter,
-    dropItems?: Array<{ probability: number; id: WAS_ITEM_ID }>
+    dropItems?: Array<{ probability: number; amount: number; id: WAS_ITEM_ID }>
   ) {
     this.name = name;
     this.outside = outside;
@@ -79,11 +83,22 @@ export class WasArea {
   drop(): WAS_ITEM_ID | null {
     for (const dropItem of this.dropItems) {
       const dropRnd = Math.random();
-      console.log("アイテムドロップ乱数", dropRnd);
-      if (dropRnd < dropItem.probability) {
+      if (dropItem.amount > 0 && dropRnd < dropItem.probability) {
+        dropItem.amount--;
         return dropItem.id;
       }
     }
     return null;
+  }
+
+  /**
+   * 保持データをjson形式に変換する
+   * @returns json形式のデータ
+   */
+  toJson() {
+    return {
+      isClear: this.isClear,
+      dropItems: this.dropItems,
+    };
   }
 }

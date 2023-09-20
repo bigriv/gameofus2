@@ -14,7 +14,13 @@ export class WasHealSkill extends WasSkill {
   ) {
     super(name, element, cost, power, beforeEffect, effect, afterEffect);
   }
-  calcDamage(activist: WasCharacter, target: WasCharacter): number {
-    return -activist.status.magic * this.power;
+  calcDamage(activist: WasCharacter, _target: WasCharacter): number {
+    let damage = Math.floor(activist.status.magic * this.power * 0.01);
+    // ダメージの10%を最大値とする乱数を加算する
+    // ダメージが0の場合でも50%の確率でダメージが発生するように1を加算する
+    damage +=
+      Math.floor(damage * 0.1 * Math.random()) + (Math.random() < 0.5 ? 0 : 1);
+    // マイナスのダメージをとることで回復として扱う
+    return -damage;
   }
 }

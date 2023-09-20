@@ -5,6 +5,7 @@ import {
   WAS_BUTTON_EVENT,
   WAS_ENDING,
   WAS_EVENT_TIMMING,
+  WAS_ITEM_ID,
 } from "@/composables/games/was/const";
 import { useWasButton } from "@/composables/games/was/buttons";
 import { WAS_SKILL } from "@/composables/games/was/defines/skill";
@@ -92,8 +93,12 @@ export const useWasMain = (loadData: any, emits: Function) => {
     }
   };
   const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
-    buttonList.value = [];
-    isShowStatusBar.value = false;
+    if (id !== WAS_BUTTON_EVENT.NONE) {
+      // 何も起こさない場合以外は表示をリセットする
+      buttonList.value = [];
+      isShowStatusBar.value = false;
+    }
+
     switch (id) {
       case WAS_BUTTON_EVENT.EXPLORE:
         if (!state.area) {
@@ -109,7 +114,12 @@ export const useWasMain = (loadData: any, emits: Function) => {
           showCharacterInArea();
         } else if (exploreResult instanceof WasItem) {
           // アイテム発見
-          chainMessage(`${exploreResult.name}をみつけた！`, () => showArea(state.area));
+          const addItemResult = state.player.addItem(exploreResult);
+          let messages = [`${exploreResult.name}をみつけた！`];
+          if (!addItemResult) {
+            messages.push(`が、これ以上${exploreResult.name}を持てない...。`);
+          }
+          chainMessage(messages, () => showArea(state.area));
         }
         return;
       case WAS_BUTTON_EVENT.PERSUADE:
@@ -220,12 +230,19 @@ export const useWasMain = (loadData: any, emits: Function) => {
         } else {
           afterMessages = [...character.serif.BATTLE_WIN];
           if (character.dropItem) {
-            let dropItem = WAS_ITEM[character.dropItem];
-            state.player.addItem(character.dropItem);
-            if (dropItem.passive instanceof Function) {
-              dropItem.passive(state.player);
+            const dropItem = new WasItem(
+              character.dropItem,
+              WAS_ITEM[character.dropItem].name,
+              WAS_ITEM[character.dropItem].maxAmount,
+              WAS_ITEM[character.dropItem].passive,
+              WAS_ITEM[character.dropItem].beforeEffect,
+              WAS_ITEM[character.dropItem].effect,
+              WAS_ITEM[character.dropItem].afterEffect
+            );
+            const addResult = state.player.addItem(dropItem);
+            if (addResult) {
+              afterMessages.push(`${dropItem.name}を手に入れた！`);
             }
-            afterMessages.push(`${dropItem.name}を手に入れた！`);
           }
         }
 
@@ -257,10 +274,26 @@ export const useWasMain = (loadData: any, emits: Function) => {
     switch (state.timming) {
       case WAS_EVENT_TIMMING.OPENING:
         messages = WAS_SERIF_DEFINE.PRINCESS_OPENING;
-        state.timming = WAS_EVENT_TIMMING.AFTER_OPENING;
+        state.timming = WAS_EVENT_TIMMING.AFTER_OPENING1;
         break;
-      case WAS_EVENT_TIMMING.AFTER_OPENING:
-        messages = WAS_SERIF_DEFINE.PRINCESS_AFTER_OPENING;
+      case WAS_EVENT_TIMMING.AFTER_OPENING1:
+        messages = WAS_SERIF_DEFINE.PRINCESS_AFTER_OPENING1;
+        state.player.addItem(
+          new WasItem(
+            WAS_ITEM_ID.SATAN_SOUL,
+            WAS_ITEM.SATAN_SOUL.name,
+            WAS_ITEM.SATAN_SOUL.maxAmount,
+            WAS_ITEM.SATAN_SOUL.passive,
+            WAS_ITEM.SATAN_SOUL.beforeEffect,
+            WAS_ITEM.SATAN_SOUL.effect,
+            WAS_ITEM.SATAN_SOUL.afterEffect
+          )
+        );
+        state.timming = WAS_EVENT_TIMMING.AFTER_OPENING2;
+        afterFunction = () => showArea(WAS_AREA_ID.SATAN_CASTLE);
+        break;
+      case WAS_EVENT_TIMMING.AFTER_OPENING2:
+        messages = WAS_SERIF_DEFINE.PRINCESS_AFTER_OPENING2;
         break;
       case WAS_EVENT_TIMMING.AFTER_CLEAR_CAVE:
         if (BOSSES.CAVE.isPersuaded) {
@@ -327,7 +360,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
         break;
     }
 
-    chainMessage(messages, afterFunction);
+    chainMessage([...messages], afterFunction);
 
     // 魔王城に帰還したタイミングでオートセーブを行う
     save();
@@ -338,7 +371,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
     layer.background = [MAP];
 
     // 進行状況によって表示するエリアを制御
-    if (state.timming < WAS_EVENT_TIMMING.AFTER_OPENING) {
+    if (state.timming < WAS_EVENT_TIMMING.AFTER_OPENING2) {
       layer.objects = [AREAS.SATAN_CASTLE.outside];
     } else if (state.timming < WAS_EVENT_TIMMING.AFTER_CLEAR_CAVE) {
       layer.objects = [AREAS.SATAN_CASTLE.outside, AREAS.CAVE.outside];
@@ -383,7 +416,9 @@ export const useWasMain = (loadData: any, emits: Function) => {
   const showCharacterInArea = () => {
     let messages = [];
     const character = state.character as WasNonPlayerCharacter;
-    if (character.visual) layer.objects = [character.visual];
+    if (character.visual) {
+      layer.objects = [character.visual];
+    }
     if (!character.isPersuaded) {
       messages.push(`${character.name}が現れた。`);
     }

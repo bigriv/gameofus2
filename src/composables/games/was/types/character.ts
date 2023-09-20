@@ -1,18 +1,12 @@
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WAS_SKILL } from "@/composables/games/was/defines/skill";
-import { WAS_ITEM } from "@/composables/games/was/defines/item";
 import {
   WAS_BATTLE_MOVE,
   WAS_ITEM_ID,
   WAS_SKILL_ID,
-  WAS_SKILL_TYPE,
 } from "@/composables/games/was/const";
 import { WasStatus } from "@/composables/games/was/types/status";
 import { WasSkill } from "@/composables/games/was/types/skill";
-import { WasPhysicalAttackSkill } from "@/composables/games/was/types/phisicalAttackSkill";
-import { WasMagicalAttackSkill } from "@/composables/games/was/types/magicalAttackSkill";
-import { WasHealSkill } from "@/composables/games/was/types/healSkill";
-import { WasBuffSkill } from "@/composables/games/was/types/buffSkill";
 import { WasItem } from "@/composables/games/was/types/item";
 
 /**
@@ -73,106 +67,57 @@ export class WasCharacter {
       return false;
     }
     if (item.amount < 100) {
-      // （アイテムを１００個以上所持している場合は消費しない）
+      // アイテムの所持数が１００未満なら消費する
       item.amount--;
     }
     return true;
   }
-  /**
-   * 習得している中からスキルを取得する
-   * @param key スキルのID
-   * @returns スキル(習得していないスキルの場合はnullを返却する)
-   */
-  getSkill(key: WAS_SKILL_ID): WasSkill | null {
-    const skillId = this.skills.find((skill) => skill == key);
-    if (!skillId) {
-      return null;
-    }
-    const skillDefine = WAS_SKILL[skillId];
 
-    let skill: WasSkill;
-    switch (skillDefine.type) {
-      case WAS_SKILL_TYPE.PHISICAL_ATTACK:
-        skill = new WasPhysicalAttackSkill(
-          skillDefine.name,
-          skillDefine.element,
-          skillDefine.cost,
-          skillDefine.power,
-          skillDefine.beforeEffect,
-          skillDefine.effect,
-          skillDefine.afterEffect
-        );
-        break;
-      case WAS_SKILL_TYPE.MAGICAL_ATTACK:
-        skill = new WasMagicalAttackSkill(
-          skillDefine.name,
-          skillDefine.element,
-          skillDefine.cost,
-          skillDefine.power,
-          skillDefine.beforeEffect,
-          skillDefine.effect,
-          skillDefine.afterEffect
-        );
-        break;
-      case WAS_SKILL_TYPE.HEAL:
-        skill = new WasHealSkill(
-          skillDefine.name,
-          skillDefine.element,
-          skillDefine.cost,
-          skillDefine.power,
-          skillDefine.beforeEffect,
-          skillDefine.effect,
-          skillDefine.afterEffect
-        );
-        break;
-      case WAS_SKILL_TYPE.BUFF:
-        skill = new WasBuffSkill(
-          skillDefine.name,
-          skillDefine.element,
-          skillDefine.cost,
-          skillDefine.beforeEffect,
-          skillDefine.effect,
-          skillDefine.afterEffect
-        );
-        break;
-    }
-    return skill;
-  }
   /**
-   * 所持している中からアイテムを取得する
-   * @param key アイテムのID
-   * @returns アイテム(所持していないアイテムの場合はnullを返却する)
+   * 指定されたスキルIDのスキルを使用できるか判定する
+   * @param skillId スキルID
+   * @returns 満腹度が十分ならtrue、それ以外はfalse
    */
-  getItem(key: WAS_ITEM_ID) {
+  isUsableSkill(skillId: WAS_SKILL_ID): boolean {
+    const skill = WAS_SKILL[skillId];
+    if (!skill || !this.skills.includes(skillId)) {
+      return false;
+    }
+    return skill.cost > 0 && this.status.satiety - skill.cost < 0;
+  }
+
+  /**
+   * 指定されたアイテムを所持しているかを判定する
+   * @param key アイテムのID
+   * @returns 所持している場合はtrue、それ以外はfalse
+   */
+  haveItem(key: WAS_ITEM_ID) {
     const item = this.items.find((item) => item.id == key);
-    if (!item || item.amount <= 0) {
-      return null;
-    }
-    const itemDefine = WAS_ITEM[item.id];
-    return new WasItem(
-      itemDefine.name,
-      itemDefine.passive,
-      itemDefine.beforeEffect,
-      itemDefine.effect,
-      itemDefine.afterEffect
-    );
+    return !item || item.amount <= 0;
   }
+
   /**
-   * アイテムを追加する
+   * 所持アイテムに渡されたIDのアイテムを追加する
    * @param key アイテムのID
-   * @returns
+   * @returns 追加成功時はtrue、失敗時はfalse
    */
-  addItem(key: WAS_ITEM_ID) {
-    let item = this.items.find((item) => item.id == key);
-    if (!item) {
-      this.items.push({ amount: 1, id: key });
-      return;
+  addItem(item: WasItem): boolean {
+    let holding = this.items.find((i) => i.id == item.id);
+    if (!holding) {
+      holding = { amount: 0, id: item.id };
+      this.items.push(holding);
     }
-    if (item.amount >= 100) {
-      return;
+    if (holding.amount >= item.maxAmount) {
+      return false;
     }
-    item.amount++;
+    holding.amount++;
+    if (item.passive instanceof Function) {
+      // パッシブ効果の適用
+      item.passive(this);
+    }
+    return true;
   }
+
   /**
    * 戦闘終了時用のステータス初期化処理
    * 体力と満腹度は次回の戦闘に引き継ぐためリセットしない

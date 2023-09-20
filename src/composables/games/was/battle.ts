@@ -1,11 +1,19 @@
-import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 import {
   WAS_BATTLE_MOVE,
   WAS_BATTLE_STATUS,
+  WAS_SKILL_TYPE,
 } from "@/composables/games/was/const";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { WasPlayerCharacter } from "@/composables/games/was/types/palyerCharacter";
+import { WAS_ITEM } from "@/composables/games/was/defines/item";
+import { WasItem } from "@/composables/games/was/types/item";
+import { WasSkill } from "@/composables/games/was/types/skill";
+import { WAS_SKILL } from "@/composables/games/was/defines/skill";
+import { WasPhysicalAttackSkill } from "@/composables/games/was/types/phisicalAttackSkill";
+import { WasMagicalAttackSkill } from "@/composables/games/was/types/magicalAttackSkill";
+import { WasHealSkill } from "@/composables/games/was/types/healSkill";
+import { WasBuffSkill } from "@/composables/games/was/types/buffSkill";
 
 type WAS_BATTLE_PROGRESS = {
   message: string;
@@ -14,32 +22,107 @@ type WAS_BATTLE_PROGRESS = {
 };
 
 export const useWasBattle = () => {
+  const getMoveDetail = (
+    character: WasCharacter
+  ): WasSkill | WasItem | null => {
+    if (!character.move) {
+      return null;
+    }
+    if (character.move.type == WAS_BATTLE_MOVE.SKILL) {
+      if (!character.isUsableSkill(character.move.skillId)) {
+        return null;
+      }
+      const skillDefine = WAS_SKILL[character.move.skillId];
+      switch (skillDefine.type) {
+        case WAS_SKILL_TYPE.PHISICAL_ATTACK:
+          return new WasPhysicalAttackSkill(
+            skillDefine.name,
+            skillDefine.element,
+            skillDefine.cost,
+            skillDefine.power,
+            skillDefine.beforeEffect,
+            skillDefine.effect,
+            skillDefine.afterEffect
+          );
+        case WAS_SKILL_TYPE.MAGICAL_ATTACK:
+          return new WasMagicalAttackSkill(
+            skillDefine.name,
+            skillDefine.element,
+            skillDefine.cost,
+            skillDefine.power,
+            skillDefine.beforeEffect,
+            skillDefine.effect,
+            skillDefine.afterEffect
+          );
+        case WAS_SKILL_TYPE.HEAL:
+          return new WasHealSkill(
+            skillDefine.name,
+            skillDefine.element,
+            skillDefine.cost,
+            skillDefine.power,
+            skillDefine.beforeEffect,
+            skillDefine.effect,
+            skillDefine.afterEffect
+          );
+        case WAS_SKILL_TYPE.BUFF:
+          return new WasBuffSkill(
+            skillDefine.name,
+            skillDefine.element,
+            skillDefine.cost,
+            skillDefine.beforeEffect,
+            skillDefine.effect,
+            skillDefine.afterEffect
+          );
+      }
+    }
+    if (character.move.type == WAS_BATTLE_MOVE.ITEM) {
+      if (!character.haveItem(character.move.itemId)) {
+        return null;
+      }
+      return new WasItem(
+        character.move.itemId,
+        WAS_ITEM[character.move.itemId].name,
+        WAS_ITEM[character.move.itemId].maxAmount,
+        WAS_ITEM[character.move.itemId].passive,
+        WAS_ITEM[character.move.itemId].beforeEffect,
+        WAS_ITEM[character.move.itemId].effect,
+        WAS_ITEM[character.move.itemId].afterEffect
+      );
+    }
+    return null;
+  };
+
   /**
    * 各キャラクターの発動スキル・使用アイテムによって事前処理を行う
    * @param characters 戦闘に参加している全キャラクターのリスト
    */
   const preProcess = (characters: Array<WasCharacter>) => {
     characters.forEach((character) => {
-      if (!character.move) {
-        return;
-      }
-      let move = null;
-      if (character.move.type == WAS_BATTLE_MOVE.SKILL) {
-        move = character.getSkill(character.move.skillId);
-        // 満腹度が足りていない場合はスキップ
-        if (character.status.satiety < (move?.cost ?? 0)) {
-          return;
-        }
-      }
-      if (character.move.type == WAS_BATTLE_MOVE.ITEM) {
-        move = character.getItem(character.move.itemId);
-      }
-      if (!move) {
+      const moveDetail = getMoveDetail(character);
+      if (!moveDetail) {
         return;
       }
 
-      if (move.beforeEffect instanceof Function) {
-        move.beforeEffect(character, character.move.target);
+      if (moveDetail.beforeEffect instanceof Function) {
+        // getMove内でcharacter.moveのnullチェックをしているため、targetに強制アクセスする
+        moveDetail.beforeEffect(character, character.move!.target);
+      }
+    });
+  };
+
+  /**
+   * 各キャラクターの発動スキル・使用アイテムによって事後処理を行う
+   * @param characters 戦闘に参加している全キャラクターのリスト
+   */
+  const postProcess = (characters: Array<WasCharacter>) => {
+    characters.forEach((character) => {
+      const moveDetail = getMoveDetail(character);
+      if (!moveDetail) {
+        return;
+      }
+      if (moveDetail.afterEffect instanceof Function) {
+        // getMove内でcharacter.moveのnullチェックをしているため、targetに強制アクセスする
+        moveDetail.afterEffect(character, character.move!.target);
       }
     });
   };
@@ -76,7 +159,8 @@ export const useWasBattle = () => {
     attacker: WasCharacter,
     target: WasCharacter
   ): number => {
-    let damage = attacker.status.attack - target.status.defense;
+    let damage =
+      attacker.status.attack - Math.floor(target.status.defense * 0.5);
     if (damage < 0) {
       damage = 0;
     }
@@ -114,32 +198,45 @@ export const useWasBattle = () => {
         //  ライフが0のキャラクターは飛ばす
         continue;
       }
-      if (!character.move) {
-        throw new WrongImplementationError("Character move is not set.");
+      const moveDetail = getMoveDetail(character);
+      const target = character.move?.target;
+      if (!target) {
+        continue;
       }
-      if (character.move.type == WAS_BATTLE_MOVE.ITEM) {
+      if (moveDetail instanceof WasSkill) {
+        // スキル使用時の処理
+        const skill = moveDetail;
+        const useResult = character.useSkill(skill);
+
+        if (!useResult) {
+          progressList.push({
+            message: `${character.name}は${skill.name}を使おうとしたが、力が出なかった。`,
+          });
+          continue;
+        }
+      } else if (moveDetail instanceof WasItem) {
         // アイテム使用時の処理
-        const item = character.getItem(character.move.itemId);
-        if (!item) {
+        const item = moveDetail;
+        if (!(item.effect instanceof Function)) {
           progressList.push({
             message: `${character.name}は意味のない行動をした。`,
           });
           continue;
         }
 
-        const useResult = character.useItemInBattle(character.move.itemId);
-        if (!useResult || !(item.effect instanceof Function)) {
+        const useResult = character.useItemInBattle(moveDetail.id);
+        if (!useResult) {
           progressList.push({
-            message: `${item.name}は今は使えない。`,
+            message: `${character.name}は${item.name}を使おうとしたが、持っていないかった。`,
           });
-          continue
+          continue;
         }
 
         progressList.push({
           message: `${character.name}は${item.name}を使用した！`,
         });
 
-        const result = item.effect(character, character.move.target);
+        const result = item.effect(character, target);
         if (!result) {
           continue;
         }
@@ -147,91 +244,23 @@ export const useWasBattle = () => {
         progressList.push({
           message: result,
         });
-      } else if (character.move.type == WAS_BATTLE_MOVE.SKILL) {
-        // スキル使用時の処理
-        const skill = character.getSkill(character.move.skillId);
-        if (!skill) {
-          progressList.push({
-            message: `${character.name}は意味のない行動をした。`,
-          });
-          continue;
-        }
-        const useResult = character.useSkill(skill);
-
-        if (!useResult) {
-          progressList.push({
-            message: `${character.name}は${skill.name}を発動する力が出ない。`,
-          });
-          continue;
-        }
-
-        progressList.push({
-          message: `${character.name}は${skill.name}を発動した！`,
-        });
-
-        // ダメージ計算
-        const target = character.move.target;
-        const damage = skill.calcDamage(character, target);
-        target.status.life -= damage;
-        if (damage < 0) {
-          // ダメージがマイナスの場合は回復処理を行う
-          if (target.status.life > target.defaultStatus.life) {
-            // 体力が初期値を超えた場合は初期値を入れなおす
-            target.status.life = target.defaultStatus.life;
-          }
-
-          // 結果詰め込み処理
-          progressList.push({
-            message: `${target.name}は体力を${-damage}回復した`,
-          });
-        } else {
-          // ダメージがプラスの場合は攻撃処理を行う
-          if (target.status.life < 0) {
-            // 体力がマイナスになった場合はバグ回避のため明示的に0にする
-            target.status.life = 0;
-          }
-
-          // 結果詰め込み処理
-          if (character instanceof WasPlayerCharacter) {
-            progressList.push({
-              message: `${character.move.target.name}に${damage}のダメージを与えた！`,
-            });
-          } else if (character instanceof WasNonPlayerCharacter) {
-            progressList.push({
-              message: `${character.move.target.name}は${damage}のダメージを受けた。`,
-            });
-          }
-        }
-
-        // 追加効果処理
-        if (!(skill.effect instanceof Function)) {
-          continue;
-        }
-        const result = skill.effect(character, target);
-        if (!result.length) {
-          continue;
-        }
-        // 結果詰め込み処理
-        progressList.push({
-          message: result,
-        });
-      } else if (character.move?.type == WAS_BATTLE_MOVE.ATTACK) {
+      } else {
         // 通常攻撃時の処理
-        const damage = calcAttackDamage(character, character.move.target);
-        character.move.target.status.life -= damage;
-        if (character.move.target.status.life < 0) {
+        const damage = calcAttackDamage(character, target);
+        target.status.life -= damage;
+        if (target.status.life < 0) {
           // 体力がマイナスになった場合はバグ回避のため明示的に0にする
-          character.move.target.status.life = 0;
+          target.status.life = 0;
         }
 
         // 結果詰め込み処理
         if (character instanceof WasPlayerCharacter) {
           progressList.push({
-            message: `${character.move.target.name}に${damage}のダメージを与えた！`,
+            message: `${target.name}に${damage}のダメージを与えた！`,
           });
         } else if (character instanceof WasNonPlayerCharacter) {
           progressList.push({
-            message: `${character.move.target.name}は${damage}のダメージを受けた。`,
+            message: `${target.name}は${damage}のダメージを受けた。`,
           });
         }
       }
@@ -262,28 +291,7 @@ export const useWasBattle = () => {
     }
     if (!isBattleEnd) {
       //  戦闘が継続される場合はスキル・アイテムによる事後処理を実行
-      characters.forEach((character) => {
-        if (!character.move) {
-          return;
-        }
-        let move = null;
-        if (character.move.type == WAS_BATTLE_MOVE.SKILL) {
-          move = character.getSkill(character.move.skillId);
-          // 満腹度が足りていない場合はスキップ
-          if (character.status.satiety < (move?.cost ?? 0)) {
-            return;
-          }
-        }
-        if (character.move.type == WAS_BATTLE_MOVE.ITEM) {
-          move = character.getItem(character.move.itemId);
-        }
-        if (!move) {
-          return;
-        }
-        if (move.afterEffect instanceof Function) {
-          move.afterEffect(character, character.move.target);
-        }
-      });
+      postProcess(characters);
     }
 
     return { status: status, progresses: progressList };

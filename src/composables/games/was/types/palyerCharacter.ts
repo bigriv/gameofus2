@@ -80,9 +80,10 @@ export class WasPlayerCharacter extends WasCharacter {
       // アイテムのドロップ判定
       const itemId = area.drop();
       if (itemId) {
-        this.addItem(itemId);
         return new WasItem(
+          itemId,
           WAS_ITEM[itemId].name,
+          WAS_ITEM[itemId].maxAmount,
           WAS_ITEM[itemId].passive,
           WAS_ITEM[itemId].beforeEffect,
           WAS_ITEM[itemId].effect,

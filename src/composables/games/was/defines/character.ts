@@ -40,10 +40,10 @@ const WAS_SATAN: WAS_PLAYER_CHARACTER_DEFINITION_TYPE = {
   name: "魔王",
   initStatus: {
     life: 100,
-    satiety: 10,
+    satiety: 100,
     attack: 10,
-    defense: 0,
-    speed: 1,
+    defense: 10,
+    speed: 10,
     magic: 10,
     element: WAS_ELEMENT.DARK,
   },
@@ -75,15 +75,15 @@ const WAS_GOBLIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 300,
   },
   initStatus: {
-    life: 10,
-    satiety: 0,
-    attack: 10,
-    defense: 3,
-    speed: 1,
-    magic: 10,
-    element: WAS_ELEMENT.NONE,
+    life: 80,
+    satiety: 100,
+    attack: 12,
+    defense: 5,
+    speed: 5,
+    magic: 0,
+    element: WAS_ELEMENT.SOIL,
   },
-  dropItem: WAS_ITEM_ID.GOBLIN_HANMER,
+  dropItem: WAS_ITEM_ID.GOBLIN_PICKEL,
   persuadItem: WAS_ITEM_ID.SATAN_SOUL,
   occupySkill: WAS_SKILL_ID.POWER_ATTACK,
   skills: [WAS_SKILL_ID.POWER_ATTACK],
@@ -93,74 +93,13 @@ const WAS_GOBLIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     PERSUADE_SUCCESS: WAS_SERIF_DEFINE.PERSUADE_SUCCESS_GOBLIN,
   },
   chooseMove: (self: WasNonPlayerCharacter, enemey: WasCharacter) => {
-    const skill = self.getSkill(WAS_SKILL_ID.POWER_ATTACK);
-    const rnd = Math.random();
-    if (skill && rnd < 0.5) {
+    if (self.isUsableSkill(WAS_SKILL_ID.POWER_ATTACK) && Math.random() < 0.7) {
       return {
         type: WAS_BATTLE_MOVE.SKILL,
         skillId: WAS_SKILL_ID.POWER_ATTACK,
         target: enemey,
       };
     }
-    return {
-      type: WAS_BATTLE_MOVE.ATTACK,
-      target: enemey,
-    };
-  },
-};
-
-const WAS_SAHAGIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
-  name: "サハギン",
-  visual: {
-    type: GOUVisualType.IMAGE_SVG,
-    path: "/games/was/characters/Sahagin.svg",
-    width: 150,
-    height: 300,
-  },
-  initStatus: {
-    life: 10,
-    satiety: 0,
-    attack: 10,
-    defense: 3,
-    speed: 1,
-    magic: 10,
-    element: WAS_ELEMENT.WATER,
-  },
-  dropItem: WAS_ITEM_ID.HOLY_WATER,
-  persuadItem: WAS_ITEM_ID.GOBLIN_HANMER,
-  occupySkill: WAS_SKILL_ID.SPEED_ATTACK,
-  skills: [WAS_SKILL_ID.SPEED_ATTACK],
-  items: [{ amount: 100, id: WAS_ITEM_ID.FISH }],
-  serif: {
-    FACE1: WAS_SERIF_DEFINE.FACE_SAHAGIN,
-    BATTLE_WIN: WAS_SERIF_DEFINE.BATTLE_WIN_SAHAGIN,
-    PERSUADE_SUCCESS: WAS_SERIF_DEFINE.PERSUADE_SUCCESS_SAHAGIN,
-  },
-  chooseMove: (self: WasNonPlayerCharacter, enemey: WasCharacter) => {
-    const rnd = Math.random();
-    const item = self.getItem(WAS_ITEM_ID.FISH);
-    if (item && rnd < 0.8) {
-      if (
-        self.status.satiety <= self.defaultStatus.satiety * 0.8 &&
-        self.status.life <= self.defaultStatus.life * 0.8
-      ) {
-        return {
-          type: WAS_BATTLE_MOVE.ITEM,
-          itemId: WAS_ITEM_ID.FISH,
-          target: self,
-        };
-      }
-    }
-
-    const skill = self.getSkill(WAS_SKILL_ID.SPEED_ATTACK);
-    if (skill && rnd < 0.5) {
-      return {
-        type: WAS_BATTLE_MOVE.SKILL,
-        skillId: WAS_SKILL_ID.SPEED_ATTACK,
-        target: enemey,
-      };
-    }
-
     return {
       type: WAS_BATTLE_MOVE.ATTACK,
       target: enemey,
@@ -177,29 +116,26 @@ const WAS_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 300,
   },
   initStatus: {
-    life: 10,
-    satiety: 0,
+    life: 80,
+    satiety: 150,
     attack: 10,
-    defense: 0,
-    speed: 1,
-    magic: 10,
+    defense: 8,
+    speed: 12,
+    magic: 15,
     element: WAS_ELEMENT.NONE,
   },
-  dropItem: WAS_ITEM_ID.ELF_MEDICINE,
+  dropItem: WAS_ITEM_ID.WING_BOOTS,
   persuadItem: WAS_ITEM_ID.SATAN_SOUL,
   occupySkill: WAS_SKILL_ID.WIND,
-  skills: [WAS_SKILL_ID.HEAL, WAS_SKILL_ID.WIND],
+  skills: [WAS_SKILL_ID.HEAL, WAS_SKILL_ID.SPEED_ATTACK, WAS_SKILL_ID.WIND],
   serif: {
     FACE1: WAS_SERIF_DEFINE.FACE_ELF,
     BATTLE_WIN: WAS_SERIF_DEFINE.BATTLE_WIN_ELF,
     PERSUADE_SUCCESS: WAS_SERIF_DEFINE.PERSUADE_SUCCESS_ELF,
   },
   chooseMove: (self: WasNonPlayerCharacter, enemey: WasCharacter) => {
-    const rnd = Math.random();
-
-    const heal = self.getSkill(WAS_SKILL_ID.HEAL);
-    if (heal && rnd < 0.8) {
-      if (self.status.life <= self.defaultStatus.life * 0.7) {
+    if (self.isUsableSkill(WAS_SKILL_ID.HEAL) && Math.random() < 0.8) {
+      if (self.status.life <= self.defaultStatus.life * 0.2) {
         return {
           type: WAS_BATTLE_MOVE.SKILL,
           skillId: WAS_SKILL_ID.HEAL,
@@ -208,8 +144,72 @@ const WAS_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
       }
     }
 
-    const speedAttack = self.getSkill(WAS_SKILL_ID.SPEED_ATTACK);
-    if (speedAttack && rnd < 0.5) {
+    if (self.isUsableSkill(WAS_SKILL_ID.WIND) && Math.random() < 0.7) {
+      return {
+        type: WAS_BATTLE_MOVE.SKILL,
+        skillId: WAS_SKILL_ID.WIND,
+        target: enemey,
+      };
+    }
+
+    if (self.isUsableSkill(WAS_SKILL_ID.SPEED_ATTACK) && Math.random() < 0.5) {
+      return {
+        type: WAS_BATTLE_MOVE.SKILL,
+        skillId: WAS_SKILL_ID.SPEED_ATTACK,
+        target: enemey,
+      };
+    }
+
+    return {
+      type: WAS_BATTLE_MOVE.ATTACK,
+      target: enemey,
+    };
+  },
+};
+
+const WAS_SAHAGIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
+  name: "サハギン",
+  visual: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/characters/Sahagin.svg",
+    width: 150,
+    height: 300,
+  },
+  initStatus: {
+    life: 100,
+    satiety: 100,
+    attack: 10,
+    defense: 10,
+    speed: 8,
+    magic: 10,
+    element: WAS_ELEMENT.WATER,
+  },
+  dropItem: WAS_ITEM_ID.MYSTERIOUS_SHELL,
+  persuadItem: WAS_ITEM_ID.GOBLIN_PICKEL,
+  occupySkill: WAS_SKILL_ID.SPEED_ATTACK,
+  skills: [WAS_SKILL_ID.SPEED_ATTACK],
+  items: [{ amount: 3, id: WAS_ITEM_ID.FISH }],
+  serif: {
+    FACE1: WAS_SERIF_DEFINE.FACE_SAHAGIN,
+    BATTLE_WIN: WAS_SERIF_DEFINE.BATTLE_WIN_SAHAGIN,
+    PERSUADE_SUCCESS: WAS_SERIF_DEFINE.PERSUADE_SUCCESS_SAHAGIN,
+  },
+  chooseMove: (self: WasNonPlayerCharacter, enemey: WasCharacter) => {
+    const item = self.haveItem(WAS_ITEM_ID.FISH);
+    if (item && Math.random() < 0.8) {
+      if (
+        self.status.satiety <= self.defaultStatus.satiety * 0.2 ||
+        self.status.life <= self.defaultStatus.life * 0.2
+      ) {
+        return {
+          type: WAS_BATTLE_MOVE.ITEM,
+          itemId: WAS_ITEM_ID.FISH,
+          target: self,
+        };
+      }
+    }
+
+    if (self.isUsableSkill(WAS_SKILL_ID.SPEED_ATTACK) && Math.random() < 0.5) {
       return {
         type: WAS_BATTLE_MOVE.SKILL,
         skillId: WAS_SKILL_ID.SPEED_ATTACK,
@@ -233,23 +233,31 @@ const WAS_SLIME: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 150,
   },
   initStatus: {
-    life: 10,
-    satiety: 0,
-    attack: 10,
-    defense: 3,
-    speed: 1,
-    magic: 10,
+    life: 50,
+    satiety: 100,
+    attack: 5,
+    defense: 1,
+    speed: 5,
+    magic: 0,
     element: WAS_ELEMENT.SHINE,
   },
   dropItem: WAS_ITEM_ID.HERB,
   persuadItem: WAS_ITEM_ID.RICE_BALL,
   occupySkill: WAS_SKILL_ID.GARD_ATTACK,
+  skills: [WAS_SKILL_ID.GARD_ATTACK],
   serif: {
     FACE1: WAS_SERIF_DEFINE.FACE_SLIME,
     BATTLE_WIN: WAS_SERIF_DEFINE.BATTLE_WIN_SLIME,
     PERSUADE_SUCCESS: WAS_SERIF_DEFINE.PERSUADE_SUCCESS_SLIME,
   },
   chooseMove: (self: WasNonPlayerCharacter, enemey: WasCharacter) => {
+    if (self.isUsableSkill(WAS_SKILL_ID.GARD_ATTACK) && Math.random() < 0.7) {
+      return {
+        type: WAS_BATTLE_MOVE.SKILL,
+        skillId: WAS_SKILL_ID.GARD_ATTACK,
+        target: enemey,
+      };
+    }
     return {
       type: WAS_BATTLE_MOVE.ATTACK,
       target: enemey,
@@ -266,59 +274,55 @@ const WAS_SOLDIER: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 300,
   },
   initStatus: {
-    life: 10,
-    satiety: 0,
-    attack: 10,
-    defense: 3,
-    speed: 1,
+    life: 150,
+    satiety: 300,
+    attack: 15,
+    defense: 15,
+    speed: 12,
     magic: 10,
     element: WAS_ELEMENT.NONE,
   },
-  dropItem: WAS_ITEM_ID.SUPER_HERB,
+  dropItem: WAS_ITEM_ID.HOLY_WATER,
   persuadItem: WAS_ITEM_ID.SATAN_SOUL,
-  occupySkill: WAS_SKILL_ID.SATAN_SPACIAL,
+  occupySkill: WAS_SKILL_ID.HIGH_HEAL,
   skills: [
     WAS_SKILL_ID.POWER_ATTACK,
     WAS_SKILL_ID.GARD_ATTACK,
     WAS_SKILL_ID.SPEED_ATTACK,
   ],
-  items: [{ amount: 100, id: WAS_ITEM_ID.HERB }],
+  items: [{ amount: 3, id: WAS_ITEM_ID.HERB }],
   serif: {
     FACE1: WAS_SERIF_DEFINE.FACE_SOLDIER,
     BATTLE_WIN: WAS_SERIF_DEFINE.BATTLE_WIN_SOLDIER,
     PERSUADE_SUCCESS: WAS_SERIF_DEFINE.PERSUADE_SUCCESS_SOLDIER,
   },
   chooseMove: (self: WasNonPlayerCharacter, enemey: WasCharacter) => {
-    const rnd = Math.random();
-    const item = self.getItem(WAS_ITEM_ID.HERB);
-    if (item && rnd < 0.8) {
-      if (self.status.life <= self.defaultStatus.life * 0.7) {
+    const item = self.haveItem(WAS_ITEM_ID.HERB);
+    if (item && Math.random() < 0.8) {
+      if (self.status.life <= self.defaultStatus.life * 0.2) {
         return {
           type: WAS_BATTLE_MOVE.ITEM,
-          itemId: WAS_ITEM_ID.FISH,
+          itemId: WAS_ITEM_ID.HERB,
           target: self,
         };
       }
     }
 
-    const gardAttack = self.getSkill(WAS_SKILL_ID.GARD_ATTACK);
-    if (gardAttack && rnd < 0.3) {
+    if (self.isUsableSkill(WAS_SKILL_ID.GARD_ATTACK) && Math.random() < 0.6) {
       return {
         type: WAS_BATTLE_MOVE.SKILL,
         skillId: WAS_SKILL_ID.GARD_ATTACK,
         target: enemey,
       };
     }
-    const powerAttack = self.getSkill(WAS_SKILL_ID.POWER_ATTACK);
-    if (powerAttack && 0.3 <= rnd && rnd < 0.6) {
+    if (self.isUsableSkill(WAS_SKILL_ID.POWER_ATTACK) && Math.random() < 0.6) {
       return {
         type: WAS_BATTLE_MOVE.SKILL,
         skillId: WAS_SKILL_ID.POWER_ATTACK,
         target: enemey,
       };
     }
-    const speedAttack = self.getSkill(WAS_SKILL_ID.SPEED_ATTACK);
-    if (speedAttack && 0.6 <= rnd && rnd < 0.8) {
+    if (self.isUsableSkill(WAS_SKILL_ID.SPEED_ATTACK) && Math.random() < 0.4) {
       return {
         type: WAS_BATTLE_MOVE.SKILL,
         skillId: WAS_SKILL_ID.SPEED_ATTACK,
@@ -341,18 +345,19 @@ const WAS_BOSS_GOBLIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 400,
   },
   initStatus: {
-    life: 10,
-    satiety: 0,
-    attack: 10,
-    defense: 0,
-    speed: 1,
-    magic: 10,
-    element: WAS_ELEMENT.NONE,
+    life: 200,
+    satiety: 200,
+    attack: 18,
+    defense: 8,
+    speed: 12,
+    magic: 8,
+    element: WAS_ELEMENT.SOIL,
   },
   dropItem: WAS_ITEM_ID.BOSS_GOBLIN_HEAD,
   persuadItem: null,
   occupySkill: WAS_SKILL_ID.SOIL,
   skills: [WAS_SKILL_ID.POWER_ATTACK, WAS_SKILL_ID.SOIL],
+  items: [{ amount: 3, id: WAS_ITEM_ID.HERB }],
   serif: {
     FACE1: WAS_SERIF_DEFINE.FACE1_BOSS_GOBLIN,
     FACE2: WAS_SERIF_DEFINE.FACE2_BOSS_GOBLIN,
@@ -361,83 +366,31 @@ const WAS_BOSS_GOBLIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     CHAT: WAS_SERIF_DEFINE.CHAT_BOSS_GOBLIN,
   },
   chooseMove: (self: WasNonPlayerCharacter, enemey: WasCharacter) => {
-    const rnd = Math.random();
-    const item = self.getItem(WAS_ITEM_ID.HERB);
-    if (item && rnd < 0.8) {
-      if (self.status.life <= self.defaultStatus.life * 0.7) {
+    const item = self.haveItem(WAS_ITEM_ID.HERB);
+    if (item && Math.random() < 0.8) {
+      if (self.status.life <= self.defaultStatus.life * 0.2) {
         return {
           type: WAS_BATTLE_MOVE.ITEM,
-          itemId: WAS_ITEM_ID.FISH,
+          itemId: WAS_ITEM_ID.HERB,
           target: self,
         };
       }
     }
-    return {
-      type: WAS_BATTLE_MOVE.ATTACK,
-      target: enemey,
-    };
-  },
-};
-
-const WAS_KRAKEN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
-  name: "クラーケン",
-  visual: {
-    type: GOUVisualType.IMAGE_SVG,
-    path: "/games/was/characters/Kraken.svg",
-    width: 300,
-    height: 400,
-  },
-  initStatus: {
-    life: 10,
-    satiety: 0,
-    attack: 10,
-    defense: 0,
-    speed: 1,
-    magic: 10,
-    element: WAS_ELEMENT.WATER,
-  },
-  dropItem: WAS_ITEM_ID.KRAKEN_HAND,
-  persuadItem: WAS_ITEM_ID.DARK_ELF_EYE,
-  occupySkill: WAS_SKILL_ID.WATER,
-  skills: [WAS_SKILL_ID.HEAL, WAS_SKILL_ID.WATER, WAS_SKILL_ID.GARD_ATTACK],
-  serif: {
-    FACE1: WAS_SERIF_DEFINE.FACE1_KRAKEN,
-    FACE2: WAS_SERIF_DEFINE.FACE2_KRAKEN,
-    BATTLE_WIN: WAS_SERIF_DEFINE.BATTLE_WIN_KRAKEN,
-    PERSUADE_SUCCESS: WAS_SERIF_DEFINE.PERSUADE_SUCCESS_KRAKEN,
-    CHAT: WAS_SERIF_DEFINE.CHAT_KRAKEN,
-  },
-  chooseMove: (self: WasNonPlayerCharacter, enemey: WasCharacter) => {
-    const rnd = Math.random();
-
-    const heal = self.getSkill(WAS_SKILL_ID.HEAL);
-    if (heal && rnd < 0.8) {
-      if (self.status.life <= self.defaultStatus.life * 0.7) {
-        return {
-          type: WAS_BATTLE_MOVE.SKILL,
-          skillId: WAS_SKILL_ID.HEAL,
-          target: self,
-        };
-      }
-    }
-
-    const water = self.getSkill(WAS_SKILL_ID.WATER);
-    if (water && rnd < 0.5) {
+    if (self.isUsableSkill(WAS_SKILL_ID.POWER_ATTACK) && Math.random() < 0.6) {
       return {
         type: WAS_BATTLE_MOVE.SKILL,
-        skillId: WAS_SKILL_ID.WATER,
-        target: enemey,
-      };
-    }
-    const gardAttack = self.getSkill(WAS_SKILL_ID.GARD_ATTACK);
-    if (gardAttack && rnd < 0.5) {
-      return {
-        type: WAS_BATTLE_MOVE.SKILL,
-        skillId: WAS_SKILL_ID.GARD_ATTACK,
+        skillId: WAS_SKILL_ID.POWER_ATTACK,
         target: enemey,
       };
     }
 
+    if (self.isUsableSkill(WAS_SKILL_ID.SOIL) && Math.random() < 0.6) {
+      return {
+        type: WAS_BATTLE_MOVE.SKILL,
+        skillId: WAS_SKILL_ID.SOIL,
+        target: enemey,
+      };
+    }
     return {
       type: WAS_BATTLE_MOVE.ATTACK,
       target: enemey,
@@ -454,12 +407,12 @@ const WAS_DARK_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 300,
   },
   initStatus: {
-    life: 10,
-    satiety: 0,
-    attack: 10,
-    defense: 0,
-    speed: 1,
-    magic: 10,
+    life: 200,
+    satiety: 300,
+    attack: 15,
+    defense: 12,
+    speed: 18,
+    magic: 20,
     element: WAS_ELEMENT.DARK,
   },
   dropItem: WAS_ITEM_ID.DARK_ELF_EYE,
@@ -470,7 +423,7 @@ const WAS_DARK_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     WAS_SKILL_ID.SPEED_ATTACK,
     WAS_SKILL_ID.DARK_SORD,
   ],
-  items: [{ amount: 100, id: WAS_ITEM_ID.MEAT }],
+  items: [{ amount: 3, id: WAS_ITEM_ID.MEAT }],
   serif: {
     FACE1: WAS_SERIF_DEFINE.FACE1_DARK_ELF,
     FACE2: WAS_SERIF_DEFINE.FACE2_DARK_ELF,
@@ -479,11 +432,9 @@ const WAS_DARK_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     CHAT: WAS_SERIF_DEFINE.CHAT_DARK_ELF,
   },
   chooseMove: (self: WasNonPlayerCharacter, enemey: WasCharacter) => {
-    const rnd = Math.random();
-
-    const meat = self.getItem(WAS_ITEM_ID.MEAT);
-    if (meat && rnd < 0.8) {
-      if (self.status.satiety <= self.defaultStatus.satiety * 0.7) {
+    const meat = self.haveItem(WAS_ITEM_ID.MEAT);
+    if (meat && Math.random() < 0.8) {
+      if (self.status.satiety <= self.defaultStatus.satiety * 0.2) {
         return {
           type: WAS_BATTLE_MOVE.ITEM,
           itemId: WAS_ITEM_ID.MEAT,
@@ -491,8 +442,73 @@ const WAS_DARK_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
         };
       }
     }
-    const heal = self.getSkill(WAS_SKILL_ID.HEAL);
-    if (heal && rnd < 0.8) {
+    if (self.isUsableSkill(WAS_SKILL_ID.HEAL) && Math.random() < 0.8) {
+      if (self.status.life <= self.defaultStatus.life * 0.2) {
+        return {
+          type: WAS_BATTLE_MOVE.SKILL,
+          skillId: WAS_SKILL_ID.HEAL,
+          target: self,
+        };
+      }
+    }
+
+    if (self.isUsableSkill(WAS_SKILL_ID.WIND) && Math.random() < 0.6) {
+      return {
+        type: WAS_BATTLE_MOVE.SKILL,
+        skillId: WAS_SKILL_ID.WIND,
+        target: enemey,
+      };
+    }
+
+    if (self.isUsableSkill(WAS_SKILL_ID.DARK_SORD) && Math.random() < 0.6) {
+      return {
+        type: WAS_BATTLE_MOVE.SKILL,
+        skillId: WAS_SKILL_ID.DARK_SORD,
+        target: enemey,
+      };
+    }
+
+    return {
+      type: WAS_BATTLE_MOVE.ATTACK,
+      target: enemey,
+    };
+  },
+};
+
+const WAS_KRAKEN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
+  name: "クラーケン",
+  visual: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/characters/Kraken.svg",
+    width: 300,
+    height: 400,
+  },
+  initStatus: {
+    life: 300,
+    satiety: 400,
+    attack: 15,
+    defense: 25,
+    speed: 12,
+    magic: 8,
+    element: WAS_ELEMENT.WATER,
+  },
+  dropItem: WAS_ITEM_ID.KRAKEN_HAND,
+  persuadItem: WAS_ITEM_ID.MYSTERIOUS_SHELL,
+  occupySkill: WAS_SKILL_ID.WATER,
+  skills: [
+    WAS_SKILL_ID.POWER_ATTACK,
+    WAS_SKILL_ID.GARD_ATTACK,
+    WAS_SKILL_ID.WATER,
+  ],
+  serif: {
+    FACE1: WAS_SERIF_DEFINE.FACE1_KRAKEN,
+    FACE2: WAS_SERIF_DEFINE.FACE2_KRAKEN,
+    BATTLE_WIN: WAS_SERIF_DEFINE.BATTLE_WIN_KRAKEN,
+    PERSUADE_SUCCESS: WAS_SERIF_DEFINE.PERSUADE_SUCCESS_KRAKEN,
+    CHAT: WAS_SERIF_DEFINE.CHAT_KRAKEN,
+  },
+  chooseMove: (self: WasNonPlayerCharacter, enemey: WasCharacter) => {
+    if (self.isUsableSkill(WAS_SKILL_ID.HEAL) && Math.random() < 0.8) {
       if (self.status.life <= self.defaultStatus.life * 0.7) {
         return {
           type: WAS_BATTLE_MOVE.SKILL,
@@ -502,19 +518,25 @@ const WAS_DARK_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
       }
     }
 
-    const water = self.getSkill(WAS_SKILL_ID.WATER);
-    if (water && rnd < 0.4) {
+    if (self.isUsableSkill(WAS_SKILL_ID.POWER_ATTACK) && Math.random() < 0.6) {
       return {
         type: WAS_BATTLE_MOVE.SKILL,
-        skillId: WAS_SKILL_ID.WATER,
+        skillId: WAS_SKILL_ID.POWER_ATTACK,
         target: enemey,
       };
     }
-    const gardAttack = self.getSkill(WAS_SKILL_ID.GARD_ATTACK);
-    if (gardAttack && 0.4 <= rnd && rnd < 0.7) {
+    if (self.isUsableSkill(WAS_SKILL_ID.GARD_ATTACK) && Math.random() < 0.7) {
       return {
         type: WAS_BATTLE_MOVE.SKILL,
         skillId: WAS_SKILL_ID.GARD_ATTACK,
+        target: enemey,
+      };
+    }
+
+    if (self.isUsableSkill(WAS_SKILL_ID.WATER) && Math.random() < 0.5) {
+      return {
+        type: WAS_BATTLE_MOVE.SKILL,
+        skillId: WAS_SKILL_ID.WATER,
         target: enemey,
       };
     }
@@ -535,16 +557,16 @@ const WAS_DORAGON: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 300,
   },
   initStatus: {
-    life: 10,
-    satiety: 0,
-    attack: 10,
-    defense: 0,
-    speed: 1,
-    magic: 10,
+    life: 400,
+    satiety: 500,
+    attack: 30,
+    defense: 30,
+    speed: 20,
+    magic: 20,
     element: WAS_ELEMENT.WIND,
   },
   dropItem: WAS_ITEM_ID.DRAGON_WING,
-  persuadItem: WAS_ITEM_ID.ELF_MEDICINE,
+  persuadItem: WAS_ITEM_ID.SUPER_HERB,
   occupySkill: WAS_SKILL_ID.FIRE,
   skills: [WAS_SKILL_ID.POWER_ATTACK, WAS_SKILL_ID.FIRE],
   serif: {
@@ -555,21 +577,18 @@ const WAS_DORAGON: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     CHAT: WAS_SERIF_DEFINE.CHAT_DRAGON,
   },
   chooseMove: (self: WasNonPlayerCharacter, enemey: WasCharacter) => {
-    const rnd = Math.random();
-
-    const fire = self.getSkill(WAS_SKILL_ID.FIRE);
-    if (fire && rnd < 0.4) {
-      return {
-        type: WAS_BATTLE_MOVE.SKILL,
-        skillId: WAS_SKILL_ID.FIRE,
-        target: enemey,
-      };
-    }
-    const powerAttack = self.getSkill(WAS_SKILL_ID.POWER_ATTACK);
-    if (powerAttack && 0.4 <= rnd && rnd < 0.7) {
+    if (self.isUsableSkill(WAS_SKILL_ID.POWER_ATTACK) && Math.random() < 0.7) {
       return {
         type: WAS_BATTLE_MOVE.SKILL,
         skillId: WAS_SKILL_ID.POWER_ATTACK,
+        target: enemey,
+      };
+    }
+
+    if (self.isUsableSkill(WAS_SKILL_ID.FIRE) && Math.random() < 0.4) {
+      return {
+        type: WAS_BATTLE_MOVE.SKILL,
+        skillId: WAS_SKILL_ID.FIRE,
         target: enemey,
       };
     }
@@ -590,21 +609,25 @@ const WAS_HERO: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 300,
   },
   initStatus: {
-    life: 10,
-    satiety: 0,
-    attack: 10,
-    defense: 0,
-    speed: 1,
-    magic: 10,
-    element: WAS_ELEMENT.WIND,
+    life: 500,
+    satiety: 500,
+    attack: 40,
+    defense: 40,
+    speed: 40,
+    magic: 40,
+    element: WAS_ELEMENT.SHINE,
   },
   dropItem: null,
   persuadItem: WAS_ITEM_ID.DRAGON_WING,
   occupySkill: null,
   skills: [
-    WAS_SKILL_ID.HEAL,
-    WAS_SKILL_ID.JUSTICE_ATTACK,
+    WAS_SKILL_ID.THUNDER,
     WAS_SKILL_ID.JUSTICE_SPACIAL,
+    WAS_SKILL_ID.JUSTICE_ATTACK,
+  ],
+  items: [
+    { amount: 2, id: WAS_ITEM_ID.HERB },
+    { amount: 1, id: WAS_ITEM_ID.HOLY_WATER },
   ],
   serif: {
     FACE1: WAS_SERIF_DEFINE.FACE1_HERO,
@@ -613,19 +636,21 @@ const WAS_HERO: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     PERSUADE_SUCCESS: WAS_SERIF_DEFINE.PERSUADE_SUCCESS_HERO,
   },
   chooseMove: (self: WasNonPlayerCharacter, enemey: WasCharacter) => {
-    const rnd = Math.random();
-
-    const heal = self.getSkill(WAS_SKILL_ID.HEAL);
-    if (heal && rnd < 0.8) {
-      return {
-        type: WAS_BATTLE_MOVE.SKILL,
-        skillId: WAS_SKILL_ID.HEAL,
-        target: self,
-      };
+    const holyWater = self.haveItem(WAS_ITEM_ID.HOLY_WATER);
+    if (holyWater && Math.random() < 0.8) {
+      if (self.status.life <= self.defaultStatus.life * 0.5) {
+        return {
+          type: WAS_BATTLE_MOVE.SKILL,
+          skillId: WAS_SKILL_ID.HEAL,
+          target: self,
+        };
+      }
     }
 
-    const justiceSpacial = self.getSkill(WAS_SKILL_ID.JUSTICE_SPACIAL);
-    if (justiceSpacial && rnd < 0.8) {
+    if (
+      self.isUsableSkill(WAS_SKILL_ID.JUSTICE_SPACIAL) &&
+      Math.random() < 0.8
+    ) {
       if (self.status.attack <= self.defaultStatus.attack) {
         return {
           type: WAS_BATTLE_MOVE.SKILL,
@@ -635,8 +660,10 @@ const WAS_HERO: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
       }
     }
 
-    const justiceAttack = self.getSkill(WAS_SKILL_ID.JUSTICE_ATTACK);
-    if (justiceAttack && rnd < 0.8) {
+    if (
+      self.isUsableSkill(WAS_SKILL_ID.JUSTICE_ATTACK) &&
+      Math.random() < 0.8
+    ) {
       return {
         type: WAS_BATTLE_MOVE.SKILL,
         skillId: WAS_SKILL_ID.JUSTICE_ATTACK,

@@ -10,7 +10,7 @@ type WAS_AREA_DEFINITION_TYPE = {
   name: string;
   outside: GOUVisualDefinition;
   inside: GOUVisualDefinition;
-  dropItems?: Array<{ probability: number; id: WAS_ITEM_ID }>;
+  dropItems?: Array<{ probability: number; amount: number; id: WAS_ITEM_ID }>;
 };
 /**
  * エリア定義
@@ -48,31 +48,12 @@ const WAS_CAVE: WAS_AREA_DEFINITION_TYPE = {
     height: GAME_DISPLAY_HEIGHT,
   },
   dropItems: [
-    { probability: 0.05, id: WAS_ITEM_ID.GOBLIN_HANMER },
-    { probability: 0.3, id: WAS_ITEM_ID.RICE_BALL },
-    { probability: 0.5, id: WAS_ITEM_ID.HERB },
+    { probability: 0.05, amount: 1, id: WAS_ITEM_ID.GOBLIN_PICKEL },
+    { probability: 0.3, amount: 2, id: WAS_ITEM_ID.RICE_BALL },
+    { probability: 0.5, amount: 3, id: WAS_ITEM_ID.HERB },
   ],
 };
-const WAS_SEA: WAS_AREA_DEFINITION_TYPE = {
-  name: "海岸",
-  outside: {
-    type: GOUVisualType.IMAGE_SVG,
-    path: "/games/was/buildings/outside/Sea.svg",
-    width: 100,
-    height: 100,
-    position: { x: 45, y: 290 },
-  },
-  inside: {
-    type: GOUVisualType.IMAGE_SVG,
-    path: "/games/was/buildings/inside/Sea.svg",
-    width: GAME_DISPLAY_WIDTH,
-    height: GAME_DISPLAY_HEIGHT,
-  },
-  dropItems: [
-    { probability: 0.05, id: WAS_ITEM_ID.HOLY_WATER },
-    { probability: 0.4, id: WAS_ITEM_ID.FISH },
-  ],
-};
+
 const WAS_VILLAGE: WAS_AREA_DEFINITION_TYPE = {
   name: "エルフ村",
   outside: {
@@ -89,11 +70,34 @@ const WAS_VILLAGE: WAS_AREA_DEFINITION_TYPE = {
     height: GAME_DISPLAY_HEIGHT,
   },
   dropItems: [
-    { probability: 0.05, id: WAS_ITEM_ID.ELF_MEDICINE },
-    { probability: 0.3, id: WAS_ITEM_ID.SUPER_HERB },
-    { probability: 0.5, id: WAS_ITEM_ID.HERB },
+    { probability: 0.05, amount: 1, id: WAS_ITEM_ID.WING_BOOTS },
+    { probability: 0.3, amount: 3, id: WAS_ITEM_ID.MEAT },
+    { probability: 0.5, amount: 3, id: WAS_ITEM_ID.HERB },
   ],
 };
+
+const WAS_SEA: WAS_AREA_DEFINITION_TYPE = {
+  name: "海岸",
+  outside: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/buildings/outside/Sea.svg",
+    width: 100,
+    height: 100,
+    position: { x: 45, y: 290 },
+  },
+  inside: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/games/was/buildings/inside/Sea.svg",
+    width: GAME_DISPLAY_WIDTH,
+    height: GAME_DISPLAY_HEIGHT,
+  },
+  dropItems: [
+    { probability: 0.05, amount: 1, id: WAS_ITEM_ID.MYSTERIOUS_SHELL },
+    { probability: 0.1, amount: 2, id: WAS_ITEM_ID.HOLY_WATER },
+    { probability: 0.3, amount: 3, id: WAS_ITEM_ID.FISH },
+  ],
+};
+
 const WAS_MOUNTAIN: WAS_AREA_DEFINITION_TYPE = {
   name: "山",
   outside: {
@@ -110,8 +114,8 @@ const WAS_MOUNTAIN: WAS_AREA_DEFINITION_TYPE = {
     height: GAME_DISPLAY_HEIGHT,
   },
   dropItems: [
-    { probability: 0.1, id: WAS_ITEM_ID.DRAGON_SCALE },
-    { probability: 0.4, id: WAS_ITEM_ID.MEAT },
+    { probability: 0.1, amount: 1, id: WAS_ITEM_ID.DRAGON_SCALE },
+    { probability: 0.4, amount: 3, id: WAS_ITEM_ID.SUPER_HERB },
   ],
 };
 const WAS_KINGDOM_CASTLE: WAS_AREA_DEFINITION_TYPE = {
@@ -130,8 +134,11 @@ const WAS_KINGDOM_CASTLE: WAS_AREA_DEFINITION_TYPE = {
     height: GAME_DISPLAY_HEIGHT,
   },
   dropItems: [
-    { probability: 0.3, id: WAS_ITEM_ID.SUPER_HERB },
-    { probability: 0.3, id: WAS_ITEM_ID.RICE_BALL },
+    { probability: 0.1, amount: 2, id: WAS_ITEM_ID.SUPER_HERB },
+    { probability: 0.3, amount: 3, id: WAS_ITEM_ID.RICE_BALL },
+    { probability: 0.3, amount: 2, id: WAS_ITEM_ID.MEAT },
+    { probability: 0.3, amount: 2, id: WAS_ITEM_ID.FISH },
+    { probability: 0.5, amount: 5, id: WAS_ITEM_ID.HERB },
   ],
 };
 

@@ -54,10 +54,11 @@ export class WasCharacter {
     return true;
   }
   /**
-   * アイテムを使用する（バトル中）
+   * アイテムを使用する
    * @param key スキルのID
+   * @returns アイテムが使用できる状態ならtrue、それ以外はfalse
    */
-  useItemInBattle(key: WAS_ITEM_ID): boolean | null {
+  useItem(key: WAS_ITEM_ID): boolean | null {
     // アイテムの消費
     const item = this.items.find((item) => item.id == key);
     if (!item) {

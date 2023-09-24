@@ -267,10 +267,10 @@ export const useWasBattle = () => {
       return progressList;
     }
 
-    const useResult = character.useItemInBattle(item.id);
+    const useResult = character.useItem(item.id);
     if (!useResult) {
       progressList.push({
-        message: `${character.name}は${item.name}を使おうとしたが、持っていないかった。`,
+        message: `${character.name}は${item.name}を使おうとしたが、持っていなかった。`,
       });
       return progressList;
     }

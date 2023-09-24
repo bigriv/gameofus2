@@ -35,6 +35,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
 
   const {
     EXLPORE_BUTTON_LIST,
+    EXPLORE_ITEM_BUTTON_LIST,
     FACE_BUTTON_DEFINE_LIST,
     PERSUADE_BUTTON_LIST,
     BATTLE_BUTTON_LIST,
@@ -135,6 +136,42 @@ export const useWasMain = (loadData: any, emits: Function) => {
           chainMessage(["何もみつからない...。"], () => showArea(state.area));
         }
         return;
+      case WAS_BUTTON_EVENT.EXPLORE_ITEM:
+        buttonList.value = EXPLORE_ITEM_BUTTON_LIST.value;
+        return;
+      case WAS_BUTTON_EVENT.USE_EXPLORE_ITEM:
+        const item = WAS_ITEM[args];
+        if (!item) {
+          throw new WrongImplementationError("Not exsist item is selected.");
+        }
+        if (!(item.effect instanceof Function)) {
+          chainMessage([`${item.name}は今使っても意味がない。`], () =>
+            showArea(state.area)
+          );
+          return;
+        }
+
+        const useResult = state.player.useItem(args);
+        if (!useResult) {
+          chainMessage([`${item.name}を持っていない。`], () =>
+            showArea(state.area)
+          );
+          return;
+        }
+
+        const useItemMessages = [];
+        useItemMessages.push(`${state.player.name}は${item.name}を使用した！`);
+
+        const result = item.effect(state.player, state.player);
+        // 結果詰め込み処理
+        if (useItemMessages) {
+          useItemMessages.push(result);
+        }
+        chainMessage(useItemMessages, () => showArea(state.area));
+        return;
+      case WAS_BUTTON_EVENT.BACK_TO_EXPLORE:
+        showArea(state.area);
+        return;
       case WAS_BUTTON_EVENT.PERSUADE:
         buttonList.value = PERSUADE_BUTTON_LIST.value;
         return;
@@ -151,14 +188,14 @@ export const useWasMain = (loadData: any, emits: Function) => {
           clearArea(area);
         }
 
-        let messages = [...character.serif.PERSUADE_SUCCESS];
+        let persuadSuccessMessages = [...character.serif.PERSUADE_SUCCESS];
         if (character.occupySkill) {
           let occupySkill = WAS_SKILL[character.occupySkill];
           state.player.skills.push(character.occupySkill);
-          messages.push(`${occupySkill.name}を習得した！`);
+          persuadSuccessMessages.push(`${occupySkill.name}を習得した！`);
         }
 
-        chainMessage(messages, () => showArea(area));
+        chainMessage(persuadSuccessMessages, () => showArea(area));
         return;
       case WAS_BUTTON_EVENT.BATTLE:
         showBattle();

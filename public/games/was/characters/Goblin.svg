@@ -18,6 +18,7 @@
 <line x1="49.2236" y1="31.5528" x2="57.2236" y2="35.5528" stroke="black"/>
 <line x1="40.7969" y1="35.5431" x2="49.7969" y2="31.5431" stroke="black"/>
 <path d="M78 42V120H22L68 42H78Z" fill="#A52A2A"/>
+<rect y="103" width="20" height="5" fill="#E5B300"/>
 </g>
 <defs>
 <clipPath id="clip0_13_29">

@@ -18,7 +18,7 @@ const WAS_SKILL: {
     type: WAS_SKILL_TYPE.HEAL,
     element: WAS_ELEMENT.NONE,
     power: 200,
-    cost: 10,
+    cost: 15,
   },
   HIGH_HEAL: {
     name: "ハイヒール",
@@ -31,7 +31,7 @@ const WAS_SKILL: {
     name: "力任せ",
     type: WAS_SKILL_TYPE.PHISICAL_ATTACK,
     element: WAS_ELEMENT.NONE,
-    power: 120,
+    power: 150,
     cost: 10,
   },
   SPEED_ATTACK: {
@@ -39,12 +39,12 @@ const WAS_SKILL: {
     type: WAS_SKILL_TYPE.PHISICAL_ATTACK,
     element: WAS_ELEMENT.NONE,
     power: 100,
-    cost: 10,
+    cost: 15,
     beforeEffect: (activist: WasCharacter, _target: WasCharacter) => {
-      activist.status.speed += activist.status.speed * 0.2;
+      activist.status.speed = activist.status.speed * 10;
     },
     afterEffect: (activist: WasCharacter, _target: WasCharacter) => {
-      activist.status.speed = activist.status.speed;
+      activist.status.speed = activist.status.speed / 10;
     },
   },
   GARD_ATTACK: {
@@ -52,19 +52,19 @@ const WAS_SKILL: {
     type: WAS_SKILL_TYPE.PHISICAL_ATTACK,
     element: WAS_ELEMENT.NONE,
     power: 100,
-    cost: 10,
+    cost: 15,
     beforeEffect: (activist: WasCharacter, _target: WasCharacter) => {
-      activist.status.defense += activist.status.defense * 0.2;
+      activist.status.defense = activist.status.defense * 4;
     },
     afterEffect: (activist: WasCharacter, _target: WasCharacter) => {
-      activist.status.defense = activist.status.defense;
+      activist.status.defense = activist.status.defense / 4;
     },
   },
   DARK_SORD: {
     name: "暗黒剣",
     type: WAS_SKILL_TYPE.PHISICAL_ATTACK,
     element: WAS_ELEMENT.DARK,
-    power: 400,
+    power: 300,
     cost: 30,
   },
   FIRE: {
@@ -75,11 +75,11 @@ const WAS_SKILL: {
     cost: 20,
     effect: (_activist: WasCharacter, target: WasCharacter) => {
       if (Math.random() < 0.5 && 0 < target.status.attack) {
-        target.status.attack -= Math.floor(target.defaultStatus.attack * 0.1);
+        target.status.attack -= Math.floor(target.defaultStatus.attack * 0.12);
         if (target.status.attack < 0) {
           target.status.attack = 0;
         }
-        return `${target.name}はひるんだ！（攻撃力10%ダウン）`;
+        return `${target.name}はひるんだ！（攻撃力20%ダウン）`;
       }
     },
   },
@@ -91,11 +91,11 @@ const WAS_SKILL: {
     cost: 20,
     effect: (_activist: WasCharacter, target: WasCharacter) => {
       if (Math.random() < 0.5 && 0 < target.status.magic) {
-        target.status.magic -= Math.floor(target.defaultStatus.magic * 0.1);
+        target.status.magic -= Math.floor(target.defaultStatus.magic * 0.2);
         if (target.status.magic < 0) {
           target.status.magic = 0;
         }
-        return `${target.name}はひるんだ！（魔力10%ダウン）`;
+        return `${target.name}はひるんだ！（魔力20%ダウン）`;
       }
     },
   },
@@ -107,11 +107,11 @@ const WAS_SKILL: {
     cost: 20,
     effect: (_activist: WasCharacter, target: WasCharacter) => {
       if (Math.random() < 0.5 && 0 < target.status.defense) {
-        target.status.defense -= Math.floor(target.defaultStatus.defense * 0.1);
+        target.status.defense -= Math.floor(target.defaultStatus.defense * 0.2);
         if (target.status.defense < 0) {
           target.status.defense = 0;
         }
-        return `${target.name}はひるんだ！（防御力10%ダウン）`;
+        return `${target.name}はひるんだ！（防御力20%ダウン）`;
       }
     },
   },
@@ -123,12 +123,11 @@ const WAS_SKILL: {
     cost: 20,
     effect: (_activist: WasCharacter, target: WasCharacter) => {
       if (Math.random() < 0.5 && 0 < target.status.speed) {
-        target.status.speed -= Math.floor(target.defaultStatus.speed * 0.1);
+        target.status.speed -= Math.floor(target.defaultStatus.speed * 0.2);
         if (target.status.speed < 0) {
           target.status.speed = 0;
         }
-        target.status.speed -= target.defaultStatus.speed * 0.1;
-        return `${target.name}はひるんだ！（素早さ10%ダウン）`;
+        return `${target.name}はひるんだ！（素早さ20%ダウン）`;
       }
     },
   },
@@ -144,19 +143,17 @@ const WAS_SKILL: {
         (0 < target.status.attack || 0 < target.status.defense)
       ) {
         // 攻撃力減少
-        target.status.attack -= Math.floor(target.defaultStatus.attack * 0.1);
+        target.status.attack -= Math.floor(target.defaultStatus.attack * 0.15);
         if (target.status.attack < 0) {
           target.status.attack = 0;
         }
-        target.status.attack -= target.defaultStatus.attack * 0.1;
 
         // 魔力減少
-        target.status.magic -= Math.floor(target.defaultStatus.magic * 0.1);
+        target.status.magic -= Math.floor(target.defaultStatus.magic * 0.15);
         if (target.status.magic < 0) {
           target.status.magic = 0;
         }
-        target.status.magic -= target.defaultStatus.magic * 0.1;
-        return `${target.name}はひるんだ！（攻撃力&防御力10%ダウン）`;
+        return `${target.name}はひるんだ！（攻撃力&防御力15%ダウン）`;
       }
     },
   },
@@ -192,7 +189,7 @@ const WAS_SKILL: {
     name: "正義の鉄槌",
     type: WAS_SKILL_TYPE.PHISICAL_ATTACK,
     element: WAS_ELEMENT.SHINE,
-    power: 500,
+    power: 400,
     cost: 40,
   },
 } as const;

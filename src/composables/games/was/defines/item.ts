@@ -17,14 +17,14 @@ const WAS_ITEM: {
   HERB: {
     name: "薬草",
     maxAmount: 5,
-    // 体力20%回復
+    // 体力25~35回復
     effect: (target: WasCharacter) => {
       const defaultLife = target.defaultStatus.life;
-      const healAmount = Math.floor(defaultLife * 0.2);
+      const healAmount = Math.round(25 + Math.random() * 10);
       if (target.status.life + healAmount >= defaultLife) {
         target.status.life = defaultLife;
       } else {
-        target.status.life += Math.floor(healAmount);
+        target.status.life += healAmount;
       }
       return `${target.name}は体力を${healAmount}回復した。`;
     },
@@ -32,10 +32,10 @@ const WAS_ITEM: {
   SUPER_HERB: {
     name: "超薬草",
     maxAmount: 3,
-    // 体力50%回復
+    // 体力を75~85回復
     effect: (target: WasCharacter) => {
       const defaultLife = target.defaultStatus.life;
-      const healAmount = Math.floor(defaultLife * 0.5);
+      const healAmount = Math.round(75 + Math.random() * 10);
       if (target.status.life + healAmount >= defaultLife) {
         target.status.life = defaultLife;
       } else {
@@ -47,29 +47,32 @@ const WAS_ITEM: {
   RICE_BALL: {
     name: "おにぎり",
     maxAmount: 5,
-    // 満腹度20%回復
+    // 満腹度25~35%回復
     effect: (target: WasCharacter) => {
       const defaultSatiety = target.defaultStatus.satiety;
-      const healAmount = Math.floor(defaultSatiety * 0.2);
+      const healRatio = 0.25 + Math.random() * 0.1;
+      const healAmount = Math.round(defaultSatiety * healRatio);
+
       if (target.status.satiety + healAmount >= defaultSatiety) {
         target.status.satiety = defaultSatiety;
       } else {
         target.status.satiety += healAmount;
       }
-      return `${target.name}の満腹度が${
-        (healAmount / defaultSatiety) * 100
-      }回復した。`;
+      return `${target.name}の満腹度が${Math.round(
+        healRatio * 100
+      )}%回復した。`;
     },
   },
   FISH: {
     name: "焼き魚",
     maxAmount: 5,
-    // 体力15%満腹度10%回復
+    // 体力25~35、満腹度10~20%回復
     effect: (target: WasCharacter) => {
       const defaultLife = target.defaultStatus.life;
-      const lifeHealAmount = Math.floor(defaultLife * 0.15);
+      const lifeHealAmount = Math.round(25 + Math.random() * 10);
       const defaultSatiety = target.defaultStatus.satiety;
-      const satifyHealAmount = Math.floor(defaultSatiety * 0.1);
+      const satifyHealRatio = 0.1 + Math.random() * 0.1;
+      const satifyHealAmount = Math.round(defaultSatiety * satifyHealRatio);
 
       // 体力の回復
       if (target.status.life + lifeHealAmount >= defaultLife) {
@@ -84,20 +87,21 @@ const WAS_ITEM: {
       } else {
         target.status.satiety += satifyHealAmount;
       }
-      return `${target.name}の体力が${lifeHealAmount}、満腹度が${
-        (satifyHealAmount / defaultSatiety) * 100
-      }回復した。`;
+      return `${target.name}の体力が${lifeHealAmount}、満腹度が${Math.round(
+        satifyHealRatio * 100
+      )}%回復した。`;
     },
   },
   MEAT: {
     name: "骨付き肉",
     maxAmount: 5,
-    // 体力10%満腹度15%回復
+    // 体力15~25、満腹度20~30%回復
     effect: (target: WasCharacter) => {
       const defaultLife = target.defaultStatus.life;
-      const lifeHealAmount = Math.floor(defaultLife * 0.1);
+      const lifeHealAmount = Math.round(15 + Math.random() * 10);
       const defaultSatiety = target.defaultStatus.satiety;
-      const satifyHealAmount = Math.floor(defaultSatiety * 0.15);
+      const satifyHealRatio = 0.2 + Math.random() * 0.1;
+      const satifyHealAmount = Math.round(defaultSatiety * satifyHealRatio);
 
       // 体力の回復
       if (target.status.life + lifeHealAmount >= defaultLife) {
@@ -112,9 +116,9 @@ const WAS_ITEM: {
       } else {
         target.status.satiety += satifyHealAmount;
       }
-      return `${target.name}の体力が${lifeHealAmount}、満腹度が${
-        (satifyHealAmount / defaultSatiety) * 100
-      }回復した。`;
+      return `${target.name}の体力が${lifeHealAmount}、満腹度が${Math.round(
+        satifyHealRatio * 100
+      )}%回復した。`;
     },
   },
   HOLY_WATER: {
@@ -127,13 +131,13 @@ const WAS_ITEM: {
       return `${character.name}の体力と満腹度が完全に回復した！`;
     },
   },
-  GOBLIN_PICKEL: {
-    name: "ゴブリンピッケル",
+  POWER_LING: {
+    name: "力の腕輪",
     maxAmount: 1,
     // デフォルト攻撃力アップ
     passive: (character: WasCharacter) => {
       character.defaultStatus.attack += 5;
-      character.status.attack = character.defaultStatus.attack;
+      character.resetStatus();
     },
   },
   WING_BOOTS: {
@@ -142,7 +146,7 @@ const WAS_ITEM: {
     // デフォルト素早さアップ
     passive: (character: WasCharacter) => {
       character.defaultStatus.speed += 5;
-      character.status.speed = character.defaultStatus.speed;
+      character.resetStatus();
     },
   },
   MYSTERIOUS_SHELL: {
@@ -151,7 +155,7 @@ const WAS_ITEM: {
     // デフォルト魔力アップ
     passive: (character: WasCharacter) => {
       character.defaultStatus.magic += 5;
-      character.status.magic = character.defaultStatus.magic;
+      character.resetStatus();
     },
   },
   DRAGON_SCALE: {
@@ -160,7 +164,7 @@ const WAS_ITEM: {
     // デフォルト防御力アップ
     passive: (character: WasCharacter) => {
       character.defaultStatus.defense += 5;
-      character.status.defense = character.defaultStatus.defense;
+      character.resetStatus();
     },
   },
   BOSS_GOBLIN_HEAD: {

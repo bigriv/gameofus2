@@ -48,7 +48,7 @@ const WAS_CAVE: WAS_AREA_DEFINITION_TYPE = {
     height: GAME_DISPLAY_HEIGHT,
   },
   dropItems: [
-    { probability: 0.05, amount: 1, id: WAS_ITEM_ID.GOBLIN_PICKEL },
+    { probability: 0.05, amount: 1, id: WAS_ITEM_ID.POWER_LING },
     { probability: 0.3, amount: 2, id: WAS_ITEM_ID.RICE_BALL },
     { probability: 0.5, amount: 3, id: WAS_ITEM_ID.HERB },
   ],

@@ -75,15 +75,15 @@ const WAS_GOBLIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 300,
   },
   initStatus: {
-    life: 80,
+    life: 40,
     satiety: 100,
-    attack: 12,
+    attack: 10,
     defense: 5,
     speed: 5,
     magic: 0,
     element: WAS_ELEMENT.SOIL,
   },
-  dropItem: WAS_ITEM_ID.GOBLIN_PICKEL,
+  dropItem: WAS_ITEM_ID.POWER_LING,
   persuadItem: WAS_ITEM_ID.SATAN_SOUL,
   occupySkill: WAS_SKILL_ID.POWER_ATTACK,
   skills: [WAS_SKILL_ID.POWER_ATTACK],
@@ -93,7 +93,7 @@ const WAS_GOBLIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     PERSUADE_SUCCESS: WAS_SERIF_DEFINE.PERSUADE_SUCCESS_GOBLIN,
   },
   chooseMove: (self: WasNonPlayerCharacter, enemey: WasCharacter) => {
-    if (self.isUsableSkill(WAS_SKILL_ID.POWER_ATTACK) && Math.random() < 0.7) {
+    if (self.isUsableSkill(WAS_SKILL_ID.POWER_ATTACK) && Math.random() < 0.6) {
       return {
         type: WAS_BATTLE_MOVE.SKILL,
         skillId: WAS_SKILL_ID.POWER_ATTACK,
@@ -116,9 +116,9 @@ const WAS_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 300,
   },
   initStatus: {
-    life: 80,
+    life: 60,
     satiety: 150,
-    attack: 10,
+    attack: 8,
     defense: 8,
     speed: 12,
     magic: 15,
@@ -127,7 +127,7 @@ const WAS_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   dropItem: WAS_ITEM_ID.WING_BOOTS,
   persuadItem: WAS_ITEM_ID.SATAN_SOUL,
   occupySkill: WAS_SKILL_ID.WIND,
-  skills: [WAS_SKILL_ID.HEAL, WAS_SKILL_ID.SPEED_ATTACK, WAS_SKILL_ID.WIND],
+  skills: [WAS_SKILL_ID.HEAL, WAS_SKILL_ID.WIND],
   serif: {
     FACE1: WAS_SERIF_DEFINE.FACE_ELF,
     BATTLE_WIN: WAS_SERIF_DEFINE.BATTLE_WIN_ELF,
@@ -152,14 +152,6 @@ const WAS_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
       };
     }
 
-    if (self.isUsableSkill(WAS_SKILL_ID.SPEED_ATTACK) && Math.random() < 0.5) {
-      return {
-        type: WAS_BATTLE_MOVE.SKILL,
-        skillId: WAS_SKILL_ID.SPEED_ATTACK,
-        target: enemey,
-      };
-    }
-
     return {
       type: WAS_BATTLE_MOVE.ATTACK,
       target: enemey,
@@ -176,19 +168,19 @@ const WAS_SAHAGIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 300,
   },
   initStatus: {
-    life: 100,
+    life: 60,
     satiety: 100,
-    attack: 10,
+    attack: 15,
     defense: 10,
     speed: 8,
-    magic: 10,
+    magic: 8,
     element: WAS_ELEMENT.WATER,
   },
   dropItem: WAS_ITEM_ID.MYSTERIOUS_SHELL,
-  persuadItem: WAS_ITEM_ID.GOBLIN_PICKEL,
+  persuadItem: WAS_ITEM_ID.POWER_LING,
   occupySkill: WAS_SKILL_ID.SPEED_ATTACK,
-  skills: [WAS_SKILL_ID.SPEED_ATTACK],
-  items: [{ amount: 3, id: WAS_ITEM_ID.FISH }],
+  skills: [WAS_SKILL_ID.POWER_ATTACK, WAS_SKILL_ID.SPEED_ATTACK],
+  items: [{ amount: 1, id: WAS_ITEM_ID.FISH }],
   serif: {
     FACE1: WAS_SERIF_DEFINE.FACE_SAHAGIN,
     BATTLE_WIN: WAS_SERIF_DEFINE.BATTLE_WIN_SAHAGIN,
@@ -207,6 +199,14 @@ const WAS_SAHAGIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
           target: self,
         };
       }
+    }
+
+    if (self.isUsableSkill(WAS_SKILL_ID.POWER_ATTACK) && Math.random() < 0.6) {
+      return {
+        type: WAS_BATTLE_MOVE.SKILL,
+        skillId: WAS_SKILL_ID.POWER_ATTACK,
+        target: enemey,
+      };
     }
 
     if (self.isUsableSkill(WAS_SKILL_ID.SPEED_ATTACK) && Math.random() < 0.5) {
@@ -233,7 +233,7 @@ const WAS_SLIME: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 150,
   },
   initStatus: {
-    life: 50,
+    life: 20,
     satiety: 100,
     attack: 5,
     defense: 1,
@@ -274,11 +274,11 @@ const WAS_SOLDIER: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 300,
   },
   initStatus: {
-    life: 150,
+    life: 80,
     satiety: 300,
-    attack: 15,
-    defense: 15,
-    speed: 12,
+    attack: 20,
+    defense: 18,
+    speed: 16,
     magic: 10,
     element: WAS_ELEMENT.NONE,
   },
@@ -345,11 +345,11 @@ const WAS_BOSS_GOBLIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 400,
   },
   initStatus: {
-    life: 200,
+    life: 80,
     satiety: 200,
-    attack: 18,
+    attack: 16,
     defense: 8,
-    speed: 12,
+    speed: 8,
     magic: 8,
     element: WAS_ELEMENT.SOIL,
   },
@@ -357,7 +357,7 @@ const WAS_BOSS_GOBLIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   persuadItem: null,
   occupySkill: WAS_SKILL_ID.SOIL,
   skills: [WAS_SKILL_ID.POWER_ATTACK, WAS_SKILL_ID.SOIL],
-  items: [{ amount: 3, id: WAS_ITEM_ID.HERB }],
+  items: [{ amount: 1, id: WAS_ITEM_ID.HERB }],
   serif: {
     FACE1: WAS_SERIF_DEFINE.FACE1_BOSS_GOBLIN,
     FACE2: WAS_SERIF_DEFINE.FACE2_BOSS_GOBLIN,
@@ -376,7 +376,16 @@ const WAS_BOSS_GOBLIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
         };
       }
     }
-    if (self.isUsableSkill(WAS_SKILL_ID.POWER_ATTACK) && Math.random() < 0.6) {
+
+    if (self.isUsableSkill(WAS_SKILL_ID.SOIL) && Math.random() < 0.4) {
+      return {
+        type: WAS_BATTLE_MOVE.SKILL,
+        skillId: WAS_SKILL_ID.SOIL,
+        target: enemey,
+      };
+    }
+
+    if (self.isUsableSkill(WAS_SKILL_ID.POWER_ATTACK) && Math.random() < 0.4) {
       return {
         type: WAS_BATTLE_MOVE.SKILL,
         skillId: WAS_SKILL_ID.POWER_ATTACK,
@@ -384,13 +393,6 @@ const WAS_BOSS_GOBLIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
       };
     }
 
-    if (self.isUsableSkill(WAS_SKILL_ID.SOIL) && Math.random() < 0.6) {
-      return {
-        type: WAS_BATTLE_MOVE.SKILL,
-        skillId: WAS_SKILL_ID.SOIL,
-        target: enemey,
-      };
-    }
     return {
       type: WAS_BATTLE_MOVE.ATTACK,
       target: enemey,
@@ -407,9 +409,9 @@ const WAS_DARK_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 300,
   },
   initStatus: {
-    life: 200,
+    life: 100,
     satiety: 300,
-    attack: 15,
+    attack: 14,
     defense: 12,
     speed: 18,
     magic: 20,
@@ -418,12 +420,8 @@ const WAS_DARK_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   dropItem: WAS_ITEM_ID.DARK_ELF_EYE,
   persuadItem: WAS_ITEM_ID.HOLY_WATER,
   occupySkill: WAS_SKILL_ID.DARK_SORD,
-  skills: [
-    WAS_SKILL_ID.HEAL,
-    WAS_SKILL_ID.SPEED_ATTACK,
-    WAS_SKILL_ID.DARK_SORD,
-  ],
-  items: [{ amount: 3, id: WAS_ITEM_ID.MEAT }],
+  skills: [WAS_SKILL_ID.HEAL, WAS_SKILL_ID.DARK_SORD, WAS_SKILL_ID.WIND],
+  items: [{ amount: 1, id: WAS_ITEM_ID.MEAT }],
   serif: {
     FACE1: WAS_SERIF_DEFINE.FACE1_DARK_ELF,
     FACE2: WAS_SERIF_DEFINE.FACE2_DARK_ELF,
@@ -442,7 +440,7 @@ const WAS_DARK_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
         };
       }
     }
-    if (self.isUsableSkill(WAS_SKILL_ID.HEAL) && Math.random() < 0.8) {
+    if (self.isUsableSkill(WAS_SKILL_ID.HEAL) && Math.random() < 0.4) {
       if (self.status.life <= self.defaultStatus.life * 0.2) {
         return {
           type: WAS_BATTLE_MOVE.SKILL,
@@ -453,14 +451,16 @@ const WAS_DARK_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     }
 
     if (self.isUsableSkill(WAS_SKILL_ID.WIND) && Math.random() < 0.6) {
-      return {
-        type: WAS_BATTLE_MOVE.SKILL,
-        skillId: WAS_SKILL_ID.WIND,
-        target: enemey,
-      };
+      if (enemey.status.speed >= self.status.speed) {
+        return {
+          type: WAS_BATTLE_MOVE.SKILL,
+          skillId: WAS_SKILL_ID.WIND,
+          target: enemey,
+        };
+      }
     }
 
-    if (self.isUsableSkill(WAS_SKILL_ID.DARK_SORD) && Math.random() < 0.6) {
+    if (self.isUsableSkill(WAS_SKILL_ID.DARK_SORD) && Math.random() < 0.3) {
       return {
         type: WAS_BATTLE_MOVE.SKILL,
         skillId: WAS_SKILL_ID.DARK_SORD,
@@ -484,12 +484,12 @@ const WAS_KRAKEN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 400,
   },
   initStatus: {
-    life: 300,
+    life: 150,
     satiety: 400,
-    attack: 15,
+    attack: 16,
     defense: 25,
     speed: 12,
-    magic: 8,
+    magic: 18,
     element: WAS_ELEMENT.WATER,
   },
   dropItem: WAS_ITEM_ID.KRAKEN_HAND,
@@ -518,17 +518,18 @@ const WAS_KRAKEN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
       }
     }
 
+    if (self.isUsableSkill(WAS_SKILL_ID.GARD_ATTACK) && Math.random() < 0.6) {
+      return {
+        type: WAS_BATTLE_MOVE.SKILL,
+        skillId: WAS_SKILL_ID.GARD_ATTACK,
+        target: enemey,
+      };
+    }
+
     if (self.isUsableSkill(WAS_SKILL_ID.POWER_ATTACK) && Math.random() < 0.6) {
       return {
         type: WAS_BATTLE_MOVE.SKILL,
         skillId: WAS_SKILL_ID.POWER_ATTACK,
-        target: enemey,
-      };
-    }
-    if (self.isUsableSkill(WAS_SKILL_ID.GARD_ATTACK) && Math.random() < 0.7) {
-      return {
-        type: WAS_BATTLE_MOVE.SKILL,
-        skillId: WAS_SKILL_ID.GARD_ATTACK,
         target: enemey,
       };
     }
@@ -557,12 +558,12 @@ const WAS_DORAGON: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 300,
   },
   initStatus: {
-    life: 400,
+    life: 200,
     satiety: 500,
     attack: 30,
     defense: 30,
-    speed: 20,
-    magic: 20,
+    speed: 30,
+    magic: 50,
     element: WAS_ELEMENT.WIND,
   },
   dropItem: WAS_ITEM_ID.DRAGON_WING,
@@ -577,7 +578,7 @@ const WAS_DORAGON: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     CHAT: WAS_SERIF_DEFINE.CHAT_DRAGON,
   },
   chooseMove: (self: WasNonPlayerCharacter, enemey: WasCharacter) => {
-    if (self.isUsableSkill(WAS_SKILL_ID.POWER_ATTACK) && Math.random() < 0.7) {
+    if (self.isUsableSkill(WAS_SKILL_ID.POWER_ATTACK) && Math.random() < 0.6) {
       return {
         type: WAS_BATTLE_MOVE.SKILL,
         skillId: WAS_SKILL_ID.POWER_ATTACK,
@@ -609,7 +610,7 @@ const WAS_HERO: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     height: 300,
   },
   initStatus: {
-    life: 500,
+    life: 200,
     satiety: 500,
     attack: 40,
     defense: 40,
@@ -625,10 +626,7 @@ const WAS_HERO: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     WAS_SKILL_ID.JUSTICE_SPACIAL,
     WAS_SKILL_ID.JUSTICE_ATTACK,
   ],
-  items: [
-    { amount: 2, id: WAS_ITEM_ID.HERB },
-    { amount: 1, id: WAS_ITEM_ID.HOLY_WATER },
-  ],
+  items: [{ amount: 1, id: WAS_ITEM_ID.HOLY_WATER }],
   serif: {
     FACE1: WAS_SERIF_DEFINE.FACE1_HERO,
     FACE2: WAS_SERIF_DEFINE.FACE2_HERO,
@@ -660,9 +658,17 @@ const WAS_HERO: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
       }
     }
 
+    if (self.isUsableSkill(WAS_SKILL_ID.THUNDER) && Math.random() < 0.6) {
+      return {
+        type: WAS_BATTLE_MOVE.SKILL,
+        skillId: WAS_SKILL_ID.THUNDER,
+        target: enemey,
+      };
+    }
+
     if (
       self.isUsableSkill(WAS_SKILL_ID.JUSTICE_ATTACK) &&
-      Math.random() < 0.8
+      Math.random() < 0.4
     ) {
       return {
         type: WAS_BATTLE_MOVE.SKILL,

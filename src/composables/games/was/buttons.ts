@@ -2,7 +2,7 @@ import { computed } from "vue";
 import { WAS_BUTTON_EVENT } from "./const";
 import { WAS_ITEM } from "./defines/item";
 import { WAS_SKILL } from "./defines/skill";
-import { WasPlayerCharacter } from "./types/palyerCharacter";
+import { WasPlayerCharacter } from "./types/playerCharacter";
 
 export const useWasButton = (player: WasPlayerCharacter) => {
   const EXLPORE_BUTTON_LIST = [

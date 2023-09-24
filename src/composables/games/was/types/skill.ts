@@ -13,8 +13,8 @@ export abstract class WasSkill {
   constructor(
     name: string,
     element: WAS_ELEMENT,
-    cost: number,
     power: number,
+    cost: number,
     beforeEffect?: Function, // ターン開始時に発動する効果（速度の補正など）
     effect?: Function,
     afterEffect?: Function // ターン終了時に発動する効果（ステータスのリセットなど）
@@ -35,7 +35,7 @@ export abstract class WasSkill {
    * @param enemy 相手の属性
    * @returns 弱点属性の場合はtrue それ以外はfalse
    */
-  isWeekness = (target: WAS_ELEMENT, enemy: WAS_ELEMENT): boolean => {
+  isWeekness(target: WAS_ELEMENT, enemy: WAS_ELEMENT): boolean {
     switch (target) {
       case WAS_ELEMENT.NONE:
         return false;

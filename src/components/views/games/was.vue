@@ -26,7 +26,7 @@ import Title from "@/components/templates/games/was/01_Title.vue";
 import Main from "@/components/templates/games/was/02_Main.vue";
 import Ending from "@/components/templates/games/was/03_Ending.vue";
 import { WAS_ENDING, WAS_EVENT_TIMMING } from "@/composables/games/was/const";
-import { WasPlayerCharacter } from "@/composables/games/was/types/palyerCharacter";
+import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { WasArea } from "@/composables/games/was/types/area";
 
@@ -36,6 +36,7 @@ const loadData = ref();
 
 const onSave = (
   timming: WAS_EVENT_TIMMING,
+  healed: boolean,
   player: WasPlayerCharacter,
   characters: { [key: string]: WasNonPlayerCharacter },
   bosses: { [key: string]: WasNonPlayerCharacter },
@@ -43,20 +44,21 @@ const onSave = (
 ) => {
   const data = {
     timming: timming,
+    healed: healed,
     player: player.toJson(),
     characters: {
-      GOBLIN: characters.CAVE.toJson(),
-      SAHAGIN: characters.SEA.toJson(),
-      ELF: characters.VILLAGE.toJson(),
-      SLIME: characters.MOUNTAIN.toJson(),
-      SOLDIER: characters.KINGDOM_CASTLE.toJson(),
+      CAVE: characters.CAVE.toJson(),
+      SEA: characters.SEA.toJson(),
+      VILLAGE: characters.VILLAGE.toJson(),
+      MOUNTAIN: characters.MOUNTAIN.toJson(),
+      KINGDOM_CASTLE: characters.KINGDOM_CASTLE.toJson(),
     },
     bosses: {
-      BOSS_GOBLIN: bosses.CAVE.toJson(),
-      KRAKEN: bosses.SEA.toJson(),
-      DARK_ELF: bosses.VILLAGE.toJson(),
-      DORAGON: bosses.MOUNTAIN.toJson(),
-      HERO: bosses.KINGDOM_CASTLE.toJson(),
+      CAVE: bosses.CAVE.toJson(),
+      SEA: bosses.SEA.toJson(),
+      VILLAGE: bosses.VILLAGE.toJson(),
+      MOUNTAIN: bosses.MOUNTAIN.toJson(),
+      KINGDOM_CASTLE: bosses.KINGDOM_CASTLE.toJson(),
     },
     areas: {
       CAVE: areas.CAVE.toJson(),

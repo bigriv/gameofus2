@@ -111,6 +111,7 @@ enum WAS_ENDING {
   GOOD = "GOOD",
   BEST = "BEST",
   DEAD = "DEAD",
+  HUNGER = "HUNGER",
 }
 
 export {

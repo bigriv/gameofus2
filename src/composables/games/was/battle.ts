@@ -5,7 +5,7 @@ import {
 } from "@/composables/games/was/const";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
-import { WasPlayerCharacter } from "@/composables/games/was/types/palyerCharacter";
+import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";
 import { WAS_ITEM } from "@/composables/games/was/defines/item";
 import { WasItem } from "@/composables/games/was/types/item";
 import { WasSkill } from "@/composables/games/was/types/skill";
@@ -38,8 +38,8 @@ export const useWasBattle = () => {
           return new WasPhysicalAttackSkill(
             skillDefine.name,
             skillDefine.element,
-            skillDefine.cost,
             skillDefine.power,
+            skillDefine.cost,
             skillDefine.beforeEffect,
             skillDefine.effect,
             skillDefine.afterEffect
@@ -48,8 +48,8 @@ export const useWasBattle = () => {
           return new WasMagicalAttackSkill(
             skillDefine.name,
             skillDefine.element,
-            skillDefine.cost,
             skillDefine.power,
+            skillDefine.cost,
             skillDefine.beforeEffect,
             skillDefine.effect,
             skillDefine.afterEffect
@@ -58,8 +58,8 @@ export const useWasBattle = () => {
           return new WasHealSkill(
             skillDefine.name,
             skillDefine.element,
-            skillDefine.cost,
             skillDefine.power,
+            skillDefine.cost,
             skillDefine.beforeEffect,
             skillDefine.effect,
             skillDefine.afterEffect
@@ -160,94 +160,61 @@ export const useWasBattle = () => {
     target: WasCharacter
   ): number => {
     let damage =
-      attacker.status.attack - Math.floor(target.status.defense * 0.5);
+      attacker.status.attack - Math.floor(target.status.defense * 0.3);
     if (damage < 0) {
       damage = 0;
     }
-    // ダメージの10%を最大値とする乱数を加算して返却
+    // ダメージの30%を最大値とする乱数を加算して返却
     // ダメージが0の場合でも50%の確率でダメージが発生するように1を加算する
-    return (
-      damage +
-      Math.floor(damage * 0.1 * Math.random()) +
-      (Math.random() < 0.5 ? 0 : 1)
-    );
+    damage +=
+      Math.round(damage * 0.3 * Math.random()) + (Math.random() < 0.5 ? 0 : 1);
+
+    return damage;
   };
 
   /**
-   * 戦闘のメイン処理
-   * @param player プレイヤー
-   * @param enemy 敵キャラ
-   * @returns 画面表示用の戦闘の結果
+   * 戦闘時のスキルの使用処理を行う
+   * @param character スキルを使用するキャラクター
+   * @param target スキルの対象になるキャラクター
+   * @param skill 使用するスキル
+   * @returns 表示用の経過リスト
    */
-  const battle = (player: WasPlayerCharacter, enemy: WasNonPlayerCharacter) => {
-    let status = WAS_BATTLE_STATUS.ANOTHER;
-    let progressList = new Array<WAS_BATTLE_PROGRESS>();
-    //  スキル・アイテムによる事前処理を実行
-    const characters = [player, enemy];
-    preProcess(characters);
+  const mainProcessSkill = (
+    character: WasCharacter,
+    target: WasCharacter,
+    skill: WasSkill
+  ): Array<WAS_BATTLE_PROGRESS> => {
+    const useResult = character.useSkill(skill);
+    const progressList = [];
+    if (!useResult) {
+      return [
+        {
+          message: `${character.name}は${skill.name}を使おうとしたが、力が出なかった。`,
+        },
+      ];
+    }
 
-    // 速さ順に並び変える
-    const sortedCharacters = characters.sort(
-      (a, b) => a.status.speed - b.status.speed
-    );
+    progressList.push({
+      message: `${character.name}は${skill.name}を発動した！`,
+    });
 
-    let isBattleEnd = false;
-    // 速さ順に各キャラクターの行動を実行
-    for (const character of sortedCharacters) {
-      if (character.status.life <= 0) {
-        //  ライフが0のキャラクターは飛ばす
-        continue;
-      }
-      const moveDetail = getMoveDetail(character);
-      const target = character.move?.target;
-      if (!target) {
-        continue;
-      }
-      if (moveDetail instanceof WasSkill) {
-        // スキル使用時の処理
-        const skill = moveDetail;
-        const useResult = character.useSkill(skill);
-
-        if (!useResult) {
-          progressList.push({
-            message: `${character.name}は${skill.name}を使おうとしたが、力が出なかった。`,
-          });
-          continue;
-        }
-      } else if (moveDetail instanceof WasItem) {
-        // アイテム使用時の処理
-        const item = moveDetail;
-        if (!(item.effect instanceof Function)) {
-          progressList.push({
-            message: `${character.name}は意味のない行動をした。`,
-          });
-          continue;
+    if (skill.power > 0) {
+      // ダメージ計算
+      const damage = skill.calcDamage(character, target);
+      target.status.life -= damage;
+      if (damage < 0) {
+        // ダメージがマイナスの場合は回復処理を行う
+        if (target.status.life > target.defaultStatus.life) {
+          // 体力が初期値を超えた場合は初期値を入れなおす
+          target.status.life = target.defaultStatus.life;
         }
 
-        const useResult = character.useItemInBattle(moveDetail.id);
-        if (!useResult) {
-          progressList.push({
-            message: `${character.name}は${item.name}を使おうとしたが、持っていないかった。`,
-          });
-          continue;
-        }
-
-        progressList.push({
-          message: `${character.name}は${item.name}を使用した！`,
-        });
-
-        const result = item.effect(character, target);
-        if (!result) {
-          continue;
-        }
         // 結果詰め込み処理
         progressList.push({
-          message: result,
+          message: `${target.name}は体力を${-damage}回復した。`,
         });
       } else {
-        // 通常攻撃時の処理
-        const damage = calcAttackDamage(character, target);
-        target.status.life -= damage;
+        // ダメージがプラスの場合は攻撃処理を行う
         if (target.status.life < 0) {
           // 体力がマイナスになった場合はバグ回避のため明示的に0にする
           target.status.life = 0;
@@ -263,6 +230,142 @@ export const useWasBattle = () => {
             message: `${target.name}は${damage}のダメージを受けた。`,
           });
         }
+      }
+    }
+
+    // 追加効果処理
+    if (!(skill.effect instanceof Function)) {
+      return progressList;
+    }
+    const result = skill.effect(character, target);
+    if (result?.length > 0) {
+      // 結果詰め込み処理
+      progressList.push({
+        message: result,
+      });
+    }
+    return progressList;
+  };
+
+  /**
+   * 戦闘時のアイテム使用処理を行う
+   * @param character アイテム使用するキャラクター
+   * @param target アイテム使用の対象となるキャラクター
+   * @param item 使用するアイテム
+   * @returns 表示用の経過リスト
+   */
+  const mainProcessItem = (
+    character: WasCharacter,
+    target: WasCharacter,
+    item: WasItem
+  ): Array<WAS_BATTLE_PROGRESS> => {
+    const progressList = [];
+    if (!(item.effect instanceof Function)) {
+      progressList.push({
+        message: `${character.name}は意味のない行動をした。`,
+      });
+      return progressList;
+    }
+
+    const useResult = character.useItemInBattle(item.id);
+    if (!useResult) {
+      progressList.push({
+        message: `${character.name}は${item.name}を使おうとしたが、持っていないかった。`,
+      });
+      return progressList;
+    }
+
+    progressList.push({
+      message: `${character.name}は${item.name}を使用した！`,
+    });
+
+    const result = item.effect(character, target);
+    if (!result) {
+      return progressList;
+    }
+    // 結果詰め込み処理
+    progressList.push({
+      message: result,
+    });
+    return progressList;
+  };
+
+  /**
+   * 戦闘時の通常攻撃処理を行う
+   * @param character 攻撃を行うキャラクター
+   * @param target 攻撃対象のキャラクター
+   * @returns 表示用の経過リスト
+   */
+  const mainProcessAttack = (
+    character: WasCharacter,
+    target: WasCharacter
+  ): Array<WAS_BATTLE_PROGRESS> => {
+    const progressList = [];
+    progressList.push({
+      message: `${character.name}の攻撃！`,
+    });
+
+    const damage = calcAttackDamage(character, target);
+    target.status.life -= damage;
+    if (target.status.life < 0) {
+      // 体力がマイナスになった場合はバグ回避のため明示的に0にする
+      target.status.life = 0;
+    }
+
+    // 結果詰め込み処理
+    if (character instanceof WasPlayerCharacter) {
+      progressList.push({
+        message: `${target.name}に${damage}のダメージを与えた！`,
+      });
+    } else if (character instanceof WasNonPlayerCharacter) {
+      progressList.push({
+        message: `${target.name}は${damage}のダメージを受けた。`,
+      });
+    }
+    return progressList;
+  };
+  /**
+   * 戦闘のメイン処理
+   * @param player プレイヤー
+   * @param enemy 敵キャラ
+   * @returns 画面表示用の戦闘の結果
+   */
+  const battle = (player: WasPlayerCharacter, enemy: WasNonPlayerCharacter) => {
+    let status = WAS_BATTLE_STATUS.ANOTHER;
+    let progressList = new Array<WAS_BATTLE_PROGRESS>();
+    //  スキル・アイテムによる事前処理を実行
+    const characters = [player, enemy];
+    preProcess(characters);
+
+    // 速さ順に並び変える
+    const sortedCharacters = characters.sort(
+      (a, b) => b.status.speed - a.status.speed
+    );
+    console.log(sortedCharacters);
+    let isBattleEnd = false;
+    // 速さ順に各キャラクターの行動を実行
+    for (const character of sortedCharacters) {
+      if (character.status.life <= 0) {
+        //  ライフが0のキャラクターは飛ばす
+        continue;
+      }
+      const moveDetail = getMoveDetail(character);
+      const target = character.move?.target;
+      if (!target) {
+        continue;
+      }
+
+      if (moveDetail instanceof WasSkill) {
+        // スキル使用時の処理
+        const skill = moveDetail;
+        progressList.push(...mainProcessSkill(character, target, skill));
+      } else if (moveDetail instanceof WasItem) {
+        // アイテム使用時の処理
+        const item = moveDetail;
+        progressList.push(...mainProcessItem(character, target, item));
+      } else {
+        // 通常攻撃時の処理
+        progressList.push(...mainProcessAttack(character, target));
       }
 
       // 戦闘終了判定

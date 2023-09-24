@@ -17,10 +17,10 @@
 </template>
 
 <script setup lang="ts">
+import { PropType, computed } from "vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import { WAS_ENDING } from "@/composables/games/was/const";
 import { COLOR } from "@/composables/types/GOUColor";
-import { PropType, computed } from "vue";
 
 const props = defineProps({
   type: {
@@ -41,6 +41,7 @@ const header = computed(() => {
     case WAS_ENDING.BEST:
       return "Best End";
     case WAS_ENDING.DEAD:
+    case WAS_ENDING.HUNGER:
       return "Game Over";
     default:
       return "";
@@ -58,6 +59,8 @@ const body = computed(() => {
       return "こうして世界は平和になりましたとさ";
     case WAS_ENDING.DEAD:
       return "魔王は倒れ世界は人間に支配されましたとさ";
+    case WAS_ENDING.HUNGER:
+      return "魔王は空腹に倒れ世界は人間に支配されましたとさ";
     default:
       return "";
   }
@@ -102,17 +105,17 @@ const onBackTitle = () => {
     transform: translate(-50%, -50%);
   }
 }
-.good,
-.best {
+.GOOD,
+.BEST {
   background-color: white;
   color: orange;
 }
-.bad,
-.worst {
+.BAD,
+.WORST {
   background-color: indigo;
   color: white;
 }
-.dead {
+.DEAD {
   background-color: black;
   color: red;
 }

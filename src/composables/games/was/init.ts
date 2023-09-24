@@ -7,7 +7,7 @@ import {
 } from "@/composables/games/was/const";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
-import { WasPlayerCharacter } from "@/composables/games/was/types/palyerCharacter";
+import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";
 import {
   WAS_BOSS_GOBLIN,
   WAS_DARK_ELF,
@@ -63,7 +63,9 @@ export const useWasInit = (loadData?: any) => {
         defines[key].persuadItem,
         defines[key].occupySkill,
         defines[key].chooseMove,
-        defines[key].serif
+        defines[key].serif,
+        defines[key].skills,
+        defines[key].items
       );
     }
 
@@ -129,30 +131,41 @@ export const useWasInit = (loadData?: any) => {
 
   const state: {
     timming: WAS_EVENT_TIMMING;
+    healed: boolean;
     area: WAS_AREA_ID | null;
     player: WasPlayerCharacter;
     character: WasCharacter | null;
   } = reactive({
     timming: WAS_EVENT_TIMMING.OPENING,
+    healed: false,
     area: null,
     player: initPlayer(),
     character: null,
   });
 
   const load = () => {
+    console.log("load", loadData);
     if (!loadData) {
       return;
     }
     if (loadData.player) {
-      state.player.status = new WasStatus(loadData.status);
-      state.player.defaultStatus = new WasStatus(loadData.defaultStatus);
-      state.player.skills = (loadData.skills as Array<WAS_SKILL_ID>) ?? [];
+      state.player.status = new WasStatus(loadData.player.status);
+      state.player.defaultStatus = new WasStatus(loadData.player.defaultStatus);
+      state.player.exploreCount = loadData.player.exploreCount ?? 0;
+      state.player.skills =
+        (loadData.player.skills as Array<WAS_SKILL_ID>) ?? [];
       state.player.items =
-        (loadData.items as Array<{ amount: number; id: WAS_ITEM_ID }>) ?? [];
+        (loadData.player.items as Array<{ amount: number; id: WAS_ITEM_ID }>) ??
+        [];
     }
-
+    console.log("player", state.player);
     if (loadData.timming) {
-      state.timming = loadData.timming as WAS_EVENT_TIMMING;
+      state.timming =
+        (loadData.timming as WAS_EVENT_TIMMING) ?? WAS_EVENT_TIMMING.OPENING;
+    }
+    state.healed = loadData.healed ?? false;
+    if (loadData.exploreCount) {
+      state.timming = loadData.exploreCount ?? 0;
     }
 
     if (loadData.bosses) {
@@ -168,19 +181,18 @@ export const useWasInit = (loadData?: any) => {
       }
     }
 
-    if (loadData.charachters) {
+    if (loadData.characters) {
       for (const key of Object.keys(CHARACTERS)) {
-        if (!loadData.charachters[key]) {
+        if (!loadData.characters[key]) {
           continue;
         }
         CHARACTERS[key].defaultStatus = new WasStatus(
-          loadData.charachters[key].defaultStatus
+          loadData.characters[key].defaultStatus
         );
-        CHARACTERS[key].status = new WasStatus(
-          loadData.charachters[key].status
-        );
-        CHARACTERS[key].isPersuaded = loadData.charachters[key].isPersuaded;
+        CHARACTERS[key].status = new WasStatus(loadData.characters[key].status);
+        CHARACTERS[key].isPersuaded = loadData.characters[key].isPersuaded;
       }
+      console.log(CHARACTERS);
     }
 
     if (loadData.areas) {
@@ -195,6 +207,7 @@ export const useWasInit = (loadData?: any) => {
             amount: number;
             id: WAS_ITEM_ID;
           }>) ?? [];
+        AREAS[key].exploreCount = loadData.areas[key].exploreCount ?? 0;
       }
     }
   };

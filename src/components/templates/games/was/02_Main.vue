@@ -105,7 +105,7 @@ import {
   WAS_EVENT_TIMMING,
 } from "@/composables/games/was/const";
 import { hoverSE } from "@/composables/sounds/seDefinition";
-import { WasPlayerCharacter } from "@/composables/games/was/types/palyerCharacter";
+import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { WasArea } from "@/composables/games/was/types/area";
 
@@ -118,6 +118,7 @@ const emits = defineEmits<{
   (
     event: "save",
     timming: WAS_EVENT_TIMMING,
+    healed: boolean,
     player: WasPlayerCharacter,
     characters: { [key: string]: WasNonPlayerCharacter },
     bosses: { [key: string]: WasNonPlayerCharacter },
@@ -137,7 +138,6 @@ const {
   player,
   showMap,
   showArea,
-  save
 } = useWasMain(props.loadData, emits);
 
 onMounted(() => {
@@ -160,7 +160,6 @@ onMounted(() => {
     };
   }
   showMap();
-  save()
 });
 </script>
 
@@ -198,7 +197,7 @@ onMounted(() => {
       }
       &__button {
         width: 150rem;
-        font-size: 20rem;
+        font-size: 16rem;
         height: 42rem;
       }
     }

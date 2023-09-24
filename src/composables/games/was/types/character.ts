@@ -83,7 +83,7 @@ export class WasCharacter {
     if (!skill || !this.skills.includes(skillId)) {
       return false;
     }
-    return skill.cost > 0 && this.status.satiety - skill.cost < 0;
+    return skill.cost <= 0 || this.status.satiety - skill.cost >= 0;
   }
 
   /**
@@ -93,7 +93,7 @@ export class WasCharacter {
    */
   haveItem(key: WAS_ITEM_ID) {
     const item = this.items.find((item) => item.id == key);
-    return !item || item.amount <= 0;
+    return item && item.amount > 0;
   }
 
   /**
@@ -123,11 +123,11 @@ export class WasCharacter {
    * 体力と満腹度は次回の戦闘に引き継ぐためリセットしない
    */
   resetStatus(): void {
-    const life = this.status.life;
-    const satiety = this.status.satiety;
-    this.status = JSON.parse(JSON.stringify(this.defaultStatus)) as WasStatus;
-    this.status.life = life;
-    this.status.satiety = satiety;
+    this.status.attack = this.defaultStatus.attack;
+    this.status.defense = this.defaultStatus.defense;
+    this.status.speed = this.defaultStatus.speed;
+    this.status.magic = this.defaultStatus.magic;
+    this.status.element = this.defaultStatus.element;
   }
 
   /**

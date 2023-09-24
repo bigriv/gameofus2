@@ -6,6 +6,7 @@ import {
   WAS_ENDING,
   WAS_EVENT_TIMMING,
   WAS_ITEM_ID,
+  WAS_SKILL_ID,
 } from "@/composables/games/was/const";
 import { useWasButton } from "@/composables/games/was/buttons";
 import { WAS_SKILL } from "@/composables/games/was/defines/skill";
@@ -57,41 +58,51 @@ export const useWasMain = (loadData: any, emits: Function) => {
     return persuadeCount >= bossWithoutLast.length - 1;
   };
 
-  const updateTimming = (
-    area: WAS_AREA_ID,
-    character: WasNonPlayerCharacter
-  ) => {
-    // ボスの場合はタイミングを攻略済みに更新する
-    if (!character.isBoss) {
-      return;
-    }
-    if (area === WAS_AREA_ID.CAVE) {
-      AREAS.CAVE.isClear = true;
-      state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_CAVE;
-    } else if (area === WAS_AREA_ID.SEA) {
-      AREAS.SEA.isClear = true;
-      state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_SEA;
-    } else if (area === WAS_AREA_ID.VILLAGE) {
-      AREAS.VILLAGE.isClear = true;
-      state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_VILLAGE;
-    } else if (area === WAS_AREA_ID.MOUNTAIN) {
-      AREAS.MOUNTAIN.isClear = true;
-      state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_MOUNTAIN;
-    } else if (area === WAS_AREA_ID.KINGDOM_CASTLE) {
-      AREAS.KINGDOM_CASTLE.isClear = true;
-      state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_KINGDOM_CASTLE;
+  const updateTimming = (area: WAS_AREA_ID) => {
+    const currentTimming = state.timming;
+
+    // 攻略したエリアによってタイミングを変える
+    switch (area) {
+      case WAS_AREA_ID.SATAN_CASTLE:
+        // ラスダン以外の全てのエリアを攻略済みの場合はラスダン攻略前にイベントタイミングを更新する
+        if (
+          AREAS.CAVE.isClear &&
+          AREAS.SEA.isClear &&
+          AREAS.VILLAGE.isClear &&
+          AREAS.MOUNTAIN.isClear &&
+          !AREAS.KINGDOM_CASTLE.isClear
+        ) {
+          state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_ALL_AREA;
+        }
+        break;
+      case WAS_AREA_ID.CAVE:
+        state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_CAVE;
+        break;
+      case WAS_AREA_ID.SEA:
+        state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_SEA;
+        break;
+      case WAS_AREA_ID.VILLAGE:
+        state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_VILLAGE;
+        break;
+      case WAS_AREA_ID.MOUNTAIN:
+        state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_MOUNTAIN;
+        break;
+      case WAS_AREA_ID.KINGDOM_CASTLE:
+        state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_KINGDOM_CASTLE;
+        break;
     }
 
-    // ラスダン以外の全てのエリアを攻略済みの場合はラスダン攻略前にタイミングを更新する
-    if (
-      AREAS.CAVE.isClear &&
-      AREAS.SEA.isClear &&
-      AREAS.VILLAGE.isClear &&
-      AREAS.MOUNTAIN.isClear
-    ) {
-      state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_ALL_AREA;
-    }
+    return state.timming !== currentTimming;
   };
+
+  const clearArea = (area: WAS_AREA_ID) => {
+    AREAS[area].isClear = true;
+    // クリアした場合は回復可能にする
+    state.healed = false;
+    // イベントタイミングの更新も行う
+    updateTimming(area);
+  };
+
   const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
     if (id !== WAS_BUTTON_EVENT.NONE) {
       // 何も起こさない場合以外は表示をリセットする
@@ -105,10 +116,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
           throw new WrongImplementationError("Area is not set.");
         }
         const exploreResult = state.player.explore(AREAS[state.area]);
-        if (!exploreResult) {
-          // 探索失敗
-          chainMessage(["何もみつからない...。"], () => showArea(state.area));
-        } else if (exploreResult instanceof WasCharacter) {
+        if (exploreResult instanceof WasCharacter) {
           // キャラクター遭遇
           state.character = exploreResult;
           showCharacterInArea();
@@ -117,9 +125,14 @@ export const useWasMain = (loadData: any, emits: Function) => {
           const addItemResult = state.player.addItem(exploreResult);
           let messages = [`${exploreResult.name}をみつけた！`];
           if (!addItemResult) {
-            messages.push(`が、これ以上${exploreResult.name}を持てない...。`);
+            messages.push(
+              `しかし、これ以上${exploreResult.name}を持てない...。`
+            );
           }
           chainMessage(messages, () => showArea(state.area));
+        } else {
+          // 探索失敗
+          chainMessage(["何もみつからない...。"], () => showArea(state.area));
         }
         return;
       case WAS_BUTTON_EVENT.PERSUADE:
@@ -133,7 +146,10 @@ export const useWasMain = (loadData: any, emits: Function) => {
           return;
         }
         character.isPersuaded = true;
-        updateTimming(area, character);
+        if (character.isBoss) {
+          // ボス説得時はエリアをクリア状態にしてイベントタイミングを更新する
+          clearArea(area);
+        }
 
         let messages = [...character.serif.PERSUADE_SUCCESS];
         if (character.occupySkill) {
@@ -155,6 +171,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
         return;
       case WAS_BUTTON_EVENT.BACK_TO_BATTLE:
         buttonList.value = BATTLE_BUTTON_LIST;
+        isShowStatusBar.value = true;
         return;
       case WAS_BUTTON_EVENT.NONE:
         return;
@@ -175,7 +192,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
         }
         state.player.setBattleMove(state.player, state.character, {
           type: WAS_BATTLE_MOVE.SKILL,
-          skillId: args,
+          skillId: args as WAS_SKILL_ID,
         });
         break;
       case WAS_BUTTON_EVENT.BATTLE_ITEM:
@@ -187,7 +204,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
         }
         state.player.setBattleMove(state.player, state.character, {
           type: WAS_BATTLE_MOVE.ITEM,
-          itemId: args,
+          itemId: args as WAS_ITEM_ID,
         });
         break;
     }
@@ -218,12 +235,16 @@ export const useWasMain = (loadData: any, emits: Function) => {
       afterFunction = () => {
         let afterMessages = [];
         const area = state.area as WAS_AREA_ID;
-        if (!character.persuadItem && CHARACTERS[area].isPersuaded) {
-          // 説得アイテムが未設定で雑魚キャラが説得済みの場合は説得成功として処理する
+        if (
+          character.isBoss &&
+          !character.persuadItem &&
+          CHARACTERS[area].isPersuaded
+        ) {
+          // ボスで説得アイテムが未設定で雑魚キャラが説得済みの場合は説得成功として処理する
           character.isPersuaded = true;
           afterMessages = [...character.serif.PERSUADE_SUCCESS];
           if (character.occupySkill) {
-            let occupySkill = WAS_SKILL[character.occupySkill];
+            const occupySkill = WAS_SKILL[character.occupySkill];
             state.player.skills.push(character.occupySkill);
             afterMessages.push(`${occupySkill.name}を習得した！`);
           }
@@ -246,7 +267,10 @@ export const useWasMain = (loadData: any, emits: Function) => {
           }
         }
 
-        updateTimming(area, character);
+        if (character.isBoss) {
+          // ボス戦勝利時はエリアをクリア状態にしてイベントタイミングを更新する
+          clearArea(area);
+        }
 
         let afterFunction = () => showArea(area);
         // 王国クリア時はエンディングに遷移する
@@ -360,6 +384,27 @@ export const useWasMain = (loadData: any, emits: Function) => {
         break;
     }
 
+    if (
+      updateTimming(WAS_AREA_ID.SATAN_CASTLE) &&
+      state.timming === WAS_EVENT_TIMMING.AFTER_CLEAR_ALL_AREA
+    ) {
+      // イベントタイミングが全エリアクリア後に変わった場合は姫の会話を続ける
+      chainMessage([...messages], showAreaSatanCasle);
+      return;
+    }
+
+    if (
+      state.timming >= WAS_EVENT_TIMMING.AFTER_CLEAR_CAVE &&
+      state.timming < WAS_EVENT_TIMMING.AFTER_CLEAR_KINGDOM_CASTLE &&
+      !state.healed
+    ) {
+      state.player.riseStatus();
+      state.player.status.life = state.player.defaultStatus.life;
+      state.player.status.satiety = state.player.defaultStatus.satiety;
+      state.healed = true;
+      messages.push(...WAS_SERIF_DEFINE.PRINCESS_HEAL);
+    }
+
     chainMessage([...messages], afterFunction);
 
     // 魔王城に帰還したタイミングでオートセーブを行う
@@ -368,6 +413,11 @@ export const useWasMain = (loadData: any, emits: Function) => {
 
   // マップの表示
   const showMap = () => {
+    if (state.player.status.satiety <= 0) {
+      // 満腹度が0以下の場合はGame Overとする
+      showEnd(WAS_ENDING.HUNGER);
+      return;
+    }
     layer.background = [MAP];
 
     // 進行状況によって表示するエリアを制御
@@ -410,6 +460,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
     layer.objects = [];
     displayMessage.value = [];
     buttonList.value = EXLPORE_BUTTON_LIST;
+    isShowStatusBar.value = true;
   };
 
   // エリアとキャラクターの表示
@@ -423,7 +474,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
       messages.push(`${character.name}が現れた。`);
     }
 
-    let afteFuntion = () => {};
+    let afterFunction = () => {};
 
     const serif = character.serif;
     if (!state.area) {
@@ -433,22 +484,22 @@ export const useWasMain = (loadData: any, emits: Function) => {
       if (BOSSES[state.area].isPersuaded) {
         // ボス敵を説得済みの場合
         messages.push(...(serif.CHAT ?? []));
-        afteFuntion = showMap;
+        afterFunction = showMap;
       } else if (CHARACTERS[state.area].isPersuaded) {
         // 雑魚敵を説得済みの場合
         messages.push(...serif.FACE1);
-        afteFuntion = showFace;
+        afterFunction = showFace;
       } else {
         // 雑魚敵を討伐済みの場合
         messages.push(...(serif.FACE2 ?? []));
-        afteFuntion = showFace;
+        afterFunction = showFace;
       }
     } else {
       messages.push(...serif.FACE1);
-      afteFuntion = showFace;
+      afterFunction = showFace;
     }
 
-    chainMessage(messages, afteFuntion);
+    chainMessage(messages, afterFunction);
     return;
   };
   const showFace = () => {
@@ -460,12 +511,19 @@ export const useWasMain = (loadData: any, emits: Function) => {
     isShowStatusBar.value = true;
   };
   const showEnd = (type: WAS_ENDING) => {
-    console.log(type);
     emits("end", type);
   };
 
   const save = () => {
-    emits("save", state.timming, state.player, CHARACTERS, BOSSES, AREAS);
+    emits(
+      "save",
+      state.timming,
+      state.healed,
+      state.player,
+      CHARACTERS,
+      BOSSES,
+      AREAS
+    );
   };
   return {
     layer,

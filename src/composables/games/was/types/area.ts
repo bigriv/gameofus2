@@ -7,6 +7,8 @@ import {
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
+import { WasItem } from "@/composables/games/was/types/item";
+import { WAS_ITEM } from "@/composables/games/was/defines/item";
 
 export class WasArea {
   readonly name: string;
@@ -15,6 +17,7 @@ export class WasArea {
   readonly character: WasCharacter;
   readonly boss?: WasCharacter;
   isClear: boolean;
+  exploreCount: number;
   dropItems: Array<{
     probability: number;
     amount: number;
@@ -53,10 +56,36 @@ export class WasArea {
     }
     this.dropItems = dropItems ?? [];
     this.isClear = false;
+    this.exploreCount = 0;
   }
 
-  // 進行状況に応じてキャラクターを返す
-  encount() {
+  /**
+   * 探索結果を取得する
+   * @returns 探索結果（エンカウント時はキャラクター、ドロップ判定にかかればアイテム、それ以外はnull）
+   */
+  explore(): WasCharacter | WasItem | null {
+    if (this.isClear || !this.dropItems.find((item) => item.amount > 0)) {
+      // クリア済みでドロップ可能なアイテムがない場合は強制エンカウント
+      return this.encount();
+    }
+
+    this.exploreCount++;
+    if (this.exploreCount < 5) {
+      // 探索回数が5回未満の場合はアイテムドロップのみ
+      return this.drop();
+    }
+
+    if (Math.random() < 0.8) {
+      return this.drop();
+    }
+    return this.encount();
+  }
+
+  /**
+   * 進行状況に応じてキャラクターを返す
+   * @returns エンカウントしたキャラクター（エンカウントするキャラクターがいない場合はnull）
+   */
+  encount(): WasCharacter | null {
     // ボスが設定されていない場合は会話のみのエリアとみなして、キャラクターを強制で返す
     if (!this.boss) {
       return this.character;
@@ -80,12 +109,25 @@ export class WasArea {
    * ドロップするアイテムを返す
    * @returns ドロップしたアイテム（ドロップしない場合はnullを返却する）
    */
-  drop(): WAS_ITEM_ID | null {
+  drop(): WasItem | null {
     for (const dropItem of this.dropItems) {
-      const dropRnd = Math.random();
-      if (dropItem.amount > 0 && dropRnd < dropItem.probability) {
+      if (dropItem.amount <= 0) {
+        continue;
+      }
+      // ドロップ判定
+      // 探索回数が増えるほどアイテムがドロップしやすくなるように調整
+      const additional = this.exploreCount * dropItem.probability * 0.1;
+      if (Math.random() < dropItem.probability + additional) {
         dropItem.amount--;
-        return dropItem.id;
+        return new WasItem(
+          dropItem.id,
+          WAS_ITEM[dropItem.id].name,
+          WAS_ITEM[dropItem.id].maxAmount,
+          WAS_ITEM[dropItem.id].passive,
+          WAS_ITEM[dropItem.id].beforeEffect,
+          WAS_ITEM[dropItem.id].effect,
+          WAS_ITEM[dropItem.id].afterEffect
+        );
       }
     }
     return null;
@@ -99,6 +141,7 @@ export class WasArea {
     return {
       isClear: this.isClear,
       dropItems: this.dropItems,
+      exploreCount: this.exploreCount,
     };
   }
 }

@@ -11,7 +11,7 @@ export class WasBuffSkill extends WasSkill {
     effect?: Function,
     afterEffect?: Function // ターン終了時に発動する効果（ステータスのリセットなど）
   ) {
-    super(name, element, cost, 0, beforeEffect, effect, afterEffect);
+    super(name, element, 0, cost, beforeEffect, effect, afterEffect);
   }
   calcDamage(_activist: WasCharacter, _target: WasCharacter): number {
     return 0;

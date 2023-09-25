@@ -1,7 +1,8 @@
-import { WAS_ELEMENT } from "@/composables/games/was/const";
+import { WAS_ELEMENT, WAS_SKILL_ID } from "@/composables/games/was/const";
 import { WasCharacter } from "@/composables/games/was/types/character";
 
 export abstract class WasSkill {
+  readonly id: WAS_SKILL_ID;
   readonly name: string;
   readonly element: WAS_ELEMENT;
   readonly cost: number;
@@ -11,6 +12,7 @@ export abstract class WasSkill {
   readonly afterEffect?: Function; // ターン終了時に発動する効果（ステータスのリセットなど）
 
   constructor(
+    id: WAS_SKILL_ID,
     name: string,
     element: WAS_ELEMENT,
     power: number,
@@ -19,6 +21,7 @@ export abstract class WasSkill {
     effect?: Function,
     afterEffect?: Function // ターン終了時に発動する効果（ステータスのリセットなど）
   ) {
+    this.id = id;
     this.name = name;
     this.element = element;
     this.cost = cost;
@@ -54,5 +57,5 @@ export abstract class WasSkill {
       case WAS_ELEMENT.SHINE:
         return enemy == WAS_ELEMENT.DARK;
     }
-  };
+  }
 }

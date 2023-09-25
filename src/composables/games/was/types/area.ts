@@ -7,8 +7,6 @@ import {
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
-import { WasItem } from "@/composables/games/was/types/item";
-import { WAS_ITEM } from "@/composables/games/was/defines/item";
 
 export class WasArea {
   readonly name: string;
@@ -63,7 +61,7 @@ export class WasArea {
    * 探索結果を取得する
    * @returns 探索結果（エンカウント時はキャラクター、ドロップ判定にかかればアイテム、それ以外はnull）
    */
-  explore(): WasCharacter | WasItem | null {
+  explore(): WasCharacter | WAS_ITEM_ID | null {
     if (this.isClear || !this.dropItems.find((item) => item.amount > 0)) {
       // クリア済みでドロップ可能なアイテムがない場合は強制エンカウント
       return this.encount();
@@ -109,7 +107,7 @@ export class WasArea {
    * ドロップするアイテムを返す
    * @returns ドロップしたアイテム（ドロップしない場合はnullを返却する）
    */
-  drop(): WasItem | null {
+  drop(): WAS_ITEM_ID | null {
     for (const dropItem of this.dropItems) {
       if (dropItem.amount <= 0) {
         continue;
@@ -119,15 +117,7 @@ export class WasArea {
       const additional = this.exploreCount * dropItem.probability * 0.1;
       if (Math.random() < dropItem.probability + additional) {
         dropItem.amount--;
-        return new WasItem(
-          dropItem.id,
-          WAS_ITEM[dropItem.id].name,
-          WAS_ITEM[dropItem.id].maxAmount,
-          WAS_ITEM[dropItem.id].passive,
-          WAS_ITEM[dropItem.id].beforeEffect,
-          WAS_ITEM[dropItem.id].effect,
-          WAS_ITEM[dropItem.id].afterEffect
-        );
+        return dropItem.id;
       }
     }
     return null;

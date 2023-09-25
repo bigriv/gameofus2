@@ -6,11 +6,8 @@ import {
   WAS_ENDING,
   WAS_EVENT_TIMMING,
   WAS_ITEM_ID,
-  WAS_SKILL_ID,
 } from "@/composables/games/was/const";
 import { useWasButton } from "@/composables/games/was/buttons";
-import { WAS_SKILL } from "@/composables/games/was/defines/skill";
-import { WAS_ITEM } from "@/composables/games/was/defines/item";
 import WAS_SERIF_DEFINE from "@/composables/games/was/defines/serif";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { useWasInit } from "@/composables/games/was/init";
@@ -18,10 +15,9 @@ import { useWasDispay } from "@/composables/games/was/display";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 import { useWasBattle } from "@/composables/games/was/battle";
 import { WasCharacter } from "@/composables/games/was/types/character";
-import { WasItem } from "@/composables/games/was/types/item";
 
 export const useWasMain = (loadData: any, emits: Function) => {
-  const { PRINCESS, CHARACTERS, BOSSES, MAP, AREAS, state } =
+  const { PRINCESS, CHARACTERS, BOSSES, MAP, AREAS, ITEMS, SKILLS, state } =
     useWasInit(loadData);
 
   const {
@@ -31,6 +27,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
     buttonList,
     isShowStatusBar,
     chainMessage,
+    chainEvent,
   } = useWasDispay();
 
   const {
@@ -41,9 +38,9 @@ export const useWasMain = (loadData: any, emits: Function) => {
     BATTLE_BUTTON_LIST,
     SKILL_BUTTON_LIST,
     BATTLE_ITEM_BUTTON_LIST,
-  } = useWasButton(state.player);
+  } = useWasButton(state.player, ITEMS, SKILLS);
 
-  const { battle } = useWasBattle();
+  const { battle } = useWasBattle(ITEMS, SKILLS);
 
   const isUnified = () => {
     const bossWithoutLast = [
@@ -117,30 +114,29 @@ export const useWasMain = (loadData: any, emits: Function) => {
           throw new WrongImplementationError("Area is not set.");
         }
         const exploreResult = state.player.explore(AREAS[state.area]);
-        if (exploreResult instanceof WasCharacter) {
+        if (!exploreResult) {
+          // 探索失敗
+          chainMessage(["何もみつからない...。"], () => showArea(state.area));
+        } else if (exploreResult instanceof WasCharacter) {
           // キャラクター遭遇
           state.character = exploreResult;
           showCharacterInArea();
-        } else if (exploreResult instanceof WasItem) {
+        } else if (Object.values(WAS_ITEM_ID).includes(exploreResult)) {
           // アイテム発見
-          const addItemResult = state.player.addItem(exploreResult);
-          let messages = [`${exploreResult.name}をみつけた！`];
+          const item = ITEMS[exploreResult];
+          const addItemResult = state.player.addItem(item);
+          let messages = [`${item.name}をみつけた！`];
           if (!addItemResult) {
-            messages.push(
-              `しかし、これ以上${exploreResult.name}を持てない...。`
-            );
+            messages.push(`しかし、これ以上${item.name}を持てない...。`);
           }
           chainMessage(messages, () => showArea(state.area));
-        } else {
-          // 探索失敗
-          chainMessage(["何もみつからない...。"], () => showArea(state.area));
         }
         return;
       case WAS_BUTTON_EVENT.EXPLORE_ITEM:
         buttonList.value = EXPLORE_ITEM_BUTTON_LIST.value;
         return;
       case WAS_BUTTON_EVENT.USE_EXPLORE_ITEM:
-        const item = WAS_ITEM[args];
+        const item = ITEMS[args];
         if (!item) {
           throw new WrongImplementationError("Not exsist item is selected.");
         }
@@ -190,7 +186,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
 
         let persuadSuccessMessages = [...character.serif.PERSUADE_SUCCESS];
         if (character.occupySkill) {
-          let occupySkill = WAS_SKILL[character.occupySkill];
+          let occupySkill = SKILLS[character.occupySkill];
           state.player.skills.push(character.occupySkill);
           persuadSuccessMessages.push(`${occupySkill.name}を習得した！`);
         }
@@ -229,7 +225,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
         }
         state.player.setBattleMove(state.player, state.character, {
           type: WAS_BATTLE_MOVE.SKILL,
-          skillId: args as WAS_SKILL_ID,
+          skill: SKILLS[args],
         });
         break;
       case WAS_BUTTON_EVENT.BATTLE_ITEM:
@@ -241,7 +237,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
         }
         state.player.setBattleMove(state.player, state.character, {
           type: WAS_BATTLE_MOVE.ITEM,
-          itemId: args as WAS_ITEM_ID,
+          item: ITEMS[args],
         });
         break;
     }
@@ -281,22 +277,14 @@ export const useWasMain = (loadData: any, emits: Function) => {
           character.isPersuaded = true;
           afterMessages = [...character.serif.PERSUADE_SUCCESS];
           if (character.occupySkill) {
-            const occupySkill = WAS_SKILL[character.occupySkill];
+            const occupySkill = SKILLS[character.occupySkill];
             state.player.skills.push(character.occupySkill);
             afterMessages.push(`${occupySkill.name}を習得した！`);
           }
         } else {
           afterMessages = [...character.serif.BATTLE_WIN];
           if (character.dropItem) {
-            const dropItem = new WasItem(
-              character.dropItem,
-              WAS_ITEM[character.dropItem].name,
-              WAS_ITEM[character.dropItem].maxAmount,
-              WAS_ITEM[character.dropItem].passive,
-              WAS_ITEM[character.dropItem].beforeEffect,
-              WAS_ITEM[character.dropItem].effect,
-              WAS_ITEM[character.dropItem].afterEffect
-            );
+            const dropItem = ITEMS[character.dropItem];
             const addResult = state.player.addItem(dropItem);
             if (addResult) {
               afterMessages.push(`${dropItem.name}を手に入れた！`);
@@ -339,17 +327,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
         break;
       case WAS_EVENT_TIMMING.AFTER_OPENING1:
         messages = WAS_SERIF_DEFINE.PRINCESS_AFTER_OPENING1;
-        state.player.addItem(
-          new WasItem(
-            WAS_ITEM_ID.SATAN_SOUL,
-            WAS_ITEM.SATAN_SOUL.name,
-            WAS_ITEM.SATAN_SOUL.maxAmount,
-            WAS_ITEM.SATAN_SOUL.passive,
-            WAS_ITEM.SATAN_SOUL.beforeEffect,
-            WAS_ITEM.SATAN_SOUL.effect,
-            WAS_ITEM.SATAN_SOUL.afterEffect
-          )
-        );
+        state.player.addItem(ITEMS[WAS_ITEM_ID.SATAN_SOUL]);
         state.timming = WAS_EVENT_TIMMING.AFTER_OPENING2;
         afterFunction = () => showArea(WAS_AREA_ID.SATAN_CASTLE);
         break;

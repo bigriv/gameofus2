@@ -1,10 +1,17 @@
 import { computed } from "vue";
-import { WAS_BUTTON_EVENT, WAS_ITEM_ID } from "@/composables/games/was/const";
-import { WAS_ITEM } from "@/composables/games/was/defines/item";
-import { WAS_SKILL } from "@/composables/games/was/defines/skill";
+import {
+  WAS_BUTTON_EVENT,
+  WAS_ITEM_ID,
+} from "@/composables/games/was/const";
 import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";
+import { WasSkill } from "@/composables/games/was/types/skill";
+import { WasItem } from "@/composables/games/was/types/item";
 
-export const useWasButton = (player: WasPlayerCharacter) => {
+export const useWasButton = (
+  player: WasPlayerCharacter,
+  ITEMS: { [key: string]: WasItem },
+  SKILLS: { [key: string]: WasSkill }
+) => {
   const generateItemButtonList = (
     items: Array<{
       amount: number;
@@ -29,7 +36,7 @@ export const useWasButton = (player: WasPlayerCharacter) => {
         const item = items[i * ROW_NUM + j];
         if (item) {
           buttons[i][j] = {
-            label: WAS_ITEM[item.id].name,
+            label: ITEMS[item.id].name,
             eventId: eventId,
             eventArgs: item.id,
           };
@@ -102,7 +109,7 @@ export const useWasButton = (player: WasPlayerCharacter) => {
         const skillId = player.skills[i * ROW_NUM + j];
         if (skillId) {
           buttons[i][j] = {
-            label: WAS_SKILL[skillId].name,
+            label: SKILLS[skillId].name,
             eventId: WAS_BUTTON_EVENT.ACTIVATE_SKILL,
             eventArgs: skillId,
           };

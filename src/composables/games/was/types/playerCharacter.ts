@@ -2,13 +2,14 @@ import {
   WAS_BATTLE_MOVE,
   WAS_ITEM_ID,
   WAS_SKILL_ID,
-  WAS_SKILL_TYPE,
 } from "@/composables/games/was/const";
-import { WAS_SKILL } from "@/composables/games/was/defines/skill";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasStatus } from "@/composables/games/was/types/status";
 import { WasArea } from "@/composables/games/was/types/area";
+import { WasSkill } from "@/composables/games/was/types/skill";
 import { WasItem } from "@/composables/games/was/types/item";
+import { WasHealSkill } from "@/composables/games/was/types/healSkill";
+import { WasBuffSkill } from "@/composables/games/was/types/buffSkill";
 
 /**
  * WAS用のPlayer操作キャラクタークラス
@@ -36,8 +37,8 @@ export class WasPlayerCharacter extends WasCharacter {
     enemy: WasCharacter,
     move:
       | { type: WAS_BATTLE_MOVE.ATTACK }
-      | { type: WAS_BATTLE_MOVE.SKILL; skillId: WAS_SKILL_ID }
-      | { type: WAS_BATTLE_MOVE.ITEM; itemId: WAS_ITEM_ID }
+      | { type: WAS_BATTLE_MOVE.SKILL; skill: WasSkill }
+      | { type: WAS_BATTLE_MOVE.ITEM; item: WasItem }
   ) {
     switch (move.type) {
       case WAS_BATTLE_MOVE.ATTACK:
@@ -48,10 +49,9 @@ export class WasPlayerCharacter extends WasCharacter {
         break;
       case WAS_BATTLE_MOVE.SKILL:
         let target = enemy;
-        const skill = WAS_SKILL[move.skillId];
+        const skill = move.skill;
         if (
-          skill.type == WAS_SKILL_TYPE.HEAL ||
-          skill.type == WAS_SKILL_TYPE.BUFF
+          skill instanceof WasHealSkill || skill instanceof WasBuffSkill
         ) {
           // サポートスキルは対象を自身に書き換える
           target = self;
@@ -59,14 +59,14 @@ export class WasPlayerCharacter extends WasCharacter {
         this.move = {
           type: WAS_BATTLE_MOVE.SKILL,
           target: target,
-          skillId: move.skillId,
+          skillId: move.skill.id,
         };
         break;
       case WAS_BATTLE_MOVE.ITEM:
         this.move = {
           type: WAS_BATTLE_MOVE.ITEM,
           target: self,
-          itemId: move.itemId,
+          itemId: move.item.id,
         };
         break;
     }
@@ -77,7 +77,7 @@ export class WasPlayerCharacter extends WasCharacter {
    * @param area 探索するエリア
    * @returns エンカウント時はキャラクター、ドロップ判定にかかればアイテム、それ以外はnull
    */
-  explore(area: WasArea): WasCharacter | WasItem | null {
+  explore(area: WasArea): WasCharacter | WAS_ITEM_ID | null {
     // 満腹度を消費
     this.status.satiety -= 5;
     // 探索回数を加算

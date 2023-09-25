@@ -4,6 +4,7 @@ import {
   WAS_EVENT_TIMMING,
   WAS_ITEM_ID,
   WAS_SKILL_ID,
+  WAS_SKILL_TYPE,
 } from "@/composables/games/was/const";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
@@ -35,6 +36,14 @@ import { WAS_MAP } from "@/composables/games/was/defines/map";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WasArea } from "@/composables/games/was/types/area";
 import { WasStatus } from "@/composables/games/was/types/status";
+import { WasItem } from "@/composables/games/was/types/item";
+import { WAS_ITEM } from "@/composables/games/was/defines/item";
+import { WasSkill } from "@/composables/games/was/types/skill";
+import { WAS_SKILL } from "@/composables/games/was/defines/skill";
+import { WasPhysicalAttackSkill } from "@/composables/games/was/types/phisicalAttackSkill";
+import { WasMagicalAttackSkill } from "@/composables/games/was/types/magicalAttackSkill";
+import { WasHealSkill } from "@/composables/games/was/types/healSkill";
+import { WasBuffSkill } from "@/composables/games/was/types/buffSkill";
 
 export const useWasInit = (loadData?: any) => {
   // プレイヤーの初期化
@@ -101,6 +110,90 @@ export const useWasInit = (loadData?: any) => {
     return areas;
   };
 
+  // アイテムの初期化
+  const initItem = (): { [key: string]: WasItem } => {
+    let items: { [key: string]: WasItem } = {};
+    const defines = WAS_ITEM;
+    for (const key of Object.keys(defines)) {
+      if (!Object.values(WAS_ITEM_ID).includes(key as WAS_ITEM_ID)) {
+        console.error(`key:'${key}' is undefined in item ids.`);
+        continue;
+      }
+      items[key] = new WasItem(
+        key as WAS_ITEM_ID,
+        defines[key].name,
+        defines[key].maxAmount,
+        defines[key].passive,
+        defines[key].beforeEffect,
+        defines[key].effect,
+        defines[key].afterEffect
+      );
+    }
+    return items;
+  };
+
+  // スキルの初期化
+  const initSkill = (): { [key: string]: WasSkill } => {
+    let skills: { [key: string]: WasSkill } = {};
+    const defines = WAS_SKILL;
+    for (const key of Object.keys(defines)) {
+      if (!Object.values(WAS_SKILL_ID).includes(key as WAS_SKILL_ID)) {
+        console.error(`key:'${key}' is undefined in skill ids.`);
+        continue;
+      }
+      switch (defines[key].type) {
+        case WAS_SKILL_TYPE.PHISICAL_ATTACK:
+          skills[key] = new WasPhysicalAttackSkill(
+            key as WAS_SKILL_ID,
+            defines[key].name,
+            defines[key].element,
+            defines[key].power,
+            defines[key].cost,
+            defines[key].beforeEffect,
+            defines[key].effect,
+            defines[key].afterEffect
+          );
+          break;
+        case WAS_SKILL_TYPE.MAGICAL_ATTACK:
+          skills[key] = new WasMagicalAttackSkill(
+            key as WAS_SKILL_ID,
+            defines[key].name,
+            defines[key].element,
+            defines[key].power,
+            defines[key].cost,
+            defines[key].beforeEffect,
+            defines[key].effect,
+            defines[key].afterEffect
+          );
+          break;
+        case WAS_SKILL_TYPE.HEAL:
+          skills[key] = new WasHealSkill(
+            key as WAS_SKILL_ID,
+            defines[key].name,
+            defines[key].element,
+            defines[key].power,
+            defines[key].cost,
+            defines[key].beforeEffect,
+            defines[key].effect,
+            defines[key].afterEffect
+          );
+          break;
+        case WAS_SKILL_TYPE.BUFF:
+          skills[key] = new WasBuffSkill(
+            key as WAS_SKILL_ID,
+            defines[key].name,
+            defines[key].element,
+            defines[key].cost,
+            defines[key].beforeEffect,
+            defines[key].effect,
+            defines[key].afterEffect
+          );
+          break;
+      }
+    }
+    return skills;
+  };
+
   const PRINCESS: WasCharacter = new WasCharacter(
     WAS_PRINCESS.name,
     ConstructGOUVisual(WAS_PRINCESS.visual),
@@ -128,6 +221,8 @@ export const useWasInit = (loadData?: any) => {
   );
   const MAP: GOUVisual = ConstructGOUVisual(WAS_MAP);
   const AREAS: { [key: string]: WasArea } = initArea();
+  const ITEMS: { [key: string]: WasItem } = initItem();
+  const SKILLS: { [key: string]: WasSkill } = initSkill();
 
   const state: {
     timming: WAS_EVENT_TIMMING;
@@ -219,6 +314,8 @@ export const useWasInit = (loadData?: any) => {
     BOSSES,
     MAP,
     AREAS,
+    ITEMS,
+    SKILLS,
     state,
   };
 };

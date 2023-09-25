@@ -1,9 +1,10 @@
-import { WAS_ELEMENT } from "@/composables/games/was/const";
+import { WAS_ELEMENT, WAS_SKILL_ID } from "@/composables/games/was/const";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasSkill } from "@/composables/games/was/types/skill";
 
 export class WasMagicalAttackSkill extends WasSkill {
   constructor(
+    id: WAS_SKILL_ID,
     name: string,
     element: WAS_ELEMENT,
     power: number,
@@ -12,7 +13,7 @@ export class WasMagicalAttackSkill extends WasSkill {
     effect?: Function,
     afterEffect?: Function // ターン終了時に発動する効果（ステータスのリセットなど）
   ) {
-    super(name, element, power, cost, beforeEffect, effect, afterEffect);
+    super(id, name, element, power, cost, beforeEffect, effect, afterEffect);
   }
   calcDamage(activist: WasCharacter, target: WasCharacter): number {
     const power = this.power ?? 0;

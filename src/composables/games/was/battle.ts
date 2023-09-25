@@ -1,19 +1,12 @@
 import {
   WAS_BATTLE_MOVE,
   WAS_BATTLE_STATUS,
-  WAS_SKILL_TYPE,
 } from "@/composables/games/was/const";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";
-import { WAS_ITEM } from "@/composables/games/was/defines/item";
 import { WasItem } from "@/composables/games/was/types/item";
 import { WasSkill } from "@/composables/games/was/types/skill";
-import { WAS_SKILL } from "@/composables/games/was/defines/skill";
-import { WasPhysicalAttackSkill } from "@/composables/games/was/types/phisicalAttackSkill";
-import { WasMagicalAttackSkill } from "@/composables/games/was/types/magicalAttackSkill";
-import { WasHealSkill } from "@/composables/games/was/types/healSkill";
-import { WasBuffSkill } from "@/composables/games/was/types/buffSkill";
 
 type WAS_BATTLE_PROGRESS = {
   message: string;
@@ -21,7 +14,10 @@ type WAS_BATTLE_PROGRESS = {
   // animation: Function;
 };
 
-export const useWasBattle = () => {
+export const useWasBattle = (
+  ITEMS: { [key: string]: WasItem },
+  SKILLS: { [key: string]: WasSkill }
+) => {
   const getMoveDetail = (
     character: WasCharacter
   ): WasSkill | WasItem | null => {
@@ -32,62 +28,13 @@ export const useWasBattle = () => {
       if (!character.isUsableSkill(character.move.skillId)) {
         return null;
       }
-      const skillDefine = WAS_SKILL[character.move.skillId];
-      switch (skillDefine.type) {
-        case WAS_SKILL_TYPE.PHISICAL_ATTACK:
-          return new WasPhysicalAttackSkill(
-            skillDefine.name,
-            skillDefine.element,
-            skillDefine.power,
-            skillDefine.cost,
-            skillDefine.beforeEffect,
-            skillDefine.effect,
-            skillDefine.afterEffect
-          );
-        case WAS_SKILL_TYPE.MAGICAL_ATTACK:
-          return new WasMagicalAttackSkill(
-            skillDefine.name,
-            skillDefine.element,
-            skillDefine.power,
-            skillDefine.cost,
-            skillDefine.beforeEffect,
-            skillDefine.effect,
-            skillDefine.afterEffect
-          );
-        case WAS_SKILL_TYPE.HEAL:
-          return new WasHealSkill(
-            skillDefine.name,
-            skillDefine.element,
-            skillDefine.power,
-            skillDefine.cost,
-            skillDefine.beforeEffect,
-            skillDefine.effect,
-            skillDefine.afterEffect
-          );
-        case WAS_SKILL_TYPE.BUFF:
-          return new WasBuffSkill(
-            skillDefine.name,
-            skillDefine.element,
-            skillDefine.cost,
-            skillDefine.beforeEffect,
-            skillDefine.effect,
-            skillDefine.afterEffect
-          );
-      }
+      return SKILLS[character.move.skillId];
     }
     if (character.move.type == WAS_BATTLE_MOVE.ITEM) {
       if (!character.haveItem(character.move.itemId)) {
         return null;
       }
-      return new WasItem(
-        character.move.itemId,
-        WAS_ITEM[character.move.itemId].name,
-        WAS_ITEM[character.move.itemId].maxAmount,
-        WAS_ITEM[character.move.itemId].passive,
-        WAS_ITEM[character.move.itemId].beforeEffect,
-        WAS_ITEM[character.move.itemId].effect,
-        WAS_ITEM[character.move.itemId].afterEffect
-      );
+      return ITEMS[character.move.itemId];
     }
     return null;
   };

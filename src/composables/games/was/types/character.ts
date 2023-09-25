@@ -80,6 +80,7 @@ export class WasCharacter {
    * @returns 満腹度が十分ならtrue、それ以外はfalse
    */
   isUsableSkill(skillId: WAS_SKILL_ID): boolean {
+    // TODO:WAS_SKILLを使用しない作りに直す
     const skill = WAS_SKILL[skillId];
     if (!skill || !this.skills.includes(skillId)) {
       return false;

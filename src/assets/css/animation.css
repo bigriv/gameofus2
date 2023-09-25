@@ -1,0 +1,47 @@
+.a-fadeout {
+  animation: fadeout var(--duration);
+  animation-iteration-count: var(--iteration);
+}
+
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.a-fadein {
+  animation: fadein var(--duration);
+  animation-iteration-count: var(--iteration);
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.a-flash {
+  animation: flash var(--duration);
+  animation-iteration-count: var(--iteration);
+}
+
+@keyframes flash {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+.a-infinite {
+  animation-iteration-count: infinite;
+}

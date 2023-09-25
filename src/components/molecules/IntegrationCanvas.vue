@@ -1,19 +1,23 @@
 <template>
   <BasicCanvas
+    v-if="diagrams.length > 0"
     :width="props.width"
     :height="props.height"
     :objects="diagrams"
   />
   <ImageCanvas
+    v-if="images.length > 0"
     :width="props.width"
     :height="props.height"
     :objects="images"
     :zIndex="props.zIndex"
   />
   <LottieCanvas
+    v-if="lotties.length > 0"
     :width="props.width"
     :height="props.height"
     :objects="lotties"
+    :zIndex="props.zIndex"
   />
 </template>
 
@@ -21,7 +25,7 @@
 import { computed } from "vue";
 import GOUDiagram from "@/composables/types/visuals/GOUDiagram";
 import GOUImage from "@/composables/types/visuals/GOUImage";
-import { GOULottieAnimation } from "@/composables/types/visuals/GOULottieAnimation";
+import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import BasicCanvas from "@/components/atoms/canvases/BasicCanvas.vue";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import ImageCanvas from "@/components/atoms/canvases/ImageCanvas.vue";
@@ -58,7 +62,7 @@ const images = computed(() =>
 );
 const lotties = computed(() =>
   props.objects
-    .filter((object) => object instanceof GOULottieAnimation)
-    .map((object) => object as GOULottieAnimation)
+    .filter((object) => object instanceof GOULottie)
+    .map((object) => object as GOULottie)
 );
 </script>

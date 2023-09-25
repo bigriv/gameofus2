@@ -2,19 +2,29 @@ import axios from "axios";
 import GOUPosition from "@/composables/types/GOUPosition";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 
-export class GOULottieAnimation extends GOUVisual {
+export class GOULottie extends GOUVisual {
   object: Object | null;
   readonly path: string;
   width: number;
   height: number;
-  constructor(path: string, width: number, height: number) {
+  loop: boolean;
+  speed: number;
+  constructor(
+    path: string,
+    width: number,
+    height: number,
+    loop?: boolean,
+    speed?: number
+  ) {
     super();
     this.object = null;
     this.path = path;
     this.width = width;
     this.height = height;
+    this.loop = loop ?? false;
+    this.speed = speed ?? 1;
   }
-  async load(): Promise<GOULottieAnimation> {
+  async load(): Promise<GOULottie> {
     if (this.object) {
       console.log(`The File '${this.path}' is aleady loaded.`);
       return this;
@@ -22,7 +32,6 @@ export class GOULottieAnimation extends GOUVisual {
     await axios
       .get(this.path)
       .then((response) => {
-        console.log(response.data);
         if (!response.data) {
           throw new Error(`Data is Empty.${this.path}`);
         }

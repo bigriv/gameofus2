@@ -264,6 +264,6 @@ watch(
 
 <style scoped>
 canvas {
-  float: left;
+  position: absolute;
 }
 </style>

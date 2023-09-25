@@ -39,7 +39,7 @@ import BasicModal from "@/components/atoms/BasicModal.vue";
 import LottieCanvas from "@/components/atoms/canvases/LottieCanvas.vue";
 import BadRequest from "@/components/templates/errors/BadRequest.vue";
 import { birthdayMusic } from "@/composables/sounds/blessing";
-import GOUAudio from "@/composables/types/GOUAudio";
+import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import { GOUAudioMelody } from "@/composables/types/audio/GOUMelodyAudio";
 
 const props = defineProps({
@@ -120,9 +120,9 @@ onMounted(async () => {
   }
 
   // アイコンの取得
-  let temp: Array<GOULottieAnimation> = [];
+  let temp: Array<GOULottie> = [];
   for (const icon of icons) {
-    const object = new GOULottieAnimation(
+    const object = new GOULottie(
       ICON_DEFINE[icon],
       ICON_WIDTH,
       ICON_HEIGHT

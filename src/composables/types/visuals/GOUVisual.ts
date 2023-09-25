@@ -1,9 +1,11 @@
 import GOUPosition from "../GOUPosition";
 import ClickableIf from "../interfaces/ClickableIf";
+import { GOUAnimation } from "./GOUAnimation";
 
 abstract class GOUVisual implements ClickableIf {
   position: GOUPosition = new GOUPosition(); // 親の物体から見た物体の相対位置
   children?: { [index: string]: GOUVisual };
+  animation?: GOUAnimation;
 
   isClickable: boolean = false;
   hovering: boolean = false;

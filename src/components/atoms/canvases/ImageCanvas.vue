@@ -17,7 +17,17 @@
             '--y': image.position.py,
             '--width': image.width,
             '--height': image.height,
+            '--duration': image.animation?.duration + 's',
+            '--iteration': image.animation?.iteration,
           }"
+          :class="
+            !image.animation
+              ? ''
+              : [
+                  `a-${image.animation?.type}`,
+                  { 'a-infinite': image.animation?.iteration <= 0 },
+                ]
+          "
           class="u-clickable"
           @click="image.onClick()"
           @mouseenter="image.onMouseEnter()"
@@ -31,7 +41,17 @@
             '--y': image.position.py,
             '--width': image.width,
             '--height': image.height,
+            '--duration': image.animation?.duration + 's',
+            '--iteration': image.animation?.iteration,
           }"
+          :class="
+            !image.animation
+              ? ''
+              : [
+                  `a-${image.animation?.type}`,
+                  { 'a-infinite': image.animation?.iteration <= 0 },
+                ]
+          "
         />
       </template>
     </template>
@@ -63,7 +83,7 @@ const props = defineProps({
 
 <style scoped lang="scss">
 .c-image_canvas {
-  position: relative;
+  position: absolute;
   width: calc(var(--width) * 1rem);
   height: calc(var(--height) * 1rem);
   user-select: none;

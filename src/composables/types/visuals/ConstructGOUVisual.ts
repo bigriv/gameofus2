@@ -75,6 +75,13 @@ const ConstructGOUVisual = (definition: GOUVisualDefinition): GOUVisual => {
         definition.height
       );
       break;
+    case GOUVisualType.ANIMATION_LOTTIE:
+      visual = new GOUImage(
+        definition.path,
+        definition.width,
+        definition.height
+      );
+      break;
   }
 
   if (visual instanceof GOUDiagram && color) {

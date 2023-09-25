@@ -18,8 +18,8 @@
       <h2>{{ props.name }}</h2>
 
       <LottieCanvas
-        :width="200"
-        :height="200"
+        :width="ICON_WIDTH"
+        :height="ICON_HEIGHT"
         :objects="objects.animations"
         class="u-horizontal--center"
       />
@@ -40,8 +40,7 @@ import LottieCanvas from "@/components/atoms/canvases/LottieCanvas.vue";
 import BadRequest from "@/components/templates/errors/BadRequest.vue";
 import { birthdayMusic } from "@/composables/sounds/blessing";
 import GOUAudio from "@/composables/types/GOUAudio";
-import StarAnimation from "@/assets/lottie/star.json";
-import ShrimpAnimation from "@/assets/lottie/shrimp.json";
+import { GOULottieAnimation } from "@/composables/types/visuals/GOULottieAnimation";
 
 const props = defineProps({
   date: {
@@ -71,15 +70,17 @@ const isConfirmed = ref(false);
 const birthday = ref("");
 const age = ref(0);
 const music = ref();
-const objects: { [key: string]: Array<Object> } = reactive({
+const ICON_WIDTH = 200;
+const ICON_HEIGHT = 200;
+const objects: { [key: string]: Array<GOULottieAnimation> } = reactive({
   animations: [],
 });
-const ICON_DEFINE: { [key: string]: Object } = {
-  STAR: StarAnimation,
-  SHRIMP: ShrimpAnimation,
+const ICON_DEFINE: { [key: string]: string } = {
+  STAR: "/blessings/animations/star.json",
+  SHRIMP: "/blessings/animations/shrimp.json",
 };
 
-onMounted(() => {
+onMounted(async () => {
   // 日付の書式チェック
   if (!props.date.match(/^[0-9]{4}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/)) {
     errorState.isBadRequest = true;
@@ -119,9 +120,15 @@ onMounted(() => {
   }
 
   // アイコンの取得
-  let temp: Array<Object> = [];
+  let temp: Array<GOULottieAnimation> = [];
   for (const icon of icons) {
-    temp.push(ICON_DEFINE[icon]);
+    const object = new GOULottieAnimation(
+      ICON_DEFINE[icon],
+      ICON_WIDTH,
+      ICON_HEIGHT
+    );
+    object.load();
+    temp.push(object);
   }
   objects.animations = temp;
 });

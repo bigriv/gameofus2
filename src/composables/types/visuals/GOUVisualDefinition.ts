@@ -1,5 +1,5 @@
-import { COLOR } from "../GOUColor";
-import GOUVisualType from "./GOUVisualType";
+import { COLOR } from "@/composables/types/GOUColor";
+import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
 
 type GOUVisualDefinition = (
   | {
@@ -62,6 +62,12 @@ type GOUVisualDefinition = (
     }
   | {
       type: GOUVisualType.IMAGE_SVG;
+      path: string;
+      width: number;
+      height: number;
+    }
+  | {
+      type: GOUVisualType.ANIMATION_LOTTIE;
       path: string;
       width: number;
       height: number;

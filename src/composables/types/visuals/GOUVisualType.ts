@@ -6,6 +6,7 @@ enum GOUVisualType {
   DIAGRAM_LINE_LIST,
   DIAGRAM_TEXT,
   IMAGE_SVG,
+  ANIMATION_LOTTIE,
 }
 
-export default GOUVisualType
+export default GOUVisualType;

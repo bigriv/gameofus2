@@ -2,7 +2,7 @@
   <div class="c-game__drawer">
     <div class="c-game__drawer__upper">
       <div class="c-game__drawer__layer">
-        <ImageCanvas
+        <IntegrationCanvas
           :width="GAME_DISPLAY_WIDTH"
           :height="GAME_DISPLAY_HEIGHT"
           :objects="layer.background"
@@ -10,7 +10,7 @@
         />
       </div>
       <div class="c-game__drawer__layer">
-        <ImageCanvas
+        <IntegrationCanvas
           :width="GAME_DISPLAY_WIDTH"
           :height="GAME_DISPLAY_HEIGHT"
           :objects="layer.objects"
@@ -91,8 +91,8 @@
 
 <script setup lang="ts">
 import { onMounted } from "vue";
+import IntegrationCanvas from "@/components/molecules/IntegrationCanvas.vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
-import ImageCanvas from "@/components/atoms/canvases/ImageCanvas.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import GameStatusBar from "@/components/atoms/interfaces/GameStatusBar.vue";
 import { COLOR } from "@/composables/types/GOUColor";

@@ -8,7 +8,8 @@
   >
     <template v-for="object in props.objects">
       <LottieAnimation
-        :animation-data="object"
+        v-if="object.object"
+        :animation-data="object.object"
         :auto-play="true"
         :loop="true"
         :speed="1"
@@ -19,6 +20,7 @@
 </template>
 
 <script setup lang="ts">
+import { GOULottieAnimation } from "@/composables/types/visuals/GOULottieAnimation";
 import { LottieAnimation } from "lottie-web-vue";
 
 const props = defineProps({
@@ -31,7 +33,7 @@ const props = defineProps({
     required: true,
   },
   objects: {
-    type: Array<Object>,
+    type: Array<GOULottieAnimation>,
     default: () => [],
   },
 });

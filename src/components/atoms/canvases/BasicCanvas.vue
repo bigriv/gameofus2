@@ -18,6 +18,7 @@ import GOUPosition from "@/composables/types/GOUPosition";
 import GOULine from "@/composables/types/visuals/diagrams/GOULine";
 import GOULineList from "@/composables/types/visuals/diagrams/GOULineList";
 import GOUText from "@/composables/types/visuals/diagrams/GOUText";
+import GOUDiagram from "@/composables/types/visuals/GOUDiagram";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 
 const props = defineProps({
@@ -30,7 +31,7 @@ const props = defineProps({
     required: true,
   },
   objects: {
-    type: Array<GOUVisual>,
+    type: Array<GOUDiagram>,
     default: () => [],
   },
 });
@@ -224,7 +225,7 @@ const onClick = (event: MouseEvent) => {
   }
 };
 // マウスホバー時の処理
-const onMouseMove = (event: MouseEvent, list: Array<GOUVisual>) => {
+const onMouseMove = (event: MouseEvent, list: Array<GOUDiagram>) => {
   for (const obj of list) {
     if (!obj.isClickable) {
       continue;
@@ -260,3 +261,9 @@ watch(
   }
 );
 </script>
+
+<style scoped>
+canvas {
+  float: left;
+}
+</style>

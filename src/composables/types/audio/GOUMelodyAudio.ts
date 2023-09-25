@@ -1,4 +1,6 @@
-class GOUAudio {
+import { GOUAudio } from "@/composables/types/audio/GOUAudio";
+
+export class GOUAudioMelody extends GOUAudio {
   private static MUSICAL_SALE: { [index: string]: number } = {
     a: 67.323,
     b: 71.326,
@@ -14,54 +16,50 @@ class GOUAudio {
     l: 127.089,
   };
   private audio: AudioContext;
-  private oscillator?: OscillatorNode;
-  private gain?: GainNode;
-  private playing: boolean;
-  private intervalId?: NodeJS.Timer;
-  melody?: string;
-  base?: string;
+  private oscillatorNode?: OscillatorNode;
+  private gainNode?: GainNode;
   private position: number;
+  private intervalId?: NodeJS.Timer;
+  melody: string;
   speed: number;
   constructor(melody?: string, speed?: number) {
+    super();
     this.audio = new ((<any>window).AudioContext ||
       (<any>window).webkitAudioContext)();
-    this.melody = melody;
-    this.playing = false;
+    this.melody = melody ?? "";
     this.position = 0;
     this.speed = speed ?? 1;
   }
-  play(): void {
+  play() {
     if (this.isPlaying()) {
       return;
     }
-    this.oscillator = this.audio.createOscillator();
-    this.gain = this.audio.createGain();
-    this.gain.gain.value = 0.1;
-    this.oscillator.connect(this.gain).connect(this.audio.destination);
+    this.oscillatorNode = this.audio.createOscillator();
+    this.gainNode = this.audio.createGain();
+    this.gainNode.gain.value = 0.1;
+    this.oscillatorNode.connect(this.gainNode).connect(this.audio.destination);
     this.changeMusicalScale();
-    this.oscillator.start();
+    this.oscillatorNode.start();
     this.intervalId = setInterval(() => {
       this.changeMusicalScale();
     }, 1000 / 4 / this.speed);
     this.playing = true;
   }
+
   stop(): void {
-    if (!this.oscillator) {
+    if (!this.oscillatorNode) {
       return;
     }
     if (!this.isPlaying()) {
       return;
     }
     clearInterval(this.intervalId);
-    this.oscillator.stop();
+    this.oscillatorNode.stop();
     this.playing = false;
-  }
-  isPlaying(): boolean {
-    return this.playing;
   }
 
   private changeMusicalScale(): void {
-    if (!this.oscillator) {
+    if (!this.oscillatorNode) {
       return;
     }
     if (!this.melody) {
@@ -79,10 +77,8 @@ class GOUAudio {
     if ((!octave && octave != 0) || Number.isNaN(octave)) {
       return;
     }
-    this.oscillator.frequency.value =
-      GOUAudio.MUSICAL_SALE[unitFrequency] * octave;
+    this.oscillatorNode.frequency.value =
+      GOUAudioMelody.MUSICAL_SALE[unitFrequency] * octave;
     this.position += 2;
   }
 }
-
-export default GOUAudio;

@@ -40,7 +40,7 @@ import LottieCanvas from "@/components/atoms/canvases/LottieCanvas.vue";
 import BadRequest from "@/components/templates/errors/BadRequest.vue";
 import { birthdayMusic } from "@/composables/sounds/blessing";
 import GOUAudio from "@/composables/types/GOUAudio";
-import { GOULottieAnimation } from "@/composables/types/visuals/GOULottieAnimation";
+import { GOUAudioMelody } from "@/composables/types/audio/GOUMelodyAudio";
 
 const props = defineProps({
   date: {
@@ -72,7 +72,7 @@ const age = ref(0);
 const music = ref();
 const ICON_WIDTH = 200;
 const ICON_HEIGHT = 200;
-const objects: { [key: string]: Array<GOULottieAnimation> } = reactive({
+const objects: { [key: string]: Array<GOULottie> } = reactive({
   animations: [],
 });
 const ICON_DEFINE: { [key: string]: string } = {
@@ -135,7 +135,7 @@ onMounted(async () => {
 
 const onClickConfirm = () => {
   isConfirmed.value = true;
-  music.value = new GOUAudio(birthdayMusic);
+  music.value = new GOUAudioMelody(birthdayMusic);
   music.value.play();
   isOpenConfirmModal.value = false;
 };

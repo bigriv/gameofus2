@@ -1,19 +1,50 @@
 import { GOUAudio } from "./GOUAudio";
 
 export class GOUReadAudio extends GOUAudio {
-  audio: HTMLAudioElement;
+  readonly path: string;
+  audio?: HTMLAudioElement;
+
   constructor(path: string) {
     super();
-    this.audio = new Audio(path);
+    this.path = path;
   }
-  play(): void {
+
+  /**
+   * 音声ファイルを取得する
+   * @returns
+   */
+  load(): GOUReadAudio {
+    if (this.audio) {
+      console.log(`The Audio ${this.path} is already loaded.`);
+      return this;
+    }
+    this.audio = new Audio(this.path);
+    return this;
+  }
+
+  /**
+   * 音声ファイルを再生する
+   * @param position 再生位置
+   */
+  play(position?: number): void {
+    if (!this.audio) {
+      throw Error("Audio is not loaded.");
+    }
     if (this.isPlaying()) {
       this.playing = false;
     }
-    this.audio.currentTime = 0;
+    this.audio.currentTime = position ?? 0;
     this.audio.play();
   }
+
+  /**
+   * 音声ファイルの再生を停止する
+   * @returns
+   */
   stop(): void {
+    if (!this.audio) {
+      return;
+    }
     this.audio.pause();
     this.playing = false;
   }

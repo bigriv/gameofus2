@@ -26,7 +26,7 @@ export class GOULottie extends GOUVisual {
   }
   async load(): Promise<GOULottie> {
     if (this.object) {
-      console.log(`The File '${this.path}' is aleady loaded.`);
+      console.log(`The File '${this.path}' is already loaded.`);
       return this;
     }
     await axios

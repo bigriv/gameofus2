@@ -42,6 +42,26 @@
   }
 }
 
+.a-shake {
+  animation: shake var(--duration);
+  animation-iteration-count: var(--iteration);
+}
+
+@keyframes shake {
+  0%,
+  50%,
+  100% {
+    transform: translate(0, 0);
+  }
+  
+  25% {
+    transform: translate(0, 5%);
+  }
+  75% {
+    transform: translate(0, -5%);
+  }
+}
+
 .a-infinite {
   animation-iteration-count: infinite;
 }

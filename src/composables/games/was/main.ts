@@ -17,8 +17,19 @@ import { useWasBattle } from "@/composables/games/was/battle";
 import { WasCharacter } from "@/composables/games/was/types/character";
 
 export const useWasMain = (loadData: any, emits: Function) => {
-  const { PRINCESS, CHARACTERS, BOSSES, MAP, AREAS, ITEMS, SKILLS, state } =
-    useWasInit(loadData);
+  const {
+    isLoadedImages,
+    loadFile,
+    loadSaveData,
+    PRINCESS,
+    CHARACTERS,
+    BOSSES,
+    MAP,
+    AREAS,
+    ITEMS,
+    SKILLS,
+    state,
+  } = useWasInit(loadData);
 
   const {
     layer,
@@ -540,6 +551,9 @@ export const useWasMain = (loadData: any, emits: Function) => {
     );
   };
   return {
+    isLoadedImages,
+    loadFile,
+    loadSaveData,
     layer,
     displayMessage,
     onClickMessageFrame,

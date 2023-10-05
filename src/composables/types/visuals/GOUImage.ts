@@ -2,14 +2,25 @@ import GOUPosition from "../GOUPosition";
 import GOUVisual from "./GOUVisual";
 
 class GOUImage extends GOUVisual {
-  path: string;
+  image: HTMLImageElement | null;
+  readonly path: string;
   width: number;
   height: number;
   constructor(path: string, width: number, height: number) {
     super();
+    this.image = null;
     this.path = path;
     this.width = width;
     this.height = height;
+  }
+  async load(): Promise<GOUImage> {
+    if (this.image) {
+      console.log(`The File '${this.path}' is already loaded.`);
+      return this;
+    }
+    this.image = new Image();
+    this.image.src = this.path;
+    return this;
   }
   getMinX(): number {
     return 0;

@@ -98,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, watch } from "vue";
 import IntegrationCanvas from "@/components/molecules/IntegrationCanvas.vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
@@ -136,6 +136,9 @@ const emits = defineEmits<{
 }>();
 
 const {
+  isLoadedImages,
+  loadFile,
+  loadSaveData,
   layer,
   displayMessage,
   buttonList,
@@ -167,8 +170,11 @@ onMounted(() => {
       }
     };
   }
-  showMap();
+  loadFile();
+  loadSaveData();
 });
+
+watch(() => isLoadedImages.value, showMap);
 </script>
 
 <style scoped lang="scss">

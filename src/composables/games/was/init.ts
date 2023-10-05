@@ -1,4 +1,4 @@
-import { reactive } from "vue";
+import { Ref, reactive, ref } from "vue";
 import {
   WAS_ANIMATION_HEIGHT,
   WAS_ANIMATION_WIDTH,
@@ -48,8 +48,11 @@ import { WasHealSkill } from "@/composables/games/was/types/healSkill";
 import { WasBuffSkill } from "@/composables/games/was/types/buffSkill";
 import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import GOUImage from "@/composables/types/visuals/GOUImage";
 
 export const useWasInit = (loadData?: any) => {
+  const isLoadedImages: Ref<boolean> = ref(false);
+
   // プレイヤーの初期化
   const initPlayer = (): WasPlayerCharacter => {
     return new WasPlayerCharacter(
@@ -218,7 +221,6 @@ export const useWasInit = (loadData?: any) => {
           );
           break;
       }
-      skills[key].load()
     }
     return skills;
   };
@@ -267,7 +269,47 @@ export const useWasInit = (loadData?: any) => {
     character: null,
   });
 
-  const load = () => {
+  const loadFile = () => {
+    for (const key of Object.keys(SKILLS)) {
+      SKILLS[key].load();
+    }
+    for (const key of Object.keys(CHARACTERS)) {
+      (CHARACTERS[key].visual as GOUImage).load();
+    }
+    for (const key of Object.keys(BOSSES)) {
+      (BOSSES[key].visual as GOUImage).load();
+    }
+    for (const key of Object.keys(AREAS)) {
+      (AREAS[key].inside as GOUImage).load();
+      (AREAS[key].outside as GOUImage).load();
+    }
+
+    // ロードが完了したかを判定する
+    const intervalId = setInterval(() => {
+      for (const key of Object.keys(CHARACTERS)) {
+        if (!(CHARACTERS[key].visual as GOUImage).image?.complete) {
+          return;
+        }
+      }
+      for (const key of Object.keys(BOSSES)) {
+        if (!(BOSSES[key].visual as GOUImage).image?.complete) {
+          return;
+        }
+      }
+      for (const key of Object.keys(AREAS)) {
+        if (!(AREAS[key].inside as GOUImage).image?.complete) {
+          return;
+        }
+        if (!(AREAS[key].outside as GOUImage).image?.complete) {
+          return;
+        }
+      }
+      isLoadedImages.value = true;
+      clearInterval(intervalId);
+    }, 100);
+  };
+
+  const loadSaveData = () => {
     console.log("load", loadData);
     if (!loadData) {
       return;
@@ -335,7 +377,6 @@ export const useWasInit = (loadData?: any) => {
       }
     }
   };
-  load();
 
   return {
     PRINCESS,
@@ -346,5 +387,8 @@ export const useWasInit = (loadData?: any) => {
     ITEMS,
     SKILLS,
     state,
+    isLoadedImages,
+    loadFile,
+    loadSaveData,
   };
 };

@@ -638,8 +638,8 @@ const WAS_HERO: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
     if (holyWater && Math.random() < 0.8) {
       if (self.status.life <= self.defaultStatus.life * 0.5) {
         return {
-          type: WAS_BATTLE_MOVE.SKILL,
-          skillId: WAS_SKILL_ID.HEAL,
+          type: WAS_BATTLE_MOVE.ITEM,
+          itemId: WAS_ITEM_ID.HOLY_WATER,
           target: self,
         };
       }

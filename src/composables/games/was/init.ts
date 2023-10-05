@@ -1,5 +1,7 @@
 import { reactive } from "vue";
 import {
+  WAS_ANIMATION_HEIGHT,
+  WAS_ANIMATION_WIDTH,
   WAS_AREA_ID,
   WAS_EVENT_TIMMING,
   WAS_ITEM_ID,
@@ -44,6 +46,8 @@ import { WasPhysicalAttackSkill } from "@/composables/games/was/types/phisicalAt
 import { WasMagicalAttackSkill } from "@/composables/games/was/types/magicalAttackSkill";
 import { WasHealSkill } from "@/composables/games/was/types/healSkill";
 import { WasBuffSkill } from "@/composables/games/was/types/buffSkill";
+import { GOULottie } from "@/composables/types/visuals/GOULottie";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 
 export const useWasInit = (loadData?: any) => {
   // プレイヤーの初期化
@@ -146,6 +150,12 @@ export const useWasInit = (loadData?: any) => {
           skills[key] = new WasPhysicalAttackSkill(
             key as WAS_SKILL_ID,
             defines[key].name,
+            new GOULottie(
+              defines[key].animation,
+              WAS_ANIMATION_WIDTH,
+              WAS_ANIMATION_HEIGHT
+            ),
+            new GOUReadAudio(defines[key].sound),
             defines[key].element,
             defines[key].power,
             defines[key].cost,
@@ -158,6 +168,12 @@ export const useWasInit = (loadData?: any) => {
           skills[key] = new WasMagicalAttackSkill(
             key as WAS_SKILL_ID,
             defines[key].name,
+            new GOULottie(
+              defines[key].animation,
+              WAS_ANIMATION_WIDTH,
+              WAS_ANIMATION_HEIGHT
+            ),
+            new GOUReadAudio(defines[key].sound),
             defines[key].element,
             defines[key].power,
             defines[key].cost,
@@ -170,6 +186,12 @@ export const useWasInit = (loadData?: any) => {
           skills[key] = new WasHealSkill(
             key as WAS_SKILL_ID,
             defines[key].name,
+            new GOULottie(
+              defines[key].animation,
+              WAS_ANIMATION_WIDTH,
+              WAS_ANIMATION_HEIGHT
+            ),
+            new GOUReadAudio(defines[key].sound),
             defines[key].element,
             defines[key].power,
             defines[key].cost,
@@ -182,6 +204,12 @@ export const useWasInit = (loadData?: any) => {
           skills[key] = new WasBuffSkill(
             key as WAS_SKILL_ID,
             defines[key].name,
+            new GOULottie(
+              defines[key].animation,
+              WAS_ANIMATION_WIDTH,
+              WAS_ANIMATION_HEIGHT
+            ),
+            new GOUReadAudio(defines[key].sound),
             defines[key].element,
             defines[key].cost,
             defines[key].beforeEffect,
@@ -190,6 +218,7 @@ export const useWasInit = (loadData?: any) => {
           );
           break;
       }
+      skills[key].load()
     }
     return skills;
   };

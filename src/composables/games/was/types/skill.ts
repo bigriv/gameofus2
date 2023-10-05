@@ -1,9 +1,14 @@
 import { WAS_ELEMENT, WAS_SKILL_ID } from "@/composables/games/was/const";
 import { WasCharacter } from "@/composables/games/was/types/character";
+import { GOUAudio } from "@/composables/types/audio/GOUAudio";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import { GOULottie } from "@/composables/types/visuals/GOULottie";
 
 export abstract class WasSkill {
   readonly id: WAS_SKILL_ID;
   readonly name: string;
+  readonly animation: GOULottie;
+  readonly sound: GOUAudio;
   readonly element: WAS_ELEMENT;
   readonly cost: number;
   readonly power: number;
@@ -14,6 +19,8 @@ export abstract class WasSkill {
   constructor(
     id: WAS_SKILL_ID,
     name: string,
+    animation: GOULottie,
+    sound: GOUAudio,
     element: WAS_ELEMENT,
     power: number,
     cost: number,
@@ -23,6 +30,8 @@ export abstract class WasSkill {
   ) {
     this.id = id;
     this.name = name;
+    this.animation = animation;
+    this.sound = sound;
     this.element = element;
     this.cost = cost;
     this.power = power >= 0 ? power : 0;
@@ -31,7 +40,20 @@ export abstract class WasSkill {
     this.afterEffect = afterEffect;
   }
 
+  /**
+   * ダメージの計算処理
+   * @param activist スキルの発動者
+   * @param target 対象者
+   */
   abstract calcDamage(activist: WasCharacter, target: WasCharacter): number;
+
+  async load(): Promise<void> {
+    await this.animation.load()
+    if (this.sound instanceof GOUReadAudio) {
+      this.sound.load()
+    }
+  }
+
   /**
    * 相手の属性が弱点か判定する
    * @param target 判定する対象

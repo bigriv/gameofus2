@@ -1,11 +1,15 @@
 import { WAS_ELEMENT, WAS_SKILL_ID } from "@/composables/games/was/const";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasSkill } from "@/composables/games/was/types/skill";
+import { GOUAudio } from "@/composables/types/audio/GOUAudio";
+import { GOULottie } from "@/composables/types/visuals/GOULottie";
 
 export class WasHealSkill extends WasSkill {
   constructor(
     id: WAS_SKILL_ID,
     name: string,
+    animation: GOULottie,
+    sound: GOUAudio,
     element: WAS_ELEMENT,
     power: number,
     cost: number,
@@ -13,7 +17,18 @@ export class WasHealSkill extends WasSkill {
     effect?: Function,
     afterEffect?: Function // ターン終了時に発動する効果（ステータスのリセットなど）
   ) {
-    super(id, name, element, power, cost, beforeEffect, effect, afterEffect);
+    super(
+      id,
+      name,
+      animation,
+      sound,
+      element,
+      power,
+      cost,
+      beforeEffect,
+      effect,
+      afterEffect
+    );
   }
   calcDamage(activist: WasCharacter, _target: WasCharacter): number {
     let damage = Math.floor(activist.status.magic * this.power * 0.01);

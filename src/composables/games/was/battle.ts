@@ -1,4 +1,6 @@
 import {
+  WAS_ANIMATION_HEIGHT,
+  WAS_ANIMATION_WIDTH,
   WAS_BATTLE_MOVE,
   WAS_BATTLE_STATUS,
 } from "@/composables/games/was/const";
@@ -7,17 +9,31 @@ import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCh
 import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";
 import { WasItem } from "@/composables/games/was/types/item";
 import { WasSkill } from "@/composables/games/was/types/skill";
+import { GOUAudio } from "@/composables/types/audio/GOUAudio";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import { GOULottie } from "@/composables/types/visuals/GOULottie";
 
 type WAS_BATTLE_PROGRESS = {
-  message: string;
-  // sound: GOUAudio;
-  // animation: Function;
+  target?: WasCharacter;
+  message?: string;
+  sound?: GOUAudio;
+  animation?: GOULottie;
 };
 
 export const useWasBattle = (
   ITEMS: { [key: string]: WasItem },
   SKILLS: { [key: string]: WasSkill }
 ) => {
+  const ATTACK_SOUND = new GOUReadAudio("/games/commons/sounds/effects/blow1.mp3");
+  const ATTACK_ANIMATION = new GOULottie(
+    "/games/was/animations/effects/attack.json",
+    WAS_ANIMATION_WIDTH,
+    WAS_ANIMATION_HEIGHT,
+    false,
+    2
+  );
+  ATTACK_SOUND.load();
+  ATTACK_ANIMATION.load();
   const getMoveDetail = (
     character: WasCharacter
   ): WasSkill | WasItem | null => {
@@ -144,6 +160,11 @@ export const useWasBattle = (
     progressList.push({
       message: `${character.name}は${skill.name}を発動した！`,
     });
+    progressList.push({
+      target: target,
+      animation: skill.animation,
+      sound: skill.sound,
+    });
 
     if (skill.power > 0) {
       // ダメージ計算
@@ -248,9 +269,10 @@ export const useWasBattle = (
     target: WasCharacter
   ): Array<WAS_BATTLE_PROGRESS> => {
     const progressList = [];
-    progressList.push({
-      message: `${character.name}の攻撃！`,
-    });
+    progressList.push(
+      { message: `${character.name}の攻撃！` },
+      { target: target, sound: ATTACK_SOUND, animation: ATTACK_ANIMATION }
+    );
 
     const damage = calcAttackDamage(character, target);
     target.status.life -= damage;

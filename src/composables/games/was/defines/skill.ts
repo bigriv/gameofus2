@@ -1,10 +1,15 @@
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WAS_ELEMENT, WAS_SKILL_TYPE } from "@/composables/games/was/const";
 
+const SOUND_PATH = "/games/commons/sounds/effects/"
+const ANIMATION_PATH = "/games/was/animations/effects/"
+
 const WAS_SKILL: {
   [index: string]: {
     type: WAS_SKILL_TYPE;
     name: string;
+    animation: string;
+    sound: string;
     power: number;
     element: WAS_ELEMENT;
     cost: number;
@@ -15,6 +20,8 @@ const WAS_SKILL: {
 } = {
   HEAL: {
     name: "ヒール",
+    animation: ANIMATION_PATH + "heal.json",
+    sound: SOUND_PATH + "heal1.mp3",
     type: WAS_SKILL_TYPE.HEAL,
     element: WAS_ELEMENT.NONE,
     power: 200,
@@ -22,6 +29,8 @@ const WAS_SKILL: {
   },
   HIGH_HEAL: {
     name: "ハイヒール",
+    animation: ANIMATION_PATH + "heal.json",
+    sound: SOUND_PATH + "heal2.mp3",
     type: WAS_SKILL_TYPE.HEAL,
     element: WAS_ELEMENT.NONE,
     power: 500,
@@ -29,6 +38,8 @@ const WAS_SKILL: {
   },
   POWER_ATTACK: {
     name: "力任せ",
+    animation: ANIMATION_PATH + "skillAttack.json",
+    sound: SOUND_PATH + "blow2.mp3",
     type: WAS_SKILL_TYPE.PHISICAL_ATTACK,
     element: WAS_ELEMENT.NONE,
     power: 150,
@@ -36,6 +47,8 @@ const WAS_SKILL: {
   },
   SPEED_ATTACK: {
     name: "疾風剣",
+    animation: ANIMATION_PATH + "slash.json",
+    sound: SOUND_PATH + "slash1.mp3",
     type: WAS_SKILL_TYPE.PHISICAL_ATTACK,
     element: WAS_ELEMENT.NONE,
     power: 100,
@@ -49,6 +62,8 @@ const WAS_SKILL: {
   },
   GARD_ATTACK: {
     name: "ガードアタック",
+    animation: ANIMATION_PATH + "attack.json",
+    sound: SOUND_PATH + "blow2.mp3",
     type: WAS_SKILL_TYPE.PHISICAL_ATTACK,
     element: WAS_ELEMENT.NONE,
     power: 100,
@@ -62,6 +77,8 @@ const WAS_SKILL: {
   },
   DARK_SORD: {
     name: "暗黒剣",
+    animation: ANIMATION_PATH + "slash.json",
+    sound: SOUND_PATH + "slash1.mp3",
     type: WAS_SKILL_TYPE.PHISICAL_ATTACK,
     element: WAS_ELEMENT.DARK,
     power: 300,
@@ -69,6 +86,8 @@ const WAS_SKILL: {
   },
   FIRE: {
     name: "メラメラ",
+    animation: ANIMATION_PATH + "fire.json",
+    sound: SOUND_PATH + "fire2.mp3",
     type: WAS_SKILL_TYPE.MAGICAL_ATTACK,
     element: WAS_ELEMENT.FIRE,
     power: 100,
@@ -85,6 +104,8 @@ const WAS_SKILL: {
   },
   WATER: {
     name: "ぶるぶる",
+    animation: ANIMATION_PATH + "water.json",
+    sound: SOUND_PATH + "water1.mp3",
     type: WAS_SKILL_TYPE.MAGICAL_ATTACK,
     element: WAS_ELEMENT.WATER,
     power: 100,
@@ -101,6 +122,8 @@ const WAS_SKILL: {
   },
   SOIL: {
     name: "ガチガチ",
+    animation: ANIMATION_PATH + "stone.json",
+    sound: SOUND_PATH + "blow3.mp3",
     type: WAS_SKILL_TYPE.MAGICAL_ATTACK,
     element: WAS_ELEMENT.SOIL,
     power: 100,
@@ -117,6 +140,8 @@ const WAS_SKILL: {
   },
   WIND: {
     name: "ひゅーひゅー",
+    animation: ANIMATION_PATH + "wind.json",
+    sound: SOUND_PATH + "wind1.mp3",
     type: WAS_SKILL_TYPE.MAGICAL_ATTACK,
     element: WAS_ELEMENT.WIND,
     power: 100,
@@ -133,6 +158,8 @@ const WAS_SKILL: {
   },
   THUNDER: {
     name: "ビリビリ",
+    animation: ANIMATION_PATH + "thunder.json",
+    sound: SOUND_PATH + "thunder1.mp3",
     type: WAS_SKILL_TYPE.MAGICAL_ATTACK,
     element: WAS_ELEMENT.THUNDER,
     power: 100,
@@ -159,6 +186,8 @@ const WAS_SKILL: {
   },
   SATAN_SPACIAL: {
     name: "魔王覚醒",
+    animation: ANIMATION_PATH + "satanSpecial.json",
+    sound: SOUND_PATH + "dark1.mp3",
     type: WAS_SKILL_TYPE.BUFF,
     element: WAS_ELEMENT.DARK,
     power: 0,
@@ -173,6 +202,8 @@ const WAS_SKILL: {
   },
   JUSTICE_SPACIAL: {
     name: "正義覚醒",
+    animation: ANIMATION_PATH + "justiceSpacial.json",
+    sound: SOUND_PATH + "spacial1.mp3",
     type: WAS_SKILL_TYPE.BUFF,
     element: WAS_ELEMENT.SHINE,
     power: 0,
@@ -187,6 +218,8 @@ const WAS_SKILL: {
   },
   JUSTICE_ATTACK: {
     name: "正義の鉄槌",
+    animation: ANIMATION_PATH + "justiceAttack.json",
+    sound: SOUND_PATH + "blow4.mp3",
     type: WAS_SKILL_TYPE.PHISICAL_ATTACK,
     element: WAS_ELEMENT.SHINE,
     power: 400,

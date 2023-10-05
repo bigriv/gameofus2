@@ -261,7 +261,6 @@ export const useWasMain = (loadData: any, emits: Function) => {
     // 敵の行動を設定
     character.setBattleMove(character, state.player);
     const result = battle(state.player, character);
-    const messages = result.progresses.map((p) => p.message);
     let afterFunction = showBattle;
     if (result.status == WAS_BATTLE_STATUS.WIN) {
       // 勝利時の処理
@@ -309,7 +308,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
       afterFunction = () => showEnd(WAS_ENDING.DEAD);
     }
 
-    chainMessage(messages, afterFunction);
+    chainEvent(result.progresses, afterFunction);
   };
 
   const showAreaSatanCasle = () => {

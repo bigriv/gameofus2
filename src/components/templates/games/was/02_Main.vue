@@ -17,6 +17,14 @@
           :zIndex="2"
         />
       </div>
+      <div class="c-game__drawer__layer">
+        <IntegrationCanvas
+          :width="GAME_DISPLAY_WIDTH"
+          :height="GAME_DISPLAY_HEIGHT"
+          :objects="layer.animations"
+          :zIndex="3"
+        />
+      </div>
     </div>
 
     <div class="c-game__drawer__lower">

@@ -25,11 +25,10 @@ export const useWasBattle = (
       return null;
     }
     if (character.move.type == WAS_BATTLE_MOVE.SKILL) {
-      const skill = SKILLS[character.move.skillId]
-      if (!character.isUsableSkill(skill)) {
+      if (!character.isUsableSkill(character.move.skillId)) {
         return null;
       }
-      return skill;
+      return SKILLS[character.move.skillId];
     }
     if (character.move.type == WAS_BATTLE_MOVE.ITEM) {
       if (!character.haveItem(character.move.itemId)) {

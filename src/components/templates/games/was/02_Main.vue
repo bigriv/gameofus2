@@ -174,14 +174,15 @@ onMounted(() => {
 <style scoped lang="scss">
 .c-game__drawer {
   position: relative;
-  width: 600rem;
-  height: 600rem;
+  width: 100%;
+  height: 100%;
   &__upper {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 70%;
+    background-color: black;
   }
   &__lower {
     position: absolute;

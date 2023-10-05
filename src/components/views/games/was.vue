@@ -18,6 +18,43 @@
       @back="onBackTitle"
     />
   </div>
+  <div class="c-description">
+    <div class="c-description__block">
+      <h2>リリースノート</h2>
+      <p>2023/10/05 ver 1.0 リリース</p>
+    </div>
+
+    <div class="c-description__block">
+      <h2>あらすじ</h2>
+      <p>
+        勇者と魔王の決戦となる戦争に徴兵を受けた主人公。<br />
+        魔王討伐後の帰路にて、人間に殺されそうな淑女を身を挺して救う。<br />
+        主人公の助けた淑女は姿こそ人間に近いが、討伐された魔王の娘であった。<br />
+        魔王の娘は魔族と知らずに自分を助けた主人公を不憫に思い、死にかけの主人公に魔力を分け与える。<br />
+        生き長らえた主人公は魔王の娘から半ば強引に新たな魔王になるように頼まれる。<br />
+        <br />
+        魔王の力とは統率の力。魔族を従えることでその力を得ることができる。<br />
+        魔王としての力をつけるために様々な魔族と関わっていく主人公。<br />
+        旅の中で、主人公は魔族にも善良な心があることと、平和を手にしたはずの人間たち、特に勇者が意味もなく魔族を狩り続けていることを知っていく。<br />
+        <br />
+        意味もなく魔族を討伐する勇者への不信感と、従えた魔族たちを守りたいという思いを胸に主人公は魔王を目指す。<br />
+      </p>
+    </div>
+
+    <div class="c-description__block">
+      <h2>説明</h2>
+      <p>操作方法はクリックのみです。</p>
+      <p>セーブは魔王城に帰ったタイミングで自動的に行われます。</p>
+      <p>体力か満腹度が0になるとゲームオーバーになります。</p>
+      <p>各エリアをクリアした後、魔王城に帰ると一度だけ全回復できます。</p>
+      <p>エンディングは全4種類です。</p>
+    </div>
+
+    <div class="c-description__block">
+      <h2>推定プレイ時間</h2>
+      <p>30分</p>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -68,6 +105,7 @@ const onSave = (
       KINGDOM_CASTLE: areas.KINGDOM_CASTLE.toJson(),
     },
   };
+  console.log("save", data);
   localStorage.setItem("wasSave", JSON.stringify(data));
 };
 const load = () => {
@@ -76,7 +114,6 @@ const load = () => {
     return;
   }
   loadData.value = JSON.parse(strData);
-  console.log(loadData.value);
 };
 
 const onStart = () => {
@@ -98,8 +135,43 @@ const onBackTitle = () => {
 
 <style scoped lang="scss">
 .c-game {
-  position: absolute;
-  width: 100%;
-  height: 100%;
+  border-style: outset;
+  box-sizing: content-box;
+  border-width: 6rem;
+  border-color: black;
+}
+.c-description {
+  padding-bottom: 20rem;
+  h2 {
+    margin-top: 1em;
+  }
+  p {
+    font-size: 14rem;
+    line-height: 1.1
+  }
+}
+@media screen and (max-width: 600px) {
+  .c-game {
+    width: max(100vw, 350px);
+    height: max(100vw, 350px);
+    margin: auto;
+  }
+  .c-description {
+    width: max(100vw, 350px);
+    margin: auto;
+    text-align: left;
+  }
+}
+@media screen and (min-width: 600px) {
+  .c-game {
+    width: 600px;
+    height: 600px;
+    margin: auto;
+  }
+  .c-description {
+    width: 600rem;
+    margin: auto;
+    text-align: left;
+  }
 }
 </style>

@@ -73,8 +73,8 @@ const onBackTitle = () => {
 <style scoped lang="scss">
 .c-game__drawer {
   position: relative;
-  width: 600rem;
-  height: 600rem;
+  width: 100%;
+  height: 100%;
   font-family: "Yusei Magic";
   user-select: none;
   &__header {

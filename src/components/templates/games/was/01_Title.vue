@@ -1,6 +1,6 @@
 <template>
   <div class="c-game__drawer">
-    <span class="c-game__drawer__title"> 魔王になっちゃった！？ </span>
+    <span class="c-game__drawer__title"> 僕が魔王！？ </span>
     <div class="c-game__drawer__buttons">
       <GameButton
         label="さいしょから"
@@ -36,9 +36,9 @@ const onContinue = () => {
 
 <style scoped lang="scss">
 .c-game__drawer {
-  position: absolute;
-  width: 600rem;
-  height: 600rem;
+  position: relative;
+  width: 100%;
+  height: 100%;
   background-color: #4b0082;
   &__title {
     position: absolute;
@@ -50,7 +50,8 @@ const onContinue = () => {
     font-family: "Yusei Magic";
     font-size: 40rem;
     color: white;
-    text-shadow: 8rem 8rem black;
+    text-shadow: 6px 6px 2px black;
+    user-select: none;
   }
   &__buttons {
     position: absolute;

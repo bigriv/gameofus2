@@ -1,5 +1,4 @@
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import { WAS_SKILL } from "@/composables/games/was/defines/skill";
 import {
   WAS_BATTLE_MOVE,
   WAS_ITEM_ID,
@@ -76,13 +75,11 @@ export class WasCharacter {
 
   /**
    * 指定されたスキルIDのスキルを使用できるか判定する
-   * @param skillId スキルID
+   * @param skill スキル
    * @returns 満腹度が十分ならtrue、それ以外はfalse
    */
-  isUsableSkill(skillId: WAS_SKILL_ID): boolean {
-    // TODO:WAS_SKILLを使用しない作りに直す
-    const skill = WAS_SKILL[skillId];
-    if (!skill || !this.skills.includes(skillId)) {
+  isUsableSkill(skill: WasSkill): boolean {
+    if (!skill || !this.skills.includes(skill.id)) {
       return false;
     }
     return skill.cost <= 0 || this.status.satiety - skill.cost >= 0;

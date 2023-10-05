@@ -40,7 +40,7 @@ import LottieCanvas from "@/components/atoms/canvases/LottieCanvas.vue";
 import BadRequest from "@/components/templates/errors/BadRequest.vue";
 import { birthdayMusic } from "@/composables/sounds/blessing";
 import { GOULottie } from "@/composables/types/visuals/GOULottie";
-import { GOUAudioMelody } from "@/composables/types/audio/GOUMelodyAudio";
+import { GOUMelodyAudio } from "@/composables/types/audio/GOUMelodyAudio";
 
 const props = defineProps({
   date: {
@@ -135,7 +135,7 @@ onMounted(async () => {
 
 const onClickConfirm = () => {
   isConfirmed.value = true;
-  music.value = new GOUAudioMelody(birthdayMusic);
+  music.value = new GOUMelodyAudio(birthdayMusic);
   music.value.play();
   isOpenConfirmModal.value = false;
 };

@@ -44,8 +44,8 @@
 </template>
 
 <script setup lang="ts">
-import GOUAudio from "@/composables/types/GOUAudio";
-import { reactive, ref } from "vue";
+import { GOUMelodyAudio } from "@/composables/types/audio/GOUMelodyAudio";
+import { Ref, reactive, ref } from "vue";
 
 const fequencyOptions = [
   "a",
@@ -81,7 +81,7 @@ const octarveOptions = [
   "f",
 ];
 
-const audio = ref(new GOUAudio());
+const audio: Ref<GOUMelodyAudio | undefined> = ref();
 // 周波数
 const frequency = ref(null);
 // オクターブ
@@ -110,7 +110,7 @@ const onWatch = () => {
   if (!requiredCheck()) {
     return;
   }
-  audio.value.melody = `${frequency.value}${octarve.value}`;
+  audio.value = new GOUMelodyAudio(`${frequency.value}${octarve.value}`);
   console.log(audio.value.melody);
   audio.value.play();
 };
@@ -143,12 +143,14 @@ const onDelete = () => {
   state.score.pop();
 };
 const onPlay = () => {
-  audio.value.melody = state.score.join("");
+  audio.value = new GOUMelodyAudio(state.score.join(""));
   console.log(audio.value.melody);
   audio.value.play();
 };
 const onPlayFromSelecting = () => {
-  audio.value.melody = state.score.join("").slice(selectedPosition.value * 2);
+  audio.value = new GOUMelodyAudio(
+    state.score.join("").slice(selectedPosition.value * 2)
+  );
   console.log(audio.value.melody);
   audio.value.play();
 };

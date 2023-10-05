@@ -11,9 +11,9 @@ const routes = [
     component: () => import("@/components/views/games/was.vue"),
   },
   {
-    path: "/was/tool/audio",
-    name: "WasAudioTool",
-    component: () => import("@/components/views/games/wasAudioTool.vue"),
+    path: "/tools/audio",
+    name: "AudioTool",
+    component: () => import("@/components/views/tools/audio.vue"),
   },
   {
     path: "/blessing/birthday/:date",
@@ -25,11 +25,6 @@ const routes = [
       message: route.query.message,
     }),
     component: () => import("@/components/views/blessings/birthday.vue"),
-  },
-  {
-    path: "/test",
-    name: "Test",
-    component: () => import("@/components/views/test.vue"),
   },
   {
     path: "/:pathMatch(.*)*",

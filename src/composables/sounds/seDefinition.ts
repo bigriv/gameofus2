@@ -1,5 +1,5 @@
-import { GOUAudioMelody } from "@/composables/types/audio/GOUMelodyAudio";
+import { GOUMelodyAudio } from "@/composables/types/audio/GOUMelodyAudio";
 
-const hoverSE = new GOUAudioMelody("l4", 2);
+const hoverSE = new GOUMelodyAudio("l4", 2);
 
 export { hoverSE };

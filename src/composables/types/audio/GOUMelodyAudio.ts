@@ -1,6 +1,6 @@
 import { GOUAudio } from "@/composables/types/audio/GOUAudio";
 
-export class GOUAudioMelody extends GOUAudio {
+export class GOUMelodyAudio extends GOUAudio {
   private static MUSICAL_SALE: { [index: string]: number } = {
     a: 67.323,
     b: 71.326,
@@ -78,7 +78,7 @@ export class GOUAudioMelody extends GOUAudio {
       return;
     }
     this.oscillatorNode.frequency.value =
-      GOUAudioMelody.MUSICAL_SALE[unitFrequency] * octave;
+      GOUMelodyAudio.MUSICAL_SALE[unitFrequency] * octave;
     this.position += 2;
   }
 }

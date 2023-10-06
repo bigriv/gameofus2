@@ -10,6 +10,7 @@
       v-else-if="display === 'main'"
       :loadData="loadData"
       @save="onSave"
+      @loaded="onLoaded"
       @end="onEnd"
     />
     <Ending
@@ -123,6 +124,9 @@ const onLoad = () => {
   load();
   display.value = "main";
 };
+const onLoaded = () => {
+  loadData.value = undefined
+}
 const onEnd = (type: WAS_ENDING) => {
   console.log(type);
   endingType.value = type;

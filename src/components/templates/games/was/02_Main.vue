@@ -132,6 +132,7 @@ const emits = defineEmits<{
     bosses: { [key: string]: WasNonPlayerCharacter },
     areas: { [key: string]: WasArea }
   ): void;
+  (event: "loaded"): void;
   (event: "end", endType: WAS_ENDING): void;
 }>();
 
@@ -172,6 +173,7 @@ onMounted(() => {
   }
   loadFile();
   loadSaveData();
+  emits("loaded")
 });
 
 watch(() => isLoadedImages.value, showMap);

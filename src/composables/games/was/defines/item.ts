@@ -17,10 +17,10 @@ const WAS_ITEM: {
   HERB: {
     name: "薬草",
     maxAmount: 5,
-    // 体力25~35回復
+    // 体力40~50回復
     effect: (target: WasCharacter) => {
       const defaultLife = target.defaultStatus.life;
-      const healAmount = Math.round(25 + Math.random() * 10);
+      const healAmount = Math.round(40 + Math.random() * 10);
       if (target.status.life + healAmount >= defaultLife) {
         target.status.life = defaultLife;
       } else {
@@ -32,10 +32,10 @@ const WAS_ITEM: {
   SUPER_HERB: {
     name: "超薬草",
     maxAmount: 3,
-    // 体力を75~85回復
+    // 体力を90~100回復
     effect: (target: WasCharacter) => {
       const defaultLife = target.defaultStatus.life;
-      const healAmount = Math.round(75 + Math.random() * 10);
+      const healAmount = Math.round(90 + Math.random() * 10);
       if (target.status.life + healAmount >= defaultLife) {
         target.status.life = defaultLife;
       } else {
@@ -47,10 +47,10 @@ const WAS_ITEM: {
   RICE_BALL: {
     name: "おにぎり",
     maxAmount: 5,
-    // 満腹度25~35%回復
+    // 満腹度30~40%回復
     effect: (target: WasCharacter) => {
       const defaultSatiety = target.defaultStatus.satiety;
-      const healRatio = 0.25 + Math.random() * 0.1;
+      const healRatio = 0.3 + Math.random() * 0.1;
       const healAmount = Math.round(defaultSatiety * healRatio);
 
       if (target.status.satiety + healAmount >= defaultSatiety) {
@@ -66,12 +66,12 @@ const WAS_ITEM: {
   FISH: {
     name: "焼き魚",
     maxAmount: 5,
-    // 体力25~35、満腹度10~20%回復
+    // 体力60~70、満腹度15~25%回復
     effect: (target: WasCharacter) => {
       const defaultLife = target.defaultStatus.life;
-      const lifeHealAmount = Math.round(25 + Math.random() * 10);
+      const lifeHealAmount = Math.round(60 + Math.random() * 10);
       const defaultSatiety = target.defaultStatus.satiety;
-      const satifyHealRatio = 0.1 + Math.random() * 0.1;
+      const satifyHealRatio = 0.15 + Math.random() * 0.1;
       const satifyHealAmount = Math.round(defaultSatiety * satifyHealRatio);
 
       // 体力の回復
@@ -95,12 +95,12 @@ const WAS_ITEM: {
   MEAT: {
     name: "骨付き肉",
     maxAmount: 5,
-    // 体力15~25、満腹度20~30%回復
+    // 体力40~50、満腹度25~35%回復
     effect: (target: WasCharacter) => {
       const defaultLife = target.defaultStatus.life;
-      const lifeHealAmount = Math.round(15 + Math.random() * 10);
+      const lifeHealAmount = Math.round(40 + Math.random() * 10);
       const defaultSatiety = target.defaultStatus.satiety;
-      const satifyHealRatio = 0.2 + Math.random() * 0.1;
+      const satifyHealRatio = 0.25 + Math.random() * 0.1;
       const satifyHealAmount = Math.round(defaultSatiety * satifyHealRatio);
 
       // 体力の回復

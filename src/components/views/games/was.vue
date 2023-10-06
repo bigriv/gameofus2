@@ -47,6 +47,8 @@
       <p>操作方法はクリックのみです。</p>
       <p>セーブは魔王城に帰ったタイミングで自動的に行われます。</p>
       <p>体力か満腹度が0になるとゲームオーバーになります。</p>
+      <p>満腹度は探索するかスキルを使用すると消費されます。</p>
+      <p>スキルを使用する際、満腹度が必要なコストを下回っていると通常の攻撃として扱われます。</p>
       <p>各エリアをクリアした後、魔王城に帰ると一度だけ全回復できます。</p>
       <p>エンディングは全4種類です。</p>
     </div>
@@ -54,6 +56,43 @@
     <div class="c-description__block">
       <h2>推定プレイ時間</h2>
       <p>30分</p>
+    </div>
+
+    <div class="c-description__block">
+      <h2>攻略のヒント</h2>
+      <h3>①アイテム一覧</h3>
+      <a v-show="!isShowHint1" @click.prevent.stop="isShowHint1 = true"
+        >表示する</a
+      >
+      <table v-show="isShowHint1">
+        <tr>
+          <th>アイテム名</th>
+          <th>所持可能数</th>
+          <th>効果</th>
+        </tr>
+        <tr v-for="item in itemDescription">
+          <td>{{ item.name }}</td>
+          <td>{{ item.maxAmount }}</td>
+          <td>{{ item.effect }}</td>
+        </tr>
+      </table>
+
+      <h3 class="u-margin_top--10">②スキル一覧</h3>
+      <a v-show="!isShowHint2" @click.prevent.stop="isShowHint2 = true"
+        >表示する</a
+      >
+      <table v-show="isShowHint2">
+        <tr>
+          <th>スキル名</th>
+          <th>効果</th>
+          <th>取得条件</th>
+        </tr>
+        <tr v-for="skill in skillDescription">
+          <td>{{ skill.name }}</td>
+          <td>{{ skill.effect }}</td>
+          <td>{{ skill.get }}</td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>
@@ -71,6 +110,8 @@ import { WasArea } from "@/composables/games/was/types/area";
 const display = ref("title");
 const endingType = ref();
 const loadData = ref();
+const isShowHint1 = ref(false);
+const isShowHint2 = ref(false);
 
 const onSave = (
   timming: WAS_EVENT_TIMMING,
@@ -125,8 +166,8 @@ const onLoad = () => {
   display.value = "main";
 };
 const onLoaded = () => {
-  loadData.value = undefined
-}
+  loadData.value = undefined;
+};
 const onEnd = (type: WAS_ENDING) => {
   console.log(type);
   endingType.value = type;
@@ -135,6 +176,68 @@ const onEnd = (type: WAS_ENDING) => {
 const onBackTitle = () => {
   display.value = "title";
 };
+
+const itemDescription = [
+  { name: "魔王の魂", maxAmount: 1, effect: "なし" },
+  { name: "薬草", maxAmount: 5, effect: "体力を回復" },
+  { name: "超薬草", maxAmount: 3, effect: "体力を回復" },
+  { name: "おにぎり", maxAmount: 5, effect: "満腹度を回復" },
+  { name: "焼き魚", maxAmount: 5, effect: "体力&満腹度を回復" },
+  { name: "骨付き肉", maxAmount: 5, effect: "体力&満腹度を回復" },
+  { name: "聖水", maxAmount: 3, effect: "体力&満腹度を全回復" },
+  { name: "力の腕輪", maxAmount: 1, effect: "攻撃力を微上昇" },
+  { name: "ウィングブーツ", maxAmount: 1, effect: "素早さを微上昇" },
+  { name: "不思議な貝殻", maxAmount: 1, effect: "魔力を微上昇" },
+  { name: "ドラゴンの鱗", maxAmount: 1, effect: "防御力を微上昇" },
+  { name: "ボスゴブリンの首", maxAmount: 1, effect: "全ステータス微アップ" },
+  { name: "ダークエルフの眼", maxAmount: 1, effect: "全ステータス微アップ" },
+  { name: "クラーケンの触手", maxAmount: 1, effect: "全ステータス微アップ" },
+  { name: "ドラゴンの翼", maxAmount: 1, effect: "全ステータス微アップ" },
+];
+
+const skillDescription = [
+  { name: "ヒール", effect: "体力を回復", get: "習得不可" },
+  { name: "ハイヒール", effect: "体力を回復", get: "兵士説得" },
+  { name: "力任せ", effect: "高火力で攻撃", get: "ゴブリン説得" },
+  {
+    name: "疾風剣",
+    effect: "素早さを上昇して攻撃(使用ターンのみ)",
+    get: "サハギン説得",
+  },
+  {
+    name: "ガードアタック",
+    effect: "防御力を上昇して攻撃(使用ターンのみ)",
+    get: " スライム説得",
+  },
+  { name: "暗黒剣", effect: "超高火力の闇属性攻撃", get: "ダークエルフ説得" },
+  {
+    name: "メラメラ",
+    effect: "稀に攻撃力を減少させる炎属性攻撃",
+    get: "ドラゴン説得",
+  },
+  {
+    name: "ぶるぶる",
+    effect: "稀に魔力を減少させる水属性攻撃",
+    get: "クラーケン説得",
+  },
+  {
+    name: "ガチガチ",
+    effect: "稀に防御力を減少させる地属性攻撃",
+    get: "ボスゴブリン説得",
+  },
+  {
+    name: "ひゅーひゅー",
+    effect: "稀に素早さを減少させる風属性攻撃",
+    get: "エルフ説得",
+  },
+  {
+    name: "ビリビリ",
+    effect: "稀に攻撃力&防御力を減少させる雷属性攻撃",
+    get: "習得不可",
+  },
+  { name: "正義覚醒", effect: "全ステータスを微上昇", get: "習得不可" },
+  { name: "正義の鉄槌", effect: "超高火力の光属性攻撃", get: "習得不可" },
+];
 </script>
 
 <style scoped lang="scss">
@@ -151,7 +254,22 @@ const onBackTitle = () => {
   }
   p {
     font-size: 14rem;
-    line-height: 1.1
+    line-height: 1.1;
+  }
+  table {
+    font-size: 14rem;
+    line-height: 1.1;
+    th,
+    td {
+      border: 1rem black solid;
+      padding: 4rem;
+    }
+  }
+  a {
+    text-decoration: underline;
+    &:hover {
+      cursor: pointer;
+    }
   }
 }
 @media screen and (max-width: 600px) {

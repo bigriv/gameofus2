@@ -57,6 +57,7 @@ export const useWasInit = (loadData?: any) => {
   const initPlayer = (): WasPlayerCharacter => {
     return new WasPlayerCharacter(
       WAS_SATAN.name,
+      ConstructGOUVisual(WAS_SATAN.visual),
       new WasStatus(WAS_SATAN.initStatus),
       WAS_SATAN.skills,
       WAS_SATAN.items
@@ -97,6 +98,7 @@ export const useWasInit = (loadData?: any) => {
       ConstructGOUVisual(WAS_SATAN_CASTLE.inside),
       PRINCESS
     );
+
     const defines: { [key: string]: any } = {
       CAVE: WAS_CAVE,
       SEA: WAS_SEA,
@@ -258,18 +260,20 @@ export const useWasInit = (loadData?: any) => {
   const state: {
     timming: WAS_EVENT_TIMMING;
     healed: boolean;
-    area: WAS_AREA_ID | null;
+    currentArea: WAS_AREA_ID;
     player: WasPlayerCharacter;
     character: WasCharacter | null;
   } = reactive({
     timming: WAS_EVENT_TIMMING.OPENING,
     healed: false,
-    area: null,
+    currentArea: WAS_AREA_ID.SATAN_CASTLE,
     player: initPlayer(),
     character: null,
   });
 
   const loadFile = () => {
+    (PRINCESS.visual as GOUImage).load();
+    (MAP as GOUImage).load();
     for (const key of Object.keys(SKILLS)) {
       SKILLS[key].load();
     }
@@ -286,6 +290,12 @@ export const useWasInit = (loadData?: any) => {
 
     // ロードが完了したかを判定する
     const intervalId = setInterval(() => {
+      if (!(PRINCESS.visual as GOUImage).image?.complete) {
+        return;
+      }
+      if (!(MAP as GOUImage).image?.complete) {
+        return;
+      }
       for (const key of Object.keys(CHARACTERS)) {
         if (!(CHARACTERS[key].visual as GOUImage).image?.complete) {
           return;
@@ -325,10 +335,8 @@ export const useWasInit = (loadData?: any) => {
         [];
     }
     console.log("player", state.player);
-    if (loadData.timming) {
-      state.timming =
-        (loadData.timming as WAS_EVENT_TIMMING) ?? WAS_EVENT_TIMMING.OPENING;
-    }
+    state.timming =
+      (loadData.timming as WAS_EVENT_TIMMING) ?? WAS_EVENT_TIMMING.OPENING;
     state.healed = loadData.healed ?? false;
     if (loadData.exploreCount) {
       state.timming = loadData.exploreCount ?? 0;

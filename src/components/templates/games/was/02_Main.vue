@@ -108,11 +108,9 @@ import { useWasMain } from "@/composables/games/was/main";
 import {
   GAME_DISPLAY_WIDTH,
   GAME_DISPLAY_HEIGHT,
-  WAS_AREA_ID,
   WAS_ENDING,
   WAS_EVENT_TIMMING,
 } from "@/composables/games/was/const";
-import { hoverSE } from "@/composables/sounds/seDefinition";
 import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { WasArea } from "@/composables/games/was/types/area";
@@ -145,32 +143,14 @@ const {
   buttonList,
   isShowStatusBar,
   onClickMessageFrame,
+  setClickEvent,
   onClickButton,
-  AREAS,
   player,
   showMap,
-  showArea,
 } = useWasMain(props.loadData, emits);
 
 onMounted(() => {
-  for (const key of Object.keys(AREAS)) {
-    AREAS[key].outside.isClickable = true;
-    AREAS[key].outside.onClick = () => {
-      showArea(key as WAS_AREA_ID);
-    };
-    AREAS[key].outside.onMouseEnter = () => {
-      if (displayMessage.value[0] === AREAS[key].name) {
-        return;
-      }
-      hoverSE.play();
-      displayMessage.value = [AREAS[key].name];
-    };
-    AREAS[key].outside.onMouseLeave = () => {
-      if (displayMessage.value[0] === AREAS[key].name) {
-        displayMessage.value = [];
-      }
-    };
-  }
+  setClickEvent();
   loadFile();
   loadSaveData();
   emits("loaded")

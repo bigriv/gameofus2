@@ -42,6 +42,7 @@ const props = defineProps({
 
 const emits = defineEmits(["click"]);
 
+const isComplete = ref(false);
 const texts = ref(new Array<string>());
 const animationPos = reactive({
   row: 0,
@@ -64,6 +65,7 @@ const animateTypeWrite = () => {
   if (!props.messages?.length || props.messages.length == 0) {
     return;
   }
+  isComplete.value = false;
   texts.value = [];
   timerId.value = setInterval(() => {
     texts.value[animationPos.row] = props.messages[animationPos.row].slice(
@@ -76,12 +78,20 @@ const animateTypeWrite = () => {
     }
     if (animationPos.row >= props.messages.length) {
       removeInterval();
+      isComplete.value = true;
     }
   }, 100 / props.speed);
 };
 
 const onClick = () => {
-  emits("click");
+  if (isComplete.value) {
+    emits("click");
+    return;
+  }
+  texts.value = props.messages
+  animationPos.row = props.messages.length;
+  isComplete.value = true
+  removeInterval();
 };
 
 onMounted(() => {
@@ -107,6 +117,7 @@ watch(
   font-size: 16rem;
   font-family: monospace;
   font-weight: 600;
+  cursor: pointer;
   user-select: none;
   &__messages {
     width: 100%;

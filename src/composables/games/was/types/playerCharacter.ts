@@ -1,3 +1,4 @@
+import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import {
   WAS_BATTLE_MOVE,
   WAS_ITEM_ID,
@@ -18,11 +19,12 @@ export class WasPlayerCharacter extends WasCharacter {
   exploreCount: number;
   constructor(
     name: string,
+    visual: GOUVisual,
     status: WasStatus,
     skills?: Array<WAS_SKILL_ID>,
     items?: Array<{ amount: number; id: WAS_ITEM_ID }>
   ) {
-    super(name, null, status, skills, items);
+    super(name, visual, status, skills, items);
     this.exploreCount = 0;
   }
 

@@ -12,6 +12,7 @@ import { WasCharacter } from "@/composables/games/was/types/character";
 
 type WAS_PLAYER_CHARACTER_DEFINITION_TYPE = {
   name: string;
+  visual: GOUVisualDefinition;
   initStatus: {
     life: number;
     satiety: number;
@@ -26,7 +27,6 @@ type WAS_PLAYER_CHARACTER_DEFINITION_TYPE = {
 };
 type WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE =
   WAS_PLAYER_CHARACTER_DEFINITION_TYPE & {
-    visual: GOUVisualDefinition;
     dropItem?: WAS_ITEM_ID | null;
     persuadItem?: WAS_ITEM_ID | null;
     occupySkill?: WAS_SKILL_ID | null;
@@ -38,6 +38,12 @@ type WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE =
  */
 const WAS_SATAN: WAS_PLAYER_CHARACTER_DEFINITION_TYPE = {
   name: "魔王",
+  visual: {
+    type: GOUVisualType.IMAGE_SVG,
+    path: "/commons/icons/human_red.svg",
+    width: 30,
+    height: 30,
+  },
   initStatus: {
     life: 100,
     satiety: 100,

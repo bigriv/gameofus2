@@ -14,7 +14,7 @@ import { WasItem } from "@/composables/games/was/types/item";
  */
 export class WasCharacter {
   name: string;
-  visual: GOUVisual | null;
+  visual: GOUVisual;
   status: WasStatus;
   defaultStatus: WasStatus;
   skills: Array<WAS_SKILL_ID>;
@@ -27,7 +27,7 @@ export class WasCharacter {
 
   constructor(
     name: string,
-    visual: GOUVisual | null,
+    visual: GOUVisual,
     status: WasStatus,
     skills?: Array<WAS_SKILL_ID>,
     items?: Array<{ amount: number; id: WAS_ITEM_ID }>

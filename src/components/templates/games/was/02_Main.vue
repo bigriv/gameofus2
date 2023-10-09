@@ -45,7 +45,7 @@
         class="c-game__drawer__lower__button_list"
         style="z-index: 5"
       >
-        <div v-for="row in buttonList">
+        <template v-for="row in buttonList">
           <div
             v-if="row instanceof Array"
             class="c-game__drawer__lower__button_list__row"
@@ -67,7 +67,7 @@
               @click="onClickButton(row.eventId, row.eventArgs)"
             />
           </template>
-        </div>
+        </template>
       </div>
       <div
         v-if="isShowStatusBar"
@@ -105,12 +105,7 @@ import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import GameStatusBar from "@/components/atoms/interfaces/GameStatusBar.vue";
 import { COLOR } from "@/composables/types/GOUColor";
 import { useWasMain } from "@/composables/games/was/main";
-import {
-  GAME_DISPLAY_WIDTH,
-  GAME_DISPLAY_HEIGHT,
-  WAS_ENDING,
-  WAS_EVENT_TIMMING,
-} from "@/composables/games/was/const";
+import { WAS_ENDING, WAS_EVENT_TIMMING } from "@/composables/games/was/const";
 import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { WasArea } from "@/composables/games/was/types/area";
@@ -135,6 +130,9 @@ const emits = defineEmits<{
 }>();
 
 const {
+  GAME_DISPLAY_WIDTH,
+  GAME_DISPLAY_HEIGHT,
+  resize,
   isLoadedImages,
   loadFile,
   loadSaveData,
@@ -150,10 +148,12 @@ const {
 } = useWasMain(props.loadData, emits);
 
 onMounted(() => {
+  resize();
+  window.addEventListener("resize", resize);
   setClickEvent();
   loadFile();
   loadSaveData();
-  emits("loaded")
+  emits("loaded");
 });
 
 watch(() => isLoadedImages.value, showMap);
@@ -189,13 +189,20 @@ watch(() => isLoadedImages.value, showMap);
       height: 100%;
     }
     &__button_list {
+      width: 100%;
+      height: 100%;
       &__row {
         display: flex;
+        width: 100%;
+        height: 25%;
       }
-      &__button {
-        width: 150rem;
-        font-size: 16rem;
-        height: 42rem;
+      &__row > &__button {
+        width: 25%;
+        height: 100%;
+      }
+      & > &__button {
+        width: 25%;
+        height: 25%;
       }
     }
     &__status {
@@ -207,7 +214,7 @@ watch(() => isLoadedImages.value, showMap);
       color: white;
       user-select: none;
       span {
-        width: 20%;
+        width: 25%;
       }
       &__life {
         position: absolute;
@@ -229,6 +236,44 @@ watch(() => isLoadedImages.value, showMap);
     position: absolute;
     top: 0;
     left: 0;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .c-game__drawer__lower__button_list__button,
+  .c-game__drawer__lower__message_frame {
+    font-size: 12rem;
+  }
+  .c-game__drawer__lower__status__life > span {
+    font-size: 10rem;
+  }
+  .c-game__drawer__lower__status__satiety > span {
+    font-size: 10rem;
+  }
+}
+
+@media screen and (max-width: 600px) and (min-width: 400px) {
+  .c-game__drawer__lower__button_list__button,
+  .c-game__drawer__lower__message_frame {
+    font-size: 14rem;
+  }
+  .c-game__drawer__lower__status__life > span {
+    font-size: 12rem;
+  }
+  .c-game__drawer__lower__status__satiety > span {
+    font-size: 12rem;
+  }
+}
+@media screen and (min-width: 600px) {
+  .c-game__drawer__lower__button_list__button,
+  .c-game__drawer__lower__message_frame {
+    font-size: 16rem;
+  }
+  .c-game__drawer__lower__status__life > span {
+    font-size: 14rem;
+  }
+  .c-game__drawer__lower__status__satiety > span {
+    font-size: 14rem;
   }
 }
 </style>

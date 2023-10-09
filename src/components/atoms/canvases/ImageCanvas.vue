@@ -89,10 +89,10 @@ const props = defineProps({
   user-select: none;
   img {
     position: absolute;
-    top: calc(var(--y) * 1rem);
-    left: calc(var(--x) * 1rem);
-    width: calc(var(--width) * 1rem);
-    height: calc(var(--height) * 1rem);
+    top: calc(var(--y) * 1%);
+    left: calc(var(--x) * 1%);
+    width: calc(var(--width) * 1%);
+    height: calc(var(--height) * 1%);
   }
 }
 </style>

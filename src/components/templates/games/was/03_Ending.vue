@@ -100,8 +100,6 @@ const onBackTitle = () => {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 20%;
-    height: 7.5%;
     transform: translate(-50%, -50%);
   }
 }
@@ -118,5 +116,28 @@ const onBackTitle = () => {
 .DEAD {
   background-color: black;
   color: red;
+}
+
+@media screen and (max-width: 400px) {
+  .c-game__drawer__button--back {
+    font-size: 10rem;
+    width: 35%;
+    height: 10%;
+  }
+}
+
+@media screen and (max-width: 600px) and (min-width: 400px) {
+  .c-game__drawer__button--back {
+    font-size: 11rem;
+    width: 30%;
+    height: 9%;
+  }
+}
+@media screen and (min-width: 600px) {
+  .c-game__drawer__button--back {
+    font-size: 14rem;
+    width: 25%;
+    height: 7.5%;
+  }
 }
 </style>

@@ -247,11 +247,14 @@ const skillDescription = [
 .c-game {
   border-style: outset;
   box-sizing: content-box;
-  border-width: 6rem;
   border-color: black;
+  margin: auto;
+  border-width: 6px;
 }
 .c-description {
   padding-bottom: 20rem;
+  margin: auto;
+  text-align: left;
   h2 {
     margin-top: 1em;
   }
@@ -264,8 +267,8 @@ const skillDescription = [
     line-height: 1.1;
     th,
     td {
-      border: 1rem black solid;
-      padding: 4rem;
+      border: 1px black solid;
+      padding: 4px;
     }
   }
   a {
@@ -275,28 +278,32 @@ const skillDescription = [
     }
   }
 }
-@media screen and (max-width: 600px) {
+
+@media screen and (max-width: 350px) {
   .c-game {
-    width: max(100vw, 350px);
-    height: max(100vw, 350px);
-    margin: auto;
+    width: 350px;
+    height: 350px;
   }
   .c-description {
-    width: max(100vw, 350px);
-    margin: auto;
-    text-align: left;
+    width: 350px;
+  }
+}
+@media screen and (max-width: 600px) and (min-width: 350px) {
+  .c-game {
+    width: 100vw;
+    height: 100vw;
+  }
+  .c-description {
+    width: 100vw;
   }
 }
 @media screen and (min-width: 600px) {
   .c-game {
     width: 600px;
     height: 600px;
-    margin: auto;
   }
   .c-description {
     width: 600rem;
-    margin: auto;
-    text-align: left;
   }
 }
 </style>

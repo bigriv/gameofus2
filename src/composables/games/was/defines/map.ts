@@ -1,5 +1,4 @@
 import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
-import { GAME_DISPLAY_HEIGHT, GAME_DISPLAY_WIDTH } from "@/composables/games/was/const";
 import GOUVisualDefinition from "@/composables/types/visuals/GOUVisualDefinition";
 
 /**
@@ -10,8 +9,8 @@ import GOUVisualDefinition from "@/composables/types/visuals/GOUVisualDefinition
 const WAS_MAP: GOUVisualDefinition = {
   type: GOUVisualType.IMAGE_SVG,
   path: "/games/was/Map.svg",
-  width: GAME_DISPLAY_WIDTH,
-  height: GAME_DISPLAY_HEIGHT,
+  width: 100,
+  height: 100,
 };
 
 export { WAS_MAP };

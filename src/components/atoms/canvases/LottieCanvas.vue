@@ -18,8 +18,8 @@
         :style="{
           '--x': object.position.px,
           '--y': object.position.py,
-          width: object.width + 'rem',
-          height: object.height + 'rem',
+          width: object.width + '%',
+          height: object.height + '%',
           '--duration': object.animation?.duration + 's',
           '--iteration': object.animation?.iteration,
         }"
@@ -65,8 +65,8 @@ const props = defineProps({
   position: absolute;
   &__icon {
     position: absolute;
-    top: calc(var(--y) * 1rem);
-    left: calc(var(--x) * 1rem);
+    top: calc(var(--y) * 1%);
+    left: calc(var(--x) * 1%);
   }
 }
 </style>

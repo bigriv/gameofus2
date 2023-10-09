@@ -1,9 +1,5 @@
 import GOUPosition from "@/composables/types/GOUPosition";
-import {
-  GAME_DISPLAY_HEIGHT,
-  GAME_DISPLAY_WIDTH,
-  WAS_ITEM_ID,
-} from "@/composables/games/was/const";
+import { WAS_ITEM_ID } from "@/composables/games/was/const";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
@@ -37,8 +33,8 @@ export class WasArea {
       // キャラクターを画面中央に配置
       this.character.visual.move(
         new GOUPosition(
-          GAME_DISPLAY_WIDTH / 2 - this.character.visual.getMaxX() / 2,
-          GAME_DISPLAY_HEIGHT - this.character.visual.getMaxY()
+          50 - this.character.visual.getMaxX() / 2,
+          100 - this.character.visual.getMaxY()
         )
       );
     }
@@ -47,8 +43,8 @@ export class WasArea {
       // キャラクターを画面中央に配置
       this.boss.visual.move(
         new GOUPosition(
-          GAME_DISPLAY_WIDTH / 2 - this.boss.visual.getMaxX() / 2,
-          GAME_DISPLAY_HEIGHT - this.boss.visual.getMaxY()
+          50 - this.boss.visual.getMaxX() / 2,
+          100 - this.boss.visual.getMaxY()
         )
       );
     }

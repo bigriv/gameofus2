@@ -57,7 +57,6 @@ const onContinue = () => {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 20%;
     height: 15%;
     transform: translate(-50%, -50%);
     font-size: 14rem;
@@ -78,6 +77,25 @@ const onContinue = () => {
       height: 50%;
       transform: translate(-50%, -50%);
     }
+  }
+}
+@media screen and (max-width: 400px) {
+  .c-game__drawer__buttons {
+    font-size: 10rem;
+    width: 25%;
+  }
+}
+
+@media screen and (max-width: 600px) and (min-width: 400px) {
+  .c-game__drawer__buttons {
+    font-size: 12rem;
+    width: 23%;
+  }
+}
+@media screen and (min-width: 600px) {
+  .c-game__drawer__buttons {
+    font-size: 14rem;
+    width: 20%;
   }
 }
 </style>

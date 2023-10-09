@@ -114,7 +114,7 @@ watch(
   border: 2rem solid var(--borderColor);
   border-radius: 2rem;
   padding: 2rem;
-  font-size: 16rem;
+  font-size: 100%;
   font-family: monospace;
   font-weight: 600;
   cursor: pointer;

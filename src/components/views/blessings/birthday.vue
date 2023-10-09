@@ -15,18 +15,19 @@
   <div v-else class="u-fill u-horizontal--center">
     <div v-if="isConfirmed" class="u-horizontal--center">
       <h1>Happy Birthday!!</h1>
-      <h2>{{ props.name }}</h2>
-
-      <LottieCanvas
-        :width="ICON_WIDTH"
-        :height="ICON_HEIGHT"
-        :objects="objects.animations"
-        class="u-horizontal--center"
-      />
+      <h2 v-if="props.name">{{ props.name }}</h2>
+      <div class="c-layer">
+        <LottieCanvas
+          :width="ICON_WIDTH"
+          :height="ICON_HEIGHT"
+          :objects="objects.animations"
+          class="u-horizontal--center"
+        />
+      </div>
 
       <h3>Since {{ birthday }}</h3>
       <h2>祝 {{ age }}歳</h2>
-      <div class="u-horizontal--center c-message">
+      <div v-if="props.message" class="u-horizontal--center c-message">
         {{ props.message }}
       </div>
     </div>
@@ -122,11 +123,7 @@ onMounted(async () => {
   // アイコンの取得
   let temp: Array<GOULottie> = [];
   for (const icon of icons) {
-    const object = new GOULottie(
-      ICON_DEFINE[icon],
-      ICON_WIDTH,
-      ICON_HEIGHT
-    );
+    const object = new GOULottie(ICON_DEFINE[icon], 100, 100, true);
     object.load();
     temp.push(object);
   }
@@ -157,5 +154,10 @@ button {
   font-size: 20rem;
   width: 400rem;
   max-width: 100%;
+}
+.c-layer {
+  width: 200rem;
+  height: 200rem;
+  margin: auto;
 }
 </style>

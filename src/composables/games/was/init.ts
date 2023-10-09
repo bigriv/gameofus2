@@ -1,8 +1,8 @@
 import { Ref, reactive, ref } from "vue";
 import {
-  WAS_ANIMATION_HEIGHT,
-  WAS_ANIMATION_WIDTH,
   WAS_AREA_ID,
+  WAS_DEFAULT_GAME_DISPLAY_HEIGHT,
+  WAS_DEFAULT_GAME_DISPLAY_WIDTH,
   WAS_EVENT_TIMMING,
   WAS_ITEM_ID,
   WAS_SKILL_ID,
@@ -157,8 +157,8 @@ export const useWasInit = (loadData?: any) => {
             defines[key].name,
             new GOULottie(
               defines[key].animation,
-              WAS_ANIMATION_WIDTH,
-              WAS_ANIMATION_HEIGHT
+              (200 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
+              (200 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100
             ),
             new GOUReadAudio(defines[key].sound),
             defines[key].element,
@@ -175,8 +175,8 @@ export const useWasInit = (loadData?: any) => {
             defines[key].name,
             new GOULottie(
               defines[key].animation,
-              WAS_ANIMATION_WIDTH,
-              WAS_ANIMATION_HEIGHT
+              (200 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
+              (200 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100
             ),
             new GOUReadAudio(defines[key].sound),
             defines[key].element,
@@ -193,8 +193,8 @@ export const useWasInit = (loadData?: any) => {
             defines[key].name,
             new GOULottie(
               defines[key].animation,
-              WAS_ANIMATION_WIDTH,
-              WAS_ANIMATION_HEIGHT
+              (200 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
+              (200 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100
             ),
             new GOUReadAudio(defines[key].sound),
             defines[key].element,
@@ -211,8 +211,8 @@ export const useWasInit = (loadData?: any) => {
             defines[key].name,
             new GOULottie(
               defines[key].animation,
-              WAS_ANIMATION_WIDTH,
-              WAS_ANIMATION_HEIGHT
+              (200 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
+              (200 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100
             ),
             new GOUReadAudio(defines[key].sound),
             defines[key].element,
@@ -272,6 +272,7 @@ export const useWasInit = (loadData?: any) => {
   });
 
   const loadFile = () => {
+    (state.player.visual as GOUImage).load();
     (PRINCESS.visual as GOUImage).load();
     (MAP as GOUImage).load();
     for (const key of Object.keys(SKILLS)) {
@@ -290,6 +291,9 @@ export const useWasInit = (loadData?: any) => {
 
     // ロードが完了したかを判定する
     const intervalId = setInterval(() => {
+      if (!(state.player.visual as GOUImage).image?.complete) {
+        return;
+      }
       if (!(PRINCESS.visual as GOUImage).image?.complete) {
         return;
       }

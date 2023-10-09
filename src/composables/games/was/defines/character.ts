@@ -1,6 +1,8 @@
 import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
 import {
   WAS_BATTLE_MOVE,
+  WAS_DEFAULT_GAME_DISPLAY_HEIGHT,
+  WAS_DEFAULT_GAME_DISPLAY_WIDTH,
   WAS_ELEMENT,
   WAS_ITEM_ID,
   WAS_SKILL_ID,
@@ -41,8 +43,8 @@ const WAS_SATAN: WAS_PLAYER_CHARACTER_DEFINITION_TYPE = {
   visual: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/commons/icons/human_red.svg",
-    width: 30,
-    height: 30,
+    width: (30 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
+    height: (30 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
   },
   initStatus: {
     life: 100,
@@ -66,8 +68,8 @@ const WAS_PRINCESS: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   visual: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/characters/Princess.svg",
-    width: 150,
-    height: 300,
+    width: (150 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
+    height: (300 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
   },
   chooseMove: () => {},
 };
@@ -77,8 +79,8 @@ const WAS_GOBLIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   visual: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/characters/Goblin.svg",
-    width: 150,
-    height: 300,
+    width: (150 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
+    height: (300 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
   },
   initStatus: {
     life: 40,
@@ -118,8 +120,8 @@ const WAS_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   visual: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/characters/Elf.svg",
-    width: 150,
-    height: 300,
+    width: (150 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
+    height: (300 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
   },
   initStatus: {
     life: 60,
@@ -170,8 +172,8 @@ const WAS_SAHAGIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   visual: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/characters/Sahagin.svg",
-    width: 150,
-    height: 300,
+    width: (150 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
+    height: (300 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
   },
   initStatus: {
     life: 60,
@@ -235,8 +237,8 @@ const WAS_SLIME: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   visual: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/characters/Slime.svg",
-    width: 150,
-    height: 150,
+    width: (150 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
+    height: (150 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
   },
   initStatus: {
     life: 20,
@@ -276,8 +278,8 @@ const WAS_SOLDIER: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   visual: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/characters/Soldier.svg",
-    width: 150,
-    height: 300,
+    width: (150 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
+    height: (300 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
   },
   initStatus: {
     life: 80,
@@ -347,8 +349,8 @@ const WAS_BOSS_GOBLIN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   visual: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/characters/BossGoblin.svg",
-    width: 300,
-    height: 400,
+    width: (300 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
+    height: (400 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
   },
   initStatus: {
     life: 80,
@@ -411,8 +413,8 @@ const WAS_DARK_ELF: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   visual: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/characters/DarkElf.svg",
-    width: 150,
-    height: 300,
+    width: (150 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
+    height: (300 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
   },
   initStatus: {
     life: 100,
@@ -486,8 +488,8 @@ const WAS_KRAKEN: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   visual: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/characters/Kraken.svg",
-    width: 300,
-    height: 400,
+    width: (300 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
+    height: (400 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
   },
   initStatus: {
     life: 150,
@@ -560,8 +562,8 @@ const WAS_DORAGON: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   visual: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/characters/Dragon.svg",
-    width: 300,
-    height: 300,
+    width: (300 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
+    height: (300 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
   },
   initStatus: {
     life: 200,
@@ -612,8 +614,8 @@ const WAS_HERO: WAS_NON_PLAYER_CHARACTER_DEFINITION_TYPE = {
   visual: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/characters/Hero.svg",
-    width: 150,
-    height: 300,
+    width: (150 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
+    height: (300 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
   },
   initStatus: {
     life: 200,

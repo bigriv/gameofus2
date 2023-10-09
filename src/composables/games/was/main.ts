@@ -34,6 +34,9 @@ export const useWasMain = (loadData: any, emits: Function) => {
   } = useWasInit(loadData);
 
   const {
+    GAME_DISPLAY_WIDTH,
+    GAME_DISPLAY_HEIGHT,
+    resize,
     layer,
     displayMessage,
     onClickMessageFrame,
@@ -621,6 +624,9 @@ export const useWasMain = (loadData: any, emits: Function) => {
   };
 
   return {
+    GAME_DISPLAY_WIDTH,
+    GAME_DISPLAY_HEIGHT,
+    resize,
     isLoadedImages,
     loadFile,
     loadSaveData,

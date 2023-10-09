@@ -10,7 +10,7 @@ import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacte
 import {
   WAS_DEFAULT_GAME_DISPLAY_HEIGHT,
   WAS_DEFAULT_GAME_DISPLAY_WIDTH,
-} from "./const";
+} from "@/composables/games/was/const";
 
 export const useWasDispay = () => {
   const GAME_DISPLAY_WIDTH = ref(WAS_DEFAULT_GAME_DISPLAY_WIDTH);

@@ -48,7 +48,7 @@ const onContinue = () => {
     width: 100%;
     text-align: center;
     font-family: "Yusei Magic";
-    font-size: 40rem;
+    font-size: 40px;
     color: white;
     text-shadow: 6px 6px 2px black;
     user-select: none;
@@ -59,7 +59,7 @@ const onContinue = () => {
     left: 50%;
     height: 15%;
     transform: translate(-50%, -50%);
-    font-size: 14rem;
+    font-size: 14px;
     &__button--start {
       position: absolute;
       top: 0%;
@@ -81,20 +81,20 @@ const onContinue = () => {
 }
 @media screen and (max-width: 400px) {
   .c-game__drawer__buttons {
-    font-size: 10rem;
+    font-size: 10px;
     width: 25%;
   }
 }
 
 @media screen and (max-width: 600px) and (min-width: 400px) {
   .c-game__drawer__buttons {
-    font-size: 12rem;
+    font-size: 12px;
     width: 23%;
   }
 }
 @media screen and (min-width: 600px) {
   .c-game__drawer__buttons {
-    font-size: 14rem;
+    font-size: 14px;
     width: 20%;
   }
 }

@@ -41,7 +41,7 @@ const styles = computed(() => {
   height: 100%;
   display: flex;
   align-items: center;
-  padding: 4rem;
+  padding: 4px;
   &__label {
     width: 20%;
     white-space: nowrap;
@@ -50,8 +50,8 @@ const styles = computed(() => {
   &__bar {
     width: 100%;
     height: 100%;
-    min-height: 10rem;
-    border: 1rem solid var(--borderColor);
+    min-height: 10px;
+    border: 1px solid var(--borderColor);
     position: relative;
     &::before {
       content: "";

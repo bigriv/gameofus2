@@ -252,18 +252,18 @@ const skillDescription = [
   border-width: 6px;
 }
 .c-description {
-  padding-bottom: 20rem;
+  padding-bottom: 20px;
   margin: auto;
   text-align: left;
   h2 {
     margin-top: 1em;
   }
   p {
-    font-size: 14rem;
+    font-size: 14px;
     line-height: 1.1;
   }
   table {
-    font-size: 14rem;
+    font-size: 14px;
     line-height: 1.1;
     th,
     td {
@@ -303,7 +303,7 @@ const skillDescription = [
     height: 600px;
   }
   .c-description {
-    width: 600rem;
+    width: 600px;
   }
 }
 </style>

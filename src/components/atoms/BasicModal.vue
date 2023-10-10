@@ -57,11 +57,11 @@ const isModalOpen = computed({
     top: 50%;
     left: 50%;
     background-color: #fff;
-    border-radius: 10rem;
+    border-radius: 10px;
     transform: translate(-50%, -50%);
     &__inner {
       position: relative;
-      padding: 36rem 60rem;
+      padding: 36px 60px;
       width: 100%;
       height: 100%;
     }

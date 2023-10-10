@@ -154,7 +154,7 @@ const drawText = (obj: GOUText, position: GOUPosition) => {
   }
 
   drawer.value.textBaseline = "top";
-  drawer.value.font = `${obj.fontSize}rem serif`;
+  drawer.value.font = `${obj.fontSize}px serif`;
   drawer.value.globalAlpha = 1;
   drawer.value.fillStyle = obj.color.code;
   drawer.value.fillText(obj.text, position.px, position.py);

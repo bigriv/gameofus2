@@ -54,14 +54,14 @@ const styles = {
   "--borderColor": props.borderColor,
   "--fontColor": props.fontColor,
 };
-const removeInterval = () => {
+const pxoveInterval = () => {
   if (timerId.value) {
     clearInterval(timerId.value);
     timerId.value = null;
   }
 };
 const animateTypeWrite = () => {
-  removeInterval();
+  pxoveInterval();
   if (!props.messages?.length || props.messages.length == 0) {
     return;
   }
@@ -77,7 +77,7 @@ const animateTypeWrite = () => {
       animationPos.col = 0;
     }
     if (animationPos.row >= props.messages.length) {
-      removeInterval();
+      pxoveInterval();
       isComplete.value = true;
     }
   }, 100 / props.speed);
@@ -91,7 +91,7 @@ const onClick = () => {
   texts.value = props.messages
   animationPos.row = props.messages.length;
   isComplete.value = true
-  removeInterval();
+  pxoveInterval();
 };
 
 onMounted(() => {
@@ -111,9 +111,9 @@ watch(
 .c-message_frame {
   width: 100%;
   height: 100%;
-  border: 2rem solid var(--borderColor);
-  border-radius: 2rem;
-  padding: 2rem;
+  border: 2px solid var(--borderColor);
+  border-radius: 2px;
+  padding: 2px;
   font-size: 100%;
   font-family: monospace;
   font-weight: 600;
@@ -123,13 +123,13 @@ watch(
     width: 100%;
     height: 100%;
     background-color: var(--backgroundColor);
-    border: 2rem solid var(--borderColor);
+    border: 2px solid var(--borderColor);
     color: var(--fontColor);
-    border-radius: 2rem;
-    padding: 8rem;
+    border-radius: 2px;
+    padding: 8px;
     &__text {
       width: fit-content;
-      padding-right: 2rem;
+      padding-right: 2px;
       line-height: 1.2;
     }
   }

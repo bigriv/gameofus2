@@ -2,8 +2,8 @@
   <div
     class="c-lottie_canvas"
     :style="{
-      width: props.width + 'rem',
-      height: props.height + 'rem',
+      width: props.width + 'px',
+      height: props.height + 'px',
       'z-index': props.zIndex,
     }"
   >

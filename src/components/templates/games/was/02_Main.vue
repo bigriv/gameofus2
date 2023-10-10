@@ -178,7 +178,7 @@ watch(() => isLoadedImages.value, showMap);
     left: 0;
     width: 100%;
     height: 30%;
-    border: 6rem solid #d3d3d3;
+    border: 6px solid #d3d3d3;
     background-color: black;
     opacity: 0.8;
     &__message_frame {
@@ -218,14 +218,14 @@ watch(() => isLoadedImages.value, showMap);
       }
       &__life {
         position: absolute;
-        top: 10rem;
+        top: 10px;
         left: 0;
         display: flex;
         width: 100%;
       }
       &__satiety {
         position: absolute;
-        top: 40rem;
+        top: 40px;
         left: 0;
         display: flex;
         width: 100%;
@@ -242,38 +242,38 @@ watch(() => isLoadedImages.value, showMap);
 @media screen and (max-width: 400px) {
   .c-game__drawer__lower__button_list__button,
   .c-game__drawer__lower__message_frame {
-    font-size: 12rem;
+    font-size: 12px;
   }
   .c-game__drawer__lower__status__life > span {
-    font-size: 10rem;
+    font-size: 10px;
   }
   .c-game__drawer__lower__status__satiety > span {
-    font-size: 10rem;
+    font-size: 10px;
   }
 }
 
 @media screen and (max-width: 600px) and (min-width: 400px) {
   .c-game__drawer__lower__button_list__button,
   .c-game__drawer__lower__message_frame {
-    font-size: 14rem;
+    font-size: 14px;
   }
   .c-game__drawer__lower__status__life > span {
-    font-size: 12rem;
+    font-size: 12px;
   }
   .c-game__drawer__lower__status__satiety > span {
-    font-size: 12rem;
+    font-size: 12px;
   }
 }
 @media screen and (min-width: 600px) {
   .c-game__drawer__lower__button_list__button,
   .c-game__drawer__lower__message_frame {
-    font-size: 16rem;
+    font-size: 16px;
   }
   .c-game__drawer__lower__status__life > span {
-    font-size: 14rem;
+    font-size: 14px6px;
   }
   .c-game__drawer__lower__status__satiety > span {
-    font-size: 14rem;
+    font-size: 14px6px;
   }
 }
 </style>

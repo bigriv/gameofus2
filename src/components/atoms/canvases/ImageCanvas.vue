@@ -84,8 +84,8 @@ const props = defineProps({
 <style scoped lang="scss">
 .c-image_canvas {
   position: absolute;
-  width: calc(var(--width) * 1rem);
-  height: calc(var(--height) * 1rem);
+  width: calc(var(--width) * 1px);
+  height: calc(var(--height) * 1px);
   user-select: none;
   img {
     position: absolute;

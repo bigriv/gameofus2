@@ -162,16 +162,16 @@ const onCopy = () => {
 
 <style scoped lang="scss">
 span {
-  font-size: 14rem;
+  font-size: 14px;
 }
 .c-button_list {
   button + button {
-    margin-left: 20rem;
+    margin-left: 20px;
   }
 }
 button {
-  width: 150rem;
-  height: 30rem;
+  width: 150px;
+  height: 30px;
   background: linear-gradient(#aec9e8, #91b9e4);
   border: #d8dee5;
   &:active {
@@ -179,11 +179,11 @@ button {
   }
 }
 .c-score {
-  border: 1rem solid black;
-  padding: 10rem;
+  border: 1px solid black;
+  padding: 10px;
   &__note {
     border: #d8dee5;
-    padding: 5rem 10rem;
+    padding: 5px 10px;
   }
   input[type="radio"] {
     appearance: none;

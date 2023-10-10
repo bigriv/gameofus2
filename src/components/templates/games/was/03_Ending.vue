@@ -81,7 +81,7 @@ const onBackTitle = () => {
     position: absolute;
     top: 10%;
     left: 50%;
-    font-size: 40rem;
+    font-size: 40px;
     width: 100%;
     text-align: center;
     transform: translate(-50%, -50%);
@@ -90,7 +90,7 @@ const onBackTitle = () => {
     position: absolute;
     top: 30%;
     left: 50%;
-    font-size: 28rem;
+    font-size: 28px;
     width: 100%;
     text-align: center;
     transform: translate(-50%, -50%);
@@ -120,7 +120,7 @@ const onBackTitle = () => {
 
 @media screen and (max-width: 400px) {
   .c-game__drawer__button--back {
-    font-size: 10rem;
+    font-size: 10px;
     width: 35%;
     height: 10%;
   }
@@ -128,14 +128,14 @@ const onBackTitle = () => {
 
 @media screen and (max-width: 600px) and (min-width: 400px) {
   .c-game__drawer__button--back {
-    font-size: 11rem;
+    font-size: 11px;
     width: 30%;
     height: 9%;
   }
 }
 @media screen and (min-width: 600px) {
   .c-game__drawer__button--back {
-    font-size: 14rem;
+    font-size: 14px;
     width: 25%;
     height: 7.5%;
   }

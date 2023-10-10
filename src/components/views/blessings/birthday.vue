@@ -140,24 +140,24 @@ const onClickConfirm = () => {
 
 <style scoped lang="scss">
 .u-fill {
-  max-width: 400rem;
+  max-width: 400px;
   max-height: 100vh;
 }
 button {
   background-color: white;
   cursor: pointer;
-  padding: 5rem 10rem;
-  border: solid 1rem black;
-  border-radius: 5rem;
+  padding: 5px 10px;
+  border: solid 1px black;
+  border-radius: 5px;
 }
 .c-message {
-  font-size: 20rem;
-  width: 400rem;
+  font-size: 20px;
+  width: 400px;
   max-width: 100%;
 }
 .c-layer {
-  width: 200rem;
-  height: 200rem;
+  width: 200px;
+  height: 200px;
   margin: auto;
 }
 </style>

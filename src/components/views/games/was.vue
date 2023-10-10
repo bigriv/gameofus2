@@ -22,6 +22,7 @@
   <div class="c-description">
     <div class="c-description__block">
       <h2>リリースノート</h2>
+      <p>2023/10/11 ver 1.02 スマホ対応</p>
       <p>2023/10/07 ver 1.01 操作性改善</p>
       <p>2023/10/05 ver 1.00 リリース</p>
     </div>

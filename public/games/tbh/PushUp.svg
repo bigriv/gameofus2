@@ -1,0 +1,19 @@
+<svg width="300" height="100" viewBox="0 0 300 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_109_726)">
+<path d="M38.8 44V2.38419e-07H75C87.1502 2.38419e-07 97 9.84974 97 22V22C97 34.1503 87.1503 44 75 44H38.8Z" fill="#FFFACD"/>
+<path d="M14.8733 44L27.8067 39.16L10.3467 36.96L21.9867 32.56L2.58667 29.92L21.9867 26.4L0 22L21.9867 17.6L2.58667 14.96L21.9867 12.32L10.3467 7.92L27.8067 4.4L14.8733 2.38419e-07H38.8V44H14.8733Z" fill="black"/>
+<line x1="50.0938" y1="42.4229" x2="43.0938" y2="27.4228" stroke="black" stroke-width="2"/>
+<ellipse cx="53.88" cy="34.52" rx="3.52" ry="3.88" transform="rotate(-90 53.88 34.52)" fill="black"/>
+<line x1="62" y1="41.5" x2="73.64" y2="41.5" stroke="black"/>
+<path d="M82 47.96L80 43L82 33" stroke="black" stroke-width="2"/>
+<rect x="93.5507" y="43.3923" width="40" height="100" transform="rotate(-80 93.5507 43.3923)" fill="white"/>
+<path d="M90 99.0001L99.7243 43.8508L114.496 46.4556L104.772 101.605L90 99.0001Z" fill="#FFFACD"/>
+<rect x="182" y="58.2523" width="40" height="30" transform="rotate(-65 182 58.2523)" fill="#D9D9D9"/>
+<path d="M213.415 61.8678L221.868 43.7416L303.435 81.7773L294.983 99.9034L213.415 61.8678Z" fill="#FFFACD"/>
+</g>
+<defs>
+<clipPath id="clip0_109_726">
+<rect width="300" height="100" fill="white"/>
+</clipPath>
+</defs>
+</svg>

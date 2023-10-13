@@ -3,6 +3,11 @@ import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
 
 type GOUVisualDefinition = (
   | {
+      type: GOUVisualType.FRAME;
+      width: number;
+      height: number;
+    }
+  | {
       type: GOUVisualType.DIAGRAM_RECT;
       width: number;
       height: number;

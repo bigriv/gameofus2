@@ -1,14 +1,15 @@
-import GOUImage from "@/composables/types/visuals/GOUImage";
 import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
+import GOUVisual from "@/composables/types/visuals/GOUVisual";
+import GOUVisualDefinition from "@/composables/types/visuals/GOUVisualDefinition";
+import GOUImage from "@/composables/types/visuals/GOUImage";
 import GOUCircle from "@/composables/types/visuals/diagrams/GOUCircle";
 import GOULine from "@/composables/types/visuals/diagrams/GOULine";
 import GOULineList from "@/composables/types/visuals/diagrams/GOULineList";
 import GOUPolygon from "@/composables/types/visuals/diagrams/GOUPolygon";
 import GOURect from "@/composables/types/visuals/diagrams/GOURect";
-import GOUText from "@/composables/types/visuals/diagrams/GOUText";
-import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import GOUVisualDefinition from "@/composables/types/visuals/GOUVisualDefinition";
 import GOUDiagram from "@/composables/types/visuals/GOUDiagram";
+import GOUFrame from "@/composables/types/visuals/GOUFrame";
+import GOUText from "@/composables/types/visuals/diagrams/GOUText";
 import { GOUColor } from "@/composables/types/GOUColor";
 import GOUPosition from "@/composables/types/GOUPosition";
 
@@ -20,6 +21,9 @@ const ConstructGOUVisual = (definition: GOUVisualDefinition): GOUVisual => {
   }
 
   switch (definition.type) {
+    case GOUVisualType.FRAME:
+      visual = new GOUFrame(definition.width, definition.height, color)
+      break
     case GOUVisualType.DIAGRAM_CIERCLE:
       visual = new GOUCircle(definition.radius, color);
       break;

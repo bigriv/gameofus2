@@ -16,6 +16,8 @@ class GOULine extends GOUDiagram {
     this.start = start;
     this.end = end;
     this.thick = thick;
+    this.width = this.getMaxX() - this.getMinX();
+    this.height = this.getMaxY() - this.getMinY();
   }
   getMinX(): number {
     return Math.min(this.start.px, this.end.px);

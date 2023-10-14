@@ -10,6 +10,8 @@ class GOUPolygon extends GOUDiagram {
   constructor(points: Array<GOUPosition>, color?: GOUColor) {
     super(color);
     this.points = points;
+    this.width = this.getMaxX() - this.getMinX();
+    this.height = this.getMaxY() - this.getMinY();
   }
 
   // 図形の最も左の点のX座標を取得する

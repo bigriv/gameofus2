@@ -10,6 +10,8 @@ class GOUCircle extends GOUDiagram {
   constructor(radius: number, color?: GOUColor) {
     super(color);
     this.radius = radius;
+    this.width = this.getMaxX() - this.getMinX();
+    this.height = this.getMaxY() - this.getMinY();
   }
   getMinX(): number {
     return 0;

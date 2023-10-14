@@ -1,11 +1,9 @@
-import GOUPosition from "../GOUPosition";
-import GOUVisual from "./GOUVisual";
+import GOUPosition from "@/composables/types/GOUPosition";
+import GOUVisual from "@/composables/types/visuals/GOUVisual";
 
 class GOUImage extends GOUVisual {
   image: HTMLImageElement | null;
   readonly path: string;
-  width: number;
-  height: number;
   constructor(path: string, width: number, height: number) {
     super();
     this.image = null;

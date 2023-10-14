@@ -5,8 +5,6 @@ import GOUVisual from "@/composables/types/visuals/GOUVisual";
 export class GOULottie extends GOUVisual {
   object: Object | null;
   readonly path: string;
-  width: number;
-  height: number;
   loop: boolean;
   speed: number;
   constructor(

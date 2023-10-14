@@ -1,7 +1,7 @@
 import { GOUColor } from "@/composables/types/GOUColor";
 import GOUPosition from "@/composables/types/GOUPosition";
 import GOUDiagram from "@/composables/types/visuals/GOUDiagram";
-import GOULine from "./GOULine";
+import GOULine from "@/composables/types/visuals/diagrams/GOULine";
 
 type GOULineArgs = {
   start: GOUPosition;
@@ -22,6 +22,8 @@ class GOULineList extends GOUDiagram {
       }
     }
     this.lines = temp;
+    this.width = this.getMaxX() - this.getMinX();
+    this.height = this.getMaxY() - this.getMinY();
   }
   getMinX(): number {
     return Math.min(...this.lines.map((l) => l.getMinX()));

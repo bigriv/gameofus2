@@ -1,8 +1,10 @@
-import GOUPosition from "../GOUPosition";
-import ClickableIf from "../interfaces/ClickableIf";
-import { GOUAnimation } from "./GOUAnimation";
+import GOUPosition from "@/composables/types/GOUPosition";
+import ClickableIf from "@/composables/types/interfaces/ClickableIf";
+import { GOUAnimation } from "@/composables/types/visuals/GOUAnimation";
 
 abstract class GOUVisual implements ClickableIf {
+  width: number = 0;
+  height: number = 0;
   position: GOUPosition = new GOUPosition(); // 親の物体から見た物体の相対位置
   children?: { [index: string]: GOUVisual };
   animation?: GOUAnimation;

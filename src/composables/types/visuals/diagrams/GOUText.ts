@@ -1,6 +1,6 @@
-import { GOUColor } from "../../GOUColor";
-import GOUPosition from "../../GOUPosition";
-import GOUDiagram from "../GOUDiagram";
+import { GOUColor } from "@/composables/types/GOUColor";
+import GOUPosition from "@/composables/types/GOUPosition";
+import GOUDiagram from "@/composables/types/visuals/GOUDiagram";
 
 class GOUText extends GOUDiagram {
   text: string;
@@ -16,6 +16,8 @@ class GOUText extends GOUDiagram {
     this.text = text;
     this.fontSize = fontSize;
     this.fontFamily = fontFamily;
+    this.width = this.getMaxX() - this.getMinX();
+    this.height = this.getMaxY() - this.getMinY();
   }
   getMinX(): number {
     return 0;

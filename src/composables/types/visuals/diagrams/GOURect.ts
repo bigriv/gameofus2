@@ -6,8 +6,6 @@ import GOUPosition from "@/composables/types/GOUPosition";
  * 描画用の矩形図形クラス
  */
 class GOURect extends GOUDiagram {
-  width: number;
-  height: number;
   border?: { thick: number; color: GOUColor };
   constructor(
     width: number,

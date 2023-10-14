@@ -2,76 +2,59 @@
   <div
     class="c-image_canvas"
     :style="{
-      '--width': props.width,
-      '--height': props.height,
+      '--x': props.object.position.px,
+      '--y': props.object.position.py,
+      '--width': props.object.width,
+      '--height': props.object.height,
       'z-index': props.zIndex,
     }"
   >
-    <template v-for="image in props.objects">
-      <template v-if="(image instanceof GOUImage)">
-        <img
-          v-if="image.isClickable"
-          :src="image.path"
-          :style="{
-            '--x': image.position.px,
-            '--y': image.position.py,
-            '--width': image.width,
-            '--height': image.height,
-            '--duration': image.animation?.duration + 's',
-            '--iteration': image.animation?.iteration,
-          }"
-          :class="
-            !image.animation
-              ? ''
-              : [
-                  `a-${image.animation?.type}`,
-                  { 'a-infinite': image.animation?.iteration <= 0 },
-                ]
-          "
-          class="u-clickable"
-          @click="image.onClick()"
-          @mouseenter="image.onMouseEnter()"
-          @mouseleave="image.onMouseLeave()"
-        />
-        <img
-          v-else
-          :src="image.path"
-          :style="{
-            '--x': image.position.px,
-            '--y': image.position.py,
-            '--width': image.width,
-            '--height': image.height,
-            '--duration': image.animation?.duration + 's',
-            '--iteration': image.animation?.iteration,
-          }"
-          :class="
-            !image.animation
-              ? ''
-              : [
-                  `a-${image.animation?.type}`,
-                  { 'a-infinite': image.animation?.iteration <= 0 },
-                ]
-          "
-        />
-      </template>
-    </template>
+    <img
+      v-if="props.object.isClickable"
+      :src="props.object.path"
+      :style="{
+        '--duration': props.object.animation?.duration + 's',
+        '--iteration': props.object.animation?.iteration,
+      }"
+      :class="
+        !props.object.animation
+          ? ''
+          : [
+              `a-${props.object.animation?.type}`,
+              { 'a-infinite': props.object.animation?.iteration <= 0 },
+            ]
+      "
+      class="u-clickable"
+      @click="props.object.onClick()"
+      @mouseenter="props.object.onMouseEnter()"
+      @mouseleave="props.object.onMouseLeave()"
+    />
+    <img
+      v-else
+      :src="props.object.path"
+      :style="{
+        '--duration': props.object.animation?.duration + 's',
+        '--iteration': props.object.animation?.iteration,
+      }"
+      :class="
+        !props.object.animation
+          ? ''
+          : [
+              `a-${props.object.animation?.type}`,
+              { 'a-infinite': props.object.animation?.iteration <= 0 },
+            ]
+      "
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import { PropType } from "vue";
 import GOUImage from "@/composables/types/visuals/GOUImage";
 
 const props = defineProps({
-  width: {
-    type: Number,
-    required: true,
-  },
-  height: {
-    type: Number,
-    required: true,
-  },
-  objects: {
-    type: Array<GOUImage>,
+  object: {
+    type: Object as PropType<GOUImage>,
     required: true,
   },
   zIndex: {
@@ -84,15 +67,16 @@ const props = defineProps({
 <style scoped lang="scss">
 .c-image_canvas {
   position: absolute;
-  width: calc(var(--width) * 1px);
-  height: calc(var(--height) * 1px);
+  top: calc(var(--y) * 1%);
+  left: calc(var(--x) * 1%);
+  width: calc(var(--width) * 1%);
+  height: calc(var(--height) * 1%);
   user-select: none;
   img {
-    position: absolute;
-    top: calc(var(--y) * 1%);
-    left: calc(var(--x) * 1%);
-    width: calc(var(--width) * 1%);
-    height: calc(var(--height) * 1%);
+    width: 100%;
+    height: 100%;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
   }
 }
 </style>

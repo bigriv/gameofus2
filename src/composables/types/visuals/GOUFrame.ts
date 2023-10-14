@@ -3,8 +3,6 @@ import GOUPosition from "@/composables/types/GOUPosition";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 
 class GOUFrame extends GOUVisual {
-  width: number;
-  height: number;
   color: GOUColor;
 
   constructor(width: number, height: number, color?: GOUColor) {

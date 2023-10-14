@@ -1,22 +1,18 @@
 <template>
   <BasicCanvas
-    v-if="diagrams.length > 0"
+    v-for="diagram in diagrams"
     :width="props.width"
     :height="props.height"
-    :objects="diagrams"
+    :object="diagram"
   />
   <ImageCanvas
-    v-if="images.length > 0"
-    :width="props.width"
-    :height="props.height"
-    :objects="images"
+    v-for="image in images"
+    :object="image"
     :zIndex="props.zIndex"
   />
   <LottieCanvas
-    v-if="lotties.length > 0"
-    :width="props.width"
-    :height="props.height"
-    :objects="lotties"
+    v-for="lottie in lotties"
+    :object="lottie"
     :zIndex="props.zIndex"
   />
 </template>

@@ -1,5 +1,5 @@
 import { COLOR, GOUColor } from "@/composables/types/GOUColor";
-import GOUVisual from "./GOUVisual";
+import GOUVisual from "@/composables/types/visuals/GOUVisual";
 
 abstract class GOUDiagram extends GOUVisual {
   color: GOUColor;

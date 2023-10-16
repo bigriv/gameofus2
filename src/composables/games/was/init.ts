@@ -291,30 +291,30 @@ export const useWasInit = (loadData?: any) => {
 
     // ロードが完了したかを判定する
     const intervalId = setInterval(() => {
-      if (!(state.player.visual as GOUImage).image?.complete) {
+      if (!(state.player.visual as GOUImage).isLoaded()) {
         return;
       }
-      if (!(PRINCESS.visual as GOUImage).image?.complete) {
+      if (!(PRINCESS.visual as GOUImage).isLoaded()) {
         return;
       }
-      if (!(MAP as GOUImage).image?.complete) {
+      if (!(MAP as GOUImage).isLoaded()) {
         return;
       }
       for (const key of Object.keys(CHARACTERS)) {
-        if (!(CHARACTERS[key].visual as GOUImage).image?.complete) {
+        if (!(CHARACTERS[key].visual as GOUImage).isLoaded()) {
           return;
         }
       }
       for (const key of Object.keys(BOSSES)) {
-        if (!(BOSSES[key].visual as GOUImage).image?.complete) {
+        if (!(BOSSES[key].visual as GOUImage).isLoaded()) {
           return;
         }
       }
       for (const key of Object.keys(AREAS)) {
-        if (!(AREAS[key].inside as GOUImage).image?.complete) {
+        if (!(AREAS[key].inside as GOUImage).isLoaded()) {
           return;
         }
-        if (!(AREAS[key].outside as GOUImage).image?.complete) {
+        if (!(AREAS[key].outside as GOUImage).isLoaded()) {
           return;
         }
       }

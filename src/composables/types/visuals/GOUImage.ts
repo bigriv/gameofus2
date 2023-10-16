@@ -20,6 +20,13 @@ class GOUImage extends GOUVisual {
     this.image.src = this.path;
     return this;
   }
+
+  isLoaded(): boolean {
+    if (!this.image) {
+      return false;
+    }
+    return this.image.complete;
+  }
   getMinX(): number {
     return 0;
   }

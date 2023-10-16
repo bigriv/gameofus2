@@ -1,6 +1,5 @@
 /**
  * 座標クラス
- * ※GOUSizeと同じプロパティを持つが用途は異なることに注意
  */
 class GOUPosition {
   px: number;

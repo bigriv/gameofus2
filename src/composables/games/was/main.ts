@@ -516,7 +516,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
 
     // 魔王アイコンを現在エリアの右横に配置
     const currentArea = AREAS[state.currentArea].outside;
-    state.player.visual.move(
+    state.player.visual.setPosition(
       new GOUPosition(
         currentArea.position.px + currentArea.getMaxX(),
         currentArea.position.py +

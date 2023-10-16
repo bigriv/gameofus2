@@ -31,7 +31,7 @@ export class WasArea {
     this.character = character;
     if (this.character.visual) {
       // キャラクターを画面中央に配置
-      this.character.visual.move(
+      this.character.visual.setPosition(
         new GOUPosition(
           50 - this.character.visual.getMaxX() / 2,
           100 - this.character.visual.getMaxY()
@@ -41,7 +41,7 @@ export class WasArea {
     this.boss = boss;
     if (this.boss && this.boss.visual) {
       // キャラクターを画面中央に配置
-      this.boss.visual.move(
+      this.boss.visual.setPosition(
         new GOUPosition(
           50 - this.boss.visual.getMaxX() / 2,
           100 - this.boss.visual.getMaxY()

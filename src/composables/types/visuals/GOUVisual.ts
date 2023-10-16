@@ -32,7 +32,7 @@ abstract class GOUVisual implements ClickableIf {
     }
     delete this.children[key];
   }
-  move(position: GOUPosition) {
+  setPosition(position: GOUPosition) {
     this.position = position;
   }
 

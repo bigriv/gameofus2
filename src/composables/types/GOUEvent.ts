@@ -6,11 +6,11 @@ class GOUEvent {
   func: Function; // 実行する処理
   condition: Function; // 実行条件
 
-  constructor(sound?: string, func?: Function, condtion?: Function) {
+  constructor(sound?: string, func?: Function, condition?: Function) {
     this.sound = sound ?? "";
     this.func = func ?? function () {};
     this.condition =
-      condtion ??
+      condition ??
       function () {
         return true;
       };

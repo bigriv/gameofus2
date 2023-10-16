@@ -81,7 +81,7 @@ export const useWasDispay = () => {
       event.sound.play();
     }
     if (event.animation) {
-      event.animation.move(
+      event.animation.setPosition(
         new GOUPosition(
           50 - event.animation.getCenterX(),
           50 - event.animation.getCenterY()

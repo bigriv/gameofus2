@@ -23,18 +23,29 @@ export class GOUReadAudio extends GOUAudio {
   }
 
   /**
+   * 音声ファイルがロードされているかを判定する
+   * @returns ロード済みならtrue、それ以外はfalseを返す
+   */
+  isLoaded(): boolean {
+    if (!this.audio) {
+      return false;
+    }
+    return this.audio.readyState >= HTMLMediaElement.HAVE_ENOUGH_DATA;
+  }
+
+  /**
    * 音声ファイルを再生する
    * @param position 再生位置
    */
   play(position?: number): void {
-    if (!this.audio) {
+    if (!this.isLoaded()) {
       throw Error("Audio is not loaded.");
     }
     if (this.isPlaying()) {
       this.playing = false;
     }
-    this.audio.currentTime = position ?? 0;
-    this.audio.play();
+    this.audio!.currentTime = position ?? 0;
+    this.audio!.play();
   }
 
   /**

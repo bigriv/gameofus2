@@ -2,28 +2,7 @@
   <div class="c-game__drawer">
     <div class="c-game__drawer__upper">
       <div class="c-game__drawer__layer">
-        <IntegrationCanvas
-          :width="GAME_DISPLAY_WIDTH"
-          :height="GAME_DISPLAY_HEIGHT"
-          :objects="layer.background"
-          :zIndex="1"
-        />
-      </div>
-      <div class="c-game__drawer__layer">
-        <IntegrationCanvas
-          :width="GAME_DISPLAY_WIDTH"
-          :height="GAME_DISPLAY_HEIGHT"
-          :objects="layer.objects"
-          :zIndex="2"
-        />
-      </div>
-      <div class="c-game__drawer__layer">
-        <IntegrationCanvas
-          :width="GAME_DISPLAY_WIDTH"
-          :height="GAME_DISPLAY_HEIGHT"
-          :objects="layer.animations"
-          :zIndex="3"
-        />
+        <GOUVisualCanvas :objects="layer" />
       </div>
     </div>
 
@@ -37,6 +16,7 @@
           :fontColor="COLOR.WHITE"
           :messages="displayMessage"
           :speed="2"
+          :clickable="true"
           @click="() => onClickMessageFrame()"
         />
       </div>
@@ -99,7 +79,6 @@
 
 <script setup lang="ts">
 import { onMounted, watch } from "vue";
-import IntegrationCanvas from "@/components/molecules/IntegrationCanvas.vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import GameStatusBar from "@/components/atoms/interfaces/GameStatusBar.vue";
@@ -109,6 +88,7 @@ import { WAS_ENDING, WAS_EVENT_TIMMING } from "@/composables/games/was/const";
 import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { WasArea } from "@/composables/games/was/types/area";
+import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 
 const props = defineProps({
   loadData: {
@@ -130,8 +110,6 @@ const emits = defineEmits<{
 }>();
 
 const {
-  GAME_DISPLAY_WIDTH,
-  GAME_DISPLAY_HEIGHT,
   resize,
   isLoadedImages,
   loadFile,

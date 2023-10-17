@@ -53,7 +53,7 @@
   100% {
     transform: translate(0, 0);
   }
-  
+
   25% {
     transform: translate(0, 5%);
   }
@@ -64,4 +64,8 @@
 
 .a-infinite {
   animation-iteration-count: infinite;
+}
+
+.a-stop {
+  animation-play-state: paused;
 }

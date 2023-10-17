@@ -17,6 +17,7 @@ import { WrongImplementationError } from "@/composables/types/errors/WrongImplem
 import { useWasBattle } from "@/composables/games/was/battle";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { hoverSE } from "@/composables/sounds/seDefinition";
+import GOUFrame from "@/composables/types/visuals/GOUFrame";
 
 export const useWasMain = (loadData: any, emits: Function) => {
   const {
@@ -369,8 +370,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
     if (state.currentArea != WAS_AREA_ID.SATAN_CASTLE) {
       state.currentArea = WAS_AREA_ID.SATAN_CASTLE;
     }
-    layer.background = [AREAS.SATAN_CASTLE.inside];
-    layer.objects = [PRINCESS.visual];
+    layer.objects = PRINCESS.visual;
     let messages = new Array<string>();
     let afterFunction = showMap;
     switch (state.timming) {
@@ -488,30 +488,35 @@ export const useWasMain = (loadData: any, emits: Function) => {
       showEnd(WAS_ENDING.HUNGER);
       return;
     }
-    layer.background = [MAP];
+    layer.background = MAP;
 
     // 進行状況によって表示するエリアを制御
     if (state.timming < WAS_EVENT_TIMMING.AFTER_OPENING2) {
-      layer.objects = [AREAS.SATAN_CASTLE.outside];
+      layer.objects = AREAS.SATAN_CASTLE.outside;
     } else if (state.timming < WAS_EVENT_TIMMING.AFTER_CLEAR_CAVE) {
-      layer.objects = [AREAS.SATAN_CASTLE.outside, AREAS.CAVE.outside];
+      const areas = new GOUFrame(100, 100)
+      areas.setChild("SATAN_CASTLE", AREAS.SATAN_CASTLE.outside)
+      areas.setChild("CAVE", AREAS.CAVE.outside)
+      layer.objects = areas;
     } else if (state.timming < WAS_EVENT_TIMMING.AFTER_CLEAR_ALL_AREA) {
-      layer.objects = [
-        AREAS.SATAN_CASTLE.outside,
-        AREAS.CAVE.outside,
-        AREAS.SEA.outside,
-        AREAS.VILLAGE.outside,
-        AREAS.MOUNTAIN.outside,
-      ];
+      const areas = new GOUFrame(100, 100)
+      areas.setChild("SATAN_CASTLE", AREAS.SATAN_CASTLE.outside)
+      areas.setChild("CAVE", AREAS.CAVE.outside)
+      areas.setChild("SEA", AREAS.SEA.outside)
+      areas.setChild("VILLAGE", AREAS.VILLAGE.outside)
+      areas.setChild("MOUNTAIN", AREAS.MOUNTAIN.outside)
+
+      layer.objects = areas;
     } else {
-      layer.objects = [
-        AREAS.SATAN_CASTLE.outside,
-        AREAS.CAVE.outside,
-        AREAS.SEA.outside,
-        AREAS.VILLAGE.outside,
-        AREAS.MOUNTAIN.outside,
-        AREAS.KINGDOM_CASTLE.outside,
-      ];
+      const areas = new GOUFrame(100, 100)
+      areas.setChild("SATAN_CASTLE", AREAS.SATAN_CASTLE.outside)
+      areas.setChild("CAVE", AREAS.CAVE.outside)
+      areas.setChild("SEA", AREAS.SEA.outside)
+      areas.setChild("VILLAGE", AREAS.VILLAGE.outside)
+      areas.setChild("MOUNTAIN", AREAS.MOUNTAIN.outside)
+      areas.setChild("KINGDOM_CASTLE", AREAS.KINGDOM_CASTLE.outside)
+
+      layer.objects = areas
     }
 
     // 魔王アイコンを現在エリアの右横に配置
@@ -524,7 +529,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
           state.player.visual.getCenterY()
       )
     );
-    layer.objects.push(state.player.visual);
+    layer.objects.setChild("player", state.player.visual);
   };
 
   /**
@@ -532,14 +537,14 @@ export const useWasMain = (loadData: any, emits: Function) => {
    * 選択中のエリアが魔王城の場合は別の処理に飛ばす
    */
   const showArea = () => {
+    layer.background = AREAS[state.currentArea].inside;
+    layer.objects = undefined;
+    displayMessage.value = [];
     if (state.currentArea == WAS_AREA_ID.SATAN_CASTLE) {
       // 魔王城の場合は特殊処理
       showAreaSatanCasle();
       return;
     }
-    layer.background = [AREAS[state.currentArea].inside];
-    layer.objects = [];
-    displayMessage.value = [];
     buttonList.value = EXLPORE_BUTTON_LIST;
     isShowStatusBar.value = true;
   };
@@ -552,7 +557,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
     let messages = [];
     const character = state.character as WasNonPlayerCharacter;
     if (character.visual) {
-      layer.objects = [character.visual];
+      layer.objects = character.visual;
     }
     if (!character.isPersuaded) {
       messages.push(`${character.name}が現れた。`);

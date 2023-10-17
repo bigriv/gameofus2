@@ -1,12 +1,13 @@
 <template>
-  <canvas
-    ref="canvas"
-    :width="width"
-    :height="height"
-    :class="{ 'u-clickable': isClickable }"
-    @click="onClick"
-    @mousemove="onMouseMove"
-  ></canvas>
+  <div class="c-basic_canvas" :style="canvasStyle">
+    <canvas
+      ref="canvas"
+      :class="[...animationClass, { 'u-clickable': isClickable }]"
+      :style="animationStyle"
+      @click="onClick"
+      @mousemove="onMouseMove"
+    ></canvas>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -19,6 +20,7 @@ import GOULine from "@/composables/types/visuals/diagrams/GOULine";
 import GOULineList from "@/composables/types/visuals/diagrams/GOULineList";
 import GOUText from "@/composables/types/visuals/diagrams/GOUText";
 import GOUDiagram from "@/composables/types/visuals/GOUDiagram";
+import { useCanvas } from "@/composables/hooks/atoms/canvases/useCanvas";
 
 const props = defineProps({
   object: {
@@ -27,10 +29,7 @@ const props = defineProps({
   },
 });
 
-
-const width = computed(() => props.object.getMaxX() - props.object.getMinX())
-const height = computed(() => props.object.getMaxY() - props.object.getMinY())
-
+const { canvasStyle, animationStyle, animationClass } = useCanvas(props.object);
 const canvas = ref(null);
 const drawer = computed(() => {
   if (!canvas || !canvas.value) {

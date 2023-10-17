@@ -1,6 +1,11 @@
 <template>
-  <div class="c-message_frame" @click="onClick">
-    <div class="c-message_frame__messages" :style="styles">
+  <div
+    class="c-message_frame"
+    :class="{ 'u-clickable': props.clickable }"
+    :style="styles"
+    @click="onClick"
+  >
+    <div class="c-message_frame__messages">
       <slot>
         <div
           v-for="(text, index) in texts"
@@ -15,6 +20,7 @@
 </template>
 
 <script setup lang="ts">
+import { GOUColor } from "@/composables/types/GOUColor";
 import { onMounted, reactive, ref, watch } from "vue";
 
 const props = defineProps({
@@ -23,11 +29,11 @@ const props = defineProps({
     default: "black",
   },
   backgroundColor: {
-    type: String,
+    type: GOUColor,
     default: undefined,
   },
   borderColor: {
-    type: String,
+    type: GOUColor,
     default: undefined,
   },
   messages: {
@@ -37,6 +43,10 @@ const props = defineProps({
   speed: {
     type: Number,
     default: 1,
+  },
+  clickable: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -50,8 +60,8 @@ const animationPos = reactive({
 });
 const timerId = ref();
 const styles = {
-  "--backgroundColor": props.backgroundColor,
-  "--borderColor": props.borderColor,
+  "--backgroundColor": props.backgroundColor?.rgba(),
+  "--borderColor": props.borderColor?.rgba(),
   "--fontColor": props.fontColor,
 };
 const pxoveInterval = () => {
@@ -88,9 +98,9 @@ const onClick = () => {
     emits("click");
     return;
   }
-  texts.value = props.messages
+  texts.value = props.messages;
   animationPos.row = props.messages.length;
-  isComplete.value = true
+  isComplete.value = true;
   pxoveInterval();
 };
 
@@ -113,20 +123,17 @@ watch(
   height: 100%;
   border: 2px solid var(--borderColor);
   border-radius: 2px;
-  padding: 2px;
   font-size: 100%;
   font-family: monospace;
   font-weight: 600;
-  cursor: pointer;
   user-select: none;
   &__messages {
     width: 100%;
     height: 100%;
     background-color: var(--backgroundColor);
-    border: 2px solid var(--borderColor);
     color: var(--fontColor);
     border-radius: 2px;
-    padding: 8px;
+    padding: 2%;
     &__text {
       width: fit-content;
       padding-right: 2px;

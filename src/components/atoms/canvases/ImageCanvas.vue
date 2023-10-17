@@ -1,56 +1,23 @@
 <template>
   <div
     class="c-image_canvas"
-    :style="{
-      '--x': props.object.position.px,
-      '--y': props.object.position.py,
-      '--width': props.object.width,
-      '--height': props.object.height,
-      'z-index': props.zIndex,
-    }"
+    :style="[canvasStyle, { 'z-index': `${props.zIndex}` }]"
   >
     <img
-      v-if="props.object.isClickable"
       :src="props.object.path"
-      :style="{
-        '--duration': props.object.animation?.duration + 's',
-        '--iteration': props.object.animation?.iteration,
-      }"
-      :class="
-        !props.object.animation
-          ? ''
-          : [
-              `a-${props.object.animation?.type}`,
-              { 'a-infinite': props.object.animation?.iteration <= 0 },
-            ]
-      "
-      class="u-clickable"
-      @click="props.object.onClick()"
-      @mouseenter="props.object.onMouseEnter()"
-      @mouseleave="props.object.onMouseLeave()"
-    />
-    <img
-      v-else
-      :src="props.object.path"
-      :style="{
-        '--duration': props.object.animation?.duration + 's',
-        '--iteration': props.object.animation?.iteration,
-      }"
-      :class="
-        !props.object.animation
-          ? ''
-          : [
-              `a-${props.object.animation?.type}`,
-              { 'a-infinite': props.object.animation?.iteration <= 0 },
-            ]
-      "
+      :style="animationStyle"
+      :class="[animationClass, { 'u-clickable': props.object.isClickable }]"
+      @click="onClick"
+      @mouseenter="onMouseEnter"
+      @mouseleave="onMouseLeave"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { PropType } from "vue";
+import { PropType, toRefs, watch } from "vue";
 import GOUImage from "@/composables/types/visuals/GOUImage";
+import { useCanvas } from "@/composables/hooks/atoms/canvases/useCanvas";
 
 const props = defineProps({
   object: {
@@ -62,6 +29,30 @@ const props = defineProps({
     default: undefined,
   },
 });
+
+const {object} = toRefs(props)
+const { canvasStyle, animationStyle, animationClass } = useCanvas(object.value);
+watch(() => object, () => {
+  console.log(object.value.animation)
+})
+const onClick = () => {
+  if (!props.object.isClickable) {
+    return;
+  }
+  props.object.onClick();
+};
+const onMouseEnter = () => {
+  if (!props.object.isClickable) {
+    return;
+  }
+  props.object.onMouseEnter();
+};
+const onMouseLeave = () => {
+  if (!props.object.isClickable) {
+    return;
+  }
+  props.object.onMouseLeave();
+};
 </script>
 
 <style scoped lang="scss">
@@ -69,9 +60,9 @@ const props = defineProps({
   position: absolute;
   top: calc(var(--y) * 1%);
   left: calc(var(--x) * 1%);
-  width: calc(var(--width) * 1%);
-  height: calc(var(--height) * 1%);
   user-select: none;
+  transform-origin: var(--origin);
+  transform: var(--rotate);
   img {
     width: 100%;
     height: 100%;

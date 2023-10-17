@@ -1,11 +1,13 @@
 import GOUPosition from "@/composables/types/GOUPosition";
 import ClickableIf from "@/composables/types/interfaces/ClickableIf";
 import { GOUAnimation } from "@/composables/types/visuals/GOUAnimation";
+import GOURotation from "@/composables/types//GOURotation";
 
 abstract class GOUVisual implements ClickableIf {
   width: number = 0;
   height: number = 0;
   position: GOUPosition = new GOUPosition(); // 親の物体から見た物体の相対位置
+  rotation: GOURotation = new GOURotation(); // 親の物体から見た物体の相対回転
   children?: { [index: string]: GOUVisual };
   animation?: GOUAnimation;
 

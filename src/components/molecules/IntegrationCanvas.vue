@@ -1,15 +1,6 @@
 <template>
-  <BasicCanvas
-    v-for="diagram in diagrams"
-    :width="props.width"
-    :height="props.height"
-    :object="diagram"
-  />
-  <ImageCanvas
-    v-for="image in images"
-    :object="image"
-    :zIndex="props.zIndex"
-  />
+  <BasicCanvas v-for="diagram in diagrams" :object="diagram" />
+  <ImageCanvas v-for="image in images" :object="image" :zIndex="props.zIndex" />
   <LottieCanvas
     v-for="lottie in lotties"
     :object="lottie"
@@ -28,14 +19,6 @@ import ImageCanvas from "@/components/atoms/canvases/ImageCanvas.vue";
 import LottieCanvas from "@/components/atoms/canvases/LottieCanvas.vue";
 
 const props = defineProps({
-  width: {
-    type: Number,
-    required: true,
-  },
-  height: {
-    type: Number,
-    required: true,
-  },
   objects: {
     type: Array<GOUVisual>,
     default: () => [],

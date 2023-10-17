@@ -30,13 +30,13 @@ export const useWasDispay = () => {
   };
 
   const layer: {
-    background: Array<GOUVisual>;
-    objects: Array<GOUVisual>;
-    animations: Array<GOULottie>;
+    background: GOUVisual | undefined;
+    objects: GOUVisual | undefined;
+    animations: GOULottie | undefined;
   } = reactive({
-    background: [],
-    objects: [],
-    animations: [],
+    background: undefined,
+    objects: undefined,
+    animations: undefined,
   });
   const displayMessage: Ref<Array<string>> = ref([]);
   const onClickMessageFrame: Ref<Function> = ref(() => {});
@@ -87,16 +87,16 @@ export const useWasDispay = () => {
           50 - event.animation.getCenterY()
         )
       );
-      layer.animations = [event.animation];
+      layer.animations = event.animation;
       if (event.target instanceof WasNonPlayerCharacter) {
-        event.target.visual!.animation = new GOUAnimation("flash", 0.4, 2);
+        layer.objects!.animation = new GOUAnimation("flash", 0.4, 2);
       } else if (event.target instanceof WasPlayerCharacter) {
-        layer.background[0]!.animation = new GOUAnimation("shake", 0.2, 2);
+        layer.background!.animation = new GOUAnimation("shake", 0.2, 2);
       }
     } else {
-      layer.objects[0].animation = undefined;
-      layer.animations = [];
-      layer.background[0]!.animation = undefined;
+      layer.objects!.animation = undefined;
+      layer.animations = undefined;
+      layer.background!.animation = undefined;
     }
 
     onClickMessageFrame.value = () => chainEvent(events, afterFunction);

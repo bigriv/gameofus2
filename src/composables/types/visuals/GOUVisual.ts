@@ -1,6 +1,6 @@
 import GOUPosition from "@/composables/types/GOUPosition";
 import ClickableIf from "@/composables/types/interfaces/ClickableIf";
-import { GOUAnimation } from "@/composables/types/visuals/GOUAnimation";
+import { GOUAnimation } from "@/composables/types/animations/GOUAnimation";
 import GOURotation from "@/composables/types//GOURotation";
 
 abstract class GOUVisual implements ClickableIf {
@@ -36,6 +36,9 @@ abstract class GOUVisual implements ClickableIf {
   }
   setPosition(position: GOUPosition) {
     this.position = position;
+  }
+  setRotation(rotation: GOURotation) {
+    this.rotation = rotation;
   }
 
   abstract getMinX(): number;

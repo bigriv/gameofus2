@@ -3,7 +3,7 @@ import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import { GOUAudio } from "@/composables/types/audio/GOUAudio";
 import GOUPosition from "@/composables/types/GOUPosition";
-import { GOUAnimation } from "@/composables/types/visuals/GOUAnimation";
+import { GOUAnimation } from "@/composables/types/animations/GOUAnimation";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";

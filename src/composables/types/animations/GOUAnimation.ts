@@ -1,4 +1,4 @@
-type animationType = "fadein" | "fadeout" | "flash" | "shake";
+type animationType = "fadein" | "fadeout" | "flash" | "shake" | "rotation";
 
 export class GOUAnimation {
   readonly type: animationType; // アニメーションタイプ

@@ -4,9 +4,9 @@
     :style="[canvasStyle, { 'z-index': `${props.zIndex}` }]"
   >
     <img
-      :src="props.object.path"
+      :src="object.path"
       :style="animationStyle"
-      :class="[animationClass, { 'u-clickable': props.object.isClickable }]"
+      :class="[animationClass, { 'u-clickable': object.isClickable }]"
       @click="onClick"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
@@ -30,28 +30,31 @@ const props = defineProps({
   },
 });
 
-const {object} = toRefs(props)
-const { canvasStyle, animationStyle, animationClass } = useCanvas(object.value);
-watch(() => object, () => {
-  console.log(object.value.animation)
-})
+const { object } = toRefs(props);
+const { canvasStyle, animationStyle, animationClass } = useCanvas(object);
+watch(
+  () => object.value,
+  () => {
+    console.log(object.value);
+  }
+);
 const onClick = () => {
-  if (!props.object.isClickable) {
+  if (!object.value.isClickable) {
     return;
   }
-  props.object.onClick();
+  object.value.onClick();
 };
 const onMouseEnter = () => {
-  if (!props.object.isClickable) {
+  if (!object.value.isClickable) {
     return;
   }
-  props.object.onMouseEnter();
+  object.value.onMouseEnter();
 };
 const onMouseLeave = () => {
-  if (!props.object.isClickable) {
+  if (!object.value.isClickable) {
     return;
   }
-  props.object.onMouseLeave();
+  object.value.onMouseLeave();
 };
 </script>
 

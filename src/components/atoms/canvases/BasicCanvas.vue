@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed, watch, PropType } from "vue";
+import { onMounted, ref, computed, watch, PropType, toRefs } from "vue";
 import GOUCircle from "@/composables/types/visuals/diagrams/GOUCircle";
 import GOURect from "@/composables/types/visuals/diagrams/GOURect";
 import GOUPolygon from "@/composables/types/visuals/diagrams/GOUPolygon";
@@ -29,7 +29,8 @@ const props = defineProps({
   },
 });
 
-const { canvasStyle, animationStyle, animationClass } = useCanvas(props.object);
+const { object } = toRefs(props);
+const { canvasStyle, animationStyle, animationClass } = useCanvas(object);
 const canvas = ref(null);
 const drawer = computed(() => {
   if (!canvas || !canvas.value) {
@@ -170,23 +171,23 @@ const drawDiagram = () => {
     (canvas.value as HTMLCanvasElement).height
   );
 
-  if (props.object instanceof GOUCircle) {
-    drawCircle(props.object, props.object.position);
-  } else if (props.object instanceof GOURect) {
-    drawRect(props.object, props.object.position);
-  } else if (props.object instanceof GOUPolygon) {
-    drawPolygon(props.object, props.object.position);
-  } else if (props.object instanceof GOULine) {
-    drawLine(props.object, props.object.position);
-  } else if (props.object instanceof GOULineList) {
-    drawLines(props.object, props.object.position);
-  } else if (props.object instanceof GOUText) {
-    drawText(props.object, props.object.position);
+  if (object.value instanceof GOUCircle) {
+    drawCircle(object.value, object.value.position);
+  } else if (object.value instanceof GOURect) {
+    drawRect(object.value, object.value.position);
+  } else if (object.value instanceof GOUPolygon) {
+    drawPolygon(object.value, object.value.position);
+  } else if (object.value instanceof GOULine) {
+    drawLine(object.value, object.value.position);
+  } else if (object.value instanceof GOULineList) {
+    drawLines(object.value, object.value.position);
+  } else if (object.value instanceof GOUText) {
+    drawText(object.value, object.value.position);
   }
 };
 
 watch(
-  () => props.object,
+  () => object.value,
   () => {
     drawDiagram();
   },
@@ -198,25 +199,25 @@ const isClickable = ref(false);
 
 // クリック時の処理
 const onClick = (event: MouseEvent) => {
-  if (!props.object || !props.object.isClickable) {
+  if (!object.value || !object.value.isClickable) {
     return;
   }
-  if (props.object.judgeHover?.(event)) {
-    props.object.onClick(event);
+  if (object.value.judgeHover?.(event)) {
+    object.value.onClick(event);
   }
 };
 // マウスホバー時の処理
 const onMouseMove = (event: MouseEvent) => {
-  if (!props.object || !props.object.isClickable) {
+  if (!object.value || !object.value.isClickable) {
     return;
   }
-  const isHoverBefore = props.object.isHover?.() ?? false;
+  const isHoverBefore = object.value.isHover?.() ?? false;
   const isHoverNow =
-    props.object.isClickable && (props.object.judgeHover?.(event) ?? false);
+    object.value.isClickable && (object.value.judgeHover?.(event) ?? false);
   if (!isHoverNow) {
     if (isHoverBefore) {
       // ホバーが外れた場合
-      props.object.onMouseLeave();
+      object.value.onMouseLeave();
       isClickable.value = isHoverNow;
     }
     return;
@@ -224,7 +225,7 @@ const onMouseMove = (event: MouseEvent) => {
 
   if (!isHoverBefore) {
     // 初めてオブジェクトにマウスがホバーしたとき
-    props.object.onMouseEnter();
+    object.value.onMouseEnter();
   }
 
   isClickable.value = isHoverNow;
@@ -232,9 +233,9 @@ const onMouseMove = (event: MouseEvent) => {
 
 // オブジェクトの変更を監視し、配列の中身が空になっていたらホバー状態を解除する
 watch(
-  () => props.object,
+  () => object.value,
   () => {
-    if (!props.object) {
+    if (!object.value) {
       isClickable.value = false;
       return;
     }

@@ -4,11 +4,11 @@
     :style="[canvasStyle, { 'z-index': props.zIndex }]"
   >
     <LottieAnimation
-      v-if="props.object.object"
-      :animation-data="props.object.object"
+      v-if="object.object"
+      :animation-data="object.object"
       :auto-play="true"
-      :loop="props.object.loop"
-      :speed="props.object.speed"
+      :loop="object.loop"
+      :speed="object.speed"
       class="c-lottie_canvas__icon"
       :style="animationStyle"
       :class="animationClass"
@@ -17,9 +17,9 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from "vue";
-import { GOULottie } from "@/composables/types/visuals/GOULottie";
+import { PropType, toRefs } from "vue";
 import { LottieAnimation } from "lottie-web-vue";
+import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import { useCanvas } from "@/composables/hooks/atoms/canvases/useCanvas";
 
 const props = defineProps({
@@ -33,7 +33,8 @@ const props = defineProps({
   },
 });
 
-const { canvasStyle, animationStyle, animationClass } = useCanvas(props.object);
+const { object } = toRefs(props);
+const { canvasStyle, animationStyle, animationClass } = useCanvas(object);
 </script>
 
 <style scoped lang="scss">

@@ -1,34 +1,34 @@
-import { computed } from "vue";
+import { Ref, computed } from "vue";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 
-export const useCanvas = (object: GOUVisual) => {
+export const useCanvas = (object: Ref<GOUVisual>) => {
   const canvasStyle = computed(() => ({
-    "--x": object.position.px,
-    "--y": object.position.py,
-    width: object.width + "%",
-    height: object.height + "%",
-    "--rotate": object.rotation.transform(),
-    "--origin": object.rotation.transformOrigin(),
+    "--x": object.value.position.px,
+    "--y": object.value.position.py,
+    width: object.value.width + "%",
+    height: object.value.height + "%",
+    "--rotate": object.value.rotation.transform(),
+    "--origin": object.value.rotation.transformOrigin(),
   }));
 
   const animationStyle = computed(() => {
-    if (!object.animation) {
+    if (!object.value.animation) {
       return "";
     }
     return {
-      "--duration": object.animation.duration + "s",
-      "--iteration": object.animation.iteration,
+      "--duration": object.value.animation.duration + "s",
+      "--iteration": object.value.animation.iteration,
     };
   });
 
   const animationClass = computed(() => {
-    if (!object.animation) {
+    if (!object.value.animation) {
       return "";
     }
     return [
-      `a-${object.animation.type}`,
-      { "a-infinite": object.animation.iteration <= 0 },
-      { "a-stop": object.animation.stop },
+      `a-${object.value.animation.type}`,
+      { "a-infinite": object.value.animation.iteration <= 0 },
+      { "a-stop": object.value.animation.stop },
     ];
   });
 

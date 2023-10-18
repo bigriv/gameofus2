@@ -1,5 +1,5 @@
 .a-fadeout {
-  animation: fadeout var(--duration);
+  animation: fadeout var(--duration) var(--easing);
   animation-iteration-count: var(--iteration);
 }
 
@@ -13,7 +13,7 @@
 }
 
 .a-fadein {
-  animation: fadein var(--duration);
+  animation: fadein var(--duration) var(--easing);
   animation-iteration-count: var(--iteration);
 }
 
@@ -27,7 +27,7 @@
 }
 
 .a-flash {
-  animation: flash var(--duration);
+  animation: flash var(--duration) var(--easing);
   animation-iteration-count: var(--iteration);
 }
 
@@ -43,7 +43,7 @@
 }
 
 .a-shake {
-  animation: shake var(--duration);
+  animation: shake var(--duration) var(--easing);
   animation-iteration-count: var(--iteration);
 }
 
@@ -57,8 +57,63 @@
   25% {
     transform: translate(0, 5%);
   }
+
   75% {
     transform: translate(0, -5%);
+  }
+}
+
+.a-rotate {
+  animation: rotate var(--duration) var(--easing);
+  animation-iteration-count: var(--iteration);
+}
+
+@keyframes rotate {
+  0% {
+    transform: var(--rotateFrom);
+    transform-origin: var(--rotateFromOrigin);
+  }
+
+  100% {
+    transform: var(--rotateTo);
+    transform-origin: var(--rotateToOrigin);
+  }
+}
+
+.a-rotateback {
+  animation: rotateback var(--duration) var(--easing);
+  animation-iteration-count: var(--iteration);
+}
+
+@keyframes rotateback {
+  0% {
+    transform: var(--rotateFrom);
+    transform-origin: var(--rotateFromOrigin);
+  }
+
+  50% {
+    transform: var(--rotateTo);
+    transform-origin: var(--rotateToOrigin);
+  }
+
+  100% {
+    transform: var(--rotateFrom);
+    transform-origin: var(--rotateFromOrigin);
+  }
+}
+
+.a-slide {
+  animation: slide var(--duration) var(--easing);
+  animation-iteration-count: var(--iteration);
+}
+
+@keyframes slide {
+  0% {
+    transform: var(--slideFrom);
+  }
+
+  100% {
+    transform: var(--slideTo);
   }
 }
 

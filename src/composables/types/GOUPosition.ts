@@ -19,6 +19,12 @@ class GOUPosition {
       this.pz + (d?.pz ?? 0)
     );
   }
+
+  transform(): string {
+    // TODO: 2D前提のライブラリとするため、z軸方向は必ずpxで処理するように修正する
+    // 仕様決定が難しいため、z軸の移動は0とする
+    return `translate3d(${this.px}%, ${this.py}%, 0)`;
+  }
 }
 
 export default GOUPosition;

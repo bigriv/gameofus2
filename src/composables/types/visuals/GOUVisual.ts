@@ -6,6 +6,7 @@ import GOURotation from "@/composables/types//GOURotation";
 abstract class GOUVisual implements ClickableIf {
   width: number = 0;
   height: number = 0;
+  zIndex: number = 0;
   position: GOUPosition = new GOUPosition(); // 親の物体から見た物体の相対位置
   rotation: GOURotation = new GOURotation(); // 親の物体から見た物体の相対回転
   children?: { [index: string]: GOUVisual };

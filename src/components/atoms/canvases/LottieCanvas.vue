@@ -1,7 +1,7 @@
 <template>
   <div
     class="c-lottie_canvas"
-    :style="[canvasStyle, { 'z-index': props.zIndex }]"
+    :style="[canvasStyle, { 'z-index': object.zIndex }]"
   >
     <LottieAnimation
       v-if="object.object"
@@ -26,10 +26,6 @@ const props = defineProps({
   object: {
     type: Object as PropType<GOULottie>,
     required: true,
-  },
-  zIndex: {
-    type: Number,
-    default: undefined,
   },
 });
 

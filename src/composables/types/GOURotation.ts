@@ -42,7 +42,8 @@ class GOURotation {
     return rotateList.join(" ");
   }
 
-  transformOrigin() {
+  transformOrigin(): string {
+    // TODO: 2D前提のライブラリとするため、z軸方向は必ずpxで処理するように修正する
     // 仕様決定が難しいため、z軸の中心は常にオブジェクトと同じ平面とする
     return `${this.origin.px}% ${this.origin.py}% 0`;
   }

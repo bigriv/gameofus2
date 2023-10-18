@@ -15,10 +15,7 @@ export const useCanvas = (object: Ref<GOUVisual>) => {
     if (!object.value.animation) {
       return "";
     }
-    return {
-      "--duration": object.value.animation.duration + "s",
-      "--iteration": object.value.animation.iteration,
-    };
+    return object.value.animation.style();
   });
 
   const animationClass = computed(() => {

@@ -1,27 +1,29 @@
 <template>
   <div
-    class="c-image_canvas"
+    class="c-frame_canvas"
     :style="[canvasStyle, { 'z-index': `${object.zIndex}` }]"
   >
-    <img
-      :src="object.path"
+    <div
       :style="animationStyle"
+      class="c-frame_canvas__content"
       :class="[animationClass, { 'u-clickable': object.isClickable }]"
       @click="onClick"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
-    />
+    >
+      <slot />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { PropType, toRefs } from "vue";
-import GOUImage from "@/composables/types/visuals/GOUImage";
 import { useCanvas } from "@/composables/hooks/atoms/canvases/useCanvas";
+import GOUFrame from "@/composables/types/visuals/GOUFrame";
 
 const props = defineProps({
   object: {
-    type: Object as PropType<GOUImage>,
+    type: Object as PropType<GOUFrame>,
     required: true,
   },
 });
@@ -50,18 +52,15 @@ const onMouseLeave = () => {
 </script>
 
 <style scoped lang="scss">
-.c-image_canvas {
+.c-frame_canvas {
   position: absolute;
   top: calc(var(--y) * 1%);
   left: calc(var(--x) * 1%);
-  user-select: none;
   transform-origin: var(--origin);
   transform: var(--rotate);
-  img {
+  &__content {
     width: 100%;
     height: 100%;
-    -webkit-user-drag: none;
-    -khtml-user-drag: none;
   }
 }
 </style>

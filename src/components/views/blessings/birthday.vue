@@ -17,12 +17,7 @@
       <h1>Happy Birthday!!</h1>
       <h2 v-if="props.name">{{ props.name }}</h2>
       <div class="c-layer">
-        <LottieCanvas
-          :width="ICON_WIDTH"
-          :height="ICON_HEIGHT"
-          :objects="objects.animations"
-          class="u-horizontal--center"
-        />
+        <GOUVisualCanvas :objects="objects" class="u-horizontal--center" />
       </div>
 
       <h3>Since {{ birthday }}</h3>
@@ -37,9 +32,11 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
 import BasicModal from "@/components/atoms/BasicModal.vue";
-import LottieCanvas from "@/components/atoms/canvases/LottieCanvas.vue";
 import BadRequest from "@/components/templates/errors/BadRequest.vue";
+import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 import { birthdayMusic } from "@/composables/sounds/blessing";
+import GOUFrame from "@/composables/types/visuals/GOUFrame";
+import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import { GOUMelodyAudio } from "@/composables/types/audio/GOUMelodyAudio";
 
@@ -71,10 +68,8 @@ const isConfirmed = ref(false);
 const birthday = ref("");
 const age = ref(0);
 const music = ref();
-const ICON_WIDTH = 200;
-const ICON_HEIGHT = 200;
-const objects: { [key: string]: Array<GOULottie> } = reactive({
-  animations: [],
+const objects: { [key: string]: GOUVisual | undefined } = reactive({
+  animations: undefined,
 });
 const ICON_DEFINE: { [key: string]: string } = {
   STAR: "/blessings/animations/star.json",
@@ -121,13 +116,13 @@ onMounted(async () => {
   }
 
   // アイコンの取得
-  let temp: Array<GOULottie> = [];
+  const frame = new GOUFrame(100, 100);
   for (const icon of icons) {
     const object = new GOULottie(ICON_DEFINE[icon], 100, 100, true);
     object.load();
-    temp.push(object);
+    frame.setChild(icon, object);
   }
-  objects.animations = temp;
+  objects.animations = frame;
 });
 
 const onClickConfirm = () => {
@@ -156,6 +151,7 @@ button {
   max-width: 100%;
 }
 .c-layer {
+  position: relative;
   width: 200px;
   height: 200px;
   margin: auto;

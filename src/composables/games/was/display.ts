@@ -3,7 +3,11 @@ import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import { GOUAudio } from "@/composables/types/audio/GOUAudio";
 import GOUPosition from "@/composables/types/GOUPosition";
-import { GOUAnimation } from "@/composables/types/animations/GOUAnimation";
+import {
+  ANIMATION_EASING_TYPE,
+  ANIMATION_TYPE,
+  GOUAnimation,
+} from "@/composables/types/animations/GOUAnimation";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";
@@ -89,9 +93,19 @@ export const useWasDispay = () => {
       );
       layer.animations = event.animation;
       if (event.target instanceof WasNonPlayerCharacter) {
-        layer.objects!.animation = new GOUAnimation("flash", 0.4, 2);
+        layer.objects!.animation = new GOUAnimation(
+          ANIMATION_TYPE.FLASH,
+          ANIMATION_EASING_TYPE.EASE,
+          0.4,
+          2
+        );
       } else if (event.target instanceof WasPlayerCharacter) {
-        layer.background!.animation = new GOUAnimation("shake", 0.2, 2);
+        layer.background!.animation = new GOUAnimation(
+          ANIMATION_TYPE.SHAKE,
+          ANIMATION_EASING_TYPE.EASE,
+          0.2,
+          2
+        );
       }
     } else {
       layer.objects!.animation = undefined;

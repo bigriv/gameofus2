@@ -12,7 +12,7 @@ export default defineConfig({
     vue(),
     VitePluginFonts({
       google: {
-        families: ["Yusei Magic"],
+        families: ["Yusei Magic", "Reggae One"],
       },
     }),
   ],
@@ -20,5 +20,9 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  build: {
+    assetsDir: "assets/[hash]",
+    outDir: "dist",
   },
 });

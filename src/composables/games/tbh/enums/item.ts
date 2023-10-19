@@ -1,0 +1,6 @@
+export enum TBH_ITEM_ID {
+  MASK = "MASK",
+  MANT = "MANT",
+  SUIT_UPPER = "SUIT_UPPER",
+  SUIT_LOWER = "SUIT_LOWER",
+}

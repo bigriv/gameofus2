@@ -1,0 +1,10 @@
+export enum TBH_TIMMINGS {
+  OPENING = 0,
+  TOP = 1,
+  PATROL = 2,
+  PATROL_DISCOVER = 3,
+  PATROL_FACE = 4,
+  PATROL_BATTLE = 5,
+  PATROL_END = 6,
+  ENDING = 10,
+}

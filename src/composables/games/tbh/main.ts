@@ -16,11 +16,8 @@ export const useTbhMain = (
   };
 
   const isShowEnding = () => {
-    // プレイヤーのライフが0以下、正義度が100以上、直近4回の行動が全て同じの場合はエンディング表示を行う
+    // プレイヤーの体力が0以下、正義度が100以上、直近4回の行動が全て同じの場合はエンディング表示を行う
     if (player.stamina <= 0) {
-      return true;
-    }
-    if (player.status.life <= 0) {
       return true;
     }
     if (player.justice >= 100) {
@@ -35,8 +32,8 @@ export const useTbhMain = (
   };
 
   const judgeEndingType = (): TBH_ENDINGS | null => {
-    // 体力が0になるか戦闘で負けた場合のエンディング
-    if (player.status.life <= 0 || player.stamina <= 0) {
+    // 体力が0った場合のエンディング
+    if (player.stamina <= 0) {
       if (player.money <= 0) {
         return TBH_ENDINGS.BAD_END_01;
       }

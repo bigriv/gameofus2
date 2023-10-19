@@ -14,6 +14,7 @@
               label="OK"
               :backgroundColor="COLOR.WHITE"
               :borderColor="COLOR.ORANGE"
+              :sounds="{ click: props.sounds.BUTTON }"
               @click="endOpening"
             />
           </div>
@@ -31,6 +32,7 @@
           :label="button.label"
           :backgroundColor="COLOR.WHITE"
           :borderColor="COLOR.ORANGE"
+          :sounds="{ click: props.sounds.BUTTON }"
           @click="onMove(button.id)"
         />
       </div>
@@ -99,6 +101,7 @@ import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import GameStatusBar from "@/components/atoms/interfaces/GameStatusBar.vue";
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import { COLOR } from "@/composables/types/GOUColor";
 import { TBH_TIMMINGS } from "@/composables/games/tbh/enums/timming";
 import { TBH_PAGES } from "@/composables/games/tbh/enums/page";
@@ -116,6 +119,10 @@ const props = defineProps({
   },
   player: {
     type: TbhPlayer,
+    required: true,
+  },
+  sounds: {
+    type: Object as PropType<{ [key: string]: GOUReadAudio }>,
     required: true,
   },
 });
@@ -166,8 +173,8 @@ const endOpening = () => {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 350px;
-    height: 150px;
+    width: 70%;
+    height: 25%;
     &__message {
       height: 100%;
       display: flex;

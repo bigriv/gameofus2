@@ -20,6 +20,7 @@
               label="OK"
               :backgroundColor="COLOR.WHITE"
               :borderColor="COLOR.ORANGE"
+              :sounds="{ click: props.sounds.BUTTON }"
               @click="modal.onAgree"
             />
           </div>
@@ -91,6 +92,8 @@ const initWorkingHeroVisual = (): GOUVisual => {
 const characterVisual = ref(initWorkingHeroVisual());
 const signboardVisual = props.images.SIGNBOARD;
 let timeoutId: NodeJS.Timeout | undefined = undefined;
+let intervalId: NodeJS.Timeout | undefined = undefined;
+
 const modal = reactive({
   isShown: false,
   message: "5000円ゲット！",
@@ -99,8 +102,24 @@ const modal = reactive({
 
 onMounted(() => {
   const second = 4;
+  // 音声のセット
   timeoutId = setTimeout(() => {
-    props.sounds.MONEY.play();
+    if (props.sounds.GA) {
+      props.sounds.GA.play();
+    }
+    intervalId = setInterval(() => {
+      if (props.sounds.GA) {
+        props.sounds.GA.play();
+      }
+    }, 1000);
+  }, 500);
+
+  timeoutId = setTimeout(() => {
+    clearInterval(intervalId);
+    if (props.sounds.MONEY) {
+      props.sounds.MONEY.play();
+    }
+
     modal.isShown = true;
   }, second * 1000);
 
@@ -115,6 +134,7 @@ onMounted(() => {
   );
 });
 onBeforeUnmount(() => {
+  clearInterval(intervalId);
   clearTimeout(timeoutId);
 });
 </script>

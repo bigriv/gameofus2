@@ -9,6 +9,7 @@
             label="タイトルに戻る"
             :backgroundColor="COLOR.WHITE"
             :borderColor="COLOR.ORANGE"
+            :sounds="{ click: props.sounds.BUTTON }"
             @click="onReset"
           />
         </div>
@@ -49,28 +50,25 @@ onMounted(() => {
   if (/^HAPPY_END/.test(props.endingType)) {
     state.title = "HAPPY END";
     state.color = "yellow";
-    if (!props.sounds.HAPPYEND) {
-      console.error(`Audio 'HAPPYEND' is not found.`);
+    if (props.sounds.HAPPYEND) {
+      props.sounds.HAPPYEND.play();
     }
-    props.sounds.HAPPYEND.play();
     return;
   }
   if (/^TRUE_END/.test(props.endingType)) {
     state.title = "TRUE END";
     state.color = "white";
-    if (!props.sounds.TRUEEND) {
-      console.error(`Audio 'TRUEEND' is not found.`);
+    if (props.sounds.FANFARE) {
+      props.sounds.FANFARE.play();
     }
-    props.sounds.TRUEEND.play();
     return;
   }
   if (/^BAD_END/.test(props.endingType)) {
     state.title = "BAD END";
     state.color = "black";
-    if (!props.sounds.BADEND) {
-      console.error(`Audio 'BADEND' is not found.`);
+    if (props.sounds.BADEND) {
+      props.sounds.BADEND.play();
     }
-    props.sounds.BADEND.play();
     return;
   }
 });

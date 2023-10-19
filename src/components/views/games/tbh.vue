@@ -1,65 +1,103 @@
 <template>
   <div class="c-game">
-    <div class="c-game__drawer">
-      <GOUVisualCanvas :objects="backgroundLayer" />
+    <div class="c-game__window">
+      <div class="c-game__window__drawer">
+        <GOUVisualCanvas :objects="backgroundLayer" />
+      </div>
+      <div class="c-game__window__drawer">
+        <template v-if="isLoadedFiles">
+          <Title
+            v-if="currentPage == TBH_PAGES.TITLE"
+            :sounds="TBH_SOUNDS"
+            @start="onGameStart"
+          />
+          <Top
+            v-else-if="currentPage == TBH_PAGES.TOP"
+            v-model:timming="timming"
+            :player="player"
+            :sounds="TBH_SOUNDS"
+            @move="onMove"
+          />
+          <Patrol
+            v-else-if="currentPage == TBH_PAGES.PATROL"
+            v-model:timming="timming"
+            :player="player"
+            :sounds="TBH_SOUNDS"
+            :characters="TBH_CHARACTERS"
+            @success="onMoveTop"
+          />
+          <Training
+            v-else-if="currentPage == TBH_PAGES.TRAINING"
+            :player="player"
+            :sounds="TBH_SOUNDS"
+            :images="TBH_IMAGES"
+            @success="onMoveTop"
+          />
+          <Work
+            v-else-if="currentPage == TBH_PAGES.WORK"
+            :sounds="TBH_SOUNDS"
+            :images="TBH_IMAGES"
+            @success="onMoveTop"
+          />
+          <Shop
+            v-else-if="currentPage == TBH_PAGES.SHOP"
+            :player="player"
+            :items="TBH_ITEMS"
+            :sounds="TBH_SOUNDS"
+            :images="TBH_IMAGES"
+            @success="onMoveTop"
+          />
+          <Rest
+            v-else-if="currentPage == TBH_PAGES.REST"
+            :sounds="TBH_SOUNDS"
+            :images="TBH_IMAGES"
+            @success="onMoveTop"
+          />
+          <Ending
+            v-else-if="currentPage == TBH_PAGES.ENDING && endingType"
+            :endingType="endingType"
+            :sounds="TBH_SOUNDS"
+            @reset="onReset"
+          />
+        </template>
+      </div>
     </div>
-    <div class="c-game__drawer">
-      <Title v-if="currentPage == TBH_PAGES.TITLE" @start="onGameStart" />
-      <template v-if="isLoadedFiles">
-        <Top
-          v-if="currentPage == TBH_PAGES.TOP"
-          v-model:timming="timming"
-          :player="player"
-          @move="onMove"
-        />
-        <Patrol
-          v-else-if="currentPage == TBH_PAGES.PATROL"
-          v-model:timming="timming"
-          :player="player"
-          :sounds="TBH_SOUNDS"
-          :characters="TBH_CHARACTERS"
-          @success="onMoveTop"
-        />
-        <Training
-          v-else-if="currentPage == TBH_PAGES.TRAINING"
-          :player="player"
-          :sounds="TBH_SOUNDS"
-          :images="TBH_IMAGES"
-          @success="onMoveTop"
-        />
-        <Work
-          v-else-if="currentPage == TBH_PAGES.WORK"
-          :sounds="TBH_SOUNDS"
-          :images="TBH_IMAGES"
-          @success="onMoveTop"
-        />
-        <Shop
-          v-else-if="currentPage == TBH_PAGES.SHOP"
-          :player="player"
-          :items="TBH_ITEMS"
-          :sounds="TBH_SOUNDS"
-          :images="TBH_IMAGES"
-          @success="onMoveTop"
-        />
-        <Rest
-          v-else-if="currentPage == TBH_PAGES.REST"
-          :sounds="TBH_SOUNDS"
-          :images="TBH_IMAGES"
-          @success="onMoveTop"
-        />
-      </template>
-      <Ending
-        v-if="currentPage == TBH_PAGES.ENDING && endingType"
-        :endingType="endingType"
-        :sounds="TBH_SOUNDS"
-        @reset="onReset"
-      />
+
+    <div class="c-game__description">
+      <div class="c-game__description__block">
+        <h2>リリースノート</h2>
+        <p>2023/10/20 ver 1.00 リリース</p>
+      </div>
+
+      <div class="c-game__description__block">
+        <h2>あらすじ</h2>
+        <p>
+          主人公はしがないフリーター。<br />
+          平穏な日々を暮らしていたが、ある日近所にヤンキーがうろつき始めた。<br />
+          街の平和を守るため、主人公は子供のころ憧れていたヒーローを目指すことを決める。<br />
+          主人公を立派なヒーローに育て上げ、街の平和を守りましょう！<br />
+        </p>
+      </div>
+
+      <div class="c-game__description__block">
+        <h2>説明</h2>
+        <p>操作方法はクリックのみです。</p>
+        <p>セーブ機能はありません</p>
+        <p>エンディングは全12種類です。</p>
+        <p>※不具合のため、スマホではプレイできない可能性があります。（修正中）</p>
+      </div>
+
+      <div class="c-game__description__block">
+        <h2>推定プレイ時間</h2>
+        <p>10分</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted } from "vue";
+import { useDisplayStore } from "@/pinia/display";
 import Title from "@/components/templates/games/tbh/01_Title.vue";
 import Top from "@/components/templates/games/tbh/02_Top.vue";
 import Patrol from "@/components/templates/games/tbh/03_1_Patrol.vue";
@@ -90,6 +128,8 @@ const { endingType, addHistory, isShowEnding, judgeEndingType } = useTbhMain(
   TBH_ITEMS,
   player.value
 );
+const store = useDisplayStore();
+
 const onGameStart = () => {
   timming.value = TBH_TIMMINGS.OPENING;
   currentPage.value = TBH_PAGES.TOP;
@@ -124,7 +164,10 @@ const onMoveTop = (fluctuation: {
 
   onMove(TBH_PAGES.TOP);
 };
-const onReset = () => {};
+const onReset = () => {
+  console.log("reload");
+  store.refleshStart();
+};
 
 onMounted(() => {
   loadFiles();
@@ -132,50 +175,65 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-* {
-  font-family: monospace;
-  font-weight: 600;
-}
 .c-game {
-  position: relative;
-  border-style: outset;
-  box-sizing: content-box;
-  border-color: black;
-  margin: auto;
-  border-width: 6px;
-  &__drawer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+  &__window {
+    position: relative;
+    border-style: outset;
+    box-sizing: content-box;
+    border-color: black;
+    margin: auto;
+    border-width: 6px;
+    * {
+      font-family: monospace;
+      font-weight: 600;
+    }
+    &__drawer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+  }
+
+  &__description {
+    padding-bottom: 20px;
+    margin: auto;
+    text-align: left;
+    h2 {
+      margin-top: 1em;
+    }
+    p {
+      font-size: 14px;
+      line-height: 1.1;
+    }
   }
 }
 @media screen and (max-width: 350px) {
-  .c-game {
+  .c-game__window {
     width: 350px;
     height: 350px;
   }
-  .c-description {
+  .c-game__description {
     width: 350px;
   }
 }
 @media screen and (max-width: 600px) and (min-width: 350px) {
-  .c-game {
+  .c-game__window {
     width: 100vw;
     height: 100vw;
   }
-  .c-description {
+  .c-game__description {
     width: 100vw;
   }
 }
 @media screen and (min-width: 600px) {
-  .c-game {
+  .c-game__window {
     width: 600px;
     height: 600px;
   }
-  .c-description {
+  .c-game__description {
     width: 600px;
   }
 }

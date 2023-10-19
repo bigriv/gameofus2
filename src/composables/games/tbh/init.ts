@@ -146,12 +146,13 @@ export const useTbhInit = () => {
     }
 
     // ロードが完了したかを判定する
-    const intervalId = setInterval(() => {
+    let intervalId = setInterval(() => {
       for (const key of Object.keys(TBH_IMAGES)) {
         if (!(TBH_IMAGES[key] as GOUImage).isLoaded()) {
           return;
         }
       }
+
       for (const key of Object.keys(TBH_SOUNDS)) {
         if (!TBH_SOUNDS[key].isLoaded()) {
           return;

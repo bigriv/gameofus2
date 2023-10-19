@@ -13,6 +13,10 @@
 </template>
 
 <script setup lang="ts">
+import { PropType } from "vue";
+import { GOUAudio } from "@/composables/types/audio/GOUAudio";
+import { COLOR } from "@/composables/types/GOUColor";
+
 const props = defineProps({
   type: {
     type: String,
@@ -26,20 +30,28 @@ const props = defineProps({
     default: "",
   },
   fontColor: {
-    type: String,
+    type: String as PropType<COLOR>,
     default: "black",
   },
   backgroundColor: {
-    type: String,
+    type: String as PropType<COLOR>,
     default: undefined,
   },
   borderColor: {
-    type: String,
+    type: String as PropType<COLOR>,
     default: undefined,
   },
   disabled: {
     type: Boolean,
     default: false,
+  },
+  sounds: {
+    type: Object as PropType<{
+      click?: GOUAudio;
+      hover?: GOUAudio;
+    }>,
+    default: () => ({}),
+    required: false,
   },
 });
 const emits = defineEmits(["click", "hover"]);
@@ -50,9 +62,15 @@ const styles = {
 };
 
 const onClick = () => {
+  if (props.sounds.click) {
+    props.sounds.click.play();
+  }
   emits("click");
 };
 const onHover = (isHover: boolean) => {
+  if (props.sounds.hover) {
+    props.sounds.hover.play();
+  }
   emits("hover", isHover);
 };
 </script>

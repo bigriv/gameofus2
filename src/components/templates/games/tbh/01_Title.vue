@@ -8,6 +8,7 @@
             label="はじめる"
             :backgroundColor="COLOR.WHITE"
             :borderColor="COLOR.ORANGE"
+            :sounds="buttonSounds"
             @click="onStart"
           />
         </div>
@@ -17,11 +18,21 @@
 </template>
 
 <script setup lang="ts">
+import { PropType } from "vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import { COLOR } from "@/composables/types/GOUColor";
 
+const props = defineProps({
+  sounds: {
+    type: Object as PropType<{ [key: string]: GOUReadAudio }>,
+    required: true,
+  },
+});
 const emits = defineEmits(["start"]);
+
+const buttonSounds = { click: props.sounds.BUTTON };
 
 const onStart = () => {
   emits("start");

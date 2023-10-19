@@ -60,6 +60,7 @@
               label="OK"
               :backgroundColor="COLOR.WHITE"
               :borderColor="COLOR.ORANGE"
+              :sounds="{ click: props.sounds.BUTTON }"
               @click="modal.onAgree"
             />
           </div>
@@ -151,7 +152,9 @@ const attack = () => {
   } else {
     enemy.value.status.life -= props.player.status.power;
   }
-  props.sounds.ATTACK.play();
+  if (props.sounds.ATTACK) {
+    props.sounds.ATTACK.play();
+  }
 
   // 終了判定
   if (props.player.status.life <= 0) {
@@ -216,7 +219,9 @@ const encount = (): TbhCharacter | null => {
 // 敵発見処理
 const discoverEnemy = () => {
   timming.value = TBH_TIMMINGS.PATROL_DISCOVER;
-  props.sounds.EXCLAMATION.play();
+  if (props.sounds.EXCLAMATION) {
+    props.sounds.EXCLAMATION.play();
+  }
 };
 
 // 敵対面処理

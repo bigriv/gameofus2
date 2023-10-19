@@ -1,102 +1,104 @@
 <template>
   <div class="c-game">
-    <Title
-      v-if="display === 'title'"
-      v-model="display"
-      @start="onStart"
-      @load="onLoad"
-    />
-    <Main
-      v-else-if="display === 'main'"
-      :loadData="loadData"
-      @save="onSave"
-      @loaded="onLoaded"
-      @end="onEnd"
-    />
-    <Ending
-      v-else-if="display === 'end'"
-      :type="endingType"
-      @back="onBackTitle"
-    />
-  </div>
-  <div class="c-description">
-    <div class="c-description__block">
-      <h2>リリースノート</h2>
-      <p>2023/10/11 ver 1.02 スマホ対応</p>
-      <p>2023/10/07 ver 1.01 操作性改善</p>
-      <p>2023/10/05 ver 1.00 リリース</p>
+    <div class="c-game__window">
+      <Title
+        v-if="display === 'title'"
+        v-model="display"
+        @start="onStart"
+        @load="onLoad"
+      />
+      <Main
+        v-else-if="display === 'main'"
+        :loadData="loadData"
+        @save="onSave"
+        @loaded="onLoaded"
+        @end="onEnd"
+      />
+      <Ending
+        v-else-if="display === 'end'"
+        :type="endingType"
+        @back="onBackTitle"
+      />
     </div>
+    <div class="c-game__description">
+      <div class="c-game__description__block">
+        <h2>リリースノート</h2>
+        <p>2023/10/11 ver 1.02 スマホ対応</p>
+        <p>2023/10/07 ver 1.01 操作性改善</p>
+        <p>2023/10/05 ver 1.00 リリース</p>
+      </div>
 
-    <div class="c-description__block">
-      <h2>あらすじ</h2>
-      <p>
-        勇者と魔王の決戦となる戦争に徴兵を受けた主人公。<br />
-        魔王討伐後の帰路にて、人間に殺されそうな淑女を身を挺して救う。<br />
-        主人公の助けた淑女は姿こそ人間に近いが、討伐された魔王の娘であった。<br />
-        魔王の娘は魔族と知らずに自分を助けた主人公を不憫に思い、死にかけの主人公に魔力を分け与える。<br />
-        生き長らえた主人公は魔王の娘から半ば強引に新たな魔王になるように頼まれる。<br />
-        <br />
-        魔王の力とは統率の力。魔族を従えることでその力を得ることができる。<br />
-        魔王としての力をつけるために様々な魔族と関わっていく主人公。<br />
-        旅の中で、主人公は魔族にも善良な心があることと、平和を手にしたはずの人間たち、特に勇者が意味もなく魔族を狩り続けていることを知っていく。<br />
-        <br />
-        意味もなく魔族を討伐する勇者への不信感と、従えた魔族たちを守りたいという思いを胸に主人公は魔王を目指す。<br />
-      </p>
-    </div>
+      <div class="c-game__description__block">
+        <h2>あらすじ</h2>
+        <p>
+          勇者と魔王の決戦となる戦争に徴兵を受けた主人公。<br />
+          魔王討伐後の帰路にて、人間に殺されそうな淑女を身を挺して救う。<br />
+          主人公の助けた淑女は姿こそ人間に近いが、討伐された魔王の娘であった。<br />
+          魔王の娘は魔族と知らずに自分を助けた主人公を不憫に思い、死にかけの主人公に魔力を分け与える。<br />
+          生き長らえた主人公は魔王の娘から半ば強引に新たな魔王になるように頼まれる。<br />
+          <br />
+          魔王の力とは統率の力。魔族を従えることでその力を得ることができる。<br />
+          魔王としての力をつけるために様々な魔族と関わっていく主人公。<br />
+          旅の中で、主人公は魔族にも善良な心があることと、平和を手にしたはずの人間たち、特に勇者が意味もなく魔族を狩り続けていることを知っていく。<br />
+          <br />
+          意味もなく魔族を討伐する勇者への不信感と、従えた魔族たちを守りたいという思いを胸に主人公は魔王を目指す。<br />
+        </p>
+      </div>
 
-    <div class="c-description__block">
-      <h2>説明</h2>
-      <p>操作方法はクリックのみです。</p>
-      <p>セーブは魔王城に帰ったタイミングで自動的に行われます。</p>
-      <p>体力か満腹度が0になるとゲームオーバーになります。</p>
-      <p>満腹度は探索するかスキルを使用すると消費されます。</p>
-      <p>
-        スキルを使用する際、満腹度が必要なコストを下回っていると通常の攻撃として扱われます。
-      </p>
-      <p>各エリアをクリアした後、魔王城に帰ると一度だけ全回復できます。</p>
-      <p>エンディングは全4種類です。</p>
-    </div>
+      <div class="c-game__description__block">
+        <h2>説明</h2>
+        <p>操作方法はクリックのみです。</p>
+        <p>セーブは魔王城に帰ったタイミングで自動的に行われます。</p>
+        <p>体力か満腹度が0になるとゲームオーバーになります。</p>
+        <p>満腹度は探索するかスキルを使用すると消費されます。</p>
+        <p>
+          スキルを使用する際、満腹度が必要なコストを下回っていると通常の攻撃として扱われます。
+        </p>
+        <p>各エリアをクリアした後、魔王城に帰ると一度だけ全回復できます。</p>
+        <p>エンディングは全4種類です。</p>
+      </div>
 
-    <div class="c-description__block">
-      <h2>推定プレイ時間</h2>
-      <p>30分</p>
-    </div>
+      <div class="c-game__description__block">
+        <h2>推定プレイ時間</h2>
+        <p>30分</p>
+      </div>
 
-    <div class="c-description__block">
-      <h2>攻略のヒント</h2>
-      <h3>①アイテム一覧</h3>
-      <a v-show="!isShowHint1" @click.prevent.stop="isShowHint1 = true"
-        >表示する</a
-      >
-      <table v-show="isShowHint1">
-        <tr>
-          <th>アイテム名</th>
-          <th>所持可能数</th>
-          <th>効果</th>
-        </tr>
-        <tr v-for="item in itemDescription">
-          <td>{{ item.name }}</td>
-          <td>{{ item.maxAmount }}</td>
-          <td>{{ item.effect }}</td>
-        </tr>
-      </table>
+      <div class="c-game__description__block">
+        <h2>攻略のヒント</h2>
+        <h3>①アイテム一覧</h3>
+        <a v-show="!isShowHint1" @click.prevent.stop="isShowHint1 = true"
+          >表示する</a
+        >
+        <table v-show="isShowHint1">
+          <tr>
+            <th>アイテム名</th>
+            <th>所持可能数</th>
+            <th>効果</th>
+          </tr>
+          <tr v-for="item in itemDescription">
+            <td>{{ item.name }}</td>
+            <td>{{ item.maxAmount }}</td>
+            <td>{{ item.effect }}</td>
+          </tr>
+        </table>
 
-      <h3 class="u-margin_top--10">②スキル一覧</h3>
-      <a v-show="!isShowHint2" @click.prevent.stop="isShowHint2 = true"
-        >表示する</a
-      >
-      <table v-show="isShowHint2">
-        <tr>
-          <th>スキル名</th>
-          <th>効果</th>
-          <th>取得条件</th>
-        </tr>
-        <tr v-for="skill in skillDescription">
-          <td>{{ skill.name }}</td>
-          <td>{{ skill.effect }}</td>
-          <td>{{ skill.get }}</td>
-        </tr>
-      </table>
+        <h3 class="u-margin_top--10">②スキル一覧</h3>
+        <a v-show="!isShowHint2" @click.prevent.stop="isShowHint2 = true"
+          >表示する</a
+        >
+        <table v-show="isShowHint2">
+          <tr>
+            <th>スキル名</th>
+            <th>効果</th>
+            <th>取得条件</th>
+          </tr>
+          <tr v-for="skill in skillDescription">
+            <td>{{ skill.name }}</td>
+            <td>{{ skill.effect }}</td>
+            <td>{{ skill.get }}</td>
+          </tr>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -246,64 +248,66 @@ const skillDescription = [
 
 <style scoped lang="scss">
 .c-game {
-  border-style: outset;
-  box-sizing: content-box;
-  border-color: black;
-  margin: auto;
-  border-width: 6px;
-}
-.c-description {
-  padding-bottom: 20px;
-  margin: auto;
-  text-align: left;
-  h2 {
-    margin-top: 1em;
+  &__window {
+    border-style: outset;
+    box-sizing: content-box;
+    border-color: black;
+    margin: auto;
+    border-width: 6px;
   }
-  p {
-    font-size: 14px;
-    line-height: 1.1;
-  }
-  table {
-    font-size: 14px;
-    line-height: 1.1;
-    th,
-    td {
-      border: 1px black solid;
-      padding: 4px;
+  &__description {
+    padding-bottom: 20px;
+    margin: auto;
+    text-align: left;
+    h2 {
+      margin-top: 1em;
     }
-  }
-  a {
-    text-decoration: underline;
-    &:hover {
-      cursor: pointer;
+    p {
+      font-size: 14px;
+      line-height: 1.1;
+    }
+    table {
+      font-size: 14px;
+      line-height: 1.1;
+      th,
+      td {
+        border: 1px black solid;
+        padding: 4px;
+      }
+    }
+    a {
+      text-decoration: underline;
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 }
 
 @media screen and (max-width: 350px) {
-  .c-game {
+  .c-game__window {
     width: 350px;
     height: 350px;
   }
-  .c-description {
+  .c-game__description {
     width: 350px;
   }
 }
 @media screen and (max-width: 600px) and (min-width: 350px) {
-  .c-game {
+  .c-game__window {
     width: 100vw;
     height: 100vw;
   }
-  .c-description {
+  .c-game__description {
     width: 100vw;
   }
 }
 @media screen and (min-width: 600px) {
-  .c-game {
+  .c-game__window {
     width: 600px;
     height: 600px;
   }
-  .c-description {
+  .c-game__description {
     width: 600px;
   }
 }

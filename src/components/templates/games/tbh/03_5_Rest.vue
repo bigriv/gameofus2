@@ -20,6 +20,7 @@
               label="OK"
               :backgroundColor="COLOR.WHITE"
               :borderColor="COLOR.ORANGE"
+              :sounds="{ click: props.sounds.BUTTON }"
               @click="modal.onAgree"
             />
           </div>
@@ -68,7 +69,9 @@ const modal = reactive({
 
 onMounted(() => {
   timeoutId = setTimeout(() => {
-    props.sounds.POWERUP.play();
+    if (props.sounds.POWERUP) {
+      props.sounds.POWERUP.play();
+    }
 
     modal.isShown = true;
     clearTimeout(timeoutId);
@@ -76,7 +79,9 @@ onMounted(() => {
   }, 3900);
   intervalId = setInterval(() => {
     state.timer++;
-    props.sounds.SLEEP.play();
+    if (props.sounds.SLEEP) {
+      props.sounds.SLEEP.play();
+    }
   }, 1000);
 });
 onBeforeUnmount(() => {

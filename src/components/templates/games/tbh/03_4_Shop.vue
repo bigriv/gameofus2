@@ -42,9 +42,10 @@
           </div>
           <div class="c-shop__item_detail__frame__button">
             <GameButton
+              label="購入"
               :backgroundColor="COLOR.WHITE"
               :borderColor="COLOR.ORANGE"
-              label="購入"
+              :sounds="{ click: props.sounds.BUTTON }"
               @click="onBuy"
             />
           </div>
@@ -56,6 +57,7 @@
         label="帰る"
         :backgroundColor="COLOR.WHITE"
         :borderColor="COLOR.ORANGE"
+        :sounds="{ click: props.sounds.BUTTON }"
         @click="onBack"
       />
     </div>
@@ -73,6 +75,7 @@
               label="OK"
               :backgroundColor="COLOR.WHITE"
               :borderColor="COLOR.ORANGE"
+              :sounds="{ click: props.sounds.BUTTON }"
               @click="modal.isShown = false"
             />
           </div>
@@ -170,7 +173,7 @@ const onBack = () => {
     top: 2%;
     left: 2%;
     width: 40%;
-    height: 36%;
+    height: 42%;
     dl {
       display: flex;
       justify-content: space-between;
@@ -199,7 +202,7 @@ const onBack = () => {
     top: 12%;
     right: 2%;
     width: 40%;
-    height: 26%;
+    height: 32%;
     &__frame {
       height: 100%;
       display: flex;
@@ -245,6 +248,22 @@ const onBack = () => {
         font-size: 16px;
       }
     }
+  }
+}
+@media screen and (max-width: 400px) {
+  .c-shop {
+    font-size: 10px;
+  }
+}
+
+@media screen and (max-width: 600px) and (min-width: 400px) {
+  .c-shop {
+    font-size: 12px;
+  }
+}
+@media screen and (min-width: 600px) {
+  .c-shop {
+    font-size: 14px;
   }
 }
 </style>

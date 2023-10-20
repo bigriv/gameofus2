@@ -32,7 +32,7 @@
           >
             <template v-for="cell in row">
               <GameButton
-                fontColor="white"
+                :fontColor="COLOR.WHITE"
                 :label="cell.label"
                 class="c-game__drawer__lower__button_list__button"
                 @click="onClickButton(cell.eventId, cell.eventArgs)"
@@ -41,7 +41,7 @@
           </div>
           <template v-else>
             <GameButton
-              fontColor="white"
+              :fontColor="COLOR.WHITE"
               :label="row.label"
               class="c-game__drawer__lower__button_list__button"
               @click="onClickButton(row.eventId, row.eventArgs)"

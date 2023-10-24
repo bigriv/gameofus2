@@ -26,7 +26,7 @@ const { breadcrumbs } = useBreadCrumbList();
   background-color: lightgray;
   padding: 10px;
   font-size: 16px;
-  width: 100vw;
+  width: 100%;
   min-width: 400px;
   &__space {
     padding: 0 5px;

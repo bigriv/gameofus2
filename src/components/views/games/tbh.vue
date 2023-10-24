@@ -179,7 +179,6 @@ onMounted(() => {
   &__window {
     position: relative;
     border-style: outset;
-    box-sizing: content-box;
     border-color: black;
     margin: auto;
     border-width: 6px;
@@ -221,11 +220,11 @@ onMounted(() => {
 }
 @media screen and (max-width: 600px) and (min-width: 350px) {
   .c-game__window {
-    width: 100vw;
-    height: 100vw;
+    width: 100%;
+    aspect-ratio: 1;
   }
   .c-game__description {
-    width: 100vw;
+    width: 100%;
   }
 }
 @media screen and (min-width: 600px) {

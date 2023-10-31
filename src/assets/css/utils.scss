@@ -1,0 +1,24 @@
+.u-clickable {
+  cursor: pointer;
+}
+.u-d_flex {
+  display: flex;
+}
+@for $i from 1 through 20 {
+  .u-margin_top--#{$i * 5} {
+    margin-top: #{$i * 5}px;
+  }
+  .u-margin_left--#{$i * 5} {
+    margin-left: #{$i * 5}px;
+  }
+  .u-margin--#{$i * 5} {
+    margin: #{$i * 5}px;
+  }
+}
+.u-margin--auto {
+  margin: auto;
+}
+.u-horizontal--center {
+  text-align: center;
+  margin: 0 auto;
+}

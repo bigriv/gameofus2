@@ -32,11 +32,15 @@ enum COLOR {
   DARK_GREEN = "#006400",
 }
 class GOUColor {
-  code: COLOR; // カラーコード
+  code: string; // カラーコード
   opacity: number; // 透明度
 
-  constructor(code?: COLOR, opacity?: number) {
-    this.code = code ?? COLOR.WHITE;
+  constructor(code?: string, opacity?: number) {
+    if (!code || !/^#[0-9a-fA-F]{6}$/.test(code)) {
+      this.code = COLOR.WHITE;
+    } else {
+      this.code = code;
+    }
     if (!opacity) {
       this.opacity = !code ? 0 : 1;
     } else {

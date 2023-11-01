@@ -3,7 +3,7 @@ import {
   createRouter,
   createWebHistory,
 } from "vue-router";
-import BasicLayout from "@/components/templates/layouts/BasicLayout.vue"
+import BasicLayout from "@/components/templates/layouts/BasicLayout.vue";
 
 const routes = [
   {
@@ -59,9 +59,33 @@ const routes = [
             }),
             component: () =>
               import("@/components/views/blessings/birthday.vue"),
-              meta: { title: "バースデー" },
+            meta: { title: "バースデー" },
           },
         ],
+      },
+      {
+        path: "tools",
+        meta: { title: "ツール" },
+        children: [
+          {
+            path: "stopwatch",
+            name: "CustomeStopwatch",
+            component: () =>
+              import("@/components/views/tools/stopwatch/custome.vue"),
+            meta: { title: "ストップウォッチ" },
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: "/tools/view",
+    children: [
+      {
+        path: "stopwatch",
+        name: "ViewStopwatch",
+        component: () => import("@/components/views/tools/stopwatch/view.vue"),
+        meta: { title: "ストップウォッチ" },
       },
     ],
   },

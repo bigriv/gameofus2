@@ -4,75 +4,89 @@
       <button
         :disabled="isShowModal"
         class="c-color_picker__input__button"
-        :style="{ '--color': rgb }"
+        :style="{ '--color': rgb, '--opacity': color.opacity / 100 }"
         @click="onClickButton"
       ></button>
     </div>
 
-    <div v-if="isShowModal" class="c-color_picker__modal">
-      <i class="c-color_picker__modal__display" :style="{ '--color': rgb }" />
-      <div class="c-color_picker__modal__forms">
-        <div class="c-color_picker__modal__forms__inputs">
-          <input
-            v-model.number="color.red"
-            type="range"
-            :max="255"
-            :min="0"
-            class="c-color_picker__modal__forms__inputs__slider--red"
+    <transition>
+      <div v-show="isShowModal" class="c-color_picker__modal">
+        <div class="c-color_picker__modal__contents">
+          <i
+            class="c-color_picker__modal__contents__display"
+            :style="{ '--color': rgb, '--opacity': color.opacity / 100 }"
           />
-          <input
-            :value="color.red"
-            type="text"
-            @keypress.prevent.stop="onChangeRed"
-            @blur="onChangeRed"
-          />
+          <div class="c-color_picker__modal__contents__forms">
+            <div class="c-color_picker__modal__contents__forms__inputs">
+              <input
+                v-model.number="color.red"
+                type="range"
+                :max="255"
+                :min="0"
+                class="c-color_picker__modal__contents__forms__inputs__slider--red"
+              />
+              <InputNumber v-model="color.red" :max="255" :min="0" />
+            </div>
+            <div class="c-color_picker__modal__contents__forms__inputs">
+              <input
+                v-model.number="color.green"
+                type="range"
+                :max="255"
+                :min="0"
+                class="c-color_picker__modal__contents__forms__inputs__slider--green"
+              />
+              <InputNumber v-model="color.green" :max="255" :min="0" />
+            </div>
+            <div class="c-color_picker__modal__contents__forms__inputs">
+              <input
+                v-model.number="color.blue"
+                type="range"
+                :max="255"
+                :min="0"
+                class="c-color_picker__modal__contents__forms__inputs__slider--blue"
+              />
+              <InputNumber v-model="color.blue" :max="255" :min="0" />
+            </div>
+            <template v-if="pickableOpacity">
+              <div class="c-color_picker__modal__contents__forms__inputs">
+                <input
+                  v-model.number="color.opacity"
+                  type="range"
+                  :max="100"
+                  :min="0"
+                  class="c-color_picker__modal__contents__forms__inputs__slider--opacity"
+                />
+                <InputNumber v-model="color.opacity" :max="100" :min="0" />
+              </div>
+            </template>
+          </div>
         </div>
-        <div class="c-color_picker__modal__forms__inputs">
-          <input
-            v-model.number="color.green"
-            type="range"
-            :max="255"
-            :min="0"
-            class="c-color_picker__modal__forms__inputs__slider--green"
-          />
-          <input
-            :value="color.green"
-            type="text"
-            @keypress.prevent.stop="onChangeGreen"
-            @blur="onChangeGreen"
-          />
-        </div>
-        <div class="c-color_picker__modal__forms__inputs">
-          <input
-            v-model.number="color.blue"
-            type="range"
-            :max="255"
-            :min="0"
-            class="c-color_picker__modal__forms__inputs__slider--blue"
-          />
-          <input
-            :value="color.blue"
-            type="text"
-            @keypress.prevent.stop="onChangeBlue"
-            @blur="onChangeBlue"
-          />
+
+        <div class="c-color_picker__modal__buttons u-margin_top--20">
+          <button @click="onClose">Cancel</button>
+          <button @click="onSubmit">OK</button>
         </div>
       </div>
-      <div class="c-color_picker__modal__buttons u-margin_top--20">
-        <button @click="onClose">Cancel</button>
-        <button @click="onSubmit">OK</button>
-      </div>
-    </div>
+    </transition>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from "vue";
+import InputNumber from "@/components/atoms/interfaces/InputNumber.vue";
 
 const props = defineProps({
   color: {
     type: String,
     default: undefined,
+  },
+  opacity: {
+    type: Number,
+    default: undefined,
+  },
+  pickableOpacity: {
+    type: Boolean,
+    default: true,
   },
 });
 const emits = defineEmits(["submit"]);
@@ -82,6 +96,7 @@ const color = reactive({
   red: 255,
   green: 255,
   blue: 255,
+  opacity: 100,
 });
 const rgb = computed(() => {
   const r = color.red.toString(16).padStart(2, "0");
@@ -89,7 +104,6 @@ const rgb = computed(() => {
   const b = color.blue.toString(16).padStart(2, "0");
   return `#${r}${g}${b}`;
 });
-
 const resetColor = () => {
   console.log(props.color);
   if (!props.color || !/^#[0-9a-fA-F]{6}$/.test(props.color)) {
@@ -107,11 +121,28 @@ const resetColor = () => {
   color.blue = Number("0x" + blue);
 };
 
+const resetOpacity = () => {
+  const num = Math.round(Number(props.opacity) * 100);
+  if (!props.opacity || Number.isNaN(num)) {
+    color.opacity = 100;
+    return;
+  }
+  if (num <= 0) {
+    color.opacity = 0;
+    return;
+  }
+  if (num >= 100) {
+    color.opacity = 100;
+    return;
+  }
+  color.opacity = num;
+};
 /**
  * 親から渡される色の監視
  * 親が変わった場合はコンポーネント内で扱っている色も変える
  */
 watch(() => props.color, resetColor);
+watch(() => props.opacity, resetOpacity);
 
 // アクションイベント
 const onClickButton = () => {
@@ -123,52 +154,7 @@ const onClose = () => {
 };
 const onSubmit = () => {
   isShowModal.value = false;
-  emits("submit", rgb.value);
-};
-const onChangeRed = (event: Event) => {
-  color.red = onChangeColor(event);
-};
-const onChangeGreen = (event: Event) => {
-  color.green = onChangeColor(event);
-};
-const onChangeBlue = (event: Event) => {
-  color.blue = onChangeColor(event);
-};
-const onChangeColor = (event: Event): number => {
-  console.log(event);
-  const getValue = (value: string) => {
-    const num = Number(value);
-    if (Number.isNaN(num)) {
-      const replaced = value.replace(/\D+/g, "");
-      console.log("replaced", replaced);
-      return Number(replaced);
-    }
-    if (num > 255) {
-      // 最大値チェック
-      return 255;
-    }
-    return num;
-  };
-
-  if (event instanceof FocusEvent) {
-    if (!(event.target instanceof HTMLInputElement)) {
-      return 0;
-    }
-    return getValue(event.target.value);
-  }
-
-  if (event instanceof KeyboardEvent) {
-    if (!(event.target instanceof HTMLInputElement)) {
-      return 0;
-    }
-    if (!/^\d$/.test(event.key)) {
-      // 非数値が入力された場合は元々入力されていた値を返す
-      return Number(event.target.value);
-    }
-    return getValue(event.target.value);
-  }
-
-  return 0;
+  emits("submit", rgb.value, color.opacity / 100);
 };
 </script>
 
@@ -197,6 +183,7 @@ button {
         top: 0;
         left: 0;
         background-color: var(--color);
+        opacity: var(--opacity);
         border: solid #fff;
         border-width: 2px 1px;
       }
@@ -204,101 +191,104 @@ button {
   }
   &__modal {
     position: absolute;
+    z-index: 10;
     top: 0;
     left: 40px;
     background-color: #ffffff;
     border: 1px black solid;
     padding: 5px;
-    &__display {
-      display: block;
-      width: 60px;
-      height: 60px;
-      background-color: var(--color);
-      float: left;
-      border: 1px lightgray solid;
-      margin-right: 10px;
-    }
-    &__forms {
+    &__contents {
       display: flex;
-      flex-direction: column;
-      gap: 4px 0;
-      &__inputs {
+      gap: 0 10px;
+      &__display {
+        display: block;
+        width: 60px;
+        height: 60px;
+        background-color: var(--color);
+        opacity: var(--opacity);
+        border: 1px lightgray solid;
+      }
+      &__forms {
         display: flex;
-        flex-direction: row;
-        gap: 0 4px;
-        &__slider {
-          &--red {
-            &::-webkit-slider-runnable-track {
-              background: linear-gradient(to right, #fff, #ff0000);
+        flex-direction: column;
+        gap: 4px 0;
+        &__inputs {
+          display: flex;
+          flex-direction: row;
+          gap: 0 4px;
+          &__slider {
+            &--red {
+              &::-webkit-slider-runnable-track {
+                background: linear-gradient(to right, #fff, #ff0000);
+              }
+              &::-moz-range-track {
+                background: linear-gradient(to right, #fff, #ff0000);
+              }
             }
-            &::-moz-range-track {
-              background: linear-gradient(to right, #fff, #ff0000);
+            &--green {
+              &::-webkit-slider-runnable-track {
+                background: linear-gradient(to right, #fff, #00ff00);
+              }
+              &::-moz-range-track {
+                background: linear-gradient(to right, #fff, #00ff00);
+              }
+            }
+            &--blue {
+              &::-webkit-slider-runnable-track {
+                background: linear-gradient(to right, #fff, #0000ff);
+              }
+              &::-moz-range-track {
+                background: linear-gradient(to right, #fff, #0000ff);
+              }
             }
           }
-          &--green {
-            &::-webkit-slider-runnable-track {
-              background: linear-gradient(to right, #fff, #00ff00);
-            }
-            &::-moz-range-track {
-              background: linear-gradient(to right, #fff, #00ff00);
-            }
-          }
-          &--blue {
-            &::-webkit-slider-runnable-track {
-              background: linear-gradient(to right, #fff, #0000ff);
-            }
-            &::-moz-range-track {
-              background: linear-gradient(to right, #fff, #0000ff);
-            }
-          }
         }
-      }
-      input[type="text"] {
-        width: 50px;
-      }
-      input[type="range"] {
-        width: 128px;
-        appearance: none;
-        -webkit-appearance: none;
-        outline: none;
-        background: transparent;
-        width: 100%;
-        height: 16px;
-        &:hover {
-          cursor: grab;
+        input[type="text"] {
+          width: 50px;
         }
-        &:active {
-          cursor: grabbing;
-        }
-        &::-webkit-slider-runnable-track {
-          height: 8px;
-          border-radius: 8px;
-          border: 1px lightgray solid;
-        }
-        &::-moz-range-track {
-          height: 8px;
-          border-radius: 8px;
-          border: 1px lightgray solid;
-        }
-        &::-webkit-slider-thumb {
-          -webkit-appearance: none;
+        input[type="range"] {
           appearance: none;
-          height: 16px;
-          width: 16px;
-          background-color: #4cabe2;
-          border-radius: 50%;
-          border: 1px lightgray solid;
-          margin-top: -4px; // (trackのheight - thumbのheight) / 2
-        }
-        &::-moz-range-thumb {
           -webkit-appearance: none;
-          appearance: none;
+          outline: none;
+          background: transparent;
+          width: 128px;
           height: 16px;
-          width: 16px;
-          background-color: #4cabe2;
-          border-radius: 50%;
-          border: 1px lightgray solid;
-          margin-top: -4px; // (trackのheight - thumbのheight) / 2
+          &:hover {
+            cursor: grab;
+          }
+          &:active {
+            cursor: grabbing;
+          }
+          &::-webkit-slider-runnable-track {
+            height: 8px;
+            border-radius: 8px;
+            border: 1px lightgray solid;
+          }
+          &::-moz-range-track {
+            height: 8px;
+            border-radius: 8px;
+            border: 1px lightgray solid;
+          }
+          &::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 16px;
+            width: 16px;
+            background-color: #4cabe2;
+            border-radius: 50%;
+            border: 1px lightgray solid;
+            margin-top: -4px; // (trackのheight - thumbのheight) / 2
+          }
+          &::-moz-range-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 16px;
+            width: 16px;
+            background-color: #4cabe2;
+            border-radius: 50%;
+            border: 1px lightgray solid;
+            margin-top: -4px; // (trackのheight - thumbのheight) / 2
+          }
         }
       }
     }
@@ -314,5 +304,13 @@ button {
       }
     }
   }
+}
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.3s ease-out;
+}
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 </style>

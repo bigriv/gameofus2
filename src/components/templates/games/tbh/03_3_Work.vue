@@ -141,6 +141,7 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 .c-work {
+  font-family: "DotGothic16";
   &__character {
     position: absolute;
     bottom: 5%;

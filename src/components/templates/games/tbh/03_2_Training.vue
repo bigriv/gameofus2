@@ -100,6 +100,7 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 .c-training {
+  font-family: "DotGothic16";
   &__character {
     position: absolute;
     top: 100%;

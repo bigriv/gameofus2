@@ -167,6 +167,7 @@ const endOpening = () => {
 
 <style scoped lang="scss">
 .c-top {
+  font-family: "DotGothic16";
   &__opening {
     z-index: 3;
     position: absolute;

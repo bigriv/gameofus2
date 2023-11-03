@@ -92,6 +92,7 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 .c-rest {
+  font-family: "DotGothic16";
   &__character {
     position: absolute;
     top: 100%;

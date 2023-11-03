@@ -279,6 +279,7 @@ onBeforeMount(() => {
 
 <style scoped lang="scss">
 .c-patrol {
+  font-family: "DotGothic16";
   &__player {
     position: absolute;
     bottom: 5%;

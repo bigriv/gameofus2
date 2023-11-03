@@ -160,6 +160,7 @@ const onBack = () => {
 
 <style scoped lang="scss">
 .c-shop {
+  font-family: "DotGothic16";
   &__character {
     position: absolute;
     bottom: 5%;

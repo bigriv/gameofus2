@@ -1,6 +1,6 @@
 <template>
-  <div class="c-game">
-    <div class="c-game__window">
+  <GameFrame>
+    <template #window>
       <div class="c-game__window__drawer">
         <GOUVisualCanvas :objects="backgroundLayer" />
       </div>
@@ -61,9 +61,8 @@
           />
         </template>
       </div>
-    </div>
-
-    <div class="c-game__description">
+    </template>
+    <template #description>
       <div class="c-game__description__block">
         <h2>リリースノート</h2>
         <p>2023/10/20 ver 1.00 リリース</p>
@@ -84,20 +83,23 @@
         <p>操作方法はクリックのみです。</p>
         <p>セーブ機能はありません</p>
         <p>エンディングは全12種類です。</p>
-        <p>※不具合のため、スマートフォンではプレイできない可能性があります。（修正中）</p>
+        <p>
+          ※不具合のため、スマートフォンではプレイできない可能性があります。（修正中）
+        </p>
       </div>
 
       <div class="c-game__description__block">
         <h2>推定プレイ時間</h2>
         <p>10分</p>
       </div>
-    </div>
-  </div>
+    </template>
+  </GameFrame>
 </template>
 
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useDisplayStore } from "@/pinia/display";
+import GameFrame from "@/components/atoms/frames/GameFrame.vue";
 import Title from "@/components/templates/games/tbh/01_Title.vue";
 import Top from "@/components/templates/games/tbh/02_Top.vue";
 import Patrol from "@/components/templates/games/tbh/03_1_Patrol.vue";
@@ -177,15 +179,6 @@ onMounted(() => {
 <style scoped lang="scss">
 .c-game {
   &__window {
-    position: relative;
-    border-style: outset;
-    border-color: black;
-    margin: auto;
-    border-width: 6px;
-    * {
-      font-family: monospace;
-      font-weight: 600;
-    }
     &__drawer {
       position: absolute;
       top: 0;
@@ -194,46 +187,6 @@ onMounted(() => {
       height: 100%;
       overflow: hidden;
     }
-  }
-
-  &__description {
-    padding-bottom: 20px;
-    margin: auto;
-    text-align: left;
-    h2 {
-      margin-top: 1em;
-    }
-    p {
-      font-size: 14px;
-      line-height: 1.1;
-    }
-  }
-}
-@media screen and (max-width: 350px) {
-  .c-game__window {
-    width: 350px;
-    height: 350px;
-  }
-  .c-game__description {
-    width: 350px;
-  }
-}
-@media screen and (max-width: 600px) and (min-width: 350px) {
-  .c-game__window {
-    width: 100%;
-    aspect-ratio: 1;
-  }
-  .c-game__description {
-    width: 100%;
-  }
-}
-@media screen and (min-width: 600px) {
-  .c-game__window {
-    width: 600px;
-    height: 600px;
-  }
-  .c-game__description {
-    width: 600px;
   }
 }
 </style>

@@ -7,6 +7,8 @@
       <MessageFrame
         :backgroundColor="TBH_MESSAGEFRAME_BACKGROUND_COLOR"
         :borderColor="TBH_MESSAGEFRAME_BORDER_COLOR"
+        vertical="center"
+        horizontal="center"
       >
         <div class="c-training__dialog__message">
           <div class="c-training__dialog__message__text">

@@ -51,7 +51,6 @@ const onContinue = () => {
     font-size: 40px;
     color: white;
     text-shadow: 6px 6px 2px black;
-    user-select: none;
   }
   &__buttons {
     position: absolute;

@@ -191,7 +191,6 @@ watch(() => isLoadedImages.value, showMap);
       width: 50%;
       height: 100%;
       color: white;
-      user-select: none;
       span {
         width: 25%;
       }

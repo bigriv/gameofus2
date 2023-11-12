@@ -12,6 +12,10 @@
 <style scoped lang="scss">
 .c-game {
   &__window {
+    :deep(*) {
+      touch-action: manipulation;
+      user-select: none;
+    }
     position: relative;
     border-style: outset;
     border-color: black;

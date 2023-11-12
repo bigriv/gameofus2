@@ -54,7 +54,6 @@ const onStart = () => {
     font-family: "Reggae One";
     color: white;
     -webkit-text-stroke: black 1px;
-    user-select: none;
   }
   &__buttons {
     position: absolute;

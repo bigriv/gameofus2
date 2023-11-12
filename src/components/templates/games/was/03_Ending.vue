@@ -76,7 +76,6 @@ const onBackTitle = () => {
   width: 100%;
   height: 100%;
   font-family: "Yusei Magic";
-  user-select: none;
   &__header {
     position: absolute;
     top: 10%;

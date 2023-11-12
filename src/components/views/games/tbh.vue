@@ -65,6 +65,7 @@
     <template #description>
       <div class="c-game__description__block">
         <h2>リリースノート</h2>
+        <p>2023/11/13 ver 1.03 文字フォント変更</p>
         <p>2023/10/20 ver 1.00 リリース</p>
       </div>
 

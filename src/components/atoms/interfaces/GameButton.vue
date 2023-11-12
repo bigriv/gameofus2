@@ -87,8 +87,8 @@ const onHover = (isHover: boolean) => {
     border-color: var(--borderColor);
     color: var(--fontColor);
     font-size: 100%;
-    font-family: monospace;
-    font-weight: 600;
+    font-family: "DotGothic16";
+    font-weight: normal;
     user-select: none;
   }
 }

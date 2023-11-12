@@ -139,6 +139,7 @@ watch(() => isLoadedImages.value, showMap);
 
 <style scoped lang="scss">
 .c-game__drawer {
+  font-family: "DotGothic16";
   position: relative;
   width: 100%;
   height: 100%;

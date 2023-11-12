@@ -23,7 +23,7 @@ const props = defineProps({
   borderColor: {
     type: String,
     default: "black",
-  }
+  },
 });
 const styles = computed(() => {
   return {
@@ -41,12 +41,6 @@ const styles = computed(() => {
   height: 100%;
   display: flex;
   align-items: center;
-  padding: 4px;
-  &__label {
-    width: 20%;
-    white-space: nowrap;
-    font-size: 100%;
-  }
   &__bar {
     width: 100%;
     height: 100%;

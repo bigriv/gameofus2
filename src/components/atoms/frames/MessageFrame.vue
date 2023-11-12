@@ -124,8 +124,8 @@ watch(
   border: 2px solid var(--borderColor);
   border-radius: 2px;
   font-size: 100%;
-  font-family: monospace;
-  font-weight: 600;
+  font-family: "DotGothic16";
+  font-weight: normal;
   user-select: none;
   &__messages {
     width: 100%;

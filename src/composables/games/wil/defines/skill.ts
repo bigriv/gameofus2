@@ -2,7 +2,17 @@ import { WIL_ELEMENT } from "../enums/element";
 import { WIL_MOVE_RANGE } from "../enums/range";
 import { WIL_SKILL_ID } from "../enums/skill";
 
-export const WIL_SKILL_DEFINES = [
+export const WIL_SKILL_DEFINES: Array<{
+  id: WIL_SKILL_ID;
+  name: string;
+  description: string; // 30文字まで
+  cost: number;
+  range: {
+    type: WIL_MOVE_RANGE;
+    distanse: number;
+  };
+  element: WIL_ELEMENT;
+}> = [
   {
     id: WIL_SKILL_ID.SLASH,
     name: "スラッシュ",

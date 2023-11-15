@@ -4,24 +4,22 @@ import { WIL_ELEMENT } from "../enums/element";
 import { WIL_SKILL_ID } from "../enums/skill";
 import GOUVisualDefinition from "@/composables/types/visuals/GOUVisualDefinition";
 
-export const WIL_CHARACTER_DEFINES: {
-  [key: string]: {
-    id: WIL_CHARACTER_ID;
-    name: string;
-    visual: GOUVisualDefinition;
-    miniVisual: GOUVisualDefinition;
-    status: {
-      life: number;
-      attack: number;
-      defense: number;
-      speed: number;
-      magic: number;
-    };
-    element: WIL_ELEMENT;
-    skills: Array<WIL_SKILL_ID>;
+export const WIL_CHARACTER_DEFINES: Array<{
+  id: WIL_CHARACTER_ID;
+  name: string;
+  visual: GOUVisualDefinition;
+  miniVisual: GOUVisualDefinition;
+  status: {
+    life: number;
+    attack: number;
+    defense: number;
+    speed: number;
+    magic: number;
   };
-} = {
-  HERO: {
+  element: WIL_ELEMENT;
+  skills: Array<WIL_SKILL_ID>;
+}> = [
+  {
     id: WIL_CHARACTER_ID.HERO,
     name: "主人公",
     visual: {
@@ -50,7 +48,7 @@ export const WIL_CHARACTER_DEFINES: {
       WIL_SKILL_ID.SHINE_ABSORB,
     ],
   },
-  HOLY_KNIGHTS_SOLDIER: {
+  {
     id: WIL_CHARACTER_ID.HOLY_KNIGHTS_SOLDIER,
     name: "近接兵",
     visual: {
@@ -75,7 +73,7 @@ export const WIL_CHARACTER_DEFINES: {
     element: WIL_ELEMENT.FIRE,
     skills: [WIL_SKILL_ID.SLASH],
   },
-  HOLY_KNIGHTS_MAGICIAN: {
+  {
     id: WIL_CHARACTER_ID.HOLY_KNIGHTS_MAGICIAN,
     name: "魔法兵",
     visual: {
@@ -100,7 +98,7 @@ export const WIL_CHARACTER_DEFINES: {
     element: WIL_ELEMENT.FIRE,
     skills: [WIL_SKILL_ID.SHINE_BALL],
   },
-  HOLY_KNIGHTS_LEADER: {
+  {
     id: WIL_CHARACTER_ID.HOLY_KNIGHTS_LEADER,
     name: "騎士団長",
     visual: {
@@ -125,7 +123,7 @@ export const WIL_CHARACTER_DEFINES: {
     element: WIL_ELEMENT.FIRE,
     skills: [WIL_SKILL_ID.SLASH],
   },
-  HOLY_KNIGHTS_ARCHER: {
+  {
     id: WIL_CHARACTER_ID.HOLY_KNIGHTS_ARCHER,
     name: "弓兵",
     visual: {
@@ -150,4 +148,4 @@ export const WIL_CHARACTER_DEFINES: {
     element: WIL_ELEMENT.FIRE,
     skills: [WIL_SKILL_ID.SLASH],
   },
-};
+];

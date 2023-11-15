@@ -24,8 +24,13 @@
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import { COLOR } from "@/composables/types/GOUColor";
 
-const onStart = () => {};
-const onContinue = () => {};
+const emits = defineEmits(["start", "continue"]);
+const onStart = () => {
+  emits("start");
+};
+const onContinue = () => {
+  emits("continue");
+};
 </script>
 
 <style scoped lang="scss">
@@ -33,7 +38,7 @@ const onContinue = () => {};
   position: relative;
   width: 100%;
   height: 100%;
-  background: linear-gradient(170deg, #ffffff 30%,  #ffd000 70%, #ffffff 100%);
+  background: linear-gradient(170deg, #ffffff 30%, #ffd000 70%, #ffffff 100%);
   &__title {
     position: absolute;
     top: 20%;
@@ -42,9 +47,13 @@ const onContinue = () => {};
     width: 100%;
     text-align: center;
     font-family: "Yusei Magic";
-    font-size:  50px;
-    background: linear-gradient(0deg, #ff9900 0%,  #faeb00 50%, #ff9900 100%);
-    background:  -webkit-linear-gradient(0deg, #ff9900 0%,  #faeb00 50%, #ff9900 100%);
+    background: linear-gradient(0deg, #ff9900 0%, #faeb00 50%, #ff9900 100%);
+    background: -webkit-linear-gradient(
+      0deg,
+      #ff9900 0%,
+      #faeb00 50%,
+      #ff9900 100%
+    );
     color: transparent;
     -webkit-background-clip: text;
     text-shadow: 0px 0px 20px white;
@@ -81,6 +90,9 @@ const onContinue = () => {};
     font-size: 10px;
     width: 25%;
   }
+  .c-game__drawer__title {
+    font-size: 30px;
+  }
 }
 
 @media screen and (max-width: 600px) and (min-width: 400px) {
@@ -88,11 +100,17 @@ const onContinue = () => {};
     font-size: 12px;
     width: 23%;
   }
+  .c-game__drawer__title {
+    font-size: 40px;
+  }
 }
 @media screen and (min-width: 600px) {
   .c-game__drawer__buttons {
     font-size: 14px;
     width: 20%;
+  }
+  .c-game__drawer__title {
+    font-size: 50px;
   }
 }
 </style>

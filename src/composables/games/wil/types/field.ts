@@ -4,9 +4,16 @@ import { WIL_BATTLE_TIMMING } from "../enums/timming";
 import { WilSkill } from "./skill";
 
 export class WilFieldCell {
+  readonly x: number;
+  readonly y: number;
   color: WIL_CELL_COLOR = WIL_CELL_COLOR.WHITE;
   team: WIL_CELL_TEAM = WIL_CELL_TEAM.NEUTRAL;
   character: WilCharacter | null = null;
+
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
 }
 
 export class WilField {
@@ -24,7 +31,7 @@ export class WilField {
     this.cells = new Array(width * height);
     for (let i = 0; i < height; i++) {
       for (let j = 0; j < width; j++) {
-        this.cells[i * width + j] = new WilFieldCell();
+        this.cells[i * width + j] = new WilFieldCell(j, i);
       }
     }
   }

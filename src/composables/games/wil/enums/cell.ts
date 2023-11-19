@@ -3,9 +3,3 @@ export enum WIL_CELL_COLOR {
   RED = "RED",
   BLUE = "BLUE",
 }
-
-export enum WIL_CELL_TEAM {
-  NEUTRAL = "NEUTRAL",
-  RED = "RED",
-  BLUE = "BLUE",
-}

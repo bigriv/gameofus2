@@ -1,5 +1,5 @@
 <template>
-  <WilCard @click="onClick">
+  <WilCard :selected="props.selected" @click="onClick">
     <div
       class="c-card__type"
       :class="`c-card__type--${props.character.element}`"
@@ -18,6 +18,10 @@ import { WilCharacter } from "@/composables/games/wil/types/character";
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 
 const props = defineProps({
+  selected: {
+    type: Boolean,
+    default: false,
+  },
   character: {
     type: Object as PropType<WilCharacter>,
     required: true,

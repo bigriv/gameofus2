@@ -1,0 +1,7 @@
+export enum WIL_TRAINING_ID {
+  ATTACK = "ATTACK",
+  DEFENSE = "DEFENSE",
+  MIGRATION = "MIGRATION",
+  MAGIC = "MAGIC",
+  PHISIC = "PHISIC",
+}

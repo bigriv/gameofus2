@@ -1,5 +1,5 @@
 import { WilCharacter } from "@/composables/games/wil/types/character";
-import { WIL_CELL_COLOR, WIL_CELL_TEAM } from "../enums/cell";
+import { WIL_CELL_COLOR } from "../enums/cell";
 import { WIL_BATTLE_TIMMING } from "../enums/timming";
 import { WilSkill } from "./skill";
 
@@ -7,8 +7,8 @@ export class WilFieldCell {
   readonly x: number;
   readonly y: number;
   color: WIL_CELL_COLOR = WIL_CELL_COLOR.WHITE;
-  team: WIL_CELL_TEAM = WIL_CELL_TEAM.NEUTRAL;
   character: WilCharacter | null = null;
+  selected: boolean = false;
 
   constructor(x: number, y: number) {
     this.x = x;
@@ -17,32 +17,42 @@ export class WilFieldCell {
 }
 
 export class WilField {
-  width: number;
-  height: number;
-  maxCharacter: number;
-  playerCharacter: number = 0;
-  enemyCharacter: number = 0;
-  cells: WilFieldCell[];
+  static readonly WIDTH = 3;
+  static readonly HEIGHT = 5;
+  static readonly MAX_CHARACTER = 5;
+  playerCells: Array<WilFieldCell>;
+  enemyCells: Array<WilFieldCell>;
 
-  constructor(width: number, height: number, maxCharacter: number) {
-    this.width = width;
-    this.height = height;
-    this.maxCharacter = maxCharacter;
-    this.cells = new Array(width * height);
-    for (let i = 0; i < height; i++) {
-      for (let j = 0; j < width; j++) {
-        this.cells[i * width + j] = new WilFieldCell(j, i);
+  constructor() {
+    this.playerCells = new Array(WilField.WIDTH * WilField.HEIGHT);
+    this.enemyCells = new Array(WilField.WIDTH * WilField.HEIGHT);
+    for (let i = 0; i < WilField.HEIGHT; i++) {
+      for (let j = 0; j < WilField.WIDTH; j++) {
+        this.playerCells[i * WilField.WIDTH + j] = new WilFieldCell(j, i);
+        this.enemyCells[i * WilField.WIDTH + j] = new WilFieldCell(j, i);
       }
     }
   }
 
-  getCell(x: number, y: number): WilFieldCell | null {
-    if (this.cells.length <= y * this.width + x) {
-      return null;
+  getPlayerCell(x: number, y: number): WilFieldCell | undefined {
+    if (this.playerCells.length <= y * WilField.WIDTH + x) {
+      return undefined;
     }
-    return this.cells[y * this.width + x];
+    return this.playerCells[y * WilField.WIDTH + x];
+  }
+  getEnemyCell(x: number, y: number): WilFieldCell | undefined {
+    if (this.enemyCells.length <= y * WilField.WIDTH + x) {
+      return undefined;
+    }
+    return this.enemyCells[y * WilField.WIDTH + x];
   }
 
+  getPlayerNum(): number {
+    return this.playerCells.filter((cell) => cell.character).length;
+  }
+  getEnemyNum(): number {
+    return this.enemyCells.filter((cell) => cell.character).length;
+  }
   /**
    * キャラクターを配置する
    * @param x
@@ -55,15 +65,11 @@ export class WilField {
       return false;
     }
 
-    const cell = this.getCell(x, y);
+    const cell = this.getPlayerCell(x, y);
     if (!cell) {
       return false;
     }
-    if (!cell.character) {
-      this.playerCharacter++;
-    }
     cell.character = character;
-    cell.team = WIL_CELL_TEAM.BLUE;
     return true;
   }
   /**
@@ -72,7 +78,7 @@ export class WilField {
    */
   isSetableCahracter(x: number, y: number): boolean {
     // 配置可能判定（フィールド外または青以外なら配置不可）
-    const cell = this.getCell(x, y);
+    const cell = this.getPlayerCell(x, y);
     if (!cell || cell.color !== WIL_CELL_COLOR.BLUE) {
       return false;
     }
@@ -86,13 +92,11 @@ export class WilField {
    * @param y
    */
   removeCharacter(x: number, y: number) {
-    const cell = this.getCell(x, y);
+    const cell = this.getPlayerCell(x, y);
     if (!cell || !cell.character) {
       return;
     }
-    this.playerCharacter--;
     cell.character = null;
-    cell.team = WIL_CELL_TEAM.NEUTRAL;
   }
 
   changeColor(
@@ -101,21 +105,24 @@ export class WilField {
     __skill?: WilSkill
   ) {
     if (timming === WIL_BATTLE_TIMMING.SET_SELECT_CELL) {
-      this.cells.forEach((cell, index) => {
-        const x = index % this.width;
-        if (x >= (this.width * 2) / 3) {
-          cell.color = WIL_CELL_COLOR.BLUE;
-        }
+      this.playerCells.forEach((cell) => {
+        cell.color = WIL_CELL_COLOR.BLUE;
+      });
+      this.enemyCells.forEach((cell) => {
+        cell.color = WIL_CELL_COLOR.RED;
       });
       return;
     }
 
     if (timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_CHARACTER) {
-      this.cells.forEach((cell) => {
+      this.playerCells.forEach((cell) => {
         cell.color = WIL_CELL_COLOR.WHITE;
-        if (cell.character && cell.team == WIL_CELL_TEAM.BLUE) {
+        if (cell.character) {
           cell.color = WIL_CELL_COLOR.BLUE;
         }
+      });
+      this.enemyCells.forEach((cell) => {
+        cell.color = WIL_CELL_COLOR.RED;
       });
       return;
     }

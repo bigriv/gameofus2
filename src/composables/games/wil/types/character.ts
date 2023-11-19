@@ -19,14 +19,16 @@ export class WilCharacter {
   element: WIL_ELEMENT;
   skills: Array<WIL_SKILL_ID> = [];
 
-  skillTarget: WilCharacter | null = null;
-  migrateCell: WilFieldCell | null = null;
+  move: {
+    useSkill?: WIL_SKILL_ID;
+    skillTarget?: WilFieldCell;
+  } = {};
 
   constructor(define: {
     id: WIL_CHARACTER_ID;
     name: string;
-    visual: GOUVisualDefinition,
-    miniVisual: GOUVisualDefinition,
+    visual: GOUVisualDefinition;
+    miniVisual: GOUVisualDefinition;
     status: {
       life: number;
       attack: number;

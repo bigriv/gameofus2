@@ -11,7 +11,8 @@
       <Field
         :field="field"
         :selectedCells="selectedCells"
-        @click="onClickField"
+        @selectPlayerCell="onClickField"
+        @selectEnemyCell="onClickField"
       />
     </div>
 
@@ -30,9 +31,11 @@
       :characters="props.characters"
       :skills="props.skills"
       :field="field"
-      :playerCharacters="props.playerCharacters"
+      :playerCharacters="playerCharacters"
       @setCharacter="setCharacter"
       @removeCharacter="removeCharacter"
+      @selectSkill="selectSkill"
+      @endTurn="endTurn"
     />
   </div>
 </template>
@@ -66,13 +69,9 @@ const props = defineProps({
 
 const background: Ref<GOUVisual | undefined> = ref();
 const timming = ref(WIL_BATTLE_TIMMING.SET_SELECT_CELL);
-const field = ref(new WilField(10, 5, 1));
+const field = ref(new WilField());
 const selectedCells = ref([{ x: -1, y: -1 }]);
-// const selectedSkill: Ref<WIL_SKILL_ID | null> = ref(null);
-const cardStart = ref(0);
-const playerCharacters: Ref<
-  Array<{ character: WilCharacter; selected: boolean }>
-> = ref([]);
+const playerCharacters: Ref<Array<WilCharacter>> = ref(props.playerCharacters);
 const selectedCharacter: Ref<WIL_CHARACTER_ID | undefined> = ref();
 
 onMounted(() => {
@@ -94,7 +93,7 @@ const onClickField = (x: number, y: number) => {
     timming.value === WIL_BATTLE_TIMMING.BATTLE_SELECT_CHARACTER ||
     timming.value === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL
   ) {
-    selectedCharacter.value = field.value.getCell(x, y)?.character?.id;
+    selectedCharacter.value = field.value.getPlayerCell(x, y)?.character?.id;
     selectedCells.value[0] = { x: x, y: y };
     timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE;
     return;
@@ -116,7 +115,6 @@ const startSet = () => {
   timming.value = WIL_BATTLE_TIMMING.SET_SELECT_CELL;
   selectedCells.value[0].x = -1;
   selectedCells.value[0].y = -1;
-  cardStart.value = 0;
 };
 const selectSetCell = (x: number, y: number) => {
   if (!field.value.isSetableCahracter(x, y)) {
@@ -133,20 +131,16 @@ const setCharacter = (character: WilCharacter) => {
     return;
   }
 
-  const placedCharacter = field.value.getCell(
+  const placedCharacter = field.value.getPlayerCell(
     selectedCells.value[0].x,
     selectedCells.value[0].y
   )?.character;
 
   if (placedCharacter) {
-    const target = playerCharacters.value.find(
-      (c) => c.character.id == placedCharacter.id
-    );
-    if (target) {
-      target.selected = false;
-    }
+    // 元々配置されていたキャラをリストに追加
+    playerCharacters.value.push(placedCharacter);
   } else {
-    if (field.value.maxCharacter <= field.value.playerCharacter) {
+    if (WilField.MAX_CHARACTER <= field.value.getPlayerNum()) {
       alert("これ以上配置できません。");
       return;
     }
@@ -158,12 +152,11 @@ const setCharacter = (character: WilCharacter) => {
     character
   );
 
-  const target = playerCharacters.value.find(
-    (c) => c.character.id == character.id
+  // 選択したキャラをリストから削除
+  playerCharacters.value = playerCharacters.value.filter(
+    (c) => c.id !== character.id
   );
-  if (target) {
-    target.selected = true;
-  }
+
   startSet();
 };
 const removeCharacter = () => {
@@ -171,18 +164,14 @@ const removeCharacter = () => {
     alert("配置場所が選択されていません。");
     return;
   }
-  const character = field.value.getCell(
+  const character = field.value.getPlayerCell(
     selectedCells.value[0].x,
     selectedCells.value[0].y
   )?.character;
 
   if (character) {
-    const target = playerCharacters.value.find(
-      (c) => c.character.id == character.id
-    );
-    if (target) {
-      target.selected = false;
-    }
+    // 元々配置されていたキャラをリストに追加
+    playerCharacters.value.push(character);
   }
 
   field.value.removeCharacter(
@@ -199,14 +188,31 @@ const selectMovePlace = (x: number, y: number) => {
     alert("キャラクターが選択されていません。");
     return;
   }
-  props.characters[selectedCharacter.value].migrateCell = field.value.getCell(
-    x,
-    y
+  const cell = field.value.getPlayerCell(x, y);
+  if (!cell || cell.character) {
+    alert("移動できません。");
+    return;
+  }
+  cell.character = props.characters[selectedCharacter.value];
+  const pre = field.value.getPlayerCell(
+    selectedCells.value[0].x,
+    selectedCells.value[0].y
   );
+  if (pre) {
+    pre.character = null;
+  }
   timming.value = WIL_BATTLE_TIMMING.BATTLE_PROCESS_PLAYER_CHARACTER;
 };
+const selectSkill = (skill: WilSkill) => {
+  if (!selectedCharacter.value) {
+    alert("キャラクターが選択されていません。");
+    return;
+  }
+  props.characters[selectedCharacter.value].move.useSkill = skill.id;
+  timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET;
+};
 const selectSkillTarget = (x: number, y: number) => {
-  const target = field.value.getCell(x, y)?.character;
+  const target = field.value.getEnemyCell(x, y)?.character;
   if (!target) {
     alert("対象が存在しません。");
     return;
@@ -216,7 +222,11 @@ const selectSkillTarget = (x: number, y: number) => {
     return;
   }
   timming.value = WIL_BATTLE_TIMMING.BATTLE_PROCESS_PLAYER_CHARACTER;
-  props.characters[selectedCharacter.value].skillTarget = target;
+  props.characters[selectedCharacter.value].move.skillTarget =
+    field.value.getEnemyCell(x, y);
+};
+const endTurn = () => {
+  timming.value = WIL_BATTLE_TIMMING.BATTLE_PROCESS_ENEMY_CHARACTER;
 };
 </script>
 

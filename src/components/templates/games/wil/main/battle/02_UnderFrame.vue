@@ -3,9 +3,11 @@
     <template v-if="timming === WIL_BATTLE_TIMMING.SET_SELECT_CELL">
       <div class="c-under_frame__message_frame">
         <div>配置する場所を選択してください。</div>
-        <div>配置数 {{ field.playerCharacter }} / {{ field.maxCharacter }}</div>
+        <div>
+          配置数 {{ field.getPlayerNum() }} / {{ WilField.MAX_CHARACTER }}
+        </div>
         <div
-          v-if="field.playerCharacter == field.maxCharacter"
+          v-if="playerCharacterNum == WilField.MAX_CHARACTER"
           class="c-under_frame__message_frame--button u-margin_top--auto"
         >
           <GameButton
@@ -19,31 +21,13 @@
     </template>
 
     <template v-if="timming === WIL_BATTLE_TIMMING.SET_SELECT_CHARACTER">
-      <button
-        class="c-under_frame__pre_button"
-        :disabled="cardStart <= 0"
-        @click="cardStart--"
-      ></button>
-      <div class="c-under_frame__cards" :style="{ '--cardStart': cardStart }">
-        <template v-for="character in playerCharacters">
-          <div v-if="!character.selected" class="c-under_frame__cards__content">
-            <WilCharacterCard
-              :character="character.character"
-              @click="onSetCharacter"
-            />
-          </div>
-        </template>
-        <div class="c-under_frame__cards__content">
-          <WilCard @click="onRemoveSetCharacter">
-            <div class="c-under_frame__cards__content--other">外す</div>
-          </WilCard>
-        </div>
-      </div>
-      <button
-        class="c-under_frame__next_button"
-        :disabled="cardStart >= playerCharacters.length - 4"
-        @click="cardStart++"
-      ></button>
+      <WilCardList
+        :dataList="[
+          ...playerCharacters,
+          { label: '外す', onClick: onRemoveSetCharacter },
+        ]"
+        @selectCharacter="onSetCharacter"
+      />
     </template>
 
     <template v-if="timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_CHARACTER">
@@ -54,7 +38,7 @@
             label="ターンを終了"
             :fontColor="COLOR.WHITE"
             :backgroundColor="COLOR.BLACK"
-            @click="func"
+            @click="onEndTurn"
           />
         </div>
       </div>
@@ -132,29 +116,13 @@
     </template>
 
     <template v-else-if="timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL">
-      <button
-        class="c-under_frame__pre_button"
-        :disabled="cardStart <= 0"
-        @click="cardStart--"
-      ></button>
-      <div class="c-under_frame__cards" :style="{ '--cardStart': cardStart }">
-        <div
-          v-for="skill in enableSkills"
-          class="c-under_frame__cards__content"
-        >
-          <WilSkillCard :skill="skill" @click="onSelectSkill" />
-        </div>
-        <div class="c-under_frame__cards__content">
-          <WilCard @click="onBackSelectMove">
-            <div class="c-under_frame__cards__content--other">戻る</div>
-          </WilCard>
-        </div>
-      </div>
-      <button
-        class="c-under_frame__next_button"
-        :disabled="cardStart >= (enableSkills?.length ?? 0) - 4"
-        @click="cardStart++"
-      ></button>
+      <WilCardList
+        :dataList="[
+          ...enableSkills,
+          { label: '戻る', onClick: onBackSelectMove },
+        ]"
+        @selectSkill="onSelectSkill"
+      />
     </template>
 
     <template v-if="timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET">
@@ -189,8 +157,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, Ref, computed, onMounted, ref } from "vue";
-import WilCard from "@/components/molecules/games/wil/WilCard.vue";
+import { PropType, Ref, computed, ref } from "vue";
 import WilCharacterCard from "@/components/molecules/games/wil/WilCharacterCard.vue";
 import WilSkillCard from "@/components/molecules/games/wil/WilSkillCard.vue";
 import NameValueTable from "@/components/atoms/tables/NameValueTable.vue";
@@ -203,6 +170,7 @@ import { WilBurnCondition } from "@/composables/games/wil/types/condition";
 import { WIL_SKILL_ID } from "@/composables/games/wil/enums/skill";
 import { WilSkill } from "@/composables/games/wil/types/skill";
 import { WilField } from "@/composables/games/wil/types/field";
+import WilCardList from "@/components/molecules/games/wil/WilCardList.vue";
 
 const props = defineProps({
   timming: {
@@ -236,14 +204,21 @@ const emits = defineEmits([
   "update:selectedCharacter",
   "setCharacter",
   "removeCharacter",
+  "selectSkill",
+  "endTurn",
 ]);
 const timming = computed({
   get: () => props.timming,
   set: (newValue) => emits("update:timming", newValue),
 });
-const playerCharacters: Ref<
-  Array<{ character: WilCharacter; selected: boolean }>
-> = ref([]);
+const playerCharacterNum = computed(() => {
+  return props.field.getPlayerNum();
+});
+const playerCharacters = computed(() => {
+  return [...props.playerCharacters].sort((a: WilCharacter, b: WilCharacter) =>
+    a.id.localeCompare(b.id)
+  );
+});
 const selectedCharacter = computed({
   get: () => props.selectedCharacter,
   set: (newValue) => emits("update:selectedCharacter", newValue),
@@ -282,18 +257,6 @@ const enableSkills = computed(() => {
   return character.skills.map((skillId) => props.skills[skillId]);
 });
 
-const cardStart = ref(0);
-
-onMounted(() => {
-  playerCharacters.value = props.playerCharacters.map((character) => {
-    return {
-      character: character,
-      selected: false,
-    };
-  });
-});
-const func = () => {};
-
 // 配置終了ボタン押下時のイベント処理
 const onEndSet = () => {
   timming.value = WIL_BATTLE_TIMMING.BATTLE_START;
@@ -304,9 +267,8 @@ const onEndSet = () => {
 };
 // 配置キャラクターの選択時のイベント処理
 const onSetCharacter = (character: WilCharacter) => {
-  emits("setCharacter", character);
   selectedCharacter.value = character.id;
-  timming.value = WIL_BATTLE_TIMMING.SET_SELECT_CELL;
+  emits("setCharacter", character);
 };
 // 配置済みキャラクターの解除時のイベント処理
 const onRemoveSetCharacter = () => {
@@ -331,7 +293,11 @@ const onBackSelectMove = () => {
 // 発動スキル選択時のイベント処理
 const onSelectSkill = (skill: WilSkill) => {
   selectedSkill.value = skill.id;
-  timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET;
+  emits("selectSkill", skill);
+};
+// プレイヤーターン終了時のイベント処理
+const onEndTurn = () => {
+  emits("endTurn");
 };
 </script>
 
@@ -342,32 +308,6 @@ const onSelectSkill = (skill: WilSkill) => {
   left: 0;
   width: 100%;
   height: 30%;
-  &__cards {
-    position: absolute;
-    width: 90%;
-    height: 90%;
-    top: 5%;
-    left: 5%;
-    display: flex;
-    gap: 0 1%;
-    overflow: hidden;
-    &__content {
-      min-width: 19.2%;
-      max-width: 19.2%;
-      height: 100%;
-      transform: translateX(calc(-105% * var(--cardStart)));
-      transition: transform 0.3s ease-out;
-      &--other {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-        color: white;
-        background-color: rgba(0, 0, 0, 0.8);
-      }
-    }
-  }
   &__card {
     position: absolute;
     top: 5%;
@@ -413,29 +353,6 @@ const onSelectSkill = (skill: WilSkill) => {
       color: white;
     }
   }
-  &__pre_button,
-  &__next_button {
-    position: absolute;
-    top: 50%;
-    width: 20px;
-    height: 20px;
-    background-color: lightgray;
-    border: none;
-    cursor: pointer;
-    transform: translateY(-50%);
-    &:disabled {
-      background-color: gray;
-    }
-  }
-  &__pre_button {
-    left: 0%;
-    clip-path: polygon(100% 0%, 0% 50%, 100% 100%);
-  }
-  &__next_button {
-    right: 0%;
-    clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
-  }
-
   &__message_frame {
     display: flex;
     flex-direction: column;
@@ -455,24 +372,27 @@ const onSelectSkill = (skill: WilSkill) => {
   }
 }
 @media screen and (max-width: 400px) {
+  .c-under_frame__message,
   .c-under_frame__status,
   .c-under_frame__contents__message,
-  .c-under_frame__message {
+  .c-under_frame__message_frame {
     font-size: 10px;
   }
 }
 
 @media screen and (max-width: 600px) and (min-width: 400px) {
+  .c-under_frame__message,
   .c-under_frame__status,
   .c-under_frame__contents__message,
-  .c-under_frame__message {
+  .c-under_frame__message_frame {
     font-size: 12px;
   }
 }
 @media screen and (min-width: 600px) {
-  .c-under_frame__contents__message,
+  .c-under_frame__message,
   .c-under_frame__status,
-  .c-under_frame__message {
+  .c-under_frame__contents__message,
+  .c-under_frame__message_frame {
     font-size: 14px;
   }
 }

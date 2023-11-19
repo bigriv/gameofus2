@@ -15,7 +15,10 @@
       />
     </template>
     <template v-else-if="timming == WIL_EVENT_TIMMING.TRAINING">
-      <Training />
+      <Training
+        :playerCharacters="playerCharacters"
+        :characters="WIL_CHARACTERS"
+      />
     </template>
   </div>
 </template>

@@ -1,9 +1,9 @@
 export enum WIL_MOVE_RANGE {
-  CONSTANT = "CONSTANT", // 定量距離
+  FIRST = "FIRST", // 最前列
   SKIP = "SKIP", // 定量飛ばし
-  AROUND = "AROUND", // 斜め含む定量距離
-  CROSS = "CROSS", // 十字
-  FOWARD_ROW = "FOWARD_ROW", // 前方列
-  FOWARD_COLUMN = "FOWARD_COLUMN", // 前方同行
+  AROUND = "AROUND", // 八方
+  CROSS = "CROSS", // 四方
+  ROW = "ROW", // 列
+  COLUMN = "COLUMN", // 行
   ALL = "ALL", // 全範囲
 }

@@ -7,10 +7,7 @@ export const WIL_SKILL_DEFINES: Array<{
   name: string;
   description: string; // 30文字まで
   cost: number;
-  range: {
-    type: WIL_MOVE_RANGE;
-    distanse: number;
-  };
+  range:  WIL_MOVE_RANGE;
   element: WIL_ELEMENT;
 }> = [
   {
@@ -18,10 +15,7 @@ export const WIL_SKILL_DEFINES: Array<{
     name: "スラッシュ",
     description: "通常の近接攻撃。",
     cost: 1,
-    range: {
-      type: WIL_MOVE_RANGE.CONSTANT,
-      distanse: 1,
-    },
+    range:  WIL_MOVE_RANGE.FIRST,
     element: WIL_ELEMENT.NONE,
   },
   {
@@ -29,10 +23,7 @@ export const WIL_SKILL_DEFINES: Array<{
     name: "聖光線",
     description: "同じ行の敵すべてに攻撃。",
     cost: 3,
-    range: {
-      type: WIL_MOVE_RANGE.FOWARD_COLUMN,
-      distanse: 10,
-    },
+    range: WIL_MOVE_RANGE.COLUMN,
     element: WIL_ELEMENT.SHINE,
   },
   {
@@ -40,10 +31,7 @@ export const WIL_SKILL_DEFINES: Array<{
     name: "シャインアブソーブ",
     description: "攻撃後、与えたダメージ分回復する。",
     cost: 3,
-    range: {
-      type: WIL_MOVE_RANGE.CONSTANT,
-      distanse: 1,
-    },
+    range:  WIL_MOVE_RANGE.FIRST,
     element: WIL_ELEMENT.SHINE,
   },
   {
@@ -51,21 +39,15 @@ export const WIL_SKILL_DEFINES: Array<{
     name: "光弾",
     description: "光属性の魔法攻撃。",
     cost: 2,
-    range: {
-      type: WIL_MOVE_RANGE.CONSTANT,
-      distanse: 3,
-    },
+    range:  WIL_MOVE_RANGE.SKIP,
     element: WIL_ELEMENT.SHINE,
   },
   {
     id: WIL_SKILL_ID.ULT_SACRED_SWORD,
     name: "極・聖剣生成",
-    description: "あらゆる場所の敵に攻撃できる。",
+    description: "全ての場所の敵を攻撃する。",
     cost: 5,
-    range: {
-      type: WIL_MOVE_RANGE.ALL,
-      distanse: 0,
-    },
+    range:  WIL_MOVE_RANGE.ALL,
     element: WIL_ELEMENT.SHINE,
   },
 ];

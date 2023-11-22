@@ -3,6 +3,7 @@ import { WIL_SKILL_DEFINES } from "./defines/skill";
 import { WilSkill } from "./types/skill";
 import { WilCharacter } from "./types/character";
 import { WIL_CHARACTER_DEFINES } from "./defines/character";
+import { WilPlayer } from "./types/player";
 
 export const useWilInit = () => {
   const initSkills = (): { [key: string]: WilSkill } => {
@@ -21,10 +22,24 @@ export const useWilInit = () => {
     return characters;
   };
 
+  const initPlayer = (): WilPlayer => {
+    const player = new WilPlayer();
+    player.characters = [
+      WIL_CHARACTERS.value.HERO,
+      WIL_CHARACTERS.value.HOLY_KNIGHTS_SOLDIER,
+      WIL_CHARACTERS.value.HOLY_KNIGHTS_MAGICIAN,
+      WIL_CHARACTERS.value.HOLY_KNIGHTS_LEADER,
+      WIL_CHARACTERS.value.HOLY_KNIGHTS_ARCHER,
+    ];
+    return player
+  };
   const WIL_SKILLS = ref(initSkills());
   const WIL_CHARACTERS = ref(initCharacters());
+  const player = ref(initPlayer());
+
   return {
     WIL_SKILLS,
     WIL_CHARACTERS,
+    player,
   };
 };

@@ -47,6 +47,13 @@ const games = [
     description:
       "人間である主人公が魔王を目指して世界を支配していくゲーム。ゴブリンやエルフなど個性豊かなキャラクターたちとの戦闘・会話をお楽しみください。",
   },
+  {
+    path: "Wil",
+    title: "聖騎士と五つの国",
+    tags: ["RPG", "スマホ対応"],
+    playtime: "1時間",
+    description: "",
+  },
 ];
 </script>
 

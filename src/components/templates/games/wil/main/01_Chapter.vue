@@ -1,43 +1,22 @@
 <template>
-  <div
-    class="c-chapter"
-    :class="{ 'u-clickable': !isEndMessage }"
-    @click="isEndMessage = true"
-  >
-    <div class="c-chapter__title">
-      <transition>
+  <transition>
+    <div v-show="isMounted" class="c-chapter">
+      <div class="c-chapter__title">
         <MessageFrame
-          v-show="isMounted"
           :complete="true"
           :messages="title"
           :fontColor="COLOR.WHITE"
           vertical="center"
           horizontal="center"
         />
-      </transition>
-    </div>
-    <div class="c-chapter__story">
-      <MessageFrame
-        v-model:complete="isEndMessage"
-        :messages="messages"
-        :fontColor="COLOR.WHITE"
-        :speed="0.5"
-        :delay="1"
-        vertical="start"
-        horizontal="center"
-      />
-    </div>
-    <div class="c-chapter__buttons">
-      <div class="c-chapter__buttons--next">
-        <GameButton
-          v-show="isEndMessage"
-          label="次へ"
-          :fontColor="COLOR.WHITE"
-          @click="onNext"
-        />
+      </div>
+      <div class="c-chapter__buttons">
+        <div class="c-chapter__buttons--next">
+          <GameButton label="次へ" :fontColor="COLOR.WHITE" @click="onNext" />
+        </div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script setup lang="ts">
@@ -49,9 +28,7 @@ import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 const emits = defineEmits(["next"]);
 
 const title = ref(["第１章 聖の国と騎士団"]);
-const messages = ref(["テキスト1", "テキスト2", "テキスト3"]);
 const isMounted = ref();
-const isEndMessage = ref(false);
 
 onMounted(() => (isMounted.value = true));
 
@@ -72,16 +49,15 @@ const onNext = () => {
   height: 100%;
   &__title {
     width: 100%;
-    height: 20%;
-  }
-  &__story {
-    width: 100%;
     height: 40%;
   }
   &__buttons {
     width: 100%;
     height: 40%;
     &--next {
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
       height: 20%;
       margin: auto;
     }

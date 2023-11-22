@@ -3,14 +3,17 @@
     <div class="c-field__frame">
       <div class="c-field__frame__enemy">
         <WilBattleField
+          :reverse="true"
           :cells="props.field.enemyCells"
           @click="onClickEnemyCell"
+          @hover="onHoverCharacter"
         />
       </div>
       <div class="c-field__frame__player">
         <WilBattleField
           :cells="props.field.playerCells"
           @click="onClickPlayerCell"
+          @hover="onHoverCharacter"
         />
       </div>
     </div>
@@ -21,6 +24,7 @@
 import { PropType } from "vue";
 import WilBattleField from "@/components/molecules/games/wil/WilBattleField.vue";
 import { WilField } from "@/composables/games/wil/types/field";
+import { WilCharacter } from "@/composables/games/wil/types/character";
 
 const props = defineProps({
   field: {
@@ -29,13 +33,16 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["selectEnemyCell", "selectPlayerCell"]);
+const emits = defineEmits(["selectEnemyCell", "selectPlayerCell", "hover"]);
 
 const onClickEnemyCell = (y: number, x: number) => {
   emits("selectEnemyCell", x, y);
 };
 const onClickPlayerCell = (y: number, x: number) => {
   emits("selectPlayerCell", x, y);
+};
+const onHoverCharacter = (character: WilCharacter | undefined) => {
+  emits("hover", character);
 };
 </script>
 

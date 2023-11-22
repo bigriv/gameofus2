@@ -111,20 +111,21 @@ import { WilStatus } from "@/composables/games/wil/types/status";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import { WilTraining } from "@/composables/games/wil/types/training";
 import WilTrainingCard from "@/components/molecules/games/wil/WilTrainingCard.vue";
+import { WilPlayer } from "@/composables/games/wil/types/player";
 
 const props = defineProps({
   characters: {
     type: Object as PropType<{ [key: string]: WilCharacter }>,
     required: true,
   },
-  playerCharacters: {
-    type: Array<WilCharacter>,
+  player: {
+    type: Object as PropType<WilPlayer>,
     required: true,
   },
 });
 const selectedCharacter: Ref<WIL_CHARACTER_ID | undefined> = ref();
 const playerCharacters: Ref<Array<WilCharacter>> = ref(
-  [...props.playerCharacters].sort()
+  [...props.player.characters].sort()
 );
 const days = ref(1);
 const trainingPlans: {
@@ -142,7 +143,7 @@ const trainingPlans: {
     training: new WilTraining({
       id: WIL_TRAINING_ID.ATTACK,
       name: "侵攻訓練",
-      image: "/games/wil/swords.svg",
+      image: "/games/wil/trainings/swords.svg",
     }),
     character: undefined,
     result: undefined,
@@ -152,7 +153,7 @@ const trainingPlans: {
     training: new WilTraining({
       id: WIL_TRAINING_ID.DEFENSE,
       name: "防衛訓練",
-      image: "/games/wil/shield.svg",
+      image: "/games/wil/trainings/shield.svg",
     }),
     character: undefined,
     next: WIL_TRAINING_ID.MIGRATION,
@@ -161,7 +162,7 @@ const trainingPlans: {
     training: new WilTraining({
       id: WIL_TRAINING_ID.MIGRATION,
       name: "移動訓練",
-      image: "/games/wil/shoes.svg",
+      image: "/games/wil/trainings/shoes.svg",
     }),
     character: undefined,
     next: WIL_TRAINING_ID.MAGIC,
@@ -170,7 +171,7 @@ const trainingPlans: {
     training: new WilTraining({
       id: WIL_TRAINING_ID.MAGIC,
       name: "魔導学習",
-      image: "/games/wil/book.svg",
+      image: "/games/wil/trainings/book.svg",
     }),
     character: undefined,
     next: WIL_TRAINING_ID.PHISIC,
@@ -179,7 +180,7 @@ const trainingPlans: {
     training: new WilTraining({
       id: WIL_TRAINING_ID.PHISIC,
       name: "肉体強化",
-      image: "/games/wil/ironAllay.svg",
+      image: "/games/wil/trainings/ironAllay.svg",
     }),
     character: undefined,
     next: null,

@@ -6,7 +6,6 @@ import { WilCondition } from "./condition";
 import { WIL_SKILL_ID } from "../enums/skill";
 import { WIL_CHARACTER_ID } from "../enums/character";
 import GOUVisualDefinition from "@/composables/types/visuals/GOUVisualDefinition";
-import { WilFieldCell } from "./field";
 
 export class WilCharacter {
   id: WIL_CHARACTER_ID;
@@ -18,11 +17,6 @@ export class WilCharacter {
   condition: WilCondition | null = null;
   element: WIL_ELEMENT;
   skills: Array<WIL_SKILL_ID> = [];
-
-  move: {
-    useSkill?: WIL_SKILL_ID;
-    skillTarget?: WilFieldCell;
-  } = {};
 
   constructor(define: {
     id: WIL_CHARACTER_ID;

@@ -7,10 +7,7 @@ export class WilSkill {
   name: string;
   description: string;
   cost: number;
-  range: {
-    type: WIL_MOVE_RANGE;
-    distanse: number;
-  };
+  range: WIL_MOVE_RANGE;
   element: WIL_ELEMENT;
 
   constructor(define: {
@@ -18,10 +15,7 @@ export class WilSkill {
     name: string;
     description: string;
     cost: number;
-    range: {
-      type: WIL_MOVE_RANGE;
-      distanse: number;
-    };
+    range: WIL_MOVE_RANGE;
     element: WIL_ELEMENT;
   }) {
     this.id = define.id;

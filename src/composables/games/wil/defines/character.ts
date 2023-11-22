@@ -26,13 +26,13 @@ export const WIL_CHARACTER_DEFINES: Array<{
       type: GOUVisualType.IMAGE_SVG,
       width: 100,
       height: 100,
-      path: "/commons/icons/human_blue.svg",
+      path: "/games/wil/characters/HERO.png",
     },
     miniVisual: {
       type: GOUVisualType.IMAGE_SVG,
       width: 100,
       height: 100,
-      path: "/commons/icons/human_blue.svg",
+      path: "/games/wil/characters/HERO.png",
     },
     status: {
       life: 100,

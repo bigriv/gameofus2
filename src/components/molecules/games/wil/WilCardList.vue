@@ -146,4 +146,20 @@ const onSelectCharacter = (character: WilCharacter) => {
     clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
   }
 }
+@media screen and (max-width: 400px) {
+  .c-card_list__container__content--other {
+    font-size: 10px;
+  }
+}
+
+@media screen and (max-width: 600px) and (min-width: 400px) {
+  .c-card_list__container__content--other {
+    font-size: 12px;
+  }
+}
+@media screen and (min-width: 600px) {
+  .c-card_list__container__content--other {
+    font-size: 14px;
+  }
+}
 </style>

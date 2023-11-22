@@ -1,5 +1,8 @@
 <template>
-  <div class="c-battle_field">
+  <div
+    class="c-battle_field"
+    :class="{ 'c-battle_field--reverse': props.reverse }"
+  >
     <template v-for="column in WilField.HEIGHT">
       <template v-for="row in WilField.WIDTH">
         <div
@@ -14,6 +17,12 @@
             },
           ]"
           @click="onClickCell(column - 1, row - 1)"
+          @mouseenter="
+            onHoverCharacter(
+              props.cells[(column - 1) * WilField.WIDTH + (row - 1)].character
+            )
+          "
+          @mouseleave="onHoverCharacter(undefined)"
         >
           <div
             v-if="
@@ -36,15 +45,23 @@
 
 <script setup lang="ts">
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
+import { WilCharacter } from "@/composables/games/wil/types/character";
 import { WilFieldCell, WilField } from "@/composables/games/wil/types/field";
 
 const props = defineProps({
+  reverse: {
+    type: Boolean,
+    default: false,
+  },
   cells: { type: Array<WilFieldCell>, required: true },
 });
-const emits = defineEmits(["click"]);
+const emits = defineEmits(["click", "hover"]);
 
 const onClickCell = (x: number, y: number) => {
   emits("click", x, y);
+};
+const onHoverCharacter = (character: WilCharacter | undefined) => {
+  emits("hover", character);
 };
 </script>
 
@@ -57,6 +74,9 @@ const onClickCell = (x: number, y: number) => {
   border-right: 2px solid black;
   border-radius: 4px;
   box-sizing: content-box;
+  &--reverse {
+    transform: scaleX(-1);
+  }
   &__cell {
     position: relative;
     width: 33%;

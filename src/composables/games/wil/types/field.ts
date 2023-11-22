@@ -2,12 +2,14 @@ import { WilCharacter } from "@/composables/games/wil/types/character";
 import { WIL_CELL_COLOR } from "../enums/cell";
 import { WIL_BATTLE_TIMMING } from "../enums/timming";
 import { WilSkill } from "./skill";
+import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
+import { WIL_MOVE_RANGE } from "../enums/range";
 
 export class WilFieldCell {
   readonly x: number;
   readonly y: number;
   color: WIL_CELL_COLOR = WIL_CELL_COLOR.WHITE;
-  character: WilCharacter | null = null;
+  character?: WilCharacter;
   selected: boolean = false;
 
   constructor(x: number, y: number) {
@@ -53,6 +55,47 @@ export class WilField {
   getEnemyNum(): number {
     return this.enemyCells.filter((cell) => cell.character).length;
   }
+
+  /**
+   * プレイヤーキャラクターのリストを取得する
+   * @returns プレイヤーキャラクターのリスト
+   */
+  getPlayerCharacters(): Array<WilCharacter> {
+    return this.playerCells
+      .filter((cell) => cell.character instanceof WilCharacter)
+      .map((cell) => cell.character as WilCharacter)
+      .sort((a: WilCharacter, b: WilCharacter) => a.id.localeCompare(b.id));
+  }
+
+  /**
+   * 敵キャラクターのリストを取得する
+   * @returns 敵キャラクターのリスト
+   */
+  getEnemyCharacters(): Array<WilCharacter> {
+    return this.enemyCells
+      .filter((cell) => cell.character instanceof WilCharacter)
+      .map((cell) => cell.character as WilCharacter)
+      .sort((a: WilCharacter, b: WilCharacter) => a.id.localeCompare(b.id));
+  }
+
+  /**
+   * 指定したキャラクターの配置されているプレイヤーのマスを取得する
+   * @param character キャラクター
+   * @returns 指定したキャラクターの配置されているマス、取得できない場合はundefined
+   */
+  getPlayerCharacterCell(character: WilCharacter): WilFieldCell | undefined {
+    return this.playerCells.find((cell) => cell.character?.id === character.id);
+  }
+
+  /**
+   * 指定したキャラクターの配置されている相手のマスを取得する
+   * @param character キャラクター
+   * @returns 指定したキャラクターの配置されているマス、取得できない場合はundefined
+   */
+  getEnemyCharacterCell(character: WilCharacter): WilFieldCell | undefined {
+    return this.enemyCells.find((cell) => cell.character?.id === character.id);
+  }
+
   /**
    * キャラクターを配置する
    * @param x
@@ -72,6 +115,7 @@ export class WilField {
     cell.character = character;
     return true;
   }
+
   /**
    * キャラクターを配置できるかを判定する
    * @returns 配置可能ならtrue、それ以外はfalse
@@ -96,14 +140,25 @@ export class WilField {
     if (!cell || !cell.character) {
       return;
     }
-    cell.character = null;
+    cell.character = undefined;
+  }
+
+  migrateCharacter(character: WilCharacter, target: WilFieldCell) {
+    const cell = this.getPlayerCharacterCell(character);
+    if (!cell) {
+      throw new WrongImplementationError("キャラクターの存在しないマスです。");
+    }
+    target.character = cell.character;
+    cell.character = undefined;
   }
 
   changeColor(
     timming: WIL_BATTLE_TIMMING,
     __character?: WilCharacter,
-    __skill?: WilSkill
+    skill?: WilSkill,
+    target?: WilCharacter
   ) {
+    console.log("changeColor", timming)
     if (timming === WIL_BATTLE_TIMMING.SET_SELECT_CELL) {
       this.playerCells.forEach((cell) => {
         cell.color = WIL_CELL_COLOR.BLUE;
@@ -114,7 +169,10 @@ export class WilField {
       return;
     }
 
-    if (timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_CHARACTER) {
+    if (
+      timming === WIL_BATTLE_TIMMING.BATTLE_START ||
+      timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_CHARACTER
+    ) {
       this.playerCells.forEach((cell) => {
         cell.color = WIL_CELL_COLOR.WHITE;
         if (cell.character) {
@@ -122,9 +180,97 @@ export class WilField {
         }
       });
       this.enemyCells.forEach((cell) => {
-        cell.color = WIL_CELL_COLOR.RED;
+        cell.color = WIL_CELL_COLOR.WHITE;
+        if (cell.character) {
+          cell.color = WIL_CELL_COLOR.RED;
+        }
       });
       return;
     }
+
+    if (
+      timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET ||
+      timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL
+    ) {
+      this.playerCells.forEach((cell) => {
+        cell.color = WIL_CELL_COLOR.WHITE;
+      });
+      this.enemyCells.forEach((cell) => {
+        if (cell.character) {
+          cell.color = WIL_CELL_COLOR.RED;
+        } else {
+          cell.color = WIL_CELL_COLOR.WHITE;
+        }
+      });
+
+      if (!target) {
+        return;
+      }
+      const targetCell = this.getEnemyCharacterCell(target);
+      if (!targetCell || !targetCell.character) {
+        return;
+      }
+      if (!skill) {
+        return;
+      }
+      switch (skill.range) {
+        case WIL_MOVE_RANGE.FIRST:
+          targetCell.color = WIL_CELL_COLOR.RED;
+          break;
+        case WIL_MOVE_RANGE.SKIP:
+          this.enemyCells.forEach((cell) => {
+            if (cell.character) {
+              cell.color = WIL_CELL_COLOR.RED;
+            }
+          });
+          break;
+        case WIL_MOVE_RANGE.AROUND:
+          this.enemyCells.forEach((cell) => {
+            if (cell.x < targetCell.x - 1 || cell.x > targetCell.x + 1) {
+              return;
+            }
+            if (cell.y < targetCell.y - 1 || cell.y > targetCell.y + 1) {
+              return;
+            }
+            cell.color = WIL_CELL_COLOR.RED;
+          });
+          break;
+        case WIL_MOVE_RANGE.CROSS:
+          this.enemyCells.forEach((cell) => {
+            if (cell.x < targetCell.x - 1 || cell.x > targetCell.x + 1) {
+              return;
+            }
+            if (cell.y < targetCell.y - 1 || cell.y > targetCell.y + 1) {
+              return;
+            }
+            cell.color = WIL_CELL_COLOR.RED;
+          });
+          break;
+        case WIL_MOVE_RANGE.ROW:
+          this.enemyCells.forEach((cell) => {
+            if (cell.x == targetCell.x) {
+              cell.color = WIL_CELL_COLOR.RED;
+            }
+          });
+          break;
+        case WIL_MOVE_RANGE.COLUMN:
+          this.enemyCells.forEach((cell) => {
+            if (cell.y == targetCell.y) {
+              cell.color = WIL_CELL_COLOR.RED;
+            }
+          });
+          break;
+        case WIL_MOVE_RANGE.ALL:
+          this.enemyCells.forEach((cell) => {
+            cell.color = WIL_CELL_COLOR.BLUE;
+          });
+          break;
+      }
+    }
+  }
+
+  resetSelected() {
+    this.playerCells.forEach((cell) => (cell.selected = false));
+    this.enemyCells.forEach((cell) => (cell.selected = false));
   }
 }

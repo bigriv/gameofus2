@@ -28,8 +28,12 @@ const { breadcrumbs } = useBreadCrumbList();
   font-size: 16px;
   width: 100%;
   min-width: 400px;
+  padding: 0px 4px;
+  font-size: 14px;
+  width: 100%;
+  min-width: 400px;
   &__space {
-    padding: 0 5px;
+    padding: 0 4px;
   }
 }
 </style>

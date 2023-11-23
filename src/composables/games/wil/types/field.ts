@@ -12,9 +12,12 @@ export class WilFieldCell {
   character?: WilCharacter;
   selected: boolean = false;
 
-  constructor(x: number, y: number) {
+  constructor(x: number, y: number, character?: WilCharacter) {
     this.x = x;
     this.y = y;
+    if (character) {
+      this.character = character;
+    }
   }
 }
 

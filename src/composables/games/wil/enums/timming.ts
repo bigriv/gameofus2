@@ -1,15 +1,16 @@
-export enum WIL_FLOW_TIMMING {
+export enum WIL_OVERALL_TIMMING {
   TITLE,
+  LOADING,
   MAIN,
   ENDING,
 }
 
-export enum WIL_EVENT_TIMMING {
-  LOADING,
+export enum WIL_CHAPTER_TIMMING {
   OPENING,
   TALK,
   BATTLE,
   TRAINING,
+  ENDING,
 }
 
 export enum WIL_BATTLE_TIMMING {

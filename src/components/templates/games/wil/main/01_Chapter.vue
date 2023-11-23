@@ -20,14 +20,21 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { PropType, onMounted, computed, ref } from "vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import { COLOR } from "@/composables/types/GOUColor";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
+import { WilChapter } from "@/composables/games/wil/types/chaper";
 
+const props = defineProps({
+  chapter: {
+    type: Object as PropType<WilChapter>,
+    required: true,
+  },
+});
 const emits = defineEmits(["next"]);
 
-const title = ref(["第１章 聖の国と騎士団"]);
+const title = computed(() => [props.chapter.title]);
 const isMounted = ref();
 
 onMounted(() => (isMounted.value = true));

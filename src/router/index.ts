@@ -8,13 +8,25 @@ import BasicLayout from "@/components/templates/layouts/BasicLayout.vue";
 const routes = [
   {
     path: "/",
-    meta: { title: "ホーム" },
+    meta: { title: "Home" },
     component: BasicLayout,
     children: [
       {
         path: "",
         name: "Home",
         component: () => import("@/components/views/index.vue"),
+      },
+      {
+        path: "about",
+        name: "About",
+        meta: { title: "About" },
+        component: () => import("@/components/views/about.vue"),
+      },
+      {
+        path: "contact",
+        name: "Contact",
+        meta: { title: "Contact" },
+        component: () => import("@/components/views/contact.vue"),
       },
       {
         path: "games",

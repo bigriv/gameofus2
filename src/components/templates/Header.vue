@@ -4,8 +4,8 @@
     <nav>
       <ul>
         <li><router-link to="/">HOME</router-link></li>
-        <li><router-link to="/">ABOUT</router-link></li>
-        <li><router-link to="/">CONTACT</router-link></li>
+        <li><router-link to="/about">ABOUT</router-link></li>
+        <li><router-link to="/contact">CONTACT</router-link></li>
       </ul>
     </nav>
   </header>

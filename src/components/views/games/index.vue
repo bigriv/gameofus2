@@ -52,7 +52,6 @@ const games = [
 
 <style scoped lang="scss">
 .c-games {
-  padding: 0 20px;
   &__title {
     text-wrap: nowrap;
   }

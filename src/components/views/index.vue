@@ -35,7 +35,6 @@ const contents = [
 
 <style scoped lang="scss">
 .c-contents {
-  padding: 0 20px;
   &__list {
     padding: 10px;
     &__label {

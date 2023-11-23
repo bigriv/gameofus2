@@ -1,7 +1,9 @@
 <template>
   <Header class="u-margin_top--10" />
   <BreadCrumbList class="u-margin_top--20" />
-  <router-view v-if="!isReload" class="u-margin_top--20" />
+  <main>
+    <router-view v-if="!isReload" class="u-margin_top--20" />
+  </main>
 </template>
 
 <script setup lang="ts">
@@ -26,4 +28,8 @@ watch(
 );
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+main {
+  padding: 0 20px;
+}
+</style>

@@ -23,15 +23,11 @@ const { breadcrumbs } = useBreadCrumbList();
 <style scoped lang="scss">
 .c-breadcrumbs {
   display: flex;
-  background-color: lightgray;
-  padding: 10px;
-  font-size: 16px;
+  background-color: #eee;
   width: 100%;
-  min-width: 400px;
-  padding: 0px 4px;
+  min-width: 300px;
+  padding: 0px 20px;
   font-size: 14px;
-  width: 100%;
-  min-width: 400px;
   &__space {
     padding: 0 4px;
   }

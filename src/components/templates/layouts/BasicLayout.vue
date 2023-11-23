@@ -1,5 +1,5 @@
 <template>
-  <Header class="u-margin_top--20" />
+  <Header class="u-margin_top--10" />
   <BreadCrumbList class="u-margin_top--20" />
   <router-view v-if="!isReload" class="u-margin_top--20" />
 </template>

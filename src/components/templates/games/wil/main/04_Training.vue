@@ -146,7 +146,7 @@ const trainingPlans: {
     training: new WilTraining({
       id: WIL_TRAINING_ID.ATTACK,
       name: "侵攻訓練",
-      image: "/games/wil/trainings/swords.svg",
+      image: "/games/wil/images/trainings/swords.svg",
     }),
     character: undefined,
     result: undefined,
@@ -156,7 +156,7 @@ const trainingPlans: {
     training: new WilTraining({
       id: WIL_TRAINING_ID.DEFENSE,
       name: "防衛訓練",
-      image: "/games/wil/trainings/shield.svg",
+      image: "/games/wil/images/trainings/shield.svg",
     }),
     character: undefined,
     next: WIL_TRAINING_ID.MIGRATION,
@@ -165,7 +165,7 @@ const trainingPlans: {
     training: new WilTraining({
       id: WIL_TRAINING_ID.MIGRATION,
       name: "移動訓練",
-      image: "/games/wil/trainings/shoes.svg",
+      image: "/games/wil/images/trainings/shoes.svg",
     }),
     character: undefined,
     next: WIL_TRAINING_ID.MAGIC,
@@ -174,7 +174,7 @@ const trainingPlans: {
     training: new WilTraining({
       id: WIL_TRAINING_ID.MAGIC,
       name: "魔導学習",
-      image: "/games/wil/trainings/book.svg",
+      image: "/games/wil/images/trainings/book.svg",
     }),
     character: undefined,
     next: WIL_TRAINING_ID.PHISIC,
@@ -183,7 +183,7 @@ const trainingPlans: {
     training: new WilTraining({
       id: WIL_TRAINING_ID.PHISIC,
       name: "肉体強化",
-      image: "/games/wil/trainings/ironAllay.svg",
+      image: "/games/wil/images/trainings/ironAllay.svg",
     }),
     character: undefined,
     next: null,

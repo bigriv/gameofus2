@@ -5,14 +5,18 @@
         <MessageFrame
           :complete="true"
           :messages="title"
-          :fontColor="COLOR.WHITE"
+          :fontColor="WIL_FRAME_FONT_COLOR"
           vertical="center"
           horizontal="center"
         />
       </div>
       <div class="c-chapter__buttons">
         <div class="c-chapter__buttons--next">
-          <GameButton label="次へ" :fontColor="COLOR.WHITE" @click="onNext" />
+          <GameButton
+            label="次へ"
+            :fontColor="WIL_BUTTON_FONT_COLOR"
+            @click="onNext"
+          />
         </div>
       </div>
     </div>
@@ -22,9 +26,12 @@
 <script setup lang="ts">
 import { PropType, onMounted, computed, ref } from "vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
-import { COLOR } from "@/composables/types/GOUColor";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import { WilChapter } from "@/composables/games/wil/types/chaper";
+import {
+  WIL_FRAME_FONT_COLOR,
+  WIL_BUTTON_FONT_COLOR,
+} from "@/composables/games/wil/const";
 
 const props = defineProps({
   chapter: {

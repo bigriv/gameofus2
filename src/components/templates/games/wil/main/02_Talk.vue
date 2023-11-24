@@ -13,9 +13,9 @@
       <MessageFrame
         :complete="true"
         :messages="talker"
-        :fontColor="COLOR.WHITE"
-        :backgroundColor="MESSAGE_BACKGROUND_COLOR"
-        :borderColor="MESSAGE_BORDER_COLOR"
+        :fontColor="WIL_FRAME_FONT_COLOR"
+        :backgroundColor="WIL_FRAME_BACKGROUND_COLOR"
+        :borderColor="WIL_FRAME_BORDER_COLOR"
         vertical="center"
         horizontal="start"
       />
@@ -24,9 +24,9 @@
       <MessageFrame
         v-model:complete="isEndMessage"
         :messages="message"
-        :fontColor="COLOR.WHITE"
-        :backgroundColor="MESSAGE_BACKGROUND_COLOR"
-        :borderColor="MESSAGE_BORDER_COLOR"
+        :fontColor="WIL_FRAME_FONT_COLOR"
+        :backgroundColor="WIL_FRAME_BACKGROUND_COLOR"
+        :borderColor="WIL_FRAME_BORDER_COLOR"
         :speed="1"
         :clickable="message.length > 0"
         vertical="start"
@@ -41,9 +41,13 @@
 import { PropType, Ref, computed, ref } from "vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
-import { COLOR, GOUColor } from "@/composables/types/GOUColor";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WilTalkEvent } from "@/composables/games/wil/types/event";
+import {
+  WIL_FRAME_FONT_COLOR,
+  WIL_FRAME_BORDER_COLOR,
+  WIL_FRAME_BACKGROUND_COLOR,
+} from "@/composables/games/wil/const";
 
 const props = defineProps({
   left: {
@@ -76,8 +80,7 @@ const talker = computed(() => {
   return [props.event.talker];
 });
 const isEndMessage = ref(false);
-const MESSAGE_BACKGROUND_COLOR = new GOUColor(COLOR.BLACK, 0.8);
-const MESSAGE_BORDER_COLOR = new GOUColor(COLOR.LIGHT_GRAY);
+
 const onClickMessageFrame = () => {
   console.log("onClickMessageFrame");
   emits("end");

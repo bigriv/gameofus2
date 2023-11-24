@@ -6,9 +6,9 @@
       </div>
       <div class="c-under_frame__status">
         <NameValueTable
-          :backgroundColor="new GOUColor(COLOR.BLACK, 0.8)"
-          :borderColor="new GOUColor(COLOR.WHITE, 0.8)"
-          :fontColor="COLOR.WHITE"
+          :backgroundColor="WIL_FRAME_BACKGROUND_COLOR"
+          :borderColor="WIL_FRAME_BORDER_COLOR"
+          :fontColor="WIL_FRAME_FONT_COLOR"
           :dataList="characterStatusList"
         />
       </div>
@@ -26,8 +26,8 @@
           >
             <GameButton
               label="配置終了"
-              :fontColor="COLOR.WHITE"
-              :backgroundColor="COLOR.BLACK"
+              :fontColor="WIL_BUTTON_FONT_COLOR"
+              :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
               @click="onEndSet"
             />
           </div>
@@ -63,9 +63,9 @@
           </div>
           <div class="c-under_frame__status">
             <NameValueTable
-              :backgroundColor="new GOUColor(COLOR.BLACK, 0.8)"
-              :borderColor="new GOUColor(COLOR.WHITE, 0.8)"
-              :fontColor="COLOR.WHITE"
+              :backgroundColor="WIL_FRAME_BACKGROUND_COLOR"
+              :borderColor="WIL_FRAME_BORDER_COLOR"
+              :fontColor="WIL_FRAME_FONT_COLOR"
               :dataList="characterStatusList"
             />
           </div>
@@ -73,24 +73,24 @@
             <div class="c-under_frame__contents__button">
               <GameButton
                 label="移動"
-                :fontColor="COLOR.WHITE"
-                :backgroundColor="COLOR.BLACK"
+                :fontColor="WIL_BUTTON_FONT_COLOR"
+                :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
                 @click="onMigrate"
               />
             </div>
             <div class="c-under_frame__contents__button">
               <GameButton
                 label="攻撃・魔法"
-                :fontColor="COLOR.WHITE"
-                :backgroundColor="COLOR.BLACK"
+                :fontColor="WIL_BUTTON_FONT_COLOR"
+                :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
                 @click="onShowSkillList"
               />
             </div>
             <div class="c-under_frame__contents__button">
               <GameButton
                 label="戻る"
-                :fontColor="COLOR.WHITE"
-                :backgroundColor="COLOR.BLACK"
+                :fontColor="WIL_BUTTON_FONT_COLOR"
+                :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
                 @click="onBackSelectCharacter"
               />
             </div>
@@ -107,9 +107,9 @@
           </div>
           <div class="c-under_frame__status">
             <NameValueTable
-              :backgroundColor="new GOUColor(COLOR.BLACK, 0.8)"
-              :borderColor="new GOUColor(COLOR.WHITE, 0.8)"
-              :fontColor="COLOR.WHITE"
+              :backgroundColor="WIL_FRAME_BACKGROUND_COLOR"
+              :borderColor="WIL_FRAME_BORDER_COLOR"
+              :fontColor="WIL_BUTTON_FONT_COLOR"
               :dataList="characterStatusList"
             />
           </div>
@@ -117,8 +117,8 @@
             <div class="c-under_frame__contents__button">
               <GameButton
                 label="戻る"
-                :fontColor="COLOR.WHITE"
-                :backgroundColor="COLOR.BLACK"
+                :fontColor="WIL_BUTTON_FONT_COLOR"
+                :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
                 @click="onBackSelectMove"
               />
             </div>
@@ -143,16 +143,16 @@
             <div class="c-under_frame__contents__button">
               <GameButton
                 label="対象選択"
-                :fontColor="COLOR.WHITE"
-                :backgroundColor="COLOR.BLACK"
+                :fontColor="WIL_BUTTON_FONT_COLOR"
+                :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
                 @click="onSelectSkill"
               />
             </div>
             <div class="c-under_frame__contents__button">
               <GameButton
                 label="戻る"
-                :fontColor="COLOR.WHITE"
-                :backgroundColor="COLOR.BLACK"
+                :fontColor="WIL_BUTTON_FONT_COLOR"
+                :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
                 @click="onShowSkillList"
               />
             </div>
@@ -191,13 +191,19 @@ import NameValueTable from "@/components/atoms/tables/NameValueTable.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import { WIL_BATTLE_TIMMING } from "@/composables/games/wil/enums/timming";
 import { WilCharacter } from "@/composables/games/wil/types/character";
-import { COLOR, GOUColor } from "@/composables/types/GOUColor";
 import { WilBurnCondition } from "@/composables/games/wil/types/condition";
 import { WilSkill } from "@/composables/games/wil/types/skill";
 import { WilField } from "@/composables/games/wil/types/field";
 import WilCardList from "@/components/molecules/games/wil/WilCardList.vue";
 import { WilPlayer } from "@/composables/games/wil/types/player";
 import { WilComputer } from "@/composables/games/wil/types/computer";
+import {
+  WIL_FRAME_FONT_COLOR,
+  WIL_FRAME_BORDER_COLOR,
+  WIL_FRAME_BACKGROUND_COLOR,
+  WIL_BUTTON_FONT_COLOR,
+  WIL_BUTTON_BACKGROUND_COLOR,
+} from "@/composables/games/wil/const";
 
 const props = defineProps({
   timming: {

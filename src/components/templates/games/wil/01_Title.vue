@@ -4,15 +4,15 @@
     <div class="c-game__drawer__buttons">
       <GameButton
         label="さいしょから"
-        :fontColor="COLOR.WHITE"
-        :backgroundColor="COLOR.BLACK"
+        :fontColor="WIL_BUTTON_FONT_COLOR"
+        :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
         class="c-game__drawer__buttons__button--start"
         @click="onStart"
       />
       <GameButton
         label="つづきから"
-        :fontColor="COLOR.WHITE"
-        :backgroundColor="COLOR.BLACK"
+        :fontColor="WIL_BUTTON_FONT_COLOR"
+        :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
         class="c-game__drawer__buttons__button--continue"
         @click="onContinue"
       />
@@ -22,7 +22,10 @@
 
 <script setup lang="ts">
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
-import { COLOR } from "@/composables/types/GOUColor";
+import {
+  WIL_BUTTON_FONT_COLOR,
+  WIL_BUTTON_BACKGROUND_COLOR,
+} from "@/composables/games/wil/const";
 
 const emits = defineEmits(["start", "continue"]);
 const onStart = () => {

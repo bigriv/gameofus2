@@ -25,8 +25,8 @@
             <div class="c-training__plan__cards__content__button">
               <GameButton
                 label="選択を解除"
-                :fontColor="COLOR.WHITE"
-                :backgroundColor="COLOR.BLACK"
+                :fontColor="WIL_BUTTON_FONT_COLOR"
+                :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
                 @click="onRemoveCharacter(plan.training.id)"
               />
             </div>
@@ -40,15 +40,15 @@
         <GameButton
           v-if="isStartableTraining"
           label="訓練開始"
-          :fontColor="COLOR.WHITE"
-          :backgroundColor="COLOR.BLACK"
+          :fontColor="WIL_BUTTON_FONT_COLOR"
+          :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
           @click="onStartTraining"
         />
         <GameButton
           v-else
           label="訓練終了"
-          :fontColor="COLOR.WHITE"
-          :backgroundColor="COLOR.BLACK"
+          :fontColor="WIL_BUTTON_FONT_COLOR"
+          :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
           @click="onEndTraining"
         />
       </div>
@@ -106,12 +106,15 @@ import { WIL_TRAINING_ID } from "@/composables/games/wil/enums/training";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 import WilCharacterCard from "@/components/molecules/games/wil/WilCharacterCard.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
-import { COLOR } from "@/composables/types/GOUColor";
 import { WilStatus } from "@/composables/games/wil/types/status";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import { WilTraining } from "@/composables/games/wil/types/training";
 import WilTrainingCard from "@/components/molecules/games/wil/WilTrainingCard.vue";
 import { WilPlayer } from "@/composables/games/wil/types/player";
+import {
+  WIL_BUTTON_FONT_COLOR,
+  WIL_BUTTON_BACKGROUND_COLOR,
+} from "@/composables/games/wil/const";
 
 const props = defineProps({
   characters: {

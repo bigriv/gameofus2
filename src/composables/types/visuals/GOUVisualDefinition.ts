@@ -60,10 +60,16 @@ type GOUVisualDefinition = (
       }>;
     }
   | {
-      type: GOUVisualType.DIAGRAM_TEXT;
+      type: GOUVisualType.TEXT;
       text: string;
-      fontSize: number;
+      width: number;
       fontFamilly: string;
+      border?: {
+        color: {
+          code: COLOR;
+          opacity?: number;
+        };
+      };
     }
   | {
       type: GOUVisualType.IMAGE_SVG;

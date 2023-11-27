@@ -18,7 +18,6 @@ import GOUPolygon from "@/composables/types/visuals/diagrams/GOUPolygon";
 import GOUPosition from "@/composables/types/GOUPosition";
 import GOULine from "@/composables/types/visuals/diagrams/GOULine";
 import GOULineList from "@/composables/types/visuals/diagrams/GOULineList";
-import GOUText from "@/composables/types/visuals/diagrams/GOUText";
 import GOUDiagram from "@/composables/types/visuals/GOUDiagram";
 import { useCanvas } from "@/composables/hooks/atoms/canvases/useCanvas";
 
@@ -142,19 +141,6 @@ const drawLines = (lines: GOULineList, position: GOUPosition) => {
   }
 };
 
-// 文字の描画
-const drawText = (obj: GOUText, position: GOUPosition) => {
-  if (!drawer || !drawer.value) {
-    return;
-  }
-
-  drawer.value.textBaseline = "top";
-  drawer.value.font = `${obj.fontSize}px serif`;
-  drawer.value.globalAlpha = 1;
-  drawer.value.fillStyle = obj.color.code;
-  drawer.value.fillText(obj.text, position.px, position.py);
-};
-
 // 図形の描画
 const drawDiagram = () => {
   if (!canvas || !canvas.value) {
@@ -181,8 +167,6 @@ const drawDiagram = () => {
     drawLine(object.value, object.value.position);
   } else if (object.value instanceof GOULineList) {
     drawLines(object.value, object.value.position);
-  } else if (object.value instanceof GOUText) {
-    drawText(object.value, object.value.position);
   }
 };
 
@@ -248,3 +232,4 @@ canvas {
   position: absolute;
 }
 </style>
+@/composables/types/visuals/GOUText

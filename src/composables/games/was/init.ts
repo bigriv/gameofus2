@@ -1,16 +1,12 @@
 import { Ref, reactive, ref } from "vue";
 import {
-  WAS_AREA_ID,
-  WAS_DEFAULT_GAME_DISPLAY_HEIGHT,
-  WAS_DEFAULT_GAME_DISPLAY_WIDTH,
-  WAS_EVENT_TIMMING,
   WAS_ITEM_ID,
   WAS_SKILL_ID,
   WAS_SKILL_TYPE,
 } from "@/composables/games/was/const";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
-import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";
+import { WasPlayer } from "@/composables/games/was/types/player";
 import {
   WAS_BOSS_GOBLIN,
   WAS_DARK_ELF,
@@ -35,7 +31,6 @@ import {
   WAS_VILLAGE,
 } from "@/composables/games/was/defines/area";
 import { WAS_MAP } from "@/composables/games/was/defines/map";
-import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WasArea } from "@/composables/games/was/types/area";
 import { WasStatus } from "@/composables/games/was/types/status";
 import { WasItem } from "@/composables/games/was/types/item";
@@ -49,13 +44,18 @@ import { WasBuffSkill } from "@/composables/games/was/types/buffSkill";
 import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import GOUImage from "@/composables/types/visuals/GOUImage";
+import { WAS_EVENT_TIMMING } from "./enums/timming";
+import { WasPrincess } from "./types/princess";
+import { WasMap } from "./types/map";
+import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
+import { COLOR } from "@/composables/types/GOUColor";
 
 export const useWasInit = (loadData?: any) => {
   const isLoadedImages: Ref<boolean> = ref(false);
 
   // プレイヤーの初期化
-  const initPlayer = (): WasPlayerCharacter => {
-    return new WasPlayerCharacter(
+  const initPlayer = (): WasPlayer => {
+    return new WasPlayer(
       WAS_SATAN.name,
       ConstructGOUVisual(WAS_SATAN.visual),
       new WasStatus(WAS_SATAN.initStatus),
@@ -116,6 +116,28 @@ export const useWasInit = (loadData?: any) => {
         defines[key].dropItems
       );
     }
+
+    // 外装にラベル表示を追加
+    for (const key of Object.keys(areas)) {
+      areas[key].outside.setChild(
+        "name",
+        ConstructGOUVisual({
+          type: GOUVisualType.TEXT,
+          text: areas[key].name,
+          width: 100,
+          color: {
+            code: COLOR.WHITE,
+          },
+          fontFamilly: "DotGothic16",
+          border: {
+            color: {
+              code: COLOR.BLACK,
+            },
+          },
+          position: { x: 0, y: 50 },
+        })
+      );
+    }
     return areas;
   };
 
@@ -155,11 +177,7 @@ export const useWasInit = (loadData?: any) => {
           skills[key] = new WasPhysicalAttackSkill(
             key as WAS_SKILL_ID,
             defines[key].name,
-            new GOULottie(
-              defines[key].animation,
-              (200 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-              (200 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100
-            ),
+            new GOULottie(defines[key].animation, 100, 100),
             new GOUReadAudio(defines[key].sound),
             defines[key].element,
             defines[key].power,
@@ -173,11 +191,7 @@ export const useWasInit = (loadData?: any) => {
           skills[key] = new WasMagicalAttackSkill(
             key as WAS_SKILL_ID,
             defines[key].name,
-            new GOULottie(
-              defines[key].animation,
-              (200 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-              (200 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100
-            ),
+            new GOULottie(defines[key].animation, 100, 100),
             new GOUReadAudio(defines[key].sound),
             defines[key].element,
             defines[key].power,
@@ -191,11 +205,7 @@ export const useWasInit = (loadData?: any) => {
           skills[key] = new WasHealSkill(
             key as WAS_SKILL_ID,
             defines[key].name,
-            new GOULottie(
-              defines[key].animation,
-              (200 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-              (200 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100
-            ),
+            new GOULottie(defines[key].animation, 100, 100),
             new GOUReadAudio(defines[key].sound),
             defines[key].element,
             defines[key].power,
@@ -209,11 +219,7 @@ export const useWasInit = (loadData?: any) => {
           skills[key] = new WasBuffSkill(
             key as WAS_SKILL_ID,
             defines[key].name,
-            new GOULottie(
-              defines[key].animation,
-              (200 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-              (200 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100
-            ),
+            new GOULottie(defines[key].animation, 100, 100),
             new GOUReadAudio(defines[key].sound),
             defines[key].element,
             defines[key].cost,
@@ -227,10 +233,9 @@ export const useWasInit = (loadData?: any) => {
     return skills;
   };
 
-  const PRINCESS: WasCharacter = new WasCharacter(
+  const PRINCESS: WasPrincess = new WasPrincess(
     WAS_PRINCESS.name,
-    ConstructGOUVisual(WAS_PRINCESS.visual),
-    new WasStatus()
+    ConstructGOUVisual(WAS_PRINCESS.visual)
   );
   const CHARACTERS: { [key: string]: WasNonPlayerCharacter } = initCharacter(
     {
@@ -252,21 +257,17 @@ export const useWasInit = (loadData?: any) => {
     },
     true
   );
-  const MAP: GOUVisual = ConstructGOUVisual(WAS_MAP);
-  const AREAS: { [key: string]: WasArea } = initArea();
+
   const ITEMS: { [key: string]: WasItem } = initItem();
   const SKILLS: { [key: string]: WasSkill } = initSkill();
+  const map: WasMap = new WasMap(ConstructGOUVisual(WAS_MAP), initArea());
 
   const state: {
     timming: WAS_EVENT_TIMMING;
-    healed: boolean;
-    currentArea: WAS_AREA_ID;
-    player: WasPlayerCharacter;
+    player: WasPlayer;
     character: WasCharacter | null;
   } = reactive({
     timming: WAS_EVENT_TIMMING.OPENING,
-    healed: false,
-    currentArea: WAS_AREA_ID.SATAN_CASTLE,
     player: initPlayer(),
     character: null,
   });
@@ -274,7 +275,7 @@ export const useWasInit = (loadData?: any) => {
   const loadFile = () => {
     (state.player.visual as GOUImage).load();
     (PRINCESS.visual as GOUImage).load();
-    (MAP as GOUImage).load();
+    (map.visual as GOUImage).load();
     for (const key of Object.keys(SKILLS)) {
       SKILLS[key].load();
     }
@@ -284,9 +285,9 @@ export const useWasInit = (loadData?: any) => {
     for (const key of Object.keys(BOSSES)) {
       (BOSSES[key].visual as GOUImage).load();
     }
-    for (const key of Object.keys(AREAS)) {
-      (AREAS[key].inside as GOUImage).load();
-      (AREAS[key].outside as GOUImage).load();
+    for (const key of Object.keys(map.areas)) {
+      (map.areas[key].inside as GOUImage).load();
+      (map.areas[key].outside as GOUImage).load();
     }
 
     // ロードが完了したかを判定する
@@ -297,7 +298,7 @@ export const useWasInit = (loadData?: any) => {
       if (!(PRINCESS.visual as GOUImage).isLoaded()) {
         return;
       }
-      if (!(MAP as GOUImage).isLoaded()) {
+      if (!(map.visual as GOUImage).isLoaded()) {
         return;
       }
       for (const key of Object.keys(CHARACTERS)) {
@@ -310,11 +311,11 @@ export const useWasInit = (loadData?: any) => {
           return;
         }
       }
-      for (const key of Object.keys(AREAS)) {
-        if (!(AREAS[key].inside as GOUImage).isLoaded()) {
+      for (const key of Object.keys(map.areas)) {
+        if (!(map.areas[key].inside as GOUImage).isLoaded()) {
           return;
         }
-        if (!(AREAS[key].outside as GOUImage).isLoaded()) {
+        if (!(map.areas[key].outside as GOUImage).isLoaded()) {
           return;
         }
       }
@@ -341,7 +342,7 @@ export const useWasInit = (loadData?: any) => {
     console.log("player", state.player);
     state.timming =
       (loadData.timming as WAS_EVENT_TIMMING) ?? WAS_EVENT_TIMMING.OPENING;
-    state.healed = loadData.healed ?? false;
+    state.player.healed = loadData.healed ?? false;
     if (loadData.exploreCount) {
       state.timming = loadData.exploreCount ?? 0;
     }
@@ -374,18 +375,18 @@ export const useWasInit = (loadData?: any) => {
     }
 
     if (loadData.areas) {
-      for (const key of Object.keys(AREAS)) {
+      for (const key of Object.keys(map.areas)) {
         if (!loadData.areas[key]) {
           continue;
         }
-        AREAS[key].isClear = loadData.areas[key].isClear;
-        AREAS[key].dropItems =
+        map.areas[key].isClear = loadData.areas[key].isClear;
+        map.areas[key].dropItems =
           (loadData.areas[key].dropItems as Array<{
             probability: number;
             amount: number;
             id: WAS_ITEM_ID;
           }>) ?? [];
-        AREAS[key].exploreCount = loadData.areas[key].exploreCount ?? 0;
+        map.areas[key].exploreCount = loadData.areas[key].exploreCount ?? 0;
       }
     }
   };
@@ -394,10 +395,9 @@ export const useWasInit = (loadData?: any) => {
     PRINCESS,
     CHARACTERS,
     BOSSES,
-    MAP,
-    AREAS,
     ITEMS,
     SKILLS,
+    map,
     state,
     isLoadedImages,
     loadFile,

@@ -9,7 +9,7 @@ export class WasArea {
   readonly outside: GOUVisual;
   readonly inside: GOUVisual;
   readonly character: WasCharacter;
-  readonly boss?: WasCharacter;
+  readonly boss?: WasNonPlayerCharacter;
   isClear: boolean;
   exploreCount: number;
   dropItems: Array<{
@@ -22,7 +22,7 @@ export class WasArea {
     outside: GOUVisual,
     inside: GOUVisual,
     character: WasCharacter,
-    boss?: WasCharacter,
+    boss?: WasNonPlayerCharacter,
     dropItems?: Array<{ probability: number; amount: number; id: WAS_ITEM_ID }>
   ) {
     this.name = name;
@@ -85,14 +85,13 @@ export class WasArea {
       return this.character;
     }
 
-    const boss = this.boss as WasNonPlayerCharacter;
     const character = this.character as WasNonPlayerCharacter;
-    if (boss.status.life <= 0 && !boss.isPersuaded) {
+    if (this.boss.status.life <= 0 && !this.boss.isPersuaded) {
       // ボスが未説得で倒されている場合は何も表示しない
       return null;
     } else if (character.isPersuaded || character.status.life <= 0) {
       // 雑魚敵だけが倒されているまたは説得済みの場合はボスキャラを表示
-      return boss;
+      return this.boss;
     } else {
       // 上記以外は雑魚敵を表示
       return character;

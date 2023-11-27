@@ -2,22 +2,33 @@
   <GameFrame>
     <template #window>
       <Title
-        v-if="display === 'title'"
-        v-model="display"
+        v-if="overallTimming === WAS_OVERALL_TIMMING.TITLE"
+        v-model="overallTimming"
         @start="onStart"
         @load="onLoad"
       />
+      <div
+        v-else-if="overallTimming === WAS_OVERALL_TIMMING.LOADING"
+        class="c-game__loading"
+      >
+        Now Loading...
+      </div>
+      <Ending
+        v-else-if="overallTimming === WAS_OVERALL_TIMMING.ENDING"
+        :type="endingType"
+        @back="onBackTitle"
+      />
       <Main
-        v-else-if="display === 'main'"
+        v-if="
+          overallTimming == WAS_OVERALL_TIMMING.LOADING ||
+          overallTimming === WAS_OVERALL_TIMMING.MAIN_AREA ||
+          overallTimming === WAS_OVERALL_TIMMING.MAIN_MAP
+        "
+        v-model:overallTimming="overallTimming"
         :loadData="loadData"
         @save="onSave"
         @loaded="onLoaded"
         @end="onEnd"
-      />
-      <Ending
-        v-else-if="display === 'end'"
-        :type="endingType"
-        @back="onBackTitle"
       />
     </template>
     <template #description>
@@ -111,11 +122,12 @@ import Title from "@/components/templates/games/was/01_Title.vue";
 import Main from "@/components/templates/games/was/02_Main.vue";
 import Ending from "@/components/templates/games/was/03_Ending.vue";
 import { WAS_ENDING, WAS_EVENT_TIMMING } from "@/composables/games/was/const";
-import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";
+import { WasPlayer } from "@/composables/games/was/types/player";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { WasArea } from "@/composables/games/was/types/area";
+import { WAS_OVERALL_TIMMING } from "@/composables/games/was/enums/timming";
 
-const display = ref("title");
+const overallTimming = ref(WAS_OVERALL_TIMMING.TITLE);
 const endingType = ref();
 const loadData = ref();
 const isShowHint1 = ref(false);
@@ -124,7 +136,7 @@ const isShowHint2 = ref(false);
 const onSave = (
   timming: WAS_EVENT_TIMMING,
   healed: boolean,
-  player: WasPlayerCharacter,
+  player: WasPlayer,
   characters: { [key: string]: WasNonPlayerCharacter },
   bosses: { [key: string]: WasNonPlayerCharacter },
   areas: { [key: string]: WasArea }
@@ -167,11 +179,11 @@ const load = () => {
 };
 
 const onStart = () => {
-  display.value = "main";
+  overallTimming.value = WAS_OVERALL_TIMMING.LOADING;
 };
 const onLoad = () => {
   load();
-  display.value = "main";
+  overallTimming.value = WAS_OVERALL_TIMMING.LOADING;
 };
 const onLoaded = () => {
   loadData.value = undefined;
@@ -179,10 +191,10 @@ const onLoaded = () => {
 const onEnd = (type: WAS_ENDING) => {
   console.log(type);
   endingType.value = type;
-  display.value = "end";
+  overallTimming.value = WAS_OVERALL_TIMMING.ENDING;
 };
 const onBackTitle = () => {
-  display.value = "title";
+  overallTimming.value = WAS_OVERALL_TIMMING.TITLE;
 };
 
 const itemDescription = [
@@ -248,4 +260,15 @@ const skillDescription = [
 ];
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.c-game__loading {
+  background-color: black;
+  width: 100%;
+  height: 100%;
+  color: white;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

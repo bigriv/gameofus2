@@ -1,14 +1,11 @@
 import { computed } from "vue";
-import {
-  WAS_BUTTON_EVENT,
-  WAS_ITEM_ID,
-} from "@/composables/games/was/const";
-import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";
+import { WAS_BUTTON_EVENT, WAS_ITEM_ID } from "@/composables/games/was/const";
+import { WasPlayer } from "@/composables/games/was/types/player";
 import { WasSkill } from "@/composables/games/was/types/skill";
 import { WasItem } from "@/composables/games/was/types/item";
 
 export const useWasButton = (
-  player: WasPlayerCharacter,
+  player: WasPlayer,
   ITEMS: { [key: string]: WasItem },
   SKILLS: { [key: string]: WasSkill }
 ) => {
@@ -147,11 +144,11 @@ export const useWasButton = (
 
   return {
     EXLPORE_BUTTON_LIST,
-    EXPLORE_ITEM_BUTTON_LIST,
+    EXPLORE_ITEM_BUTTON_LIST: EXPLORE_ITEM_BUTTON_LIST.value,
     FACE_BUTTON_DEFINE_LIST,
-    PERSUADE_BUTTON_LIST,
+    PERSUADE_BUTTON_LIST: PERSUADE_BUTTON_LIST.value,
     BATTLE_BUTTON_LIST,
-    SKILL_BUTTON_LIST,
-    BATTLE_ITEM_BUTTON_LIST,
+    SKILL_BUTTON_LIST: SKILL_BUTTON_LIST.value,
+    BATTLE_ITEM_BUTTON_LIST: BATTLE_ITEM_BUTTON_LIST.value,
   };
 };

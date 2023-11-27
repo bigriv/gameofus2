@@ -1,9 +1,5 @@
 import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
-import {
-  WAS_DEFAULT_GAME_DISPLAY_HEIGHT,
-  WAS_DEFAULT_GAME_DISPLAY_WIDTH,
-  WAS_ITEM_ID,
-} from "@/composables/games/was/const";
+import { WAS_ITEM_ID } from "@/composables/games/was/const";
 import GOUVisualDefinition from "@/composables/types/visuals/GOUVisualDefinition";
 
 type WAS_AREA_DEFINITION_TYPE = {
@@ -20,12 +16,8 @@ const WAS_SATAN_CASTLE: WAS_AREA_DEFINITION_TYPE = {
   outside: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/buildings/outside/SatanCastle.svg",
-    width: (70 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-    height: (70 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
-    position: {
-      x: (50 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-      y: (30 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
-    },
+    width: 100,
+    height: 100,
   },
   inside: {
     type: GOUVisualType.IMAGE_SVG,
@@ -40,12 +32,8 @@ const WAS_CAVE: WAS_AREA_DEFINITION_TYPE = {
   outside: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/buildings/outside/Cave.svg",
-    width: (70 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-    height: (40 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
-    position: {
-      x: (200 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-      y: (125 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
-    },
+    width: 100,
+    height: 100,
   },
   inside: {
     type: GOUVisualType.IMAGE_SVG,
@@ -65,14 +53,8 @@ const WAS_VILLAGE: WAS_AREA_DEFINITION_TYPE = {
   outside: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/buildings/outside/Village.svg",
-    width: (60 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-    height: (60 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
-    position: {
-      x:
-        (WAS_DEFAULT_GAME_DISPLAY_HEIGHT / WAS_DEFAULT_GAME_DISPLAY_WIDTH) *
-        100,
-      y: (75 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
-    },
+    width: 100,
+    height: 100,
   },
   inside: {
     type: GOUVisualType.IMAGE_SVG,
@@ -92,12 +74,8 @@ const WAS_SEA: WAS_AREA_DEFINITION_TYPE = {
   outside: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/buildings/outside/Sea.svg",
-    width: (100 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-    height: (100 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
-    position: {
-      x: (45 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-      y: (290 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
-    },
+    width: 100,
+    height: 100,
   },
   inside: {
     type: GOUVisualType.IMAGE_SVG,
@@ -117,12 +95,8 @@ const WAS_MOUNTAIN: WAS_AREA_DEFINITION_TYPE = {
   outside: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/buildings/outside/Mountain.svg",
-    width: (150 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-    height: (70 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
-    position: {
-      x: (280 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-      y: (200 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
-    },
+    width: 100,
+    height: 100,
   },
   inside: {
     type: GOUVisualType.IMAGE_SVG,
@@ -140,12 +114,8 @@ const WAS_KINGDOM_CASTLE: WAS_AREA_DEFINITION_TYPE = {
   outside: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/buildings/outside/KingdomCastle.svg",
-    width: (70 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-    height: (70 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
-    position: {
-      x: (465 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-      y: (300 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
-    },
+    width: 100,
+    height: 100,
   },
   inside: {
     type: GOUVisualType.IMAGE_SVG,

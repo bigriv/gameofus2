@@ -1,5 +1,6 @@
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import {
+  WAS_AREA_ID,
   WAS_BATTLE_MOVE,
   WAS_ITEM_ID,
   WAS_SKILL_ID,
@@ -15,8 +16,10 @@ import { WasBuffSkill } from "@/composables/games/was/types/buffSkill";
 /**
  * WAS用のPlayer操作キャラクタークラス
  */
-export class WasPlayerCharacter extends WasCharacter {
-  exploreCount: number;
+export class WasPlayer extends WasCharacter {
+  currentArea: WAS_AREA_ID = WAS_AREA_ID.SATAN_CASTLE;
+  exploreCount: number = 0;
+  healed: boolean = false;
   constructor(
     name: string,
     visual: GOUVisual,
@@ -25,7 +28,6 @@ export class WasPlayerCharacter extends WasCharacter {
     items?: Array<{ amount: number; id: WAS_ITEM_ID }>
   ) {
     super(name, visual, status, skills, items);
-    this.exploreCount = 0;
   }
 
   /**
@@ -52,9 +54,7 @@ export class WasPlayerCharacter extends WasCharacter {
       case WAS_BATTLE_MOVE.SKILL:
         let target = enemy;
         const skill = move.skill;
-        if (
-          skill instanceof WasHealSkill || skill instanceof WasBuffSkill
-        ) {
+        if (skill instanceof WasHealSkill || skill instanceof WasBuffSkill) {
           // サポートスキルは対象を自身に書き換える
           target = self;
         }

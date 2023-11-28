@@ -379,6 +379,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
     case WAS_BUTTON_EVENT.USE_EXPLORE_ITEM:
       const item = props.items[args];
       if (!item) {
+        alert("エラーが発生しました。")
         throw new WrongImplementationError("Not exsist item is selected.");
       }
       if (!(item.effect instanceof Function)) {
@@ -445,6 +446,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
       return;
     case WAS_BUTTON_EVENT.ATTACK:
       if (!character.value) {
+        alert("エラーが発生しました。")
         throw new WrongImplementationError("Character is not set.");
       }
       player.value.setBattleMove(player.value, character.value, {
@@ -456,6 +458,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
       return;
     case WAS_BUTTON_EVENT.ACTIVATE_SKILL:
       if (!character.value) {
+        alert("エラーが発生しました。")
         throw new WrongImplementationError("Character is not set.");
       }
       player.value.setBattleMove(player.value, character.value, {
@@ -468,6 +471,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
       return;
     case WAS_BUTTON_EVENT.USE_BATTLE_ITEM:
       if (!character.value) {
+        alert("エラーが発生しました。")
         throw new WrongImplementationError("Character is not set.");
       }
       player.value.setBattleMove(player.value, character.value, {
@@ -488,6 +492,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
   }
 
   if (!(character.value instanceof WasNonPlayerCharacter)) {
+    alert("エラーが発生しました。")
     throw new WrongImplementationError(
       "Character is princess, but she can not fight."
     );

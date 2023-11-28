@@ -31,7 +31,7 @@ export class GOULottie extends GOUVisual {
       .get(this.path)
       .then((response) => {
         if (!response.data) {
-          throw new Error(`Data is Empty.${this.path}`);
+          return;
         }
         this.object = response.data;
       })

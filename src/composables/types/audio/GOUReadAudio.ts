@@ -39,7 +39,7 @@ export class GOUReadAudio extends GOUAudio {
    */
   play(position?: number): void {
     if (!this.isLoaded()) {
-      throw Error("Audio is not loaded.");
+      return;
     }
     if (this.isPlaying()) {
       this.playing = false;

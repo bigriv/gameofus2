@@ -184,11 +184,11 @@ const buttonList = computed(() => {
     case WAS_AREA_TIMMING.EXPLORE:
       return [];
     case WAS_AREA_TIMMING.SELECT_CONSUME_ITEM:
-      return EXPLORE_ITEM_BUTTON_LIST;
+      return EXPLORE_ITEM_BUTTON_LIST.value;
     case WAS_AREA_TIMMING.USE_CONSUME_ITEM:
       return [];
     case WAS_AREA_TIMMING.SELECT_PERSUADE_ITEM:
-      return PERSUADE_BUTTON_LIST;
+      return PERSUADE_BUTTON_LIST.value;
     case WAS_AREA_TIMMING.USE_PERSUADE_ITEM:
       return [];
     case WAS_AREA_TIMMING.FACE:
@@ -198,11 +198,11 @@ const buttonList = computed(() => {
     case WAS_AREA_TIMMING.BATTLE_ATTACK:
       return [];
     case WAS_AREA_TIMMING.BATTLE_SELECT_SKILL:
-      return SKILL_BUTTON_LIST;
+      return SKILL_BUTTON_LIST.value;
     case WAS_AREA_TIMMING.BATTLE_USE_SKILL:
       return [];
     case WAS_AREA_TIMMING.BATTLE_SELECT_ITEM:
-      return BATTLE_ITEM_BUTTON_LIST;
+      return BATTLE_ITEM_BUTTON_LIST.value;
     case WAS_AREA_TIMMING.BATTLE_USE_ITEM:
       return [];
   }
@@ -306,6 +306,7 @@ const chainEvent: Function = (
   onClickMessageFrame.value = () => chainEvent(events, afterFunction);
 };
 const showArea = () => {
+  character.value = undefined;
   timming.value = WAS_AREA_TIMMING.SELECT_MOVE;
 };
 const showFace = () => {
@@ -326,7 +327,7 @@ const showCharacter = () => {
 
   let afterFunction = () => {};
 
-  messages.push(npc.getSerif());
+  messages.push(...npc.getSerif());
   if (npc.isBoss && npc.isPersuaded) {
     // ボス敵を説得した場合はセリフを表示後、マップに戻る
     afterFunction = () => emits("map");
@@ -364,7 +365,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
       } else if (Object.values(WAS_ITEM_ID).includes(exploreResult)) {
         // アイテム発見
         const item = props.items[exploreResult];
-        const addItemResult = props.player.addItem(item);
+        const addItemResult = player.value.addItem(item);
         let messages = [`${item.name}をみつけた！`];
         if (!addItemResult) {
           messages.push(`しかし、これ以上${item.name}を持てない...。`);
@@ -385,16 +386,16 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
         return;
       }
 
-      const useResult = props.player.useItem(args);
+      const useResult = player.value.useItem(args);
       if (!useResult) {
         chainMessage([`${item.name}を持っていない。`], showArea);
         return;
       }
 
       const useItemMessages = [];
-      useItemMessages.push(`${props.player.name}は${item.name}を使用した！`);
+      useItemMessages.push(`${player.value.name}は${item.name}を使用した！`);
 
-      const result = item.effect(props.player, props.player);
+      const result = item.effect(player.value, player.value);
       // 結果詰め込み処理
       if (useItemMessages) {
         useItemMessages.push(result);
@@ -422,7 +423,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
       let persuadSuccessMessages = [...npc.serif.PERSUADE_SUCCESS];
       if (npc.occupySkill) {
         let occupySkill = props.skills[npc.occupySkill];
-        props.player.skills.push(npc.occupySkill);
+        player.value.skills.push(npc.occupySkill);
         persuadSuccessMessages.push(`${occupySkill.name}を習得した！`);
       }
 
@@ -446,7 +447,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
       if (!character.value) {
         throw new WrongImplementationError("Character is not set.");
       }
-      props.player.setBattleMove(props.player, character.value, {
+      player.value.setBattleMove(player.value, character.value, {
         type: WAS_BATTLE_MOVE.ATTACK,
       });
       break;
@@ -457,7 +458,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
       if (!character.value) {
         throw new WrongImplementationError("Character is not set.");
       }
-      props.player.setBattleMove(props.player, character.value, {
+      player.value.setBattleMove(player.value, character.value, {
         type: WAS_BATTLE_MOVE.SKILL,
         skill: props.skills[args],
       });
@@ -469,7 +470,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
       if (!character.value) {
         throw new WrongImplementationError("Character is not set.");
       }
-      props.player.setBattleMove(props.player, character.value, {
+      player.value.setBattleMove(player.value, character.value, {
         type: WAS_BATTLE_MOVE.ITEM,
         item: props.items[args],
       });
@@ -493,10 +494,10 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
   }
   // 敵の行動を設定
   const npc = character.value as WasNonPlayerCharacter;
-  npc.setBattleMove(npc, props.player);
+  npc.setBattleMove(npc, player.value);
 
   // 戦闘処理
-  const result = battle(props.player, npc);
+  const result = battle(player.value, npc);
   let afterFunction = showBattle;
   if (result.status == WAS_BATTLE_STATUS.WIN) {
     // 勝利時の処理
@@ -508,14 +509,14 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
         afterMessages = [...npc.serif.PERSUADE_SUCCESS];
         if (npc.occupySkill) {
           const occupySkill = props.skills[npc.occupySkill];
-          props.player.skills.push(npc.occupySkill);
+          player.value.skills.push(npc.occupySkill);
           afterMessages.push(`${occupySkill.name}を習得した！`);
         }
       } else {
         afterMessages = [...npc.serif.BATTLE_WIN];
         if (npc.dropItem) {
           const dropItem = props.items[npc.dropItem];
-          const addResult = props.player.addItem(dropItem);
+          const addResult = player.value.addItem(dropItem);
           if (addResult) {
             afterMessages.push(`${dropItem.name}を手に入れた！`);
           }
@@ -525,7 +526,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
       let afterFunction = showArea;
       if (npc.isBoss) {
         // ボス戦勝利時はエリアをクリア状態にしてイベントタイミングを更新する
-        afterFunction = clearArea;
+        clearArea();
       }
 
       chainMessage(afterMessages, afterFunction);
@@ -546,7 +547,6 @@ const showSatanCastle = () => {
   if (!(currentArea.value.character instanceof WasPrincess)) {
     return;
   }
-  console.log(eventTimming.value);
   timming.value = WAS_AREA_TIMMING.FACE;
 
   const princess = currentArea.value.character;

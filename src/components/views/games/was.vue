@@ -121,11 +121,11 @@ import GameFrame from "@/components/atoms/frames/GameFrame.vue";
 import Title from "@/components/templates/games/was/01_Title.vue";
 import Main from "@/components/templates/games/was/02_Main.vue";
 import Ending from "@/components/templates/games/was/03_Ending.vue";
-import { WAS_ENDING, WAS_EVENT_TIMMING } from "@/composables/games/was/const";
+import { WAS_ENDING } from "@/composables/games/was/const";
 import { WasPlayer } from "@/composables/games/was/types/player";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { WasArea } from "@/composables/games/was/types/area";
-import { WAS_OVERALL_TIMMING } from "@/composables/games/was/enums/timming";
+import { WAS_EVENT_TIMMING, WAS_OVERALL_TIMMING } from "@/composables/games/was/enums/timming";
 
 const overallTimming = ref(WAS_OVERALL_TIMMING.TITLE);
 const endingType = ref();

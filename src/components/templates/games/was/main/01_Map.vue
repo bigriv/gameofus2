@@ -67,6 +67,7 @@ import { WAS_AREA_ID } from "@/composables/games/was/const";
 import { WasPlayer } from "@/composables/games/was/types/player";
 import { WAS_EVENT_TIMMING } from "@/composables/games/was/enums/timming";
 import { WasMap } from "@/composables/games/was/types/map";
+import { hoverSE } from "@/composables/sounds/seDefinition";
 
 const props = defineProps({
   map: {
@@ -87,6 +88,7 @@ const emits = defineEmits(["click"]);
 
 const areas = ref(props.map.areas);
 const onClick = (area: WAS_AREA_ID) => {
+  hoverSE.play()
   emits("click", area);
 };
 </script>

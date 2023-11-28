@@ -1,8 +1,6 @@
 import {
   WAS_BATTLE_MOVE,
   WAS_BATTLE_STATUS,
-  WAS_DEFAULT_GAME_DISPLAY_HEIGHT,
-  WAS_DEFAULT_GAME_DISPLAY_WIDTH,
 } from "@/composables/games/was/const";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
@@ -29,8 +27,8 @@ export const useWasBattle = (
   );
   const ATTACK_ANIMATION = new GOULottie(
     "/games/was/animations/effects/attack.json",
-    (200 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-    (200 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
+    100,
+    100,
     false,
     2
   );

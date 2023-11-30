@@ -41,6 +41,7 @@ const styles = computed(() => {
   height: 100%;
   display: flex;
   align-items: center;
+  align-self: center;
   &__bar {
     width: 100%;
     height: 100%;

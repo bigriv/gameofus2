@@ -1,13 +1,14 @@
-import GOUPosition from "@/composables/types/GOUPosition";
 import { WAS_ITEM_ID } from "@/composables/games/was/const";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 
 export class WasArea {
   readonly name: string;
   readonly outside: GOUVisual;
   readonly inside: GOUVisual;
+  readonly bgm: GOUReadAudio;
   readonly character: WasCharacter;
   readonly boss?: WasNonPlayerCharacter;
   isClear: boolean;
@@ -21,33 +22,17 @@ export class WasArea {
     name: string,
     outside: GOUVisual,
     inside: GOUVisual,
+    bgm: GOUReadAudio,
     character: WasCharacter,
     boss?: WasNonPlayerCharacter,
     dropItems?: Array<{ probability: number; amount: number; id: WAS_ITEM_ID }>
   ) {
     this.name = name;
     this.outside = outside;
+    this.bgm = bgm;
     this.inside = inside;
     this.character = character;
-    if (this.character.visual) {
-      // キャラクターを画面中央に配置
-      this.character.visual.setPosition(
-        new GOUPosition(
-          50 - this.character.visual.getMaxX() / 2,
-          100 - this.character.visual.getMaxY()
-        )
-      );
-    }
     this.boss = boss;
-    if (this.boss && this.boss.visual) {
-      // キャラクターを画面中央に配置
-      this.boss.visual.setPosition(
-        new GOUPosition(
-          50 - this.boss.visual.getMaxX() / 2,
-          100 - this.boss.visual.getMaxY()
-        )
-      );
-    }
     this.dropItems = dropItems ?? [];
     this.isClear = false;
     this.exploreCount = 0;

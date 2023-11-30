@@ -3,6 +3,7 @@ import { useWasInit } from "@/composables/games/was/init";
 
 export const useWasMain = (loadData: any, emits: Function) => {
   const {
+    loadIntervalId,
     isLoadedImages,
     loadFile,
     loadSaveData,
@@ -18,22 +19,23 @@ export const useWasMain = (loadData: any, emits: Function) => {
   /**
    * イベントのタイミングを更新する
    */
-  const updateTimming = () => {
+  const updateTimming = (): boolean => {
     const currentTimming = state.timming;
 
+    // ラスダン以外の全てのエリアを攻略済みの場合はラスダン攻略前にイベントタイミングを更新する
+    if (
+      map.areas.CAVE.isClear &&
+      map.areas.SEA.isClear &&
+      map.areas.VILLAGE.isClear &&
+      map.areas.MOUNTAIN.isClear &&
+      !map.areas.KINGDOM_CASTLE.isClear
+    ) {
+      state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_ALL_AREA;
+      return state.timming !== currentTimming;;
+    }
     // 攻略したエリアによってタイミングを変える
     switch (state.player.currentArea) {
       case WAS_AREA_ID.SATAN_CASTLE:
-        // ラスダン以外の全てのエリアを攻略済みの場合はラスダン攻略前にイベントタイミングを更新する
-        if (
-          map.areas.CAVE.isClear &&
-          map.areas.SEA.isClear &&
-          map.areas.VILLAGE.isClear &&
-          map.areas.MOUNTAIN.isClear &&
-          !map.areas.KINGDOM_CASTLE.isClear
-        ) {
-          state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_ALL_AREA;
-        }
         break;
       case WAS_AREA_ID.CAVE:
         state.timming = WAS_EVENT_TIMMING.AFTER_CLEAR_CAVE;
@@ -71,6 +73,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
   };
 
   return {
+    loadIntervalId,
     isLoadedImages,
     loadFile,
     loadSaveData,
@@ -80,8 +83,7 @@ export const useWasMain = (loadData: any, emits: Function) => {
     ITEMS,
     SKILLS,
     map,
-    player: state.player,
-    eventTimming: state.timming,
+    state,
     updateTimming,
     save,
   };

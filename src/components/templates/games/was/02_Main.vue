@@ -1,35 +1,34 @@
 <template>
   <div
-    v-if="overallTimming === WAS_OVERALL_TIMMING.MAIN_MAP"
+    v-if="overallTimming !== WAS_OVERALL_TIMMING.LOADING"
     class="c-game__drawer"
   >
-    <Map
-      :map="map"
-      :timming="eventTimming"
-      :player="player"
-      @click="onClickArea"
-    />
-  </div>
-  <div
-    v-else-if="overallTimming === WAS_OVERALL_TIMMING.MAIN_AREA"
-    class="c-game__drawer"
-  >
-    <Area
-      v-model:timming="eventTimming"
-      v-model:player="player"
-      :items="ITEMS"
-      :skills="SKILLS"
-      :map="map"
-      @map="onBackMap"
-      @save="onSave"
-      @clear="onClearArea"
-      @end="onEnd"
-    />
+    <template v-if="!isReflesh">
+      <Map
+        v-if="overallTimming === WAS_OVERALL_TIMMING.MAIN_MAP"
+        :map="map"
+        :timming="state.timming"
+        :player="state.player"
+        @click="onClickArea"
+      />
+      <Area
+        v-else-if="overallTimming === WAS_OVERALL_TIMMING.MAIN_AREA"
+        v-model:timming="state.timming"
+        v-model:player="state.player"
+        :items="ITEMS"
+        :skills="SKILLS"
+        :map="map"
+        @map="onBackMap"
+        @save="onSave"
+        @clear="onClearArea"
+        @end="onEnd"
+      />
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { PropType, computed, onMounted, watch } from "vue";
+import { PropType, computed, onMounted, onUnmounted, ref, watch } from "vue";
 import Map from "@/components/templates/games/was/main/01_Map.vue";
 import Area from "@/components/templates/games/was/main/02_Area.vue";
 import { useWasMain } from "@/composables/games/was/main";
@@ -66,31 +65,36 @@ const emits = defineEmits<{
   (event: "update:overallTimming", timming: WAS_OVERALL_TIMMING): void;
 }>();
 
+const isReflesh = ref(false);
+const reflesh = () => {
+  isReflesh.value = true;
+  setTimeout(() => (isReflesh.value = false), 1000);
+};
 const overallTimming = computed({
   get: () => props.overallTimming,
   set: (newValue: WAS_OVERALL_TIMMING) =>
     emits("update:overallTimming", newValue),
 });
 const {
+  loadIntervalId,
   isLoadedImages,
   loadFile,
   loadSaveData,
   ITEMS,
   SKILLS,
   map,
-  player,
-  eventTimming,
+  state,
   updateTimming,
   save,
 } = useWasMain(props.loadData, emits);
 
 const onClickArea = (area: WAS_AREA_ID) => {
-  player.currentArea = area;
+  state.player.currentArea = area;
   overallTimming.value = WAS_OVERALL_TIMMING.MAIN_AREA;
 };
 
 const onBackMap = () => {
-  if (player.status.satiety <= 0) {
+  if (state.player.status.satiety <= 0) {
     // 満腹度が0以下の場合はGame Overとする
     emits("end", WAS_ENDING.HUNGER);
     return;
@@ -102,11 +106,14 @@ const onSave = () => {
 };
 const onClearArea = () => {
   updateTimming();
-  if (player.currentArea === WAS_AREA_ID.KINGDOM_CASTLE) {
+  console.log("clear", state.timming);
+  if (state.timming === WAS_EVENT_TIMMING.AFTER_CLEAR_KINGDOM_CASTLE) {
     // 王国クリア時はエンディングに遷移する
+    reflesh();
+    state.player.currentArea = WAS_AREA_ID.SATAN_CASTLE;
     overallTimming.value = WAS_OVERALL_TIMMING.MAIN_AREA;
-    player.currentArea = WAS_AREA_ID.SATAN_CASTLE;
   }
+  console.log("clear", state.player.currentArea, overallTimming.value);
 };
 const onEnd = (ending: WAS_ENDING) => {
   emits("end", ending);
@@ -116,7 +123,9 @@ onMounted(() => {
   loadSaveData();
   emits("loaded");
 });
-
+onUnmounted(() => {
+  clearInterval(loadIntervalId);
+});
 watch(
   () => isLoadedImages.value,
   () => {
@@ -135,6 +144,7 @@ watch(
   position: relative;
   width: 100%;
   height: 100%;
+  background-color: black;
   &__upper {
     position: absolute;
     top: 0;
@@ -242,10 +252,10 @@ watch(
     font-size: 16px;
   }
   .c-game__drawer__lower__status__life > span {
-    font-size: 14px6px;
+    font-size: 14px;
   }
   .c-game__drawer__lower__status__satiety > span {
-    font-size: 14px6px;
+    font-size: 14px;
   }
 }
 </style>

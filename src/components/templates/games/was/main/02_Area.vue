@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, Ref, computed, onMounted, ref } from "vue";
+import { PropType, Ref, computed, onMounted, onUnmounted, ref } from "vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import GameStatusBar from "@/components/atoms/interfaces/GameStatusBar.vue";
@@ -115,6 +115,9 @@ import { GOUAudio } from "@/composables/types/audio/GOUAudio";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import { WasPrincess } from "@/composables/games/was/types/princess";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import { WasArea } from "@/composables/games/was/types/area";
+import { WAS_SOUND_DEFINE } from "@/composables/games/was/defines/sound";
 
 const props = defineProps({
   items: {
@@ -160,6 +163,8 @@ const {
 
 const { battle } = useWasBattle(props.items, props.skills);
 
+const battleBgm = new GOUReadAudio(WAS_SOUND_DEFINE.BGM_BATTLE_1, true);
+
 const eventTimming = computed({
   get: () => props.timming,
   set: (newValue) => emits("update:timming", newValue),
@@ -169,7 +174,7 @@ const player = computed({
   set: (newValue) => emits("update:player", newValue),
 });
 const character: Ref<WasCharacter | undefined> = ref();
-const currentArea = computed(() => props.map.areas[props.player.currentArea]);
+const currentArea = ref(props.map.areas[props.player.currentArea]);
 const skillEffect: Ref<GOULottie | undefined> = ref();
 const timming = ref(WAS_AREA_TIMMING.SELECT_MOVE);
 
@@ -234,10 +239,16 @@ const isShowStatusBar = computed(() => {
 const onClickMessageFrame: Ref<Function> = ref(() => {});
 
 onMounted(() => {
-  console.log(player.value.currentArea);
+  battleBgm.load();
+  currentArea.value.bgm.play();
   if (player.value.currentArea === WAS_AREA_ID.SATAN_CASTLE) {
     showSatanCastle();
   }
+});
+
+onUnmounted(() => {
+  battleBgm.stop();
+  currentArea.value.bgm.stop();
 });
 const chainMessage: Function = (
   messages: Array<string>,
@@ -289,6 +300,7 @@ const chainEvent: Function = (
         2
       );
     } else if (event.target instanceof WasPlayer) {
+      console.log("shake");
       currentArea.value.inside.animation = new GOUAnimation(
         ANIMATION_TYPE.SHAKE,
         ANIMATION_EASING_TYPE.EASE,
@@ -306,6 +318,10 @@ const chainEvent: Function = (
   onClickMessageFrame.value = () => chainEvent(events, afterFunction);
 };
 const showArea = () => {
+  if (player.value.currentArea === WAS_AREA_ID.SATAN_CASTLE) {
+    showSatanCastle();
+    return;
+  }
   character.value = undefined;
   timming.value = WAS_AREA_TIMMING.SELECT_MOVE;
 };
@@ -313,6 +329,11 @@ const showFace = () => {
   timming.value = WAS_AREA_TIMMING.FACE;
 };
 const showBattle = () => {
+  currentArea.value.bgm.stop();
+  if (!battleBgm.isPlaying()) {
+    battleBgm.play();
+  }
+
   timming.value = WAS_AREA_TIMMING.BATTLE_SELECT_MOVE;
 };
 /**
@@ -327,7 +348,12 @@ const showCharacter = () => {
 
   let afterFunction = () => {};
 
-  messages.push(...npc.getSerif());
+  const branch =
+    npc.isBoss &&
+    (currentArea.value.character as WasNonPlayerCharacter).isPersuaded
+      ? 1
+      : 2;
+  messages.push(...npc.getSerif(branch));
   if (npc.isBoss && npc.isPersuaded) {
     // ボス敵を説得した場合はセリフを表示後、マップに戻る
     afterFunction = () => emits("map");
@@ -354,7 +380,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
 
   switch (id) {
     case WAS_BUTTON_EVENT.EXPLORE:
-      const exploreResult = props.player.explore(currentArea.value);
+      const exploreResult = props.player.explore(currentArea.value as WasArea);
       if (!exploreResult) {
         // 探索失敗
         chainMessage(["何もみつからない...。"], showArea);
@@ -379,7 +405,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
     case WAS_BUTTON_EVENT.USE_EXPLORE_ITEM:
       const item = props.items[args];
       if (!item) {
-        alert("エラーが発生しました。")
+        alert("エラーが発生しました。");
         throw new WrongImplementationError("Not exsist item is selected.");
       }
       if (!(item.effect instanceof Function)) {
@@ -415,10 +441,11 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
         chainMessage(["なにそれ"], showFace);
         return;
       }
+      let afterFunction = showArea;
       npc.isPersuaded = true;
       if (npc.isBoss) {
         // ボス説得時はエリアをクリア状態にしてイベントタイミングを更新する
-        clearArea();
+        afterFunction = clearArea;
       }
 
       let persuadSuccessMessages = [...npc.serif.PERSUADE_SUCCESS];
@@ -428,7 +455,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
         persuadSuccessMessages.push(`${occupySkill.name}を習得した！`);
       }
 
-      chainMessage(persuadSuccessMessages, showArea);
+      chainMessage(persuadSuccessMessages, afterFunction);
       return;
     case WAS_BUTTON_EVENT.BATTLE:
       showBattle();
@@ -446,7 +473,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
       return;
     case WAS_BUTTON_EVENT.ATTACK:
       if (!character.value) {
-        alert("エラーが発生しました。")
+        alert("エラーが発生しました。");
         throw new WrongImplementationError("Character is not set.");
       }
       player.value.setBattleMove(player.value, character.value, {
@@ -458,7 +485,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
       return;
     case WAS_BUTTON_EVENT.ACTIVATE_SKILL:
       if (!character.value) {
-        alert("エラーが発生しました。")
+        alert("エラーが発生しました。");
         throw new WrongImplementationError("Character is not set.");
       }
       player.value.setBattleMove(player.value, character.value, {
@@ -471,7 +498,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
       return;
     case WAS_BUTTON_EVENT.USE_BATTLE_ITEM:
       if (!character.value) {
-        alert("エラーが発生しました。")
+        alert("エラーが発生しました。");
         throw new WrongImplementationError("Character is not set.");
       }
       player.value.setBattleMove(player.value, character.value, {
@@ -492,7 +519,7 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
   }
 
   if (!(character.value instanceof WasNonPlayerCharacter)) {
-    alert("エラーが発生しました。")
+    alert("エラーが発生しました。");
     throw new WrongImplementationError(
       "Character is princess, but she can not fight."
     );
@@ -503,12 +530,16 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
 
   // 戦闘処理
   const result = battle(player.value, npc);
-  let afterFunction = showBattle;
+  let battleResultFunction = showBattle;
   if (result.status == WAS_BATTLE_STATUS.WIN) {
     // 勝利時の処理
-    afterFunction = () => {
+    battleResultFunction = () => {
       let afterMessages = [];
-      if (npc.isBoss && !npc.persuadItem && npc.isPersuaded) {
+      if (
+        npc.isBoss &&
+        !npc.persuadItem &&
+        (currentArea.value.character as WasNonPlayerCharacter).isPersuaded
+      ) {
         // ボスで説得アイテムが未設定で雑魚キャラが説得済みの場合は説得成功として処理する
         npc.isPersuaded = true;
         afterMessages = [...npc.serif.PERSUADE_SUCCESS];
@@ -531,17 +562,26 @@ const onClickButton = (id: WAS_BUTTON_EVENT, args: any) => {
       let afterFunction = showArea;
       if (npc.isBoss) {
         // ボス戦勝利時はエリアをクリア状態にしてイベントタイミングを更新する
-        clearArea();
+        afterFunction = () => {
+          clearArea();
+          showArea();
+        };
       }
+
+      battleBgm.stop();
+      currentArea.value.bgm.play();
 
       chainMessage(afterMessages, afterFunction);
     };
   } else if (result.status == WAS_BATTLE_STATUS.LOSE) {
     // 敗北時の処理
-    afterFunction = () => emits("end", WAS_ENDING.DEAD);
+    battleResultFunction = () => {
+      battleBgm.stop();
+      emits("end", WAS_ENDING.DEAD);
+    };
   }
 
-  chainEvent(result.progresses, afterFunction);
+  chainEvent(result.progresses, battleResultFunction);
 };
 
 /**
@@ -588,6 +628,10 @@ const showSatanCastle = () => {
       }
     }
     afterFunction = () => emits("end", endType);
+    chainMessage([...messages], afterFunction);
+
+    // エンディングに遷移する場合は後続の処理を行わない
+    return;
   }
 
   // 回復条件を満たしていれば回復処理を行う
@@ -646,8 +690,7 @@ const showSatanCastle = () => {
     width: 100%;
     height: 30%;
     border: 6px solid #d3d3d3;
-    background-color: black;
-    opacity: 0.8;
+    background-color: rgba(0, 0, 0, 0.8);
     &__message_frame {
       position: absolute;
       top: 0;

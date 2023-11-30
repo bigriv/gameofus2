@@ -1,12 +1,19 @@
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WasArea } from "./area";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 
 export class WasMap {
   visual: GOUVisual;
+  bgm: GOUReadAudio;
   areas: { [key: string]: WasArea };
 
-  constructor(visual: GOUVisual, areas: { [key: string]: WasArea }) {
+  constructor(
+    visual: GOUVisual,
+    bgm: GOUReadAudio,
+    areas: { [key: string]: WasArea }
+  ) {
     this.visual = visual;
+    this.bgm = bgm;
     this.areas = areas;
   }
   isUnified() {

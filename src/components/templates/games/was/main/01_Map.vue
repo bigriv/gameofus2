@@ -61,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, ref } from "vue";
+import { PropType, onMounted, onUnmounted, ref } from "vue";
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 import { WAS_AREA_ID } from "@/composables/games/was/const";
 import { WasPlayer } from "@/composables/games/was/types/player";
@@ -88,9 +88,16 @@ const emits = defineEmits(["click"]);
 
 const areas = ref(props.map.areas);
 const onClick = (area: WAS_AREA_ID) => {
-  hoverSE.play()
+  hoverSE.play();
   emits("click", area);
 };
+
+onMounted(() => {
+  props.map.bgm.play();
+});
+onUnmounted(() => {
+  props.map.bgm.stop();
+});
 </script>
 
 <style scoped lang="scss">
@@ -138,10 +145,10 @@ const onClick = (area: WAS_AREA_ID) => {
     }
     &__village {
       position: absolute;
-      top: 19%;
-      left: 69%;
-      width: 12%;
-      height: 12%;
+      top: 18%;
+      left: 65%;
+      width: 20%;
+      height: 15%;
     }
     &__sea {
       position: absolute;
@@ -186,7 +193,7 @@ const onClick = (area: WAS_AREA_ID) => {
         left: 20%;
       }
       &--VILLAGE {
-        top: 27%;
+        top: 30%;
         left: 80%;
       }
       &--KINGDOM_CASTLE {

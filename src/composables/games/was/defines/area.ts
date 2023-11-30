@@ -1,11 +1,13 @@
 import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
-import { WAS_ITEM_ID } from "@/composables/games/was/const";
 import GOUVisualDefinition from "@/composables/types/visuals/GOUVisualDefinition";
+import { WAS_ITEM_ID } from "@/composables/games/was/const";
+import { WAS_SOUND_ID } from "@/composables/games/was/enums/sound";
 
 type WAS_AREA_DEFINITION_TYPE = {
   name: string;
   outside: GOUVisualDefinition;
   inside: GOUVisualDefinition;
+  bgm: WAS_SOUND_ID;
   dropItems?: Array<{ probability: number; amount: number; id: WAS_ITEM_ID }>;
 };
 /**
@@ -25,6 +27,7 @@ const WAS_SATAN_CASTLE: WAS_AREA_DEFINITION_TYPE = {
     width: 100,
     height: 100,
   },
+  bgm: WAS_SOUND_ID.BGM_SATAN_CASTLE,
 };
 
 const WAS_CAVE: WAS_AREA_DEFINITION_TYPE = {
@@ -41,6 +44,7 @@ const WAS_CAVE: WAS_AREA_DEFINITION_TYPE = {
     width: 100,
     height: 100,
   },
+  bgm: WAS_SOUND_ID.BGM_CAVE,
   dropItems: [
     { probability: 0.05, amount: 1, id: WAS_ITEM_ID.POWER_LING },
     { probability: 0.3, amount: 2, id: WAS_ITEM_ID.RICE_BALL },
@@ -62,6 +66,7 @@ const WAS_VILLAGE: WAS_AREA_DEFINITION_TYPE = {
     width: 100,
     height: 100,
   },
+  bgm: WAS_SOUND_ID.BGM_VILLAGE,
   dropItems: [
     { probability: 0.05, amount: 1, id: WAS_ITEM_ID.WING_BOOTS },
     { probability: 0.3, amount: 3, id: WAS_ITEM_ID.MEAT },
@@ -83,6 +88,7 @@ const WAS_SEA: WAS_AREA_DEFINITION_TYPE = {
     width: 100,
     height: 100,
   },
+  bgm: WAS_SOUND_ID.BGM_SEA,
   dropItems: [
     { probability: 0.05, amount: 1, id: WAS_ITEM_ID.MYSTERIOUS_SHELL },
     { probability: 0.1, amount: 2, id: WAS_ITEM_ID.HOLY_WATER },
@@ -91,7 +97,7 @@ const WAS_SEA: WAS_AREA_DEFINITION_TYPE = {
 };
 
 const WAS_MOUNTAIN: WAS_AREA_DEFINITION_TYPE = {
-  name: "山",
+  name: "ドラゴン山",
   outside: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/buildings/outside/Mountain.svg",
@@ -104,13 +110,14 @@ const WAS_MOUNTAIN: WAS_AREA_DEFINITION_TYPE = {
     width: 100,
     height: 100,
   },
+  bgm: WAS_SOUND_ID.BGM_MOUNTAIN,
   dropItems: [
     { probability: 0.1, amount: 1, id: WAS_ITEM_ID.DRAGON_SCALE },
     { probability: 0.4, amount: 3, id: WAS_ITEM_ID.SUPER_HERB },
   ],
 };
 const WAS_KINGDOM_CASTLE: WAS_AREA_DEFINITION_TYPE = {
-  name: "王国",
+  name: "王国城",
   outside: {
     type: GOUVisualType.IMAGE_SVG,
     path: "/games/was/buildings/outside/KingdomCastle.svg",
@@ -123,6 +130,7 @@ const WAS_KINGDOM_CASTLE: WAS_AREA_DEFINITION_TYPE = {
     width: 100,
     height: 100,
   },
+  bgm: WAS_SOUND_ID.BGM_KINGDOM_CASTLE,
   dropItems: [
     { probability: 0.1, amount: 2, id: WAS_ITEM_ID.SUPER_HERB },
     { probability: 0.3, amount: 3, id: WAS_ITEM_ID.RICE_BALL },

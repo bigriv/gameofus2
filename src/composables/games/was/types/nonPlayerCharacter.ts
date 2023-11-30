@@ -53,12 +53,17 @@ export class WasNonPlayerCharacter extends WasCharacter {
     this.move = this.chooseMove(self, enemy);
   }
 
-  getSerif(): Array<string> {
+  /**
+   * セリフを取得する
+   * @param branch セリフの分岐（1: 説得可 2: 説得不可）
+   * @returns セリフ
+   */
+  getSerif(branch: number): Array<string> {
     if (this.isBoss && this.isPersuaded) {
       return [...(this.serif.CHAT ?? [])];
-    } else if (!this.isBoss && this.isPersuaded) {
+    } else if (branch === 1) {
       return [...this.serif.FACE1];
-    } else if (!this.isBoss && !this.isPersuaded) {
+    } else if (branch === 2) {
       return [...(this.serif.FACE2 ?? [])];
     } else {
       return [...this.serif.FACE1];

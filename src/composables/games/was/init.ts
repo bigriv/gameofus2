@@ -49,9 +49,19 @@ import { WasPrincess } from "./types/princess";
 import { WasMap } from "./types/map";
 import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
 import { COLOR } from "@/composables/types/GOUColor";
+import { WAS_SOUND_DEFINE } from "./defines/sound";
 
 export const useWasInit = (loadData?: any) => {
   const isLoadedImages: Ref<boolean> = ref(false);
+
+  const initSound = (): { [key: string]: GOUReadAudio } => {
+    let sounds: { [key: string]: GOUReadAudio } = {};
+    for (const key of Object.keys(WAS_SOUND_DEFINE)) {
+      sounds[key] = new GOUReadAudio(WAS_SOUND_DEFINE[key]);
+    }
+    return sounds;
+  };
+  const WAS_SOUNDS: { [key: string]: GOUReadAudio } = initSound();
 
   // プレイヤーの初期化
   const initPlayer = (): WasPlayer => {
@@ -92,10 +102,11 @@ export const useWasInit = (loadData?: any) => {
   // エリアの初期化
   const initArea = (): { [key: string]: WasArea } => {
     let areas: { [key: string]: WasArea } = {};
-    areas["SATAN_CASTLE"] = new WasArea(
+    areas.SATAN_CASTLE = new WasArea(
       WAS_SATAN_CASTLE.name,
       ConstructGOUVisual(WAS_SATAN_CASTLE.outside),
       ConstructGOUVisual(WAS_SATAN_CASTLE.inside),
+      WAS_SOUNDS[WAS_SATAN_CASTLE.bgm],
       PRINCESS
     );
 
@@ -111,6 +122,7 @@ export const useWasInit = (loadData?: any) => {
         defines[key].name,
         ConstructGOUVisual(defines[key].outside),
         ConstructGOUVisual(defines[key].inside),
+        WAS_SOUNDS[defines[key].bgm],
         CHARACTERS[key],
         BOSSES[key],
         defines[key].dropItems
@@ -178,7 +190,7 @@ export const useWasInit = (loadData?: any) => {
             key as WAS_SKILL_ID,
             defines[key].name,
             new GOULottie(defines[key].animation, 100, 100),
-            new GOUReadAudio(defines[key].sound),
+            WAS_SOUNDS[defines[key].sound],
             defines[key].element,
             defines[key].power,
             defines[key].cost,
@@ -192,7 +204,7 @@ export const useWasInit = (loadData?: any) => {
             key as WAS_SKILL_ID,
             defines[key].name,
             new GOULottie(defines[key].animation, 100, 100),
-            new GOUReadAudio(defines[key].sound),
+            WAS_SOUNDS[defines[key].sound],
             defines[key].element,
             defines[key].power,
             defines[key].cost,
@@ -206,7 +218,7 @@ export const useWasInit = (loadData?: any) => {
             key as WAS_SKILL_ID,
             defines[key].name,
             new GOULottie(defines[key].animation, 100, 100),
-            new GOUReadAudio(defines[key].sound),
+            WAS_SOUNDS[defines[key].sound],
             defines[key].element,
             defines[key].power,
             defines[key].cost,
@@ -220,7 +232,7 @@ export const useWasInit = (loadData?: any) => {
             key as WAS_SKILL_ID,
             defines[key].name,
             new GOULottie(defines[key].animation, 100, 100),
-            new GOUReadAudio(defines[key].sound),
+            WAS_SOUNDS[defines[key].sound],
             defines[key].element,
             defines[key].cost,
             defines[key].beforeEffect,
@@ -260,7 +272,11 @@ export const useWasInit = (loadData?: any) => {
 
   const ITEMS: { [key: string]: WasItem } = initItem();
   const SKILLS: { [key: string]: WasSkill } = initSkill();
-  const map: WasMap = new WasMap(ConstructGOUVisual(WAS_MAP), initArea());
+  const map: WasMap = new WasMap(
+    ConstructGOUVisual(WAS_MAP),
+    WAS_SOUNDS.BGM_MAP,
+    initArea()
+  );
 
   const state: {
     timming: WAS_EVENT_TIMMING;
@@ -272,10 +288,14 @@ export const useWasInit = (loadData?: any) => {
     character: null,
   });
 
+  let loadIntervalId: NodeJS.Timer | undefined = undefined;
   const loadFile = () => {
     (state.player.visual as GOUImage).load();
     (PRINCESS.visual as GOUImage).load();
     (map.visual as GOUImage).load();
+    map.bgm.loop = true;
+    map.bgm.setVolume(0.08);
+    map.bgm.load();
     for (const key of Object.keys(SKILLS)) {
       SKILLS[key].load();
     }
@@ -288,10 +308,13 @@ export const useWasInit = (loadData?: any) => {
     for (const key of Object.keys(map.areas)) {
       (map.areas[key].inside as GOUImage).load();
       (map.areas[key].outside as GOUImage).load();
+      map.areas[key].bgm.loop = true;
+      map.areas[key].bgm.setVolume(0.08);
+      map.areas[key].bgm.load();
     }
 
     // ロードが完了したかを判定する
-    const intervalId = setInterval(() => {
+    loadIntervalId = setInterval(() => {
       if (!(state.player.visual as GOUImage).isLoaded()) {
         return;
       }
@@ -320,7 +343,7 @@ export const useWasInit = (loadData?: any) => {
         }
       }
       isLoadedImages.value = true;
-      clearInterval(intervalId);
+      clearInterval(loadIntervalId);
     }, 100);
   };
 
@@ -399,6 +422,7 @@ export const useWasInit = (loadData?: any) => {
     SKILLS,
     map,
     state,
+    loadIntervalId,
     isLoadedImages,
     loadFile,
     loadSaveData,

@@ -33,14 +33,6 @@
     </template>
     <template #description>
       <div class="c-game__description__block">
-        <h2>リリースノート</h2>
-        <p>2023/11/13 ver 1.03 文字フォント変更、スマホ操作性改善</p>
-        <p>2023/10/11 ver 1.02 スマホ対応</p>
-        <p>2023/10/07 ver 1.01 操作性改善</p>
-        <p>2023/10/05 ver 1.00 リリース</p>
-      </div>
-
-      <div class="c-game__description__block">
         <h2>あらすじ</h2>
         <p>
           勇者と魔王の決戦となる戦争に徴兵を受けた主人公。<br />
@@ -111,6 +103,39 @@
           </tr>
         </table>
       </div>
+
+      <div class="c-game__description__block">
+        <h2>素材</h2>
+        <p>
+          SE:
+          <a
+            href="https://soundeffect-lab.info/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >効果音ラボ</a
+          >様
+        </p>
+        <p>
+          BGM:
+          <a
+            href="https://maou.audio/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >魔王魂</a
+          >様
+        </p>
+        <p>キャラクターイラスト: よしを</p>
+        <p>背景イラスト: よしを</p>
+      </div>
+
+      <div class="c-game__description__block">
+        <h2>リリースノート</h2>
+        <p>2023/11/30 ver 1.10 BGM追加、マップ画面UI改善</p>
+        <p>2023/11/13 ver 1.03 文字フォント変更、スマホ操作性改善</p>
+        <p>2023/10/11 ver 1.02 スマホ対応</p>
+        <p>2023/10/07 ver 1.01 操作性改善</p>
+        <p>2023/10/05 ver 1.00 リリース</p>
+      </div>
     </template>
   </GameFrame>
 </template>
@@ -125,7 +150,10 @@ import { WAS_ENDING } from "@/composables/games/was/const";
 import { WasPlayer } from "@/composables/games/was/types/player";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { WasArea } from "@/composables/games/was/types/area";
-import { WAS_EVENT_TIMMING, WAS_OVERALL_TIMMING } from "@/composables/games/was/enums/timming";
+import {
+  WAS_EVENT_TIMMING,
+  WAS_OVERALL_TIMMING,
+} from "@/composables/games/was/enums/timming";
 
 const overallTimming = ref(WAS_OVERALL_TIMMING.TITLE);
 const endingType = ref();
@@ -270,5 +298,8 @@ const skillDescription = [
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.c-game__description__block {
+  margin-top: 20px;
 }
 </style>

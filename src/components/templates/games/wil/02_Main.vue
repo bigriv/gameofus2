@@ -8,37 +8,33 @@
       />
     </template>
     <template v-else-if="timming == WIL_CHAPTER_TIMMING.TALK">
-      <Talk
-        :left="talkCharacters.left"
-        :right="talkCharacters.right"
-        :event="talkEvent"
-        @end="onTalkEnd"
-      />
+      <Talk :images="WIL_IMAGES" :events="talkEvents" @end="onTalkEnd" />
     </template>
     <template v-else-if="timming == WIL_CHAPTER_TIMMING.BATTLE">
       <Battle
-        :characters="WIL_CHARACTERS"
+        v-if="currentCapter"
         :skills="WIL_SKILLS"
+        :chapter="currentCapter"
         :player="player"
       />
     </template>
     <template v-else-if="timming == WIL_CHAPTER_TIMMING.TRAINING">
-      <Training :characters="WIL_CHARACTERS" :player="player" />
+      <Training :images="WIL_IMAGES" :player="player" />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Ref, onMounted, ref, reactive } from "vue";
+import { Ref, onMounted, ref } from "vue";
 import Chapter from "@/components/templates/games/wil/main/01_Chapter.vue";
 import Talk from "@/components/templates/games/wil/main/02_Talk.vue";
 import Battle from "@/components/templates/games/wil/main/03_Battle.vue";
 import Training from "@/components/templates/games/wil/main/04_Training.vue";
 import { WIL_CHAPTER_TIMMING } from "@/composables/games/wil/enums/timming";
 import { useWilInit } from "@/composables/games/wil/init";
-import { WilTalkEvent } from "@/composables/games/wil/types/event";
-import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import { WilChapter } from "@/composables/games/wil/types/chaper";
+import { WilChapter } from "@/composables/games/wil/types/chapter";
+import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
+import { WIL_CHAPTER_DEFINES } from "@/composables/games/wil/defines/chapter";
 
 const props = defineProps({
   start: {
@@ -53,30 +49,25 @@ const props = defineProps({
 
 const emits = defineEmits(["loaded"]);
 
-const { WIL_SKILLS, WIL_CHARACTERS, player } = useWilInit();
+const { WIL_IMAGES, WIL_SOUNDS, WIL_SKILLS, characterSequence, player } =
+  useWilInit();
 
 const timming: Ref<WIL_CHAPTER_TIMMING> = ref(WIL_CHAPTER_TIMMING.OPENING);
-const talkCharacters: { left?: GOUVisual; right?: GOUVisual } = reactive({
-  left: undefined,
-  right: undefined,
-});
-const talkEvent = ref();
+const talkEvents = ref();
 
 const currentCapter: Ref<WilChapter | undefined> = ref();
 
 const onOpeningEnd = () => {
   // TODO: 画面遷移の切り替え
-  talkCharacters.left = WIL_CHARACTERS.value.HERO.visual;
-  talkCharacters.right = WIL_CHARACTERS.value.HERO.visual;
-  talkEvent.value = new WilTalkEvent({
-    talker: "主人公",
-    message: ["俺は主人公。", "しがない田舎に住む青年だ。"],
-  });
+  talkEvents.value = currentCapter.value?.proceedNextTalks();
   timming.value = WIL_CHAPTER_TIMMING.TALK;
 };
 const onTalkEnd = () => {
   // TODO: 画面遷移の切り替え
-  timming.value = WIL_CHAPTER_TIMMING.BATTLE;
+  if (!currentCapter.value) {
+    throw new WrongImplementationError("Current Chapter is not initialized.");
+  }
+  timming.value = currentCapter.value.proceedNextEvent();
 };
 
 onMounted(() => {
@@ -88,20 +79,13 @@ onMounted(() => {
   if (props.loadData) {
     // TODO: セーブデータのロード
   }
-  currentCapter.value = new WilChapter({
-    title: "第１章 聖の国と騎士団",
-    flow: [
-      WIL_CHAPTER_TIMMING.OPENING,
-      WIL_CHAPTER_TIMMING.TALK,
-      WIL_CHAPTER_TIMMING.BATTLE,
-      WIL_CHAPTER_TIMMING.TALK,
-      WIL_CHAPTER_TIMMING.ENDING,
-    ],
-    firstEnemy: {
-      name: "魔物の群れ",
-      deploy: [],
-    },
-  });
+  currentCapter.value = new WilChapter(
+    WIL_CHAPTER_DEFINES[0],
+    characterSequence,
+    WIL_IMAGES,
+    WIL_SOUNDS
+  );
+  timming.value = currentCapter.value.proceedNextEvent();
 });
 </script>
 

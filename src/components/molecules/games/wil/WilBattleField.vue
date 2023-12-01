@@ -32,8 +32,7 @@
           >
             <GOUVisualCanvas
               :objects="{
-                army: cells[(column - 1) * WilField.WIDTH + (row - 1)].character
-                  ?.miniVisual,
+                army: cells[(column - 1) * WilField.WIDTH + (row - 1)].character!.miniVisual,
               }"
             />
           </div>

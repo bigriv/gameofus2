@@ -22,7 +22,7 @@
           </div>
           <div
             v-if="playerCharacterNum > 0"
-            class="c-under_frame__message_frame--button u-margin_top--auto"
+            class="c-under_frame__message_frame__button u-margin_top--auto"
           >
             <GameButton
               label="配置終了"
@@ -208,10 +208,6 @@ import {
 const props = defineProps({
   timming: {
     type: String as PropType<WIL_BATTLE_TIMMING>,
-    required: true,
-  },
-  characters: {
-    type: Object as PropType<{ [key: string]: WilCharacter }>,
     required: true,
   },
   skills: {
@@ -495,7 +491,7 @@ watch(
     background-color: rgba(0, 0, 0, 0.8);
     color: white;
     padding: 2px 5px 5px 5px;
-    &--button {
+    &__button {
       width: 30%;
       height: 30%;
     }
@@ -503,27 +499,33 @@ watch(
 }
 @media screen and (max-width: 400px) {
   .c-under_frame__message,
+  .c-under_frame__message_frame__button,
   .c-under_frame__status,
   .c-under_frame__contents__message,
+  .c-under_frame__contents__button,
   .c-under_frame__message_frame {
-    font-size: 10px;
+    font-size: 8px;
   }
 }
 
 @media screen and (max-width: 600px) and (min-width: 400px) {
   .c-under_frame__message,
+  .c-under_frame__message_frame__button,
   .c-under_frame__status,
   .c-under_frame__contents__message,
+  .c-under_frame__contents__button,
   .c-under_frame__message_frame {
-    font-size: 12px;
+    font-size: 10px;
   }
 }
 @media screen and (min-width: 600px) {
   .c-under_frame__message,
+  .c-under_frame__message_frame__button,
   .c-under_frame__status,
   .c-under_frame__contents__message,
+  .c-under_frame__contents__button,
   .c-under_frame__message_frame {
-    font-size: 14px;
+    font-size: 12px;
   }
 }
 </style>

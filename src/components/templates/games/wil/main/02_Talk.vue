@@ -3,13 +3,13 @@
     <div class="c-talk__background">
       <GOUVisualCanvas :objects="{ background: background }" />
     </div>
-    <div class="c-talk__character--left">
-      <GOUVisualCanvas :objects="{ character: props.left }" />
+    <div v-if="characters.left" class="c-talk__character--left">
+      <GOUVisualCanvas :objects="{ character: characters.left }" />
     </div>
-    <div class="c-talk__character--right">
-      <GOUVisualCanvas :objects="{ character: props.right }" />
+    <div v-if="characters.right" class="c-talk__character--right">
+      <GOUVisualCanvas :objects="{ character: characters.right }" />
     </div>
-    <div v-if="event.talker" class="c-talk__talker">
+    <div v-if="talker" class="c-talk__talker">
       <MessageFrame
         :complete="true"
         :messages="talker"
@@ -31,14 +31,14 @@
         :clickable="message.length > 0"
         vertical="start"
         horizontal="start"
-        @click="onClickMessageFrame"
+        @click="() => onClickMessageFrame()"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { PropType, Ref, computed, ref } from "vue";
+import { PropType, Ref, onMounted, reactive, ref } from "vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
@@ -50,41 +50,57 @@ import {
 } from "@/composables/games/wil/const";
 
 const props = defineProps({
-  left: {
-    type: Object as PropType<GOUVisual>,
-    default: undefined,
+  images: {
+    type: Object as PropType<{ [key: string]: GOUVisual }>,
+    required: true,
   },
-  right: {
-    type: Object as PropType<GOUVisual>,
-    default: undefined,
-  },
-  event: {
-    type: WilTalkEvent,
-    default: () => {},
+  events: {
+    type: Array<WilTalkEvent>,
+    default: () => [],
   },
 });
 const emits = defineEmits(["end"]);
 
 const background: Ref<GOUVisual | undefined> = ref();
 
-const message = computed(() => {
-  if (!props.event.message) {
-    return [];
-  }
-  return props.event.message;
+const message: Ref<Array<string>> = ref([]);
+const talker: Ref<Array<string>> = ref([]);
+const characters: {
+  left?: GOUVisual;
+  right?: GOUVisual;
+} = reactive({
+  left: undefined,
+  right: undefined,
 });
-const talker = computed(() => {
-  if (!props.event.talker) {
-    return undefined;
-  }
-  return [props.event.talker];
-});
+const onClickMessageFrame: Ref<Function> = ref(() => {});
 const isEndMessage = ref(false);
 
-const onClickMessageFrame = () => {
-  console.log("onClickMessageFrame");
-  emits("end");
+const chainEvent: Function = (
+  events: Array<WilTalkEvent>,
+  afterFunction: Function
+) => {
+  const event = events.shift();
+  if (!event) {
+    talker.value = [];
+    message.value = [];
+    onClickMessageFrame.value = () => {};
+    return;
+  }
+  message.value = event.message ?? [];
+  if (event.sound) {
+    event.sound.play();
+  }
+  talker.value = event.talker ? [event.talker] : [];
+  characters.left = event.left ? props.images[event.left] : undefined;
+  characters.right = event.right ? props.images[event.right] : undefined;
+
+  onClickMessageFrame.value = () => chainEvent(events, afterFunction);
 };
+
+onMounted(() => {
+  console.log(props.events)
+  chainEvent([...props.events], emits("end"));
+});
 </script>
 
 <style scoped lang="scss">

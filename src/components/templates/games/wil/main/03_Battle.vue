@@ -40,7 +40,7 @@
         v-show="timming == WIL_BATTLE_TIMMING.BATTLE_ENEMY_TURN_START"
         class="c-battle__enemy_turn_start"
       >
-        <div class="c-battle__start__text">焔軍の侵攻</div>
+        <div class="c-battle__start__text">{{ enemy?.name }}の侵攻</div>
       </div>
     </transition>
 
@@ -51,7 +51,6 @@
       v-model:timming="timming"
       v-model:field="field"
       v-model:player="player"
-      :characters="props.characters"
       :skills="props.skills"
       :computer="computer"
       :hoverCharacter="hoverCharacter"
@@ -75,14 +74,15 @@ import { WilField } from "@/composables/games/wil/types/field.ts";
 import { WilSkill } from "@/composables/games/wil/types/skill";
 import { WilPlayer } from "@/composables/games/wil/types/player";
 import { WilComputer } from "@/composables/games/wil/types/computer";
+import { WilChapter } from "@/composables/games/wil/types/chapter";
 
 const props = defineProps({
-  characters: {
-    type: Object as PropType<{ [key: string]: WilCharacter }>,
-    required: true,
-  },
   skills: {
     type: Object as PropType<{ [key: string]: WilSkill }>,
+    required: true,
+  },
+  chapter: {
+    type: Object as PropType<WilChapter>,
     required: true,
   },
   player: {
@@ -93,8 +93,11 @@ const props = defineProps({
 const emits = defineEmits(["update:player"]);
 
 const background: Ref<GOUVisual | undefined> = ref();
-const timming = ref(WIL_BATTLE_TIMMING.SET_SELECT_CELL);
-const field = ref(new WilField());
+const timming: Ref<WIL_BATTLE_TIMMING> = ref(
+  WIL_BATTLE_TIMMING.SET_SELECT_CELL
+);
+const field: Ref<WilField> = ref(new WilField());
+const enemy = ref(props.chapter.proceedNextEnemy());
 const player = computed({
   get: () => props.player,
   set: (newValue: WilPlayer) => emits("update:player", newValue),
@@ -128,9 +131,8 @@ const error = (message: string) => {
   alert(message);
 };
 const endSet = () => {
-  field.value.enemyCells[0].character = props.characters.HERO;
-  field.value.enemyCells[1].character = props.characters.HOLY_KNIGHTS_SOLDIER;
-  field.value.enemyCells[3].character = props.characters.HOLY_KNIGHTS_MAGICIAN;
+  console.log(enemy.value)
+  field.value.setEnemyCharacters(enemy.value!.deploy);
   timming.value = WIL_BATTLE_TIMMING.BATTLE_START;
   setTimeout(() => {
     startPlayerTurn();
@@ -145,7 +147,7 @@ const startPlayerTurn = () => {
 };
 const selectSetCell = (x: number, y: number) => {
   field.value.resetSelected();
-  if (!field.value.isSetableCahracter(x, y)) {
+  if (!field.value.isSetablePlayerCahracter(x, y)) {
     alert("配置できません。");
     return;
   }
@@ -299,7 +301,6 @@ watch(
     border-bottom: 2px solid white;
     opacity: 1;
     &__text {
-      font-size: 72px;
       font-family: "Yuji Mai";
       color: white;
       text-shadow: 5px 5px 5px black;
@@ -346,8 +347,11 @@ watch(
   .c-battle__infomation {
     font-size: 12px;
   }
+  .c-battle__start__text {
+    font-size: 48px;
+  }
   .c-battle__guide {
-    font-size: 10px;
+    font-size: 8px;
   }
 }
 
@@ -355,16 +359,22 @@ watch(
   .c-battle__infomation {
     font-size: 14px;
   }
+  .c-battle__start__text {
+    font-size: 54px;
+  }
   .c-battle__guide {
-    font-size: 12px;
+    font-size: 10px;
   }
 }
 @media screen and (min-width: 600px) {
   .c-battle__infomation {
     font-size: 16px;
   }
+  .c-battle__start__text {
+    font-size: 72px;
+  }
   .c-battle__guide {
-    font-size: 14px;
+    font-size: 12px;
   }
 }
 </style>

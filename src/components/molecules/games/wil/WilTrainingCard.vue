@@ -2,7 +2,11 @@
   <WilCard @click="onClick">
     <div class="c-card">
       <div>{{ props.training.name }}</div>
-      <img :src="props.training.image" />
+      <div class="c-card__image">
+        <GOUVisualCanvas
+          :objects="{ training: props.training.image }"
+        />
+      </div>
     </div>
   </WilCard>
 </template>
@@ -11,6 +15,7 @@
 import { PropType } from "vue";
 import WilCard from "@/components/molecules/games/wil/WilCard.vue";
 import { WilTraining } from "@/composables/games/wil/types/training";
+import GOUVisualCanvas from "../../GOUVisualCanvas.vue";
 
 const props = defineProps({
   training: {
@@ -35,7 +40,7 @@ const onClick = () => {
     rgba(200, 200, 200, 1)
   );
   padding: 2px;
-  img {
+  &__image {
     position: absolute;
     top: 60%;
     left: 50%;

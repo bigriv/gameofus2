@@ -2,7 +2,7 @@
   <div class="c-training">
     <div class="c-training__characters">
       <WilCardList
-        v-model:selected="selectedCharacter"
+        v-model:selected="selectedCharacter!.id"
         :dataList="playerCharacters"
       />
     </div>
@@ -20,7 +20,7 @@
           </div>
           <template v-if="plan.character">
             <div class="c-training__plan__cards__content__character">
-              <WilCharacterCard :character="props.characters[plan.character]" />
+              <WilCharacterCard :character="plan.character" />
             </div>
             <div class="c-training__plan__cards__content__button">
               <GameButton
@@ -68,28 +68,28 @@
           <div class="c-training__result_modal__training">
             <dl>
               <dt>体力</dt>
-              <dd>{{ resultModal.training.before?.life }}</dd>
-              <dd>{{ resultModal.training.after?.life }}</dd>
+              <dd>{{ resultModal.training.before.life }}</dd>
+              <dd>{{ resultModal.training.rise.life }}</dd>
             </dl>
             <dl>
               <dt>攻撃力</dt>
-              <dd>{{ resultModal.training.before?.attack }}</dd>
-              <dd>{{ resultModal.training.after?.attack }}</dd>
+              <dd>{{ resultModal.training.before.attack }}</dd>
+              <dd>+ {{ resultModal.training.rise.attack }}</dd>
             </dl>
             <dl>
               <dt>防御力</dt>
-              <dd>{{ resultModal.training.before?.defense }}</dd>
-              <dd>{{ resultModal.training.after?.defense }}</dd>
+              <dd>{{ resultModal.training.before.defense }}</dd>
+              <dd>+ {{ resultModal.training.rise.defense }}</dd>
             </dl>
             <dl>
               <dt>魔力</dt>
-              <dd>{{ resultModal.training.before?.magic }}</dd>
-              <dd>{{ resultModal.training.after?.magic }}</dd>
+              <dd>{{ resultModal.training.before.magic }}</dd>
+              <dd>+ {{ resultModal.training.rise.magic }}</dd>
             </dl>
             <dl>
               <dt>行動力</dt>
-              <dd>{{ resultModal.training.before?.speed }}</dd>
-              <dd>{{ resultModal.training.after?.speed }}</dd>
+              <dd>{{ resultModal.training.before.speed }}</dd>
+              <dd>+ {{ resultModal.training.rise.speed }}</dd>
             </dl>
           </div>
         </template>
@@ -101,7 +101,6 @@
 <script setup lang="ts">
 import { PropType, Ref, computed, reactive, ref } from "vue";
 import WilCardList from "@/components/molecules/games/wil/WilCardList.vue";
-import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
 import { WIL_TRAINING_ID } from "@/composables/games/wil/enums/training";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 import WilCharacterCard from "@/components/molecules/games/wil/WilCharacterCard.vue";
@@ -115,10 +114,12 @@ import {
   WIL_BUTTON_FONT_COLOR,
   WIL_BUTTON_BACKGROUND_COLOR,
 } from "@/composables/games/wil/const";
+import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
+import GOUVisual from "@/composables/types/visuals/GOUVisual";
 
 const props = defineProps({
-  characters: {
-    type: Object as PropType<{ [key: string]: WilCharacter }>,
+  images: {
+    type: Object as PropType<{ [key: string]: GOUVisual }>,
     required: true,
   },
   player: {
@@ -126,7 +127,7 @@ const props = defineProps({
     required: true,
   },
 });
-const selectedCharacter: Ref<WIL_CHARACTER_ID | undefined> = ref();
+const selectedCharacter: Ref<WilCharacter | undefined> = ref();
 const playerCharacters: Ref<Array<WilCharacter>> = ref(
   [...props.player.characters].sort()
 );
@@ -134,7 +135,7 @@ const days = ref(1);
 const trainingPlans: {
   [key: string]: {
     training: WilTraining;
-    character?: WIL_CHARACTER_ID;
+    character?: WilCharacter;
     result?: {
       before: WilStatus;
       after: WilStatus;
@@ -146,7 +147,7 @@ const trainingPlans: {
     training: new WilTraining({
       id: WIL_TRAINING_ID.ATTACK,
       name: "侵攻訓練",
-      image: "/games/wil/images/trainings/swords.svg",
+      image: props.images[WIL_IMAGE_ID.TRAINING_ATTACK],
     }),
     character: undefined,
     result: undefined,
@@ -156,7 +157,7 @@ const trainingPlans: {
     training: new WilTraining({
       id: WIL_TRAINING_ID.DEFENSE,
       name: "防衛訓練",
-      image: "/games/wil/images/trainings/shield.svg",
+      image: props.images[WIL_IMAGE_ID.TRAINING_DEFENSE],
     }),
     character: undefined,
     next: WIL_TRAINING_ID.MIGRATION,
@@ -165,7 +166,7 @@ const trainingPlans: {
     training: new WilTraining({
       id: WIL_TRAINING_ID.MIGRATION,
       name: "移動訓練",
-      image: "/games/wil/images/trainings/shoes.svg",
+      image: props.images[WIL_IMAGE_ID.TRAINING_MIGRATION],
     }),
     character: undefined,
     next: WIL_TRAINING_ID.MAGIC,
@@ -174,7 +175,7 @@ const trainingPlans: {
     training: new WilTraining({
       id: WIL_TRAINING_ID.MAGIC,
       name: "魔導学習",
-      image: "/games/wil/images/trainings/book.svg",
+      image: props.images[WIL_IMAGE_ID.TRAINING_MAGIC],
     }),
     character: undefined,
     next: WIL_TRAINING_ID.PHISIC,
@@ -183,7 +184,7 @@ const trainingPlans: {
     training: new WilTraining({
       id: WIL_TRAINING_ID.PHISIC,
       name: "肉体強化",
-      image: "/games/wil/images/trainings/ironAllay.svg",
+      image: props.images[WIL_IMAGE_ID.TRAINING_PHISIC],
     }),
     character: undefined,
     next: null,
@@ -220,8 +221,10 @@ const onSelectTraining = (training: WIL_TRAINING_ID) => {
 
   if (trainingPlans[training].character) {
     // 元々配置されていたキャラをリストに追加
-    const character =
-      props.characters[trainingPlans[training].character as WIL_CHARACTER_ID];
+    const character = trainingPlans[training].character;
+    if (!character) {
+      return;
+    }
     playerCharacters.value.push(character);
     playerCharacters.value = playerCharacters.value.sort(
       (a: WilCharacter, b: WilCharacter) => a.id.localeCompare(b.id)
@@ -231,7 +234,7 @@ const onSelectTraining = (training: WIL_TRAINING_ID) => {
   // 選択したキャラクターを配置し、リストから削除
   trainingPlans[training].character = selectedCharacter.value;
   playerCharacters.value = playerCharacters.value.filter(
-    (c) => c.id !== selectedCharacter.value
+    (c) => c.id !== selectedCharacter.value?.id
   );
   selectedCharacter.value = undefined;
 };
@@ -239,8 +242,10 @@ const onSelectTraining = (training: WIL_TRAINING_ID) => {
 const onRemoveCharacter = (training: WIL_TRAINING_ID) => {
   if (trainingPlans[training].character) {
     // 元々配置されていたキャラをリストに追加
-    const character =
-      props.characters[trainingPlans[training].character as WIL_CHARACTER_ID];
+    const character = trainingPlans[training].character;
+    if (!character) {
+      return;
+    }
     playerCharacters.value.push(character);
     playerCharacters.value = playerCharacters.value.sort(
       (a: WilCharacter, b: WilCharacter) => a.id.localeCompare(b.id)

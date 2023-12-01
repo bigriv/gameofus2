@@ -3,6 +3,7 @@ const WIL_IMAGE_ROOT_PATH = "/games/wil/images/";
 export const WIL_IMAGE_DEFINES: { [key: string]: string } = {
   // キャラクター
   CHARACTER_HERO: WIL_IMAGE_ROOT_PATH + "characters/hero.svg",
+  CHARACTER_OTHER: "/commons/icons/human_blue.svg",
 
   // キャラクター（ミニマム）
   MINI_CHARACTER_HERO: WIL_IMAGE_ROOT_PATH + "characters/mini_hero.svg",

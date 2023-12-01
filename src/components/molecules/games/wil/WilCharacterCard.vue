@@ -91,7 +91,7 @@ const onClick = () => {
 
 @media screen and (max-width: 400px) {
   .c-card__name {
-    font-size: 8px;
+    font-size: 6px;
   }
   .c-card__type::before {
     font-size: 30px;
@@ -100,7 +100,7 @@ const onClick = () => {
 
 @media screen and (max-width: 600px) and (min-width: 400px) {
   .c-card__name {
-    font-size: 10px;
+    font-size: 8px;
   }
   .c-card__type::before {
     font-size: 40px;
@@ -108,7 +108,7 @@ const onClick = () => {
 }
 @media screen and (min-width: 600px) {
   .c-card__name {
-    font-size: 12px;
+    font-size: 10px;
   }
   .c-card__type::before {
     font-size: 50px;

@@ -42,18 +42,16 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import WilCard from "@/components/molecules/games/wil/WilCard.vue";
 import WilCharacterCard from "@/components/molecules/games/wil/WilCharacterCard.vue";
 import WilSkillCard from "@/components/molecules/games/wil/WilSkillCard.vue";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 import { WilSkill } from "@/composables/games/wil/types/skill";
-import { WIL_SKILL_ID } from "@/composables/games/wil/enums/skill";
-import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
 
 const props = defineProps({
   selected: {
-    type: String as PropType<WIL_CHARACTER_ID | WIL_SKILL_ID>,
+    type: String,
     default: undefined,
   },
   dataList: {
@@ -72,9 +70,7 @@ const cardStart = ref(0);
 const selected = ref(props.selected);
 watch(
   () => selected.value,
-  () => {
-    emits("update:selected", selected.value);
-  }
+  () => emits("update:selected", selected.value)
 );
 watch(
   () => props.selected,
@@ -148,18 +144,18 @@ const onSelectCharacter = (character: WilCharacter) => {
 }
 @media screen and (max-width: 400px) {
   .c-card_list__container__content--other {
-    font-size: 10px;
+    font-size: 8px;
   }
 }
 
 @media screen and (max-width: 600px) and (min-width: 400px) {
   .c-card_list__container__content--other {
-    font-size: 12px;
+    font-size: 10px;
   }
 }
 @media screen and (min-width: 600px) {
   .c-card_list__container__content--other {
-    font-size: 14px;
+    font-size: 12px;
   }
 }
 </style>

@@ -106,8 +106,8 @@ export class WilField {
    * @param character
    * @returns
    */
-  setCharacter(x: number, y: number, character: WilCharacter): boolean {
-    if (!this.isSetableCahracter(x, y)) {
+  setPlayerCharacter(x: number, y: number, character: WilCharacter): boolean {
+    if (!this.isSetablePlayerCahracter(x, y)) {
       return false;
     }
 
@@ -123,7 +123,7 @@ export class WilField {
    * キャラクターを配置できるかを判定する
    * @returns 配置可能ならtrue、それ以外はfalse
    */
-  isSetableCahracter(x: number, y: number): boolean {
+  isSetablePlayerCahracter(x: number, y: number): boolean {
     // 配置可能判定（フィールド外または青以外なら配置不可）
     const cell = this.getPlayerCell(x, y);
     if (!cell || cell.color !== WIL_CELL_COLOR.BLUE) {
@@ -131,6 +131,16 @@ export class WilField {
     }
 
     return true;
+  }
+
+  setEnemyCharacters(deploy: Array<WilFieldCell>) {
+    for (const d of deploy) {
+      const cell = this.getEnemyCell(d.x, d.y);
+      if (!cell) {
+        continue;
+      }
+      cell.character = d.character;
+    }
   }
 
   /**
@@ -161,7 +171,7 @@ export class WilField {
     skill?: WilSkill,
     target?: WilCharacter
   ) {
-    console.log("changeColor", timming)
+    console.log("changeColor", timming);
     if (timming === WIL_BATTLE_TIMMING.SET_SELECT_CELL) {
       this.playerCells.forEach((cell) => {
         cell.color = WIL_CELL_COLOR.BLUE;

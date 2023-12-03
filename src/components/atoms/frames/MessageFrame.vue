@@ -52,6 +52,10 @@ const props = defineProps({
     type: Array<string>,
     default: [],
   },
+  noAnimation: {
+    type: Boolean,
+    default: false,
+  },
   // 表示完了フラグ
   complete: {
     type: Boolean,
@@ -146,9 +150,10 @@ const onClick = () => {
 };
 
 onMounted(() => {
-  if (props.complete) {
+  if (props.noAnimation) {
     texts.value = props.messages;
     animationPos.row = props.messages.length - 1;
+    isComplete.value = true;
     return;
   }
 
@@ -165,11 +170,12 @@ onUnmounted(() => {
 watch(
   () => props.messages,
   () => {
-    if (isComplete.value) {
+    if (props.noAnimation) {
       texts.value = props.messages;
       animationPos.row = props.messages.length - 1;
       return;
     }
+    isComplete.value = false;
     animationPos.row = 0;
     animationPos.col = 0;
     animateTypeWrite();

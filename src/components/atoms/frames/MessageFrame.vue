@@ -165,6 +165,11 @@ onUnmounted(() => {
 watch(
   () => props.messages,
   () => {
+    if (isComplete.value) {
+      texts.value = props.messages;
+      animationPos.row = props.messages.length - 1;
+      return;
+    }
     animationPos.row = 0;
     animationPos.col = 0;
     animateTypeWrite();

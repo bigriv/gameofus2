@@ -12,7 +12,7 @@
 <style scoped lang="scss">
 .c-game {
   &__window {
-    :deep(*) {
+    &:deep(*) {
       touch-action: manipulation;
       user-select: none;
     }

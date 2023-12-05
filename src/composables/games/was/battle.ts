@@ -1,12 +1,10 @@
 import {
   WAS_BATTLE_MOVE,
   WAS_BATTLE_STATUS,
-  WAS_DEFAULT_GAME_DISPLAY_HEIGHT,
-  WAS_DEFAULT_GAME_DISPLAY_WIDTH,
 } from "@/composables/games/was/const";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
-import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";
+import { WasPlayer } from "@/composables/games/was/types/player";
 import { WasItem } from "@/composables/games/was/types/item";
 import { WasSkill } from "@/composables/games/was/types/skill";
 import { GOUAudio } from "@/composables/types/audio/GOUAudio";
@@ -29,8 +27,8 @@ export const useWasBattle = (
   );
   const ATTACK_ANIMATION = new GOULottie(
     "/games/was/animations/effects/attack.json",
-    (200 / WAS_DEFAULT_GAME_DISPLAY_WIDTH) * 100,
-    (200 / WAS_DEFAULT_GAME_DISPLAY_HEIGHT) * 100,
+    100,
+    100,
     false,
     2
   );
@@ -191,7 +189,7 @@ export const useWasBattle = (
         }
 
         // 結果詰め込み処理
-        if (character instanceof WasPlayerCharacter) {
+        if (character instanceof WasPlayer) {
           progressList.push({
             message: `${target.name}に${damage}のダメージを与えた！`,
           });
@@ -284,7 +282,7 @@ export const useWasBattle = (
     }
 
     // 結果詰め込み処理
-    if (character instanceof WasPlayerCharacter) {
+    if (character instanceof WasPlayer) {
       progressList.push({
         message: `${target.name}に${damage}のダメージを与えた！`,
       });
@@ -301,7 +299,7 @@ export const useWasBattle = (
    * @param enemy 敵キャラ
    * @returns 画面表示用の戦闘の結果
    */
-  const battle = (player: WasPlayerCharacter, enemy: WasNonPlayerCharacter) => {
+  const battle = (player: WasPlayer, enemy: WasNonPlayerCharacter) => {
     let status = WAS_BATTLE_STATUS.ANOTHER;
     let progressList = new Array<WAS_BATTLE_PROGRESS>();
     //  スキル・アイテムによる事前処理を実行

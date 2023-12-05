@@ -3,10 +3,13 @@ import { GOUAudio } from "./GOUAudio";
 export class GOUReadAudio extends GOUAudio {
   readonly path: string;
   audio?: HTMLAudioElement;
+  loop: boolean;
+  private volume: number = 0.1;
 
-  constructor(path: string) {
+  constructor(path: string, loop?: boolean) {
     super();
     this.path = path;
+    this.loop = loop ?? false;
   }
 
   /**
@@ -39,13 +42,16 @@ export class GOUReadAudio extends GOUAudio {
    */
   play(position?: number): void {
     if (!this.isLoaded()) {
-      throw Error("Audio is not loaded.");
+      return;
     }
     if (this.isPlaying()) {
       this.playing = false;
     }
+    this.audio!.loop = this.loop;
+    this.audio!.volume = this.volume;
     this.audio!.currentTime = position ?? 0;
     this.audio!.play();
+    this.playing = true;
   }
 
   /**
@@ -56,7 +62,19 @@ export class GOUReadAudio extends GOUAudio {
     if (!this.audio) {
       return;
     }
+    if (!this.isPlaying()) {
+      return;
+    }
     this.audio.pause();
     this.playing = false;
+  }
+
+  setVolume(volume: number) {
+    // ロード前でも音量を設定できるように値を保持しておく
+    this.volume = volume;
+    if (!this.audio) {
+      return;
+    }
+    this.audio.volume = volume;
   }
 }

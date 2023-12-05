@@ -1,35 +1,47 @@
-import { GOUColor } from "@/composables/types/GOUColor";
+import { COLOR, GOUColor } from "@/composables/types/GOUColor";
 import GOUPosition from "@/composables/types/GOUPosition";
-import GOUDiagram from "@/composables/types/visuals/GOUDiagram";
+import GOUVisual from "./GOUVisual";
 
-class GOUText extends GOUDiagram {
+class GOUText extends GOUVisual {
   text: string;
-  fontSize: number;
   fontFamily?: string;
+  color: GOUColor;
+  border: {
+    color: GOUColor;
+  };
   constructor(
     text: string,
-    fontSize: number,
+    width: number,
     fontFamily?: string,
-    color?: GOUColor
+    color?: GOUColor,
+    border?: {
+      color: {
+        code: COLOR;
+        opacity?: number;
+      };
+    }
   ) {
-    super(color);
+    super();
     this.text = text;
-    this.fontSize = fontSize;
     this.fontFamily = fontFamily;
-    this.width = this.getMaxX() - this.getMinX();
-    this.height = this.getMaxY() - this.getMinY();
+    this.width = width;
+    this.height = 0;
+    this.color = color ?? new GOUColor();
+    this.border = {
+      color: new GOUColor(border?.color.code, border?.color.opacity),
+    };
   }
   getMinX(): number {
     return 0;
   }
   getMaxX(): number {
-    return this.text.length * (this.fontSize ?? 0);
+    return this.width;
   }
   getMinY(): number {
     return 0;
   }
   getMaxY(): number {
-    return this.fontSize ?? 0;
+    return this.height;
   }
   isInside(position: GOUPosition): boolean {
     if (position.px < this.getMinX()) {

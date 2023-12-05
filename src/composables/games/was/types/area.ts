@@ -1,15 +1,16 @@
-import GOUPosition from "@/composables/types/GOUPosition";
 import { WAS_ITEM_ID } from "@/composables/games/was/const";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WasCharacter } from "@/composables/games/was/types/character";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 
 export class WasArea {
   readonly name: string;
   readonly outside: GOUVisual;
   readonly inside: GOUVisual;
+  readonly bgm: GOUReadAudio;
   readonly character: WasCharacter;
-  readonly boss?: WasCharacter;
+  readonly boss?: WasNonPlayerCharacter;
   isClear: boolean;
   exploreCount: number;
   dropItems: Array<{
@@ -21,33 +22,17 @@ export class WasArea {
     name: string,
     outside: GOUVisual,
     inside: GOUVisual,
+    bgm: GOUReadAudio,
     character: WasCharacter,
-    boss?: WasCharacter,
+    boss?: WasNonPlayerCharacter,
     dropItems?: Array<{ probability: number; amount: number; id: WAS_ITEM_ID }>
   ) {
     this.name = name;
     this.outside = outside;
+    this.bgm = bgm;
     this.inside = inside;
     this.character = character;
-    if (this.character.visual) {
-      // キャラクターを画面中央に配置
-      this.character.visual.setPosition(
-        new GOUPosition(
-          50 - this.character.visual.getMaxX() / 2,
-          100 - this.character.visual.getMaxY()
-        )
-      );
-    }
     this.boss = boss;
-    if (this.boss && this.boss.visual) {
-      // キャラクターを画面中央に配置
-      this.boss.visual.setPosition(
-        new GOUPosition(
-          50 - this.boss.visual.getMaxX() / 2,
-          100 - this.boss.visual.getMaxY()
-        )
-      );
-    }
     this.dropItems = dropItems ?? [];
     this.isClear = false;
     this.exploreCount = 0;
@@ -85,14 +70,13 @@ export class WasArea {
       return this.character;
     }
 
-    const boss = this.boss as WasNonPlayerCharacter;
     const character = this.character as WasNonPlayerCharacter;
-    if (boss.status.life <= 0 && !boss.isPersuaded) {
+    if (this.boss.status.life <= 0 && !this.boss.isPersuaded) {
       // ボスが未説得で倒されている場合は何も表示しない
       return null;
     } else if (character.isPersuaded || character.status.life <= 0) {
       // 雑魚敵だけが倒されているまたは説得済みの場合はボスキャラを表示
-      return boss;
+      return this.boss;
     } else {
       // 上記以外は雑魚敵を表示
       return character;

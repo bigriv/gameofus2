@@ -2,33 +2,36 @@
   <GameFrame>
     <template #window>
       <Title
-        v-if="display === 'title'"
-        v-model="display"
+        v-if="overallTimming === WAS_OVERALL_TIMMING.TITLE"
+        v-model="overallTimming"
         @start="onStart"
         @load="onLoad"
       />
+      <div
+        v-else-if="overallTimming === WAS_OVERALL_TIMMING.LOADING"
+        class="c-game__loading"
+      >
+        Now Loading...
+      </div>
+      <Ending
+        v-else-if="overallTimming === WAS_OVERALL_TIMMING.ENDING"
+        :type="endingType"
+        @back="onBackTitle"
+      />
       <Main
-        v-else-if="display === 'main'"
+        v-if="
+          overallTimming == WAS_OVERALL_TIMMING.LOADING ||
+          overallTimming === WAS_OVERALL_TIMMING.MAIN_AREA ||
+          overallTimming === WAS_OVERALL_TIMMING.MAIN_MAP
+        "
+        v-model:overallTimming="overallTimming"
         :loadData="loadData"
         @save="onSave"
         @loaded="onLoaded"
         @end="onEnd"
       />
-      <Ending
-        v-else-if="display === 'end'"
-        :type="endingType"
-        @back="onBackTitle"
-      />
     </template>
     <template #description>
-      <div class="c-game__description__block">
-        <h2>リリースノート</h2>
-        <p>2023/11/13 ver 1.03 文字フォント変更、スマホ操作性改善</p>
-        <p>2023/10/11 ver 1.02 スマホ対応</p>
-        <p>2023/10/07 ver 1.01 操作性改善</p>
-        <p>2023/10/05 ver 1.00 リリース</p>
-      </div>
-
       <div class="c-game__description__block">
         <h2>あらすじ</h2>
         <p>
@@ -100,6 +103,39 @@
           </tr>
         </table>
       </div>
+
+      <div class="c-game__description__block">
+        <h2>素材</h2>
+        <p>
+          SE:
+          <a
+            href="https://soundeffect-lab.info/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >効果音ラボ</a
+          >様
+        </p>
+        <p>
+          BGM:
+          <a
+            href="https://maou.audio/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >魔王魂</a
+          >様
+        </p>
+        <p>キャラクターイラスト: よしを</p>
+        <p>背景イラスト: よしを</p>
+      </div>
+
+      <div class="c-game__description__block">
+        <h2>リリースノート</h2>
+        <p>2023/11/30 ver 1.10 BGM追加、マップ画面UI改善</p>
+        <p>2023/11/13 ver 1.03 文字フォント変更、スマホ操作性改善</p>
+        <p>2023/10/11 ver 1.02 スマホ対応</p>
+        <p>2023/10/07 ver 1.01 操作性改善</p>
+        <p>2023/10/05 ver 1.00 リリース</p>
+      </div>
     </template>
   </GameFrame>
 </template>
@@ -110,12 +146,16 @@ import GameFrame from "@/components/atoms/frames/GameFrame.vue";
 import Title from "@/components/templates/games/was/01_Title.vue";
 import Main from "@/components/templates/games/was/02_Main.vue";
 import Ending from "@/components/templates/games/was/03_Ending.vue";
-import { WAS_ENDING, WAS_EVENT_TIMMING } from "@/composables/games/was/const";
-import { WasPlayerCharacter } from "@/composables/games/was/types/playerCharacter";
+import { WAS_ENDING } from "@/composables/games/was/const";
+import { WasPlayer } from "@/composables/games/was/types/player";
 import { WasNonPlayerCharacter } from "@/composables/games/was/types/nonPlayerCharacter";
 import { WasArea } from "@/composables/games/was/types/area";
+import {
+  WAS_EVENT_TIMMING,
+  WAS_OVERALL_TIMMING,
+} from "@/composables/games/was/enums/timming";
 
-const display = ref("title");
+const overallTimming = ref(WAS_OVERALL_TIMMING.TITLE);
 const endingType = ref();
 const loadData = ref();
 const isShowHint1 = ref(false);
@@ -124,7 +164,7 @@ const isShowHint2 = ref(false);
 const onSave = (
   timming: WAS_EVENT_TIMMING,
   healed: boolean,
-  player: WasPlayerCharacter,
+  player: WasPlayer,
   characters: { [key: string]: WasNonPlayerCharacter },
   bosses: { [key: string]: WasNonPlayerCharacter },
   areas: { [key: string]: WasArea }
@@ -167,11 +207,11 @@ const load = () => {
 };
 
 const onStart = () => {
-  display.value = "main";
+  overallTimming.value = WAS_OVERALL_TIMMING.LOADING;
 };
 const onLoad = () => {
   load();
-  display.value = "main";
+  overallTimming.value = WAS_OVERALL_TIMMING.LOADING;
 };
 const onLoaded = () => {
   loadData.value = undefined;
@@ -179,10 +219,10 @@ const onLoaded = () => {
 const onEnd = (type: WAS_ENDING) => {
   console.log(type);
   endingType.value = type;
-  display.value = "end";
+  overallTimming.value = WAS_OVERALL_TIMMING.ENDING;
 };
 const onBackTitle = () => {
-  display.value = "title";
+  overallTimming.value = WAS_OVERALL_TIMMING.TITLE;
 };
 
 const itemDescription = [
@@ -248,4 +288,18 @@ const skillDescription = [
 ];
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.c-game__loading {
+  background-color: black;
+  width: 100%;
+  height: 100%;
+  color: white;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.c-game__description__block {
+  margin-top: 20px;
+}
+</style>

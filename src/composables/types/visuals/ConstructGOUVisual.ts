@@ -9,7 +9,7 @@ import GOUPolygon from "@/composables/types/visuals/diagrams/GOUPolygon";
 import GOURect from "@/composables/types/visuals/diagrams/GOURect";
 import GOUDiagram from "@/composables/types/visuals/GOUDiagram";
 import GOUFrame from "@/composables/types/visuals/GOUFrame";
-import GOUText from "@/composables/types/visuals/diagrams/GOUText";
+import GOUText from "@/composables/types/visuals/GOUText";
 import { GOUColor } from "@/composables/types/GOUColor";
 import GOUPosition from "@/composables/types/GOUPosition";
 
@@ -22,8 +22,8 @@ const ConstructGOUVisual = (definition: GOUVisualDefinition): GOUVisual => {
 
   switch (definition.type) {
     case GOUVisualType.FRAME:
-      visual = new GOUFrame(definition.width, definition.height, color)
-      break
+      visual = new GOUFrame(definition.width, definition.height, color);
+      break;
     case GOUVisualType.DIAGRAM_CIERCLE:
       visual = new GOUCircle(definition.radius, color);
       break;
@@ -64,12 +64,13 @@ const ConstructGOUVisual = (definition: GOUVisualDefinition): GOUVisual => {
       );
       visual = new GOULineList(lines);
       break;
-    case GOUVisualType.DIAGRAM_TEXT:
+    case GOUVisualType.TEXT:
       visual = new GOUText(
         definition.text,
-        definition.fontSize,
+        definition.width,
         definition.fontFamilly,
-        color
+        color,
+        definition.border
       );
       break;
     case GOUVisualType.IMAGE_SVG:

@@ -153,11 +153,6 @@ export const useTbhInit = () => {
         }
       }
 
-      for (const key of Object.keys(TBH_SOUNDS)) {
-        if (!TBH_SOUNDS[key].isLoaded()) {
-          return;
-        }
-      }
       isLoadedFiles.value = true;
       clearInterval(intervalId);
     }, 100);

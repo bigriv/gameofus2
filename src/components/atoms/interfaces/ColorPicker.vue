@@ -72,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import InputNumber from "@/components/atoms/interfaces/InputNumber.vue";
 
 const props = defineProps({
@@ -145,6 +145,9 @@ watch(() => props.color, resetColor);
 watch(() => props.opacity, resetOpacity);
 
 // アクションイベント
+onMounted(() => {
+  resetColor()
+})
 const onClickButton = () => {
   isShowModal.value = true;
 };

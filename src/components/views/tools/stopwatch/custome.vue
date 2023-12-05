@@ -1,69 +1,93 @@
 <template>
   <div class="c-container">
     <div class="c-container__content">
-      背景色
-      <ColorPicker
-        :color="form.bgColor"
-        :opacity="form.bgOpacity"
-        @submit="onBgColorSubmit"
-      />
-    </div>
-    <div class="c-container__content">
-      文字色
-      <ColorPicker
-        :color="form.fontColor"
-        :pickableOpacity="false"
-        @submit="onFontColorSubmit"
-      />
-    </div>
-    <div class="c-container__content">
-      文字サイズ
-      <InputNumber
-        v-model="form.fontSize"
-        :max="100"
-        :min="10"
-        class="c-container__content__font_size"
-      />
-      px
-    </div>
-    <div class="c-container__content">
-      文字フォント
-      <select v-model="form.fontFamily">
-        <option v-for="fontFamily in fontFamilyList" :value="fontFamily">
-          {{ fontFamily }}
-        </option>
-      </select>
-    </div>
-    <div class="c-container__content">
-      文字の太さ
-      <div class="c-container__content__font_weight">
-        <template v-for="fontWeight in fontWeightList">
-          <input
-            v-model="form.fontWeight"
-            :id="`fontWeight--${fontWeight.value}`"
-            name="fontWeight"
-            type="radio"
-            :value="fontWeight.value"
+      <dl>
+        <dt>背景色</dt>
+        <dd>
+          <ColorPicker
+            :color="form.bgColor"
+            :opacity="form.bgOpacity"
+            @submit="onBgColorSubmit"
           />
-          <label :for="`fontWeight--${fontWeight.value}`">{{
-            fontWeight.label
-          }}</label>
-        </template>
-      </div>
+        </dd>
+      </dl>
+    </div>
+    <div class="c-container__content">
+      <dl>
+        <dt>文字色</dt>
+        <dd>
+          <ColorPicker
+            :color="form.fontColor"
+            :pickableOpacity="false"
+            @submit="onFontColorSubmit"
+          />
+        </dd>
+      </dl>
+    </div>
+    <div class="c-container__content">
+      <dl>
+        <dt>文字サイズ</dt>
+        <dd>
+          <InputNumber
+            v-model="form.fontSize"
+            :max="100"
+            :min="10"
+            class="c-container__content__font_size"
+          />
+          px
+        </dd>
+      </dl>
+    </div>
+    <div class="c-container__content">
+      <dl>
+        <dt>文字フォント</dt>
+        <dd>
+          <select v-model="form.fontFamily">
+            <option v-for="fontFamily in fontFamilyList" :value="fontFamily">
+              {{ fontFamily }}
+            </option>
+          </select>
+        </dd>
+      </dl>
+    </div>
+    <div class="c-container__content">
+      <dl>
+        <dt>文字の太さ</dt>
+        <dd>
+          <div class="c-container__content__font_weight">
+            <template v-for="fontWeight in fontWeightList">
+              <input
+                v-model="form.fontWeight"
+                :id="`fontWeight--${fontWeight.value}`"
+                name="fontWeight"
+                type="radio"
+                :value="fontWeight.value"
+              />
+              <label :for="`fontWeight--${fontWeight.value}`">
+                {{ fontWeight.label }}
+              </label>
+            </template>
+          </div>
+        </dd>
+      </dl>
     </div>
 
     <div class="c-container__content">
-      サンプル
-      <div class="c-container__content__sample">
-        <StopWatch
-          :bgColor="form.bgColor"
-          :bgOpacity="form.bgOpacity"
-          :fontSize="form.fontSize"
-          :fontColor="form.fontColor"
-          :fontWeight="form.fontWeight"
-          :fontFamily="form.fontFamily"
-        />
-      </div>
+      <dl>
+        <dt>サンプル</dt>
+        <dd>
+          <div class="c-container__content__sample">
+            <StopWatch
+              :bgColor="form.bgColor"
+              :bgOpacity="form.bgOpacity"
+              :fontSize="form.fontSize"
+              :fontColor="form.fontColor"
+              :fontWeight="form.fontWeight"
+              :fontFamily="form.fontFamily"
+            />
+          </div>
+        </dd>
+      </dl>
     </div>
 
     <div class="c-container__content">
@@ -101,7 +125,7 @@ const form: {
 } = reactive({
   bgColor: undefined,
   bgOpacity: undefined,
-  fontColor: undefined,
+  fontColor: "#000000",
   fontSize: 10,
   fontFamily: "メイリオ",
   fontWeight: "normal",
@@ -180,11 +204,16 @@ button {
   cursor: pointer;
 }
 .c-container {
-  padding: 0 10px;
   &__content {
     display: flex;
     align-items: center;
     gap: 0 10px;
+    dl {
+      display: flex;
+      dt {
+        min-width: 100px;
+      }
+    }
     + .c-container__content {
       margin-top: 10px;
     }
@@ -206,7 +235,7 @@ button {
       }
     }
     &__sample {
-      width: 400px;
+      width: 1000px;
       padding: 5px 10px;
       border: 1px lightgray solid;
     }

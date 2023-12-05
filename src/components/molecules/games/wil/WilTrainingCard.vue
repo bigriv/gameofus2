@@ -45,6 +45,7 @@ const onClick = () => {
     top: 60%;
     left: 50%;
     width: 90%;
+    aspect-ratio: 1;
     transform: translate(-50%, -50%);
   }
 }

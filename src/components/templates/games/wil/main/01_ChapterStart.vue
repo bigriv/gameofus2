@@ -3,7 +3,7 @@
     <div v-show="isMounted" class="c-chapter">
       <div class="c-chapter__title">
         <MessageFrame
-          :complete="true"
+          :noAnimation="true"
           :messages="title"
           :fontColor="WIL_FRAME_FONT_COLOR"
           vertical="center"

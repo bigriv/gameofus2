@@ -1,32 +1,38 @@
 <template>
   <div v-if="props.start" class="c-drawer">
     <template v-if="timming == WIL_CHAPTER_TIMMING.OPENING">
-      <Chapter
+      <ChapterStart
         v-if="currentCapter"
         :chapter="currentCapter"
-        @next="onOpeningEnd"
+        @next="proceed"
       />
     </template>
     <template v-else-if="timming == WIL_CHAPTER_TIMMING.TALK">
-      <Talk :images="WIL_IMAGES" :events="talkEvents" @end="onTalkEnd" />
+      <Talk :images="WIL_IMAGES" :events="talkEvents" @end="proceed" />
     </template>
     <template v-else-if="timming == WIL_CHAPTER_TIMMING.BATTLE">
       <Battle
         v-if="currentCapter"
+        v-model:player="player"
         :skills="WIL_SKILLS"
         :chapter="currentCapter"
-        :player="player"
+        @end="proceed"
       />
     </template>
     <template v-else-if="timming == WIL_CHAPTER_TIMMING.TRAINING">
-      <Training :images="WIL_IMAGES" :player="player" />
+      <Training
+        :images="WIL_IMAGES"
+        :skills="WIL_SKILLS"
+        :player="player"
+        @end="proceed"
+      />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Ref, onMounted, ref } from "vue";
-import Chapter from "@/components/templates/games/wil/main/01_Chapter.vue";
+import ChapterStart from "@/components/templates/games/wil/main/01_ChapterStart.vue";
 import Talk from "@/components/templates/games/wil/main/02_Talk.vue";
 import Battle from "@/components/templates/games/wil/main/03_Battle.vue";
 import Training from "@/components/templates/games/wil/main/04_Training.vue";
@@ -57,17 +63,14 @@ const talkEvents = ref();
 
 const currentCapter: Ref<WilChapter | undefined> = ref();
 
-const onOpeningEnd = () => {
-  // TODO: 画面遷移の切り替え
-  talkEvents.value = currentCapter.value?.proceedNextTalks();
-  timming.value = WIL_CHAPTER_TIMMING.TALK;
-};
-const onTalkEnd = () => {
-  // TODO: 画面遷移の切り替え
+const proceed = () => {
   if (!currentCapter.value) {
     throw new WrongImplementationError("Current Chapter is not initialized.");
   }
   timming.value = currentCapter.value.proceedNextEvent();
+  if (timming.value === WIL_CHAPTER_TIMMING.TALK) {
+    talkEvents.value = currentCapter.value.proceedNextTalks();
+  }
 };
 
 onMounted(() => {

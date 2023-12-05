@@ -122,6 +122,10 @@ const props = defineProps({
     type: Object as PropType<{ [key: string]: GOUVisual }>,
     required: true,
   },
+  skills: {
+    type: Object as PropType<{ [key: string]: WilSkill }>,
+    required: true,
+  },
   player: {
     type: Object as PropType<WilPlayer>,
     required: true,

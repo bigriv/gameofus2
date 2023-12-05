@@ -8,6 +8,8 @@
   display: flex;
   justify-content: space-between;
 }
+
+// margin
 @for $i from 1 through 20 {
   .u-margin_top--#{$i * 5} {
     margin-top: #{$i * 5}px;
@@ -31,4 +33,9 @@
 .u-horizontal--center {
   text-align: center;
   margin: 0 auto;
+}
+
+// color
+.u-color--red {
+  color: red;
 }

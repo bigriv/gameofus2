@@ -40,7 +40,7 @@
         v-show="timming == WIL_BATTLE_TIMMING.BATTLE_ENEMY_TURN_START"
         class="c-battle__enemy_turn_start"
       >
-        <div class="c-battle__start__text">{{ enemy?.name }}の侵攻</div>
+        <div class="c-battle__start__text">{{ enemyName }}の侵攻</div>
       </div>
     </transition>
 
@@ -74,15 +74,16 @@ import { WilField } from "@/composables/games/wil/types/field.ts";
 import { WilSkill } from "@/composables/games/wil/types/skill";
 import { WilPlayer } from "@/composables/games/wil/types/player";
 import { WilComputer } from "@/composables/games/wil/types/computer";
-import { WilChapter } from "@/composables/games/wil/types/chapter";
+import { useWilBattle } from "@/composables/games/wil/battle";
+import { WilBattle } from "@/composables/games/wil/types/battle";
 
 const props = defineProps({
   skills: {
     type: Object as PropType<{ [key: string]: WilSkill }>,
     required: true,
   },
-  chapter: {
-    type: Object as PropType<WilChapter>,
+  battle: {
+    type: Object as PropType<WilBattle>,
     required: true,
   },
   player: {
@@ -90,14 +91,17 @@ const props = defineProps({
     required: true,
   },
 });
-const emits = defineEmits(["update:player"]);
+const emits = defineEmits(["update:player", "end"]);
 
-const background: Ref<GOUVisual | undefined> = ref();
+const { judgeBattleResult } = useWilBattle();
+
 const timming: Ref<WIL_BATTLE_TIMMING> = ref(
   WIL_BATTLE_TIMMING.SET_SELECT_CELL
 );
 const field: Ref<WilField> = ref(new WilField());
-const enemy = ref(props.chapter.proceedNextEnemy());
+const background: Ref<GOUVisual> = ref(props.battle.background);
+const enemyName = ref(props.battle.name);
+const enemy = ref(props.battle.enemy);
 const player = computed({
   get: () => props.player,
   set: (newValue: WilPlayer) => emits("update:player", newValue),
@@ -131,8 +135,8 @@ const error = (message: string) => {
   alert(message);
 };
 const endSet = () => {
-  console.log(enemy.value)
-  field.value.setEnemyCharacters(enemy.value!.deploy);
+  console.log(enemy.value);
+  field.value.setEnemyCharacters(enemy.value);
   timming.value = WIL_BATTLE_TIMMING.BATTLE_START;
   setTimeout(() => {
     startPlayerTurn();
@@ -186,9 +190,24 @@ const endTurn = () => {
   timming.value = WIL_BATTLE_TIMMING.BATTLE_ENEMY_TURN_START;
   setTimeout(() => {
     timming.value = WIL_BATTLE_TIMMING.BATTLE_ENEMY_TURN_START;
+    computer.value.battleMove(() => {
+      const result = judgeBattleResult(player.value, computer.value);
+      if (result === player.value) {
+        battleEnd();
+        return;
+      }
+      if (result === computer.value) {
+        battleEnd();
+        return;
+      }
+      startPlayerTurn();
+    });
   }, 1500);
 };
-
+const battleEnd = () => {
+  timming.value = WIL_BATTLE_TIMMING.BATTLE_END;
+  emits("end");
+};
 watch(
   () => hoverCharacter.value,
   () => {
@@ -247,7 +266,7 @@ watch(
         message.value = ""; // TODO: 行動結果を表示
         break;
       case WIL_BATTLE_TIMMING.BATTLE_END:
-        message.value = ""; // TODO: 戦闘結果を表示
+        message.value = enemyName + "との戦いに勝利した！"; // TODO: 戦闘結果を表示
         break;
     }
   }

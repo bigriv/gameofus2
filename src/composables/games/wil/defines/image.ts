@@ -3,10 +3,12 @@ const WIL_IMAGE_ROOT_PATH = "/games/wil/images/";
 export const WIL_IMAGE_DEFINES: { [key: string]: string } = {
   // キャラクター
   CHARACTER_HERO: WIL_IMAGE_ROOT_PATH + "characters/hero.svg",
+  CHARACTER_HOLY_KNIGHTS_LEADER: WIL_IMAGE_ROOT_PATH + "characters/holy_knights_leader.svg",
   CHARACTER_OTHER: "/commons/icons/human_blue.svg",
 
   // キャラクター（ミニマム）
-  MINI_CHARACTER_HERO: WIL_IMAGE_ROOT_PATH + "characters/mini_hero.svg",
+  MINI_CHARACTER_HERO: WIL_IMAGE_ROOT_PATH + "characters/hero.svg",
+  MINI_CHARACTER_HOLY_KNIGHTS_LEADER: WIL_IMAGE_ROOT_PATH + "characters/holy_knights_leader.svg",
 
   // 訓練
   TRAINING_ATTACK: WIL_IMAGE_ROOT_PATH + "trainings/swords.svg",
@@ -16,5 +18,6 @@ export const WIL_IMAGE_DEFINES: { [key: string]: string } = {
   TRAINING_PHISIC: WIL_IMAGE_ROOT_PATH + "trainings/ironAllay.svg",
 
   // 背景
-  BACKGROUND_KINGDOM: WIL_IMAGE_ROOT_PATH + "backgounds/kingdom.svg",
+  BACKGROUND_VILLAGE: WIL_IMAGE_ROOT_PATH + "backgrounds/village.svg",
+  BACKGROUND_KINGDOM: WIL_IMAGE_ROOT_PATH + "backgrounds/kingdom.svg",
 };

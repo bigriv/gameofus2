@@ -6,11 +6,13 @@ import GOUVisual from "@/composables/types/visuals/GOUVisual";
 
 export class WilTalkEvent extends GOUEvent {
   talker?: string;
+  background?: GOUVisual;
   left?: GOUVisual;
   right?: GOUVisual;
 
   constructor(define: {
     talker?: string;
+    background?: GOUVisual;
     message?: Array<string>;
     sound?: GOUAudio;
     left?: GOUVisual;
@@ -18,6 +20,7 @@ export class WilTalkEvent extends GOUEvent {
   }) {
     super(define);
     this.talker = define.talker;
+    this.background = define.background;
     this.left = define.left;
     this.right = define.right;
   }

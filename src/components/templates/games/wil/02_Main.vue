@@ -12,10 +12,10 @@
     </template>
     <template v-else-if="timming == WIL_CHAPTER_TIMMING.BATTLE">
       <Battle
-        v-if="currentCapter"
+        v-if="battle"
         v-model:player="player"
         :skills="WIL_SKILLS"
-        :chapter="currentCapter"
+        :battle="battle"
         @end="proceed"
       />
     </template>
@@ -60,6 +60,7 @@ const { WIL_IMAGES, WIL_SOUNDS, WIL_SKILLS, characterSequence, player } =
 
 const timming: Ref<WIL_CHAPTER_TIMMING> = ref(WIL_CHAPTER_TIMMING.OPENING);
 const talkEvents = ref();
+const battle = ref();
 
 const currentCapter: Ref<WilChapter | undefined> = ref();
 
@@ -70,6 +71,8 @@ const proceed = () => {
   timming.value = currentCapter.value.proceedNextEvent();
   if (timming.value === WIL_CHAPTER_TIMMING.TALK) {
     talkEvents.value = currentCapter.value.proceedNextTalks();
+  } else if (timming.value === WIL_CHAPTER_TIMMING.BATTLE) {
+    battle.value = currentCapter.value.proceedNextBattle();
   }
 };
 

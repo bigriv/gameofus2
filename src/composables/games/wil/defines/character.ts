@@ -66,8 +66,8 @@ export const WIL_CHARACTER_DEFINES: {
   },
   HOLY_KNIGHTS_LEADER: {
     name: "騎士団長",
-    visual: WIL_IMAGE_ID.CHARACTER_OTHER,
-    miniVisual: WIL_IMAGE_ID.CHARACTER_OTHER,
+    visual: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+    miniVisual: WIL_IMAGE_ID.MINI_CHARACTER_HOLY_KNIGHTS_LEADER,
     status: {
       life: 100,
       attack: 15,

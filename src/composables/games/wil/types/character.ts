@@ -3,7 +3,6 @@ import { WIL_ELEMENT } from "@/composables/games/wil/enums/element";
 import { WilCondition } from "./condition";
 import { WIL_SKILL_ID } from "../enums/skill";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import { WilTraining } from "./training";
 
 export class WilCharacter {
   id: string;
@@ -41,25 +40,6 @@ export class WilCharacter {
     this.status = new WilStatus(define.status);
     this.element = define.element ?? WIL_ELEMENT.NONE;
     this.skills = define.skills ?? [];
-  }
-
-  /**
-   * 訓練を行い、ステータスを上昇させる
-   * @param training 実施する訓練
-   */
-  training(training: WilTraining): WilTraining {
-    // 結果表示用に訓練前のステータスを保持
-    training.before = this.defaultStatus.deepCopy();
-
-    // 訓練処理
-    training.proccess(this);
-
-    // 結果を反映
-    this.defaultStatus = WilStatus.add(this.defaultStatus, training.rise);
-    if (training.learned && !this.skills.includes(training.learned)) {
-      this.skills.push(training.learned);
-    }
-    return training;
   }
 
   /**

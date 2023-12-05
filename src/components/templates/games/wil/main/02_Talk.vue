@@ -9,9 +9,9 @@
     <div v-if="characters.right" class="c-talk__character--right">
       <GOUVisualCanvas :objects="{ character: characters.right }" />
     </div>
-    <div v-if="talker" class="c-talk__talker">
+    <div class="c-talk__talker">
       <MessageFrame
-        :complete="true"
+        :noAnimation="true"
         :messages="talker"
         :fontColor="WIL_FRAME_FONT_COLOR"
         :backgroundColor="WIL_FRAME_BACKGROUND_COLOR"
@@ -61,10 +61,9 @@ const props = defineProps({
 });
 const emits = defineEmits(["end"]);
 
-const background: Ref<GOUVisual | undefined> = ref();
-
-const message: Ref<Array<string>> = ref([]);
 const talker: Ref<Array<string>> = ref([]);
+const background: Ref<GOUVisual | undefined> = ref();
+const message: Ref<Array<string>> = ref([]);
 const characters: {
   left?: GOUVisual;
   right?: GOUVisual;
@@ -82,8 +81,10 @@ const chainEvent: Function = (
   const event = events.shift();
   if (!event) {
     talker.value = [];
+    background.value = undefined;
     message.value = [];
     onClickMessageFrame.value = () => {};
+    afterFunction();
     return;
   }
   message.value = event.message ?? [];
@@ -91,15 +92,15 @@ const chainEvent: Function = (
     event.sound.play();
   }
   talker.value = event.talker ? [event.talker] : [];
-  characters.left = event.left ? props.images[event.left] : undefined;
-  characters.right = event.right ? props.images[event.right] : undefined;
+  background.value = event.background;
+  characters.left = event.left;
+  characters.right = event.right;
 
   onClickMessageFrame.value = () => chainEvent(events, afterFunction);
 };
 
 onMounted(() => {
-  console.log(props.events)
-  chainEvent([...props.events], emits("end"));
+  chainEvent([...props.events], () => emits("end"));
 });
 </script>
 

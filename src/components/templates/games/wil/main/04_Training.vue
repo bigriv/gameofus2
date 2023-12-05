@@ -2,8 +2,9 @@
   <div class="c-training">
     <div class="c-training__characters">
       <WilCardList
-        v-model:selected="selectedCharacter!.id"
+        :selected="selectedCharacter?.id"
         :dataList="playerCharacters"
+        @update:selected="onSelectCharacter"
       />
     </div>
     <div class="c-training__plan">
@@ -35,7 +36,7 @@
       </div>
     </div>
     <div class="c-training__infomation">
-      <div>残り日数 {{ days }}日</div>
+      <div>残り日数 {{ TRAINING_DAYS - day }}日</div>
       <div class="c-training__infomation__button">
         <GameButton
           v-if="isStartableTraining"
@@ -53,48 +54,152 @@
         />
       </div>
     </div>
-    <div v-if="resultModal.isShow" class="c-training__result_modal">
-      <MessageFrame>
-        <div
-          v-if="resultModal.character"
-          class="c-training__result_modal__character"
+    <div
+      v-if="resultModal.isShow || confirmModal.isShow"
+      class="c-training__modal_backgrond"
+    ></div>
+    <transition name="result_modal">
+      <div v-show="resultModal.isShow" class="c-training__result_modal">
+        <MessageFrame
+          :fontColor="WIL_FRAME_FONT_COLOR"
+          :backgroundColor="WIL_FRAME_BACKGROUND_COLOR"
+          :borderColor="WIL_FRAME_BORDER_COLOR"
         >
-          <WilCharacterCard :character="resultModal.character" />
-        </div>
-        <template v-if="resultModal.training">
-          <div class="c-training__result_modal__training">
-            <WilTrainingCard :training="resultModal.training" />
+          <div class="c-training__result_modal__cards">
+            <div
+              v-if="resultModal.character"
+              class="c-training__result_modal__cards__character"
+            >
+              <WilCharacterCard :character="resultModal.character" />
+            </div>
+            <div
+              v-if="resultModal.training"
+              class="c-training__result_modal__cards__training"
+            >
+              <WilTrainingCard :training="resultModal.training" />
+            </div>
           </div>
-          <div class="c-training__result_modal__training">
-            <dl>
-              <dt>体力</dt>
-              <dd>{{ resultModal.training.before.life }}</dd>
-              <dd>{{ resultModal.training.rise.life }}</dd>
-            </dl>
-            <dl>
-              <dt>攻撃力</dt>
-              <dd>{{ resultModal.training.before.attack }}</dd>
-              <dd>+ {{ resultModal.training.rise.attack }}</dd>
-            </dl>
-            <dl>
-              <dt>防御力</dt>
-              <dd>{{ resultModal.training.before.defense }}</dd>
-              <dd>+ {{ resultModal.training.rise.defense }}</dd>
-            </dl>
-            <dl>
-              <dt>魔力</dt>
-              <dd>{{ resultModal.training.before.magic }}</dd>
-              <dd>+ {{ resultModal.training.rise.magic }}</dd>
-            </dl>
-            <dl>
-              <dt>行動力</dt>
-              <dd>{{ resultModal.training.before.speed }}</dd>
-              <dd>+ {{ resultModal.training.rise.speed }}</dd>
-            </dl>
+          <template v-if="resultModal.training && resultModal.character">
+            <div class="c-training__result_modal__result">
+              <dl>
+                <dt>体力</dt>
+                <dd>{{ resultModal.training.before.life }}</dd>
+                <dd>⇒</dd>
+                <dd
+                  :class="{
+                    'u-color--red':
+                      resultModal.training.before.life <
+                      resultModal.character.defaultStatus.life,
+                  }"
+                >
+                  {{ resultModal.character.defaultStatus.life }}
+                </dd>
+              </dl>
+              <dl>
+                <dt>攻撃力</dt>
+                <dd>{{ resultModal.training.before.attack }}</dd>
+                <dd>⇒</dd>
+                <dd
+                  :class="{
+                    'u-color--red':
+                      resultModal.training.before.attack <
+                      resultModal.character.defaultStatus.attack,
+                  }"
+                >
+                  {{ resultModal.character.defaultStatus.attack }}
+                </dd>
+              </dl>
+              <dl>
+                <dt>防御力</dt>
+                <dd>{{ resultModal.training.before.defense }}</dd>
+                <dd>⇒</dd>
+                <dd
+                  :class="{
+                    'u-color--red':
+                      resultModal.training.before.defense <
+                      resultModal.character.defaultStatus.defense,
+                  }"
+                >
+                  {{ resultModal.character.defaultStatus.defense }}
+                </dd>
+              </dl>
+              <dl>
+                <dt>魔力</dt>
+                <dd>{{ resultModal.training.before.magic }}</dd>
+                <dd>⇒</dd>
+                <dd
+                  :class="{
+                    'u-color--red':
+                      resultModal.training.before.magic <
+                      resultModal.character.defaultStatus.magic,
+                  }"
+                >
+                  {{ resultModal.character.defaultStatus.magic }}
+                </dd>
+              </dl>
+              <dl>
+                <dt>行動力</dt>
+                <dd>{{ resultModal.training.before.speed }}</dd>
+                <dd>⇒</dd>
+                <dd
+                  :class="{
+                    'u-color--red':
+                      resultModal.training.before.speed <
+                      resultModal.character.defaultStatus.speed,
+                  }"
+                >
+                  {{ resultModal.character.defaultStatus.speed }}
+                </dd>
+              </dl>
+            </div>
+            <div
+              v-if="resultModal.training.learned"
+              class="c-training__result_modal__learned"
+            >
+              {{ props.skills[resultModal.training.learned].name }}を習得した！
+            </div>
+            <div class="c-training__result_modal__button">
+              <GameButton
+                label="OK"
+                :fontColor="WIL_BUTTON_FONT_COLOR"
+                :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
+                @click="onClickOk"
+              />
+            </div>
+          </template>
+        </MessageFrame>
+      </div>
+    </transition>
+    <transition name="confirm_modal">
+      <div v-show="confirmModal.isShow" class="c-training__confirm_modal">
+        <MessageFrame
+          :fontColor="WIL_FRAME_FONT_COLOR"
+          :backgroundColor="WIL_FRAME_BACKGROUND_COLOR"
+          :borderColor="WIL_FRAME_BORDER_COLOR"
+        >
+          <div class="c-training__confirm_modal__inner">
+            <div class="c-training__confirm_modal__inner__message">
+              {{ confirmModal.message }}
+            </div>
+            <div class="c-training__confirm_modal__inner__buttons">
+              <GameButton
+                label="OK"
+                :fontColor="WIL_BUTTON_FONT_COLOR"
+                :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
+                @click="confirmModal.onClickOk"
+              />
+              <GameButton
+                v-if="confirmModal.onClickCancel"
+                label="キャンセル"
+                :fontColor="WIL_BUTTON_FONT_COLOR"
+                :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
+                @click="confirmModal.onClickCancel"
+              />
+            </div>
           </div>
-        </template>
-      </MessageFrame>
-    </div>
+        </MessageFrame>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -105,17 +210,20 @@ import { WIL_TRAINING_ID } from "@/composables/games/wil/enums/training";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 import WilCharacterCard from "@/components/molecules/games/wil/WilCharacterCard.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
-import { WilStatus } from "@/composables/games/wil/types/status";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import { WilTraining } from "@/composables/games/wil/types/training";
 import WilTrainingCard from "@/components/molecules/games/wil/WilTrainingCard.vue";
 import { WilPlayer } from "@/composables/games/wil/types/player";
 import {
+  WIL_FRAME_FONT_COLOR,
+  WIL_FRAME_BORDER_COLOR,
+  WIL_FRAME_BACKGROUND_COLOR,
   WIL_BUTTON_FONT_COLOR,
   WIL_BUTTON_BACKGROUND_COLOR,
 } from "@/composables/games/wil/const";
-import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
+import { WilSkill } from "@/composables/games/wil/types/skill";
+import { useWilTraining } from "@/composables/games/wil/training";
 
 const props = defineProps({
   images: {
@@ -131,72 +239,24 @@ const props = defineProps({
     required: true,
   },
 });
+const emits = defineEmits(["end"]);
+
+const {
+  TRAINING_DAYS,
+  day,
+  playerCharacters,
+  trainingPlans,
+  training,
+  endDay,
+} = useWilTraining(props.images, props.player);
+
+// 選択中キャラクター
 const selectedCharacter: Ref<WilCharacter | undefined> = ref();
-const playerCharacters: Ref<Array<WilCharacter>> = ref(
-  [...props.player.characters].sort()
-);
-const days = ref(1);
-const trainingPlans: {
-  [key: string]: {
-    training: WilTraining;
-    character?: WilCharacter;
-    result?: {
-      before: WilStatus;
-      after: WilStatus;
-    };
-    next: WIL_TRAINING_ID | null;
-  };
-} = reactive({
-  ATTACK: {
-    training: new WilTraining({
-      id: WIL_TRAINING_ID.ATTACK,
-      name: "侵攻訓練",
-      image: props.images[WIL_IMAGE_ID.TRAINING_ATTACK],
-    }),
-    character: undefined,
-    result: undefined,
-    next: WIL_TRAINING_ID.DEFENSE,
-  },
-  DEFENSE: {
-    training: new WilTraining({
-      id: WIL_TRAINING_ID.DEFENSE,
-      name: "防衛訓練",
-      image: props.images[WIL_IMAGE_ID.TRAINING_DEFENSE],
-    }),
-    character: undefined,
-    next: WIL_TRAINING_ID.MIGRATION,
-  },
-  MIGRATION: {
-    training: new WilTraining({
-      id: WIL_TRAINING_ID.MIGRATION,
-      name: "移動訓練",
-      image: props.images[WIL_IMAGE_ID.TRAINING_MIGRATION],
-    }),
-    character: undefined,
-    next: WIL_TRAINING_ID.MAGIC,
-  },
-  MAGIC: {
-    training: new WilTraining({
-      id: WIL_TRAINING_ID.MAGIC,
-      name: "魔導学習",
-      image: props.images[WIL_IMAGE_ID.TRAINING_MAGIC],
-    }),
-    character: undefined,
-    next: WIL_TRAINING_ID.PHISIC,
-  },
-  PHISIC: {
-    training: new WilTraining({
-      id: WIL_TRAINING_ID.PHISIC,
-      name: "肉体強化",
-      image: props.images[WIL_IMAGE_ID.TRAINING_PHISIC],
-    }),
-    character: undefined,
-    next: null,
-  },
-});
+
+// 訓練開始可否フラグ
 const isStartableTraining = computed(() => {
-  // 残り日数が0日なら訓練開始不可
-  if (days.value <= 0) {
+  // 訓練実施日数が一定以上なら訓練開始不可
+  if (day.value >= TRAINING_DAYS) {
     return false;
   }
 
@@ -208,14 +268,31 @@ const isStartableTraining = computed(() => {
   }
   return false;
 });
+
+// 訓練結果表示モーダル
 const resultModal: {
   isShow: boolean;
   character?: WilCharacter;
   training?: WilTraining;
+  next?: WIL_TRAINING_ID;
 } = reactive({
-  isShow: true,
+  isShow: false,
   character: undefined,
   training: undefined,
+  next: undefined,
+});
+
+// 確認モーダル
+const confirmModal: {
+  isShow: boolean;
+  message: string;
+  onClickOk: Function;
+  onClickCancel?: Function;
+} = reactive({
+  isShow: false,
+  message: "",
+  onClickOk: () => {},
+  onClickCancel: undefined,
 });
 
 const onSelectTraining = (training: WIL_TRAINING_ID) => {
@@ -238,7 +315,7 @@ const onSelectTraining = (training: WIL_TRAINING_ID) => {
   // 選択したキャラクターを配置し、リストから削除
   trainingPlans[training].character = selectedCharacter.value;
   playerCharacters.value = playerCharacters.value.filter(
-    (c) => c.id !== selectedCharacter.value?.id
+    (c: WilCharacter) => c.id !== selectedCharacter.value?.id
   );
   selectedCharacter.value = undefined;
 };
@@ -259,26 +336,81 @@ const onRemoveCharacter = (training: WIL_TRAINING_ID) => {
   // 選択を解除
   trainingPlans[training].character = undefined;
 };
-const showResult = (__plan: WIL_TRAINING_ID) => {};
+const showResult = (plan?: WIL_TRAINING_ID) => {
+  resultModal.training = undefined;
+  resultModal.character = undefined;
+  resultModal.next = undefined;
+
+  if (!plan) {
+    // 次の訓練結果がない場合はその日の訓練を終わる
+    confirmModal.message = `${
+      day.value + 1
+    }日目の訓練が終了しました。`;
+    confirmModal.onClickOk = () => {
+      endDay();
+      // 最終日の場合は訓練自体を終わる
+      if (day.value >= TRAINING_DAYS) {
+        confirmModal.message = "訓練を終了します。";
+        confirmModal.onClickOk = () => {
+          confirmModal.isShow = false;
+          emits("end");
+        };
+        confirmModal.onClickCancel = undefined;
+        confirmModal.isShow = true;
+      }
+      confirmModal.isShow = false;
+    };
+    confirmModal.onClickCancel = undefined;
+    confirmModal.isShow = true;
+    return;
+  }
+
+  if (!trainingPlans[plan].character) {
+    // キャラクターが設定されていなければ次の訓練結果を表示する
+    showResult(trainingPlans[plan].next);
+    return;
+  }
+  resultModal.character = trainingPlans[plan].character;
+  resultModal.training = trainingPlans[plan].training;
+  resultModal.next = trainingPlans[plan].next;
+  setTimeout(() => {
+    resultModal.isShow = true;
+  }, 50);
+};
 const onStartTraining = () => {
   for (const key of Object.keys(trainingPlans)) {
-    if (trainingPlans[key].character) {
-      trainingPlans[key].training;
+    if (!trainingPlans[key].character) {
+      continue;
     }
+    training(
+      trainingPlans[key].character as WilCharacter,
+      trainingPlans[key].training
+    );
   }
-  if (trainingPlans.ATTACK.character) {
-    showResult(WIL_TRAINING_ID.ATTACK);
-  } else if (trainingPlans.DEFENSE.character) {
-    showResult(WIL_TRAINING_ID.DEFENSE);
-  } else if (trainingPlans.MIGRATION.character) {
-    showResult(WIL_TRAINING_ID.MIGRATION);
-  } else if (trainingPlans.MAGIC.character) {
-    showResult(WIL_TRAINING_ID.MAGIC);
-  } else if (trainingPlans.PHISIC.character) {
-    showResult(WIL_TRAINING_ID.PHISIC);
-  }
+
+  showResult(WIL_TRAINING_ID.ATTACK);
 };
-const onEndTraining = () => {};
+const onSelectCharacter = (id: string) => {
+  selectedCharacter.value = playerCharacters.value.find(
+    (character: WilCharacter) => character.id === id
+  );
+};
+const onClickOk = () => {
+  resultModal.isShow = false;
+  showResult(resultModal.next);
+};
+
+const onEndTraining = () => {
+  confirmModal.message = "訓練を終了します。";
+  confirmModal.onClickOk = () => {
+    confirmModal.isShow = false;
+    emits("end");
+  };
+  confirmModal.onClickCancel = () => {
+    confirmModal.isShow = false;
+  };
+  confirmModal.isShow = true;
+};
 </script>
 
 <style scoped lang="scss">
@@ -349,6 +481,97 @@ const onEndTraining = () => {};
       height: 80%;
     }
   }
+  &__modal_backgrond {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  &__result_modal {
+    width: 50%;
+    height: 60%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    &__cards {
+      display: flex;
+      justify-content: space-around;
+      height: 36%;
+      width: 100%;
+      color: black;
+      padding: 0% 2%;
+      margin-top: 2%;
+      &__character {
+        width: 36%;
+        height: 100%;
+      }
+      &__training {
+        width: 36%;
+        height: 100%;
+      }
+    }
+    &__result {
+      width: 80%;
+      color: white;
+      padding: 0% 2%;
+      margin-top: 4%;
+      dl {
+        display: flex;
+        justify-content: space-between;
+        dt {
+          width: 50%;
+        }
+        dd {
+          width: 20%;
+          text-align: right;
+        }
+      }
+    }
+    &__learned {
+      width: 80%;
+      padding: 0% 2%;
+      margin-top: 2%;
+    }
+    &__button {
+      width: 20%;
+      height: 8%;
+      padding: 0% 2%;
+      margin-top: auto;
+      margin-bottom: 2%;
+      align-self: center;
+    }
+  }
+  &__confirm_modal {
+    width: 50%;
+    height: 20%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    &__inner {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 100%;
+      height: 100%;
+      padding: 2%;
+      &__message {
+        text-align: center;
+      }
+      &__buttons {
+        margin-top: 8%;
+        display: flex;
+        justify-content: space-around;
+        > div {
+          width: 36%;
+        }
+      }
+    }
+  }
 }
 @media screen and (max-width: 400px) {
   .c-training__infomation,
@@ -357,6 +580,18 @@ const onEndTraining = () => {};
   }
 }
 
+.result_modal-enter-active,
+.result_modal-leave-active,
+.confirm_modal-enter-active,
+.confirm_modal-leave-active {
+  transition: height 0.2s ease;
+}
+.result_modal-enter-from,
+.result_modal-leave-to,
+.confirm_modal-enter-from,
+.confirm_modal-leave-to {
+  height: 0;
+}
 @media screen and (max-width: 600px) and (min-width: 400px) {
   .c-training__infomation,
   .c-training__plan__cards__content__button {

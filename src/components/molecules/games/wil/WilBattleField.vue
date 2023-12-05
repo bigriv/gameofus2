@@ -69,8 +69,6 @@ const onHoverCharacter = (character: WilCharacter | undefined) => {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  border-bottom: 2px solid black;
-  border-right: 2px solid black;
   border-radius: 4px;
   box-sizing: content-box;
   &--reverse {

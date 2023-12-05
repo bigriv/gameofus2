@@ -436,6 +436,7 @@ watch(
   width: 90%;
   height: 25%;
   border: 2px solid rgba(255, 255, 255, 0.8);
+  background-color: rgba(0, 0, 0, 0.8);
   &__card {
     position: absolute;
     top: 5%;

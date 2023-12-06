@@ -25,6 +25,12 @@ const contents = [
     description: "完全オリジナルゲームをプレイできます。ぜひプレイしてね。",
   },
   {
+    path: "Tool",
+    label: "ツール",
+    description:
+      "汎用ツールを使えます。OBSでの使用も想定しているので、配信用にもどうぞ。",
+  },
+  {
     path: "Blessing",
     label: "お祝い",
     description:

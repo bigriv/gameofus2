@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { Ref, ref } from "vue";
 import { WIL_SKILL_DEFINES } from "./defines/skill";
 import { WilSkill } from "./types/skill";
 import { WilCharacter } from "./types/character";
@@ -9,7 +9,9 @@ import { WIL_IMAGE_DEFINES } from "./defines/image";
 import ConstructGOUVisual from "@/composables/types/visuals/ConstructGOUVisual";
 import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
 import { SequenceId } from "@/composables/utils/id";
-import { GOUAudio } from "@/composables/types/audio/GOUAudio";
+import { WIL_SOUND_DEFINES } from "./defines/sound";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import GOUImage from "@/composables/types/visuals/GOUImage";
 
 export const useWilInit = () => {
   const initImages = (): { [key: string]: GOUVisual } => {
@@ -27,10 +29,15 @@ export const useWilInit = () => {
   };
   const WIL_IMAGES: { [key: string]: GOUVisual } = initImages();
 
-  const initSounds = (): { [key: string]: GOUAudio } => {
-    return {};
+  const initSounds = (): { [key: string]: GOUReadAudio } => {
+    let sounds: { [key: string]: GOUReadAudio } = {};
+
+    for (const key of Object.keys(WIL_SOUND_DEFINES)) {
+      sounds[key] = new GOUReadAudio(WIL_SOUND_DEFINES[key]);
+    }
+    return sounds;
   };
-  const WIL_SOUNDS: { [key: string]: GOUAudio } = initSounds();
+  const WIL_SOUNDS: { [key: string]: GOUReadAudio } = initSounds();
 
   const initSkills = (): { [key: string]: WilSkill } => {
     let skills: { [key: string]: WilSkill } = {};
@@ -41,37 +48,37 @@ export const useWilInit = () => {
   };
   const WIL_SKILLS = ref(initSkills());
 
+  const isLoadedFiles: Ref<boolean> = ref(false);
+  const loadFiles = () => {
+    for (const key of Object.keys(WIL_IMAGES)) {
+      (WIL_IMAGES[key] as GOUImage).load();
+    }
+    for (const key of Object.keys(WIL_SOUNDS)) {
+      WIL_SOUNDS[key].load();
+    }
+
+    // ロードが完了したかを判定する
+    let intervalId = setInterval(() => {
+      for (const key of Object.keys(WIL_IMAGES)) {
+        if (!(WIL_IMAGES[key] as GOUImage).isLoaded()) {
+          return;
+        }
+      }
+
+      isLoadedFiles.value = true;
+      clearInterval(intervalId);
+    }, 100);
+  };
+
   const characterSequence = new SequenceId();
   const initPlayer = (): WilPlayer => {
     const player = new WilPlayer();
 
-    const getImageAssignedDefine = (define: any) => {
-      return Object.assign(JSON.parse(JSON.stringify(define)), {
-        visual: WIL_IMAGES[define.visual],
-        miniVisual: WIL_IMAGES[define.miniVisual],
-      });
-    };
-    console.log(getImageAssignedDefine(WIL_CHARACTER_DEFINES.HERO));
-    player.characters = [
+    player.allCharacters = [
       new WilCharacter(
         characterSequence.generateId(),
-        getImageAssignedDefine(WIL_CHARACTER_DEFINES.HERO)
-      ),
-      new WilCharacter(
-        characterSequence.generateId(),
-        getImageAssignedDefine(WIL_CHARACTER_DEFINES.HOLY_KNIGHTS_SOLDIER)
-      ),
-      new WilCharacter(
-        characterSequence.generateId(),
-        getImageAssignedDefine(WIL_CHARACTER_DEFINES.HOLY_KNIGHTS_MAGICIAN)
-      ),
-      new WilCharacter(
-        characterSequence.generateId(),
-        getImageAssignedDefine(WIL_CHARACTER_DEFINES.HOLY_KNIGHTS_LEADER)
-      ),
-      new WilCharacter(
-        characterSequence.generateId(),
-        getImageAssignedDefine(WIL_CHARACTER_DEFINES.STORM_SHOOTERS_ARCHER)
+        WIL_CHARACTER_DEFINES.HERO,
+        WIL_IMAGES
       ),
     ];
     return player;
@@ -83,6 +90,8 @@ export const useWilInit = () => {
     WIL_SOUNDS,
     WIL_SKILLS,
     WIL_CHARACTER_DEFINES,
+    isLoadedFiles,
+    loadFiles,
     characterSequence,
     player,
   };

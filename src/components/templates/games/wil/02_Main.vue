@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, onMounted, ref } from "vue";
+import { Ref, onMounted, ref, watch } from "vue";
 import ChapterStart from "@/components/templates/games/wil/main/01_ChapterStart.vue";
 import Talk from "@/components/templates/games/wil/main/02_Talk.vue";
 import Battle from "@/components/templates/games/wil/main/03_Battle.vue";
@@ -40,7 +40,7 @@ import { WIL_CHAPTER_TIMMING } from "@/composables/games/wil/enums/timming";
 import { useWilInit } from "@/composables/games/wil/init";
 import { WilChapter } from "@/composables/games/wil/types/chapter";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
-import { WIL_CHAPTER_DEFINES } from "@/composables/games/wil/defines/chapter";
+import { WIL_CHAPTER_1_DEFINE } from "@/composables/games/wil/defines/chapter";
 
 const props = defineProps({
   start: {
@@ -55,8 +55,15 @@ const props = defineProps({
 
 const emits = defineEmits(["loaded"]);
 
-const { WIL_IMAGES, WIL_SOUNDS, WIL_SKILLS, characterSequence, player } =
-  useWilInit();
+const {
+  WIL_IMAGES,
+  WIL_SOUNDS,
+  WIL_SKILLS,
+  isLoadedFiles,
+  loadFiles,
+  characterSequence,
+  player,
+} = useWilInit();
 
 const timming: Ref<WIL_CHAPTER_TIMMING> = ref(WIL_CHAPTER_TIMMING.OPENING);
 const talkEvents = ref();
@@ -77,22 +84,27 @@ const proceed = () => {
 };
 
 onMounted(() => {
-  setTimeout(() => {
-    emits("loaded");
-  }, 1000);
-  // TODO: ファイルのロード
+  loadFiles();
 
   if (props.loadData) {
     // TODO: セーブデータのロード
   }
   currentCapter.value = new WilChapter(
-    WIL_CHAPTER_DEFINES[0],
+    WIL_CHAPTER_1_DEFINE,
     characterSequence,
     WIL_IMAGES,
     WIL_SOUNDS
   );
   timming.value = currentCapter.value.proceedNextEvent();
 });
+watch(
+  () => isLoadedFiles.value,
+  () => {
+    if (isLoadedFiles.value) {
+      emits("loaded");
+    }
+  }
+);
 </script>
 
 <style scoped lang="scss">

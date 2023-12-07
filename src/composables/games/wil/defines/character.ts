@@ -36,6 +36,7 @@ export const WIL_CHARACTER_DEFINES: {
       WIL_SKILL_ID.SHINE_ABSORB,
     ],
   },
+  // 聖騎士団
   HOLY_KNIGHTS_SOLDIER: {
     name: "近接兵",
     visual: WIL_IMAGE_ID.CHARACTER_OTHER,
@@ -78,6 +79,8 @@ export const WIL_CHARACTER_DEFINES: {
     element: WIL_ELEMENT.THUNDER,
     skills: [WIL_SKILL_ID.SLASH],
   },
+
+  // 嵐の射手
   STORM_SHOOTERS_ARCHER: {
     name: "弓兵",
     visual: WIL_IMAGE_ID.CHARACTER_OTHER,
@@ -90,6 +93,22 @@ export const WIL_CHARACTER_DEFINES: {
       magic: 10,
     },
     element: WIL_ELEMENT.WIND,
+    skills: [WIL_SKILL_ID.SLASH],
+  },
+
+  // モンスター
+  DARK_MONSTER_SHADOW: {
+    name: "シャドウ",
+    visual: WIL_IMAGE_ID.CHARACTER_OTHER,
+    miniVisual: WIL_IMAGE_ID.CHARACTER_OTHER,
+    status: {
+      life: 100,
+      attack: 15,
+      defense: 12,
+      speed: 8,
+      magic: 10,
+    },
+    element: WIL_ELEMENT.DARK,
     skills: [WIL_SKILL_ID.SLASH],
   },
 };

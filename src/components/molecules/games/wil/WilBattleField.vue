@@ -71,6 +71,7 @@ const onHoverCharacter = (character: WilCharacter | undefined) => {
   width: 100%;
   border-radius: 4px;
   box-sizing: content-box;
+  box-shadow: 0 0 40px inset white;
   &--reverse {
     transform: scaleX(-1);
   }

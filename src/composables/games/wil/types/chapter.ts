@@ -57,14 +57,8 @@ export class WilChapter {
         battle.enemy.map((cell) => {
           const character = new WilCharacter(
             sequence.generateId(),
-            Object.assign(
-              JSON.parse(JSON.stringify(WIL_CHARACTER_DEFINES[cell.character])),
-              {
-                visual: images[WIL_CHARACTER_DEFINES[cell.character].visual],
-                miniVisual:
-                  images[WIL_CHARACTER_DEFINES[cell.character].miniVisual],
-              }
-            )
+            WIL_CHARACTER_DEFINES[cell.character],
+            images
           );
           return new WilFieldCell(cell.x, cell.y, character);
         })

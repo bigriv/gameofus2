@@ -1,3 +1,5 @@
 export enum WIL_SOUND_ID {
-    
+  SE_FIGHTING = "SE_FIGHTING",
+  SE_GARD = "SE_GARD",
+  SE_MONSTER = "SE_MONSTER",
 }

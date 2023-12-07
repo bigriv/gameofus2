@@ -144,6 +144,55 @@ export class WilField {
   }
 
   /**
+   * フィールド上で最速で行動できるキャラクターを取得する
+   * @param without 除外するキャラクター
+   * @returns 最速行動可能キャラクター
+   */
+  getFastCharacter(...without: Array<WilCharacter>): WilCharacter | undefined {
+    const withoutIdList = without.map((w) => w.id);
+    const fastCharacter = (characters: Array<WilCharacter>) => {
+      return [...characters]
+        .filter((character) => !withoutIdList.includes(character.id))
+        .sort((a, b) => {
+          if (a.stack == b.stack) {
+            if (a.status.speed == b.status.speed) {
+              return Math.random() < 0.5 ? 1 : -1;
+            }
+            return a.status.speed - b.status.speed;
+          }
+          return b.stack - a.stack;
+        })[0];
+    };
+    const playerFastCharacter = fastCharacter(this.getPlayerCharacters());
+    const enemyFastCharacter = fastCharacter(this.getEnemyCharacters());
+
+    if (!playerFastCharacter && !enemyFastCharacter) {
+      return undefined;
+    }
+    if (!playerFastCharacter) {
+      return enemyFastCharacter;
+    }
+    if (!enemyFastCharacter) {
+      return playerFastCharacter;
+    }
+
+    if (playerFastCharacter.stack < enemyFastCharacter.stack) {
+      return playerFastCharacter;
+    }
+    if (playerFastCharacter.stack > enemyFastCharacter.stack) {
+      return enemyFastCharacter;
+    }
+    if (playerFastCharacter.status.speed < enemyFastCharacter.status.speed) {
+      return enemyFastCharacter;
+    }
+    if (playerFastCharacter.status.speed > enemyFastCharacter.status.speed) {
+      return playerFastCharacter;
+    }
+
+    return Math.random() < 0.5 ? playerFastCharacter : enemyFastCharacter;
+  }
+
+  /**
    * キャラクターをセルから排除する
    * @param x
    * @param y
@@ -182,10 +231,7 @@ export class WilField {
       return;
     }
 
-    if (
-      timming === WIL_BATTLE_TIMMING.BATTLE_START ||
-      timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_CHARACTER
-    ) {
+    if (timming === WIL_BATTLE_TIMMING.BATTLE_START) {
       this.playerCells.forEach((cell) => {
         cell.color = WIL_CELL_COLOR.WHITE;
         if (cell.character) {

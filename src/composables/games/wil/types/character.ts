@@ -3,6 +3,7 @@ import { WIL_ELEMENT } from "@/composables/games/wil/enums/element";
 import { WilCondition } from "./condition";
 import { WIL_SKILL_ID } from "../enums/skill";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
+import { WilSkill } from "./skill";
 import { WIL_IMAGE_ID } from "../enums/image";
 
 export class WilCharacter {
@@ -15,6 +16,7 @@ export class WilCharacter {
   condition: WilCondition | null = null;
   element: WIL_ELEMENT;
   skills: Array<WIL_SKILL_ID> = [];
+  stack: number = 0;
 
   constructor(
     sequence: number,
@@ -42,6 +44,23 @@ export class WilCharacter {
     this.status = new WilStatus(define.status);
     this.element = define.element ?? WIL_ELEMENT.NONE;
     this.skills = define.skills ?? [];
+  }
+
+  resetStack() {
+    this.stack = 1000 - this.defaultStatus.speed;
+  }
+
+  /**
+   * スキルを発動する
+   * @param skill 発動するスキル
+   * @returns 発動に成功すればtrue、失敗した場合はfalse
+   */
+  useSkill(skill: WilSkill) {
+    if (!this.skills.includes(skill.id)) {
+      return false;
+    }
+    this.stack += skill.cost;
+    return true;
   }
 
   /**

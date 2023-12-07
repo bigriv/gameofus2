@@ -44,22 +44,10 @@
         />
       </template>
 
-      <template
-        v-else-if="timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_CHARACTER"
-      >
-        <WilCardList
-          :dataList="[
-            ...characterList,
-            { label: 'ターン終了', onClick: onEndTurn },
-          ]"
-          @selectCharacter="onSelectPlayerCharacter"
-        />
-      </template>
-
       <template v-else-if="timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE">
-        <template v-if="player.selectCharacter">
+        <template v-if="player.moveCharacter">
           <div class="c-under_frame__card">
-            <WilCharacterCard :character="player.selectCharacter" />
+            <WilCharacterCard :character="player.moveCharacter" />
           </div>
           <div class="c-under_frame__status">
             <NameValueTable
@@ -88,10 +76,10 @@
             </div>
             <div class="c-under_frame__contents__button">
               <GameButton
-                label="戻る"
+                label="ターンスキップ"
                 :fontColor="WIL_BUTTON_FONT_COLOR"
                 :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
-                @click="onBackSelectCharacter"
+                @click="onSkipTurn"
               />
             </div>
           </div>
@@ -101,9 +89,9 @@
       <template
         v-else-if="timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_MIGRATE_PLACE"
       >
-        <template v-if="player.selectCharacter">
+        <template v-if="player.moveCharacter">
           <div class="c-under_frame__card">
-            <WilCharacterCard :character="player.selectCharacter" />
+            <WilCharacterCard :character="player.moveCharacter" />
           </div>
           <div class="c-under_frame__status">
             <NameValueTable
@@ -204,6 +192,7 @@ import {
   WIL_BUTTON_FONT_COLOR,
   WIL_BUTTON_BACKGROUND_COLOR,
 } from "@/composables/games/wil/const";
+import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 
 const props = defineProps({
   timming: {
@@ -256,11 +245,11 @@ const player = computed({
   get: () => props.player,
   set: (newValue: WilPlayer) => emits("update:player", newValue),
 });
-const characterList: Ref<Array<WilCharacter>> = ref(props.player.characters);
+const characterList: Ref<Array<WilCharacter>> = ref(props.player.allCharacters);
 const characterStatusList = computed(() => {
   let character = props.hoverCharacter;
-  if (player.value.selectCharacter) {
-    character = player.value.selectCharacter;
+  if (player.value.moveCharacter) {
+    character = player.value.moveCharacter;
   }
   if (!character) {
     return [];
@@ -284,10 +273,10 @@ const characterStatusList = computed(() => {
 });
 
 const skillList = computed(() => {
-  if (!player.value.selectCharacter) {
+  if (!player.value.moveCharacter) {
     return [];
   }
-  const character = player.value.selectCharacter;
+  const character = player.value.moveCharacter;
   if (!character?.skills) {
     return [];
   }
@@ -351,13 +340,6 @@ const onRemoveSetCharacter = () => {
   timming.value = WIL_BATTLE_TIMMING.SET_SELECT_CELL;
 };
 
-// 行動するキャラクター選択時のイベント処理
-const onSelectPlayerCharacter = (character: WilCharacter) => {
-  player.value.selectCharacter = character;
-
-  // 行動選択の表示に切り替え
-  timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE;
-};
 // 移動コマンド選択時のイベント処理
 const onMigrate = () => {
   // 移動先選択の表示に切り替え
@@ -368,12 +350,6 @@ const onShowSkillList = () => {
   player.value.selectSkill = undefined;
   // 発動スキル選択の表示に切り替え
   timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL;
-};
-// 行動コマンド選択中の戻るコマンド選択時のイベント処理
-const onBackSelectCharacter = () => {
-  player.value.resetMove();
-  // キャラクター選択の表示に切り替え
-  timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_CHARACTER;
 };
 // 行動選択画面に戻る
 const onBackSelectMove = () => {
@@ -408,7 +384,17 @@ const onSelectTarget = (character: WilCharacter) => {
   timming.value = WIL_BATTLE_TIMMING.BATTLE_PROCESS_PLAYER_CHARACTER;
 };
 // プレイヤーターン終了時のイベント処理
-const onEndTurn = () => {
+const onSkipTurn = () => {
+  if (!player.value.moveCharacter) {
+    throw new WrongImplementationError("Move character is not set.");
+  }
+  const nextMoveCharacter = field.value.getFastCharacter(
+    player.value.moveCharacter
+  );
+  if (!nextMoveCharacter) {
+    throw new WrongImplementationError("Couldn't get a next move character.");
+  }
+  player.value.moveCharacter.stack = nextMoveCharacter.stack + 1;
   emits("endTurn");
 };
 

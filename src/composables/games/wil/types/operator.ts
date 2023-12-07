@@ -6,27 +6,18 @@ import { WilSkill } from "./skill";
 import { GOUEvent } from "@/composables/types/GOUEvent";
 
 export abstract class WilOperator {
-  magicStone: number = 0;
-  selectCharacter?: WilCharacter;
+  moveCharacter?: WilCharacter;
   targetCell?: WilFieldCell;
   selectSkill?: WilSkill;
 
-  resetMagicStone() {
-    this.magicStone = 0;
-  }
-
-  addMagicStone() {
-    this.magicStone += 100;
-  }
-
   resetMove() {
-    this.selectCharacter = undefined;
+    this.moveCharacter = undefined;
     this.targetCell = undefined;
     this.selectSkill = undefined;
   }
 
   battleProcess(field: WilField): Array<GOUEvent> {
-    if (!this.selectCharacter) {
+    if (!this.moveCharacter) {
       throw new WrongImplementationError(
         "キャラクター選択されていない状態で戦闘処理が行われました。"
       );
@@ -38,7 +29,7 @@ export abstract class WilOperator {
     }
     if (!this.selectSkill) {
       // 発動スキルが設定されていなければ移動処理を行う
-      field.migrateCharacter(this.selectCharacter, this.targetCell);
+      field.migrateCharacter(this.moveCharacter, this.targetCell);
       return [];
     }
 

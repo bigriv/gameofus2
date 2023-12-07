@@ -14,7 +14,7 @@ export const useWilTraining = (
   const TRAINING_DAYS = 7;
   const day = ref(0);
   const playerCharacters: Ref<Array<WilCharacter>> = ref(
-    [...player.characters].sort()
+    [...player.allCharacters].sort()
   );
   const trainingPlans: {
     [key: string]: {

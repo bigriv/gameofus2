@@ -5,9 +5,6 @@
     </div>
     <div class="c-battle__infomation">
       <div class="c-battle__infomation__turn">あなたのターン</div>
-      <div class="c-battle__infomation__moveable">
-        残りの魔法石 {{ player.magicStone }}
-      </div>
     </div>
     <div class="c-battle__field">
       <Field
@@ -76,6 +73,8 @@ import { WilPlayer } from "@/composables/games/wil/types/player";
 import { WilComputer } from "@/composables/games/wil/types/computer";
 import { useWilBattle } from "@/composables/games/wil/battle";
 import { WilBattle } from "@/composables/games/wil/types/battle";
+import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
+import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 
 const props = defineProps({
   skills: {
@@ -93,7 +92,7 @@ const props = defineProps({
 });
 const emits = defineEmits(["update:player", "end"]);
 
-const { judgeBattleResult } = useWilBattle();
+const { judgeBattleResult, getMoveTurn } = useWilBattle();
 
 const timming: Ref<WIL_BATTLE_TIMMING> = ref(
   WIL_BATTLE_TIMMING.SET_SELECT_CELL
@@ -101,7 +100,7 @@ const timming: Ref<WIL_BATTLE_TIMMING> = ref(
 const field: Ref<WilField> = ref(new WilField());
 const background: Ref<GOUVisual> = ref(props.battle.background);
 const enemyName = ref(props.battle.name);
-const enemy = ref(props.battle.enemy);
+// const enemy = ref(props.battle.enemy);
 const player = computed({
   get: () => props.player,
   set: (newValue: WilPlayer) => emits("update:player", newValue),
@@ -135,18 +134,11 @@ const error = (message: string) => {
   alert(message);
 };
 const endSet = () => {
-  console.log(enemy.value);
-  field.value.setEnemyCharacters(enemy.value);
+  field.value.setEnemyCharacters(props.battle.enemy);
+
   timming.value = WIL_BATTLE_TIMMING.BATTLE_START;
   setTimeout(() => {
-    startPlayerTurn();
-  }, 1500);
-};
-const startPlayerTurn = () => {
-  player.value.addMagicStone();
-  timming.value = WIL_BATTLE_TIMMING.BATTLE_PLAYER_TURN_START;
-  setTimeout(() => {
-    timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_CHARACTER;
+    startTurn();
   }, 1500);
 };
 const selectSetCell = (x: number, y: number) => {
@@ -162,7 +154,7 @@ const selectSetCell = (x: number, y: number) => {
   return;
 };
 const selectMovePlace = (x: number, y: number) => {
-  if (!player.value.selectCharacter) {
+  if (!player.value.moveCharacter) {
     alert("キャラクターが選択されていません。");
     return;
   }
@@ -171,7 +163,7 @@ const selectMovePlace = (x: number, y: number) => {
     alert("移動できません。");
     return;
   }
-  cell.character = player.value.selectCharacter;
+  cell.character = player.value.moveCharacter;
   const pre = field.value.getPlayerCell(cell.x, cell.y);
   if (pre) {
     pre.character = undefined;
@@ -179,30 +171,52 @@ const selectMovePlace = (x: number, y: number) => {
   timming.value = WIL_BATTLE_TIMMING.BATTLE_PROCESS_PLAYER_CHARACTER;
 };
 const selectSkill = (skill: WilSkill) => {
-  if (!player.value.selectCharacter) {
+  if (!player.value.moveCharacter) {
     alert("キャラクターが選択されていません。");
     return;
   }
   player.value.selectSkill = skill;
   timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET;
 };
-const endTurn = () => {
-  timming.value = WIL_BATTLE_TIMMING.BATTLE_ENEMY_TURN_START;
-  setTimeout(() => {
+const startTurn = () => {
+  const fastMoveCharacter = field.value.getFastCharacter();
+  if (!fastMoveCharacter) {
+    throw new WrongImplementationError("Couldn't get the fast move player.");
+  }
+  const turn = getMoveTurn(field.value, fastMoveCharacter);
+  if (turn == WIL_BATTLE_TEAM.PLAYER) {
+    player.value.moveCharacter = fastMoveCharacter;
+    timming.value = WIL_BATTLE_TIMMING.BATTLE_PLAYER_TURN_START;
+  } else if (turn == WIL_BATTLE_TEAM.ENEMY) {
+    computer.value.moveCharacter = fastMoveCharacter;
     timming.value = WIL_BATTLE_TIMMING.BATTLE_ENEMY_TURN_START;
-    computer.value.battleMove(() => {
-      const result = judgeBattleResult(player.value, computer.value);
-      if (result === player.value) {
-        battleEnd();
-        return;
-      }
-      if (result === computer.value) {
-        battleEnd();
-        return;
-      }
-      startPlayerTurn();
-    });
+  }
+
+  setTimeout(() => {
+    if (timming.value == WIL_BATTLE_TIMMING.BATTLE_PLAYER_TURN_START) {
+      timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE;
+      return;
+    }
+    if (timming.value == WIL_BATTLE_TIMMING.BATTLE_ENEMY_TURN_START) {
+      WIL_BATTLE_TIMMING.BATTLE_PROCESS_ENEMY_CHARACTER;
+      computer.value.battleMove(endTurn);
+      return;
+    }
   }, 1500);
+};
+const endTurn = () => {
+  // 戦闘終了判定を実施
+  const result = judgeBattleResult(field.value);
+  if (result === WIL_BATTLE_TEAM.PLAYER) {
+    battleEnd();
+    return;
+  }
+  if (result === WIL_BATTLE_TEAM.ENEMY) {
+    battleEnd();
+    return;
+  }
+
+  startTurn();
 };
 const battleEnd = () => {
   timming.value = WIL_BATTLE_TIMMING.BATTLE_END;
@@ -214,7 +228,7 @@ watch(
     if (timming.value === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
       field.value.changeColor(
         timming.value,
-        player.value.selectCharacter,
+        player.value.moveCharacter,
         player.value.selectSkill,
         hoverCharacter.value
       );
@@ -226,7 +240,7 @@ watch(
   () => {
     field.value.changeColor(
       timming.value,
-      player.value.selectCharacter,
+      player.value.moveCharacter,
       player.value.selectSkill,
       player.value.targetCell?.character
     );
@@ -243,9 +257,6 @@ watch(
       case WIL_BATTLE_TIMMING.BATTLE_ENEMY_TURN_START:
       case WIL_BATTLE_TIMMING.TALK:
         message.value = "";
-        break;
-      case WIL_BATTLE_TIMMING.BATTLE_SELECT_CHARACTER:
-        message.value = "行動するキャラクターを選択してください。";
         break;
       case WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE:
         message.value = "行動を選択してください。";

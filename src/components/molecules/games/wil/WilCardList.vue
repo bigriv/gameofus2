@@ -10,14 +10,7 @@
         v-for="data in props.dataList"
         class="c-card_list__container__content"
       >
-        <template v-if="data instanceof WilSkill">
-          <WilSkillCard
-            :selected="props.selected === data.id"
-            :skill="data"
-            @click="onSelectSkill"
-          />
-        </template>
-        <template v-else-if="data instanceof WilCharacter">
+        <template v-if="data instanceof WilCharacter">
           <WilCharacterCard
             :selected="props.selected === data.id"
             :character="data"
@@ -45,9 +38,7 @@
 import { ref, watch } from "vue";
 import WilCard from "@/components/molecules/games/wil/WilCard.vue";
 import WilCharacterCard from "@/components/molecules/games/wil/WilCharacterCard.vue";
-import WilSkillCard from "@/components/molecules/games/wil/WilSkillCard.vue";
 import { WilCharacter } from "@/composables/games/wil/types/character";
-import { WilSkill } from "@/composables/games/wil/types/skill";
 
 const props = defineProps({
   selected: {
@@ -55,9 +46,7 @@ const props = defineProps({
     default: undefined,
   },
   dataList: {
-    type: Array<
-      WilCharacter | WilSkill | { label: string; onClick?: Function }
-    >,
+    type: Array<WilCharacter | { label: string; onClick?: Function }>,
     default: () => [],
   },
 });
@@ -78,10 +67,6 @@ watch(
     selected.value = props.selected;
   }
 );
-const onSelectSkill = (skill: WilSkill) => {
-  selected.value = skill.id;
-  emits("selectSkill", skill);
-};
 const onSelectCharacter = (character: WilCharacter) => {
   selected.value = character.id;
   emits("selectCharacter", character);

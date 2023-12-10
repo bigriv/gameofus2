@@ -13,7 +13,7 @@ export class WilCharacter {
   miniVisual: GOUVisual;
   defaultStatus: WilStatus;
   status: WilStatus;
-  condition: WilCondition | null = null;
+  condition: WilCondition = new WilCondition();
   element: WIL_ELEMENT;
   skills: Array<WIL_SKILL_ID> = [];
   stack: number = 0;
@@ -68,6 +68,6 @@ export class WilCharacter {
    */
   resetStatus() {
     this.status = this.defaultStatus.deepCopy();
-    this.condition = null;
+    this.condition = new WilCondition();
   }
 }

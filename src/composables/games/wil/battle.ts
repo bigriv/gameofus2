@@ -1,7 +1,5 @@
-import { WilCharacter } from "./types/character";
 import { WilField } from "./types/field";
 import { WIL_BATTLE_TEAM } from "./enums/battle";
-import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 
 export const useWilBattle = () => {
   /**
@@ -20,36 +18,7 @@ export const useWilBattle = () => {
     return null;
   };
 
-  /**
-   * プレイヤーと戦闘相手の最速行動可能キャラクターを比較して、次のターンプレイヤーを取得する
-   * @param playerFastCharacter プレイヤーの最速行動可能キャラクター
-   * @param enemyFastCharacter 戦闘相手の最速行動可能キャラクター
-   * @returns 次の戦闘タイミング
-   */
-  const getMoveTurn = (
-    field: WilField,
-    fastCharacter: WilCharacter
-  ): WIL_BATTLE_TEAM => {
-    if (
-      field
-        .getPlayerCharacters()
-        .find((character) => character.id === fastCharacter.id)
-    ) {
-      return WIL_BATTLE_TEAM.PLAYER;
-    }
-    if (
-      field
-        .getEnemyCharacters()
-        .find((character) => character.id === fastCharacter.id)
-    ) {
-      return WIL_BATTLE_TEAM.ENEMY;
-    }
-
-    throw new WrongImplementationError("Couldn't get a move player.");
-  };
-
   return {
     judgeBattleResult,
-    getMoveTurn,
   };
 };

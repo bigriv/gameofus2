@@ -1,0 +1,10 @@
+export enum WIL_CONDITION_ID {
+  HEALTH,
+  BURN,
+  PARALYSIS,
+  DEBILITY,
+  WEATHERING,
+  MUDDY,
+  POISON,
+  HOLY,
+}

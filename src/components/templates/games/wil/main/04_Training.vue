@@ -138,7 +138,7 @@
                 </dd>
               </dl>
               <dl>
-                <dt>行動力</dt>
+                <dt>敏捷力</dt>
                 <dd>{{ resultModal.training.before.speed }}</dd>
                 <dd>⇒</dd>
                 <dd

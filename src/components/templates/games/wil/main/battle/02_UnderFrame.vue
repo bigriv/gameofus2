@@ -101,71 +101,52 @@
               :dataList="characterStatusList"
             />
           </div>
-          <div class="c-under_frame__contents">
-            <div class="c-under_frame__contents__button">
-              <GameButton
-                label="戻る"
-                :fontColor="WIL_BUTTON_FONT_COLOR"
-                :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
-                @click="onBackSelectMove"
-              />
-            </div>
-          </div>
         </template>
+        <div class="c-under_frame__contents">
+          <div class="c-under_frame__contents__button u-margin_top--auto">
+            <GameButton
+              label="戻る"
+              :fontColor="WIL_BUTTON_FONT_COLOR"
+              :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
+              @click="onBackSelectMove"
+            />
+          </div>
+        </div>
       </template>
 
-      <template v-else-if="timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL">
+      <template
+        v-else-if="
+          timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL ||
+          timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET
+        "
+      >
+        <div class="c-under_frame__skills">
+          <WilSkillList
+            :skillList="skillList"
+            :selected="player.selectSkill?.id"
+            @select="onSelectSkill"
+          />
+        </div>
         <template v-if="player.selectSkill">
-          <div class="c-under_frame__card">
-            <WilSkillCard :skill="player.selectSkill" />
-          </div>
           <div class="c-under_frame__message">
             <div class="u-d_flex--between">
-              <div>消費行動力</div>
+              <div>消費ターン数</div>
               <div>{{ player.selectSkill.cost }}</div>
             </div>
             <div>効果</div>
             <div>{{ player.selectSkill.description }}</div>
           </div>
-          <div class="c-under_frame__contents">
-            <div class="c-under_frame__contents__button">
-              <GameButton
-                label="対象選択"
-                :fontColor="WIL_BUTTON_FONT_COLOR"
-                :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
-                @click="onSelectSkill"
-              />
-            </div>
-            <div class="c-under_frame__contents__button">
-              <GameButton
-                label="戻る"
-                :fontColor="WIL_BUTTON_FONT_COLOR"
-                :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
-                @click="onShowSkillList"
-              />
-            </div>
+        </template>
+        <div class="c-under_frame__contents">
+          <div class="c-under_frame__contents__button u-margin_top--auto">
+            <GameButton
+              label="戻る"
+              :fontColor="WIL_BUTTON_FONT_COLOR"
+              :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
+              @click="onBackSelectMove"
+            />
           </div>
-        </template>
-        <template v-else>
-          <WilCardList
-            :dataList="[
-              ...skillList,
-              { label: '戻る', onClick: onBackSelectMove },
-            ]"
-            @selectSkill="onShowSkill"
-          />
-        </template>
-      </template>
-      <template
-        v-else-if="timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET"
-      >
-        <WilCardList
-          :dataList="[
-            ...characterList,
-            { label: '戻る', onClick: onShowSkill },
-          ]"
-          @selectCharacter="onSelectTarget"
-        />
+        </div>
       </template>
     </template>
   </div>
@@ -174,12 +155,11 @@
 <script setup lang="ts">
 import { PropType, Ref, computed, ref, watch } from "vue";
 import WilCharacterCard from "@/components/molecules/games/wil/WilCharacterCard.vue";
-import WilSkillCard from "@/components/molecules/games/wil/WilSkillCard.vue";
+import WilSkillList from "@/components/molecules/games/wil/WilSkillList.vue";
 import NameValueTable from "@/components/atoms/tables/NameValueTable.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import { WIL_BATTLE_TIMMING } from "@/composables/games/wil/enums/timming";
 import { WilCharacter } from "@/composables/games/wil/types/character";
-import { WilBurnCondition } from "@/composables/games/wil/types/condition";
 import { WilSkill } from "@/composables/games/wil/types/skill";
 import { WilField } from "@/composables/games/wil/types/field";
 import WilCardList from "@/components/molecules/games/wil/WilCardList.vue";
@@ -227,7 +207,6 @@ const emits = defineEmits([
   "update:player",
   "error",
   "endSet",
-  "selectSkill",
   "endTurn",
 ]);
 const timming = computed({
@@ -247,28 +226,37 @@ const player = computed({
 });
 const characterList: Ref<Array<WilCharacter>> = ref(props.player.allCharacters);
 const characterStatusList = computed(() => {
-  let character = props.hoverCharacter;
-  if (player.value.moveCharacter) {
-    character = player.value.moveCharacter;
+  let character = player.value.moveCharacter;
+  if (props.hoverCharacter) {
+    character = props.hoverCharacter;
   }
   if (!character) {
     return [];
   }
 
+  if (field.value.getEnemyCharacterCell(character)) {
+    // 表示するキャラクターが相手フィールドのキャラクターならステータスを隠蔽する
+    return [
+      { name: "状態", value: character.condition.getLabel() },
+      { name: "体力", value: "???/???" },
+      { name: "攻撃力", value: "???" },
+      { name: "防御力", value: "???" },
+      { name: "魔力", value: "???" },
+      { name: "敏捷力", value: "???" },
+      { name: "次のターンまで", value: `${character.stack}` },
+    ];
+  }
+
   const defaultStatus = character.defaultStatus;
   const status = character.status;
-  let condition = "健康";
-  // TODO: 各状態異常の分岐を追加
-  if (character.condition instanceof WilBurnCondition) {
-    condition = "火傷";
-  }
   return [
-    { name: "状態", value: condition },
+    { name: "状態", value: character.condition.getLabel() },
     { name: "体力", value: `${status.life}/${defaultStatus.life}` },
     { name: "攻撃力", value: `${status.attack}` },
     { name: "防御力", value: `${status.defense}` },
     { name: "魔力", value: `${status.magic}` },
-    { name: "行動力", value: `${status.speed}` },
+    { name: "敏捷力", value: `${status.speed}` },
+    { name: "次のターンまで", value: `${character.stack}` },
   ];
 });
 
@@ -360,30 +348,12 @@ const onBackSelectMove = () => {
   timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE;
 };
 // 発動スキル選択時のイベント処理
-const onShowSkill = (skill: WilSkill) => {
-  console.log("onShowSkill");
-  if (skill) {
-    player.value.selectSkill = skill;
-  }
-  // 発動スキル選択の表示に切り替え
-  timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL;
-};
-// 発動スキル選択時のイベント処理
-const onSelectSkill = () => {
+const onSelectSkill = (skill: WilSkill) => {
+  player.value.selectSkill = skill;
   // スキル発動対象の選択に切り替え
   timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET;
 };
-const onSelectTarget = (character: WilCharacter) => {
-  const targetCell = field.value.getEnemyCharacterCell(character);
-  if (!targetCell) {
-    return;
-  }
-  player.value.targetCell = targetCell;
-
-  // 選択した行動の処理に切り替え
-  timming.value = WIL_BATTLE_TIMMING.BATTLE_PROCESS_PLAYER_CHARACTER;
-};
-// プレイヤーターン終了時のイベント処理
+// ターンスキップ時のイベント処理
 const onSkipTurn = () => {
   if (!player.value.moveCharacter) {
     throw new WrongImplementationError("Move character is not set.");
@@ -407,6 +377,7 @@ watch(
     } else if (
       timming.value === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET
     ) {
+      // TODO: 回復スキル・サポートスキルの場合は自分のキャラクターをリストに入れる
       // キャラクターリストを敵の配置済みキャラクターのリストに更新
       characterList.value = field.value.getEnemyCharacters();
     }
@@ -430,18 +401,25 @@ watch(
     width: 19.2%;
     height: 90%;
   }
+  &__skills {
+    position: absolute;
+    top: 5%;
+    left: 2%;
+    width: 25%;
+    height: 90%;
+  }
   &__status {
     position: absolute;
     top: 5%;
-    left: 25%;
+    left: 30%;
     width: 32%;
     height: 90%;
   }
   &__message {
     position: absolute;
     top: 5%;
-    left: 25%;
-    width: 32%;
+    left: 30%;
+    width: 35%;
     height: 90%;
     background-color: rgba(0, 0, 0, 0.8);
     border: 2px solid rgba(255, 255, 255, 0.8);
@@ -455,7 +433,7 @@ watch(
     position: absolute;
     top: 5%;
     right: 2%;
-    width: 35%;
+    width: 30%;
     height: 90%;
     &__button {
       height: 30%;

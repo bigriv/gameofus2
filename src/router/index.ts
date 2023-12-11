@@ -80,6 +80,11 @@ const routes = [
         meta: { title: "ツール" },
         children: [
           {
+            path: "",
+            name: "Tool",
+            component: () => import("@/components/views/tools/index.vue"),
+          },
+          {
             path: "stopwatch",
             name: "CustomeStopwatch",
             component: () =>
@@ -98,6 +103,12 @@ const routes = [
         name: "ViewStopwatch",
         component: () => import("@/components/views/tools/stopwatch/view.vue"),
         meta: { title: "ストップウォッチ" },
+      },
+      {
+        path: "translate",
+        name: "ViewTranslate",
+        component: () => import("@/components/views/tools/translate.vue"),
+        meta: { title: "翻訳機" },
       },
     ],
   },

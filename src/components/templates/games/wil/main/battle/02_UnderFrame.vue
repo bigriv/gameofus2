@@ -218,7 +218,7 @@ const field = computed({
   set: (newValue: WilField) => emits("update:field", newValue),
 });
 const playerCharacterNum = computed(() => {
-  return field.value.getPlayerNum();
+  return field.value.getPlayerCharacterNum();
 });
 const player = computed({
   get: () => props.player,
@@ -234,7 +234,7 @@ const characterStatusList = computed(() => {
     return [];
   }
 
-  if (field.value.getEnemyCharacterCell(character)) {
+  if (field.value.getComputerCharacterCell(character)) {
     // 表示するキャラクターが相手フィールドのキャラクターならステータスを隠蔽する
     return [
       { name: "状態", value: character.condition.getLabel() },
@@ -379,7 +379,7 @@ watch(
     ) {
       // TODO: 回復スキル・サポートスキルの場合は自分のキャラクターをリストに入れる
       // キャラクターリストを敵の配置済みキャラクターのリストに更新
-      characterList.value = field.value.getEnemyCharacters();
+      characterList.value = field.value.getComputerCharacters();
     }
   }
 );

@@ -18,7 +18,7 @@ export class WilChapter {
   talks: Array<Array<WilTalkEvent>>;
   private currentFlow: number = -1;
   private currentTalk: number = -1;
-  private currentEnemy: number = -1;
+  private currentBattle: number = -1;
 
   constructor(
     define: {
@@ -27,7 +27,7 @@ export class WilChapter {
       battles: Array<{
         name: string;
         background: WIL_IMAGE_ID;
-        enemy: Array<{
+        deploy: Array<{
           x: number;
           y: number;
           character: WIL_CHARACTER_ID;
@@ -54,7 +54,7 @@ export class WilChapter {
       return new WilBattle(
         battle.name,
         images[battle.background],
-        battle.enemy.map((cell) => {
+        battle.deploy.map((cell) => {
           const character = new WilCharacter(
             sequence.generateId(),
             WIL_CHARACTER_DEFINES[cell.character],
@@ -140,10 +140,10 @@ export class WilChapter {
     if (this.currentFlow < 0) {
       return this.battles[0];
     }
-    if (this.currentEnemy >= this.battles.length) {
+    if (this.currentBattle >= this.battles.length) {
       return undefined;
     }
-    return this.battles[this.currentEnemy];
+    return this.battles[this.currentBattle];
   }
 
   /**
@@ -151,9 +151,9 @@ export class WilChapter {
    * @returns 進めた後の戦闘イベント
    */
   proceedNextBattle(): WilBattle | undefined {
-    if (this.currentEnemy + 1 >= this.battles.length) {
+    if (this.currentBattle + 1 >= this.battles.length) {
       return undefined;
     }
-    return this.battles[++this.currentEnemy];
+    return this.battles[++this.currentBattle];
   }
 }

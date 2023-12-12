@@ -9,7 +9,7 @@ type WiChapterDefine = {
   battles: Array<{
     name: string;
     background: WIL_IMAGE_ID;
-    enemy: Array<{
+    deploy: Array<{
       x: number;
       y: number;
       character: WIL_CHARACTER_ID;
@@ -43,7 +43,7 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
     {
       name: "魔物の群れ",
       background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
-      enemy: [
+      deploy: [
         {
           x: 0,
           y: 2,
@@ -64,7 +64,7 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
     {
       name: "聖騎士団",
       background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
-      enemy: [
+      deploy: [
         {
           x: 0,
           y: 1,

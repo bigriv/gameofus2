@@ -1,13 +1,17 @@
 import { WIL_ELEMENT } from "../enums/element";
-import { WIL_MOVE_RANGE } from "../enums/range";
-import { WIL_SKILL_ID } from "../enums/skill";
+import {
+  WIL_SKILL_ID,
+  WIL_SKILL_RANGE,
+  WIL_SKILL_TARGET,
+} from "../enums/skill";
 
 export const WIL_SKILL_DEFINES: Array<{
   id: WIL_SKILL_ID;
   name: string;
   description: string; // 30文字まで
   cost: number;
-  range:  WIL_MOVE_RANGE;
+  target: WIL_SKILL_TARGET;
+  range: WIL_SKILL_RANGE;
   element: WIL_ELEMENT;
 }> = [
   {
@@ -15,7 +19,8 @@ export const WIL_SKILL_DEFINES: Array<{
     name: "スラッシュ",
     description: "通常の近接攻撃。",
     cost: 1,
-    range:  WIL_MOVE_RANGE.FIRST,
+    target: WIL_SKILL_TARGET.ENEMY,
+    range: WIL_SKILL_RANGE.FRONT,
     element: WIL_ELEMENT.NONE,
   },
   {
@@ -23,7 +28,8 @@ export const WIL_SKILL_DEFINES: Array<{
     name: "聖光線",
     description: "同じ行の敵すべてに攻撃。",
     cost: 3,
-    range: WIL_MOVE_RANGE.COLUMN,
+    target: WIL_SKILL_TARGET.ENEMY,
+    range: WIL_SKILL_RANGE.COLUMN,
     element: WIL_ELEMENT.SHINE,
   },
   {
@@ -31,7 +37,8 @@ export const WIL_SKILL_DEFINES: Array<{
     name: "シャインアブソーブ",
     description: "攻撃後、与えたダメージ分回復する。",
     cost: 3,
-    range:  WIL_MOVE_RANGE.FIRST,
+    target: WIL_SKILL_TARGET.ENEMY,
+    range: WIL_SKILL_RANGE.FRONT,
     element: WIL_ELEMENT.SHINE,
   },
   {
@@ -39,7 +46,17 @@ export const WIL_SKILL_DEFINES: Array<{
     name: "光弾",
     description: "光属性の魔法攻撃。",
     cost: 2,
-    range:  WIL_MOVE_RANGE.SKIP,
+    target: WIL_SKILL_TARGET.ENEMY,
+    range: WIL_SKILL_RANGE.SKIP,
+    element: WIL_ELEMENT.SHINE,
+  },
+  {
+    id: WIL_SKILL_ID.SANCTUARY,
+    name: "サンクチュアリ",
+    description: "味方一人を神聖状態にする。",
+    cost: 2,
+    target: WIL_SKILL_TARGET.ALLY,
+    range: WIL_SKILL_RANGE.SKIP,
     element: WIL_ELEMENT.SHINE,
   },
   {
@@ -47,7 +64,8 @@ export const WIL_SKILL_DEFINES: Array<{
     name: "極・聖剣生成",
     description: "全ての場所の敵を攻撃する。",
     cost: 5,
-    range:  WIL_MOVE_RANGE.ALL,
+    target: WIL_SKILL_TARGET.ENEMY,
+    range: WIL_SKILL_RANGE.ALL,
     element: WIL_ELEMENT.SHINE,
   },
 ];

@@ -1,18 +1,18 @@
 <template>
   <div class="c-field">
     <div class="c-field__frame">
-      <div class="c-field__frame__enemy">
+      <div class="c-field__frame__computer">
         <WilBattleField
           :reverse="true"
-          :cells="props.field.enemyCells"
-          @click="onClickEnemyCell"
+          :cells="props.field.computerCells"
+          @click="onClickComputerCell"
           @hover="onHoverCharacter"
         />
       </div>
       <div class="c-field__frame__player">
         <WilBattleField
           :cells="props.field.playerCells"
-          @click="onClickPlayerCell"
+          @click="onClickRightCell"
           @hover="onHoverCharacter"
         />
       </div>
@@ -33,12 +33,12 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["selectEnemyCell", "selectPlayerCell", "hover"]);
+const emits = defineEmits(["selectComputerCell", "selectPlayerCell", "hover"]);
 
-const onClickEnemyCell = (y: number, x: number) => {
-  emits("selectEnemyCell", x, y);
+const onClickComputerCell = (y: number, x: number) => {
+  emits("selectComputerCell", x, y);
 };
-const onClickPlayerCell = (y: number, x: number) => {
+const onClickRightCell = (y: number, x: number) => {
   emits("selectPlayerCell", x, y);
 };
 const onHoverCharacter = (character: WilCharacter | undefined) => {
@@ -62,7 +62,7 @@ const onHoverCharacter = (character: WilCharacter | undefined) => {
     transform: perspective(200px) rotateX(10deg);
     transform-origin: 50% 50%;
     padding: 0 5%;
-    &__enemy,
+    &__computer,
     &__player {
       width: 25%;
     }

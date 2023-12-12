@@ -3,7 +3,7 @@ import { WIL_CELL_COLOR } from "../enums/cell";
 import { WIL_BATTLE_TIMMING } from "../enums/timming";
 import { WilSkill } from "./skill";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
-import { WIL_MOVE_RANGE } from "../enums/range";
+import { WIL_SKILL_RANGE } from "../enums/skill";
 import { WIL_BATTLE_TEAM } from "../enums/battle";
 
 export class WilFieldCell {
@@ -26,16 +26,16 @@ export class WilField {
   static readonly WIDTH = 3;
   static readonly HEIGHT = 5;
   static readonly MAX_CHARACTER = 5;
+  computerCells: Array<WilFieldCell>;
   playerCells: Array<WilFieldCell>;
-  enemyCells: Array<WilFieldCell>;
 
   constructor() {
+    this.computerCells = new Array(WilField.WIDTH * WilField.HEIGHT);
     this.playerCells = new Array(WilField.WIDTH * WilField.HEIGHT);
-    this.enemyCells = new Array(WilField.WIDTH * WilField.HEIGHT);
     for (let i = 0; i < WilField.HEIGHT; i++) {
       for (let j = 0; j < WilField.WIDTH; j++) {
+        this.computerCells[i * WilField.WIDTH + j] = new WilFieldCell(j, i);
         this.playerCells[i * WilField.WIDTH + j] = new WilFieldCell(j, i);
-        this.enemyCells[i * WilField.WIDTH + j] = new WilFieldCell(j, i);
       }
     }
   }
@@ -59,18 +59,18 @@ export class WilField {
    * @param y 取得する敵フィールドのy座標
    * @returns 取得したマス（範囲外の座標を指定した場合はundefined）
    */
-  getEnemyCell(x: number, y: number): WilFieldCell | undefined {
-    if (this.enemyCells.length <= y * WilField.WIDTH + x) {
+  getComputerCell(x: number, y: number): WilFieldCell | undefined {
+    if (this.computerCells.length <= y * WilField.WIDTH + x) {
       return undefined;
     }
-    return this.enemyCells[y * WilField.WIDTH + x];
+    return this.computerCells[y * WilField.WIDTH + x];
   }
 
   /**
    * 生存しているフィールド上のプレイヤーキャラクターの数を取得する
    * @returns 生存しているフィールド上のプレイヤーキャラクターの数
    */
-  getPlayerNum(): number {
+  getPlayerCharacterNum(): number {
     return this.playerCells.filter(
       (cell) => cell.character && cell.character.status.life > 0
     ).length;
@@ -80,8 +80,8 @@ export class WilField {
    * 生存しているフィールド上の敵キャラクターの数を取得する
    * @returns 生存しているフィールド上の敵キャラクターの数
    */
-  getEnemyNum(): number {
-    return this.enemyCells.filter(
+  getComputerCharacterNum(): number {
+    return this.computerCells.filter(
       (cell) => cell.character && cell.character.status.life > 0
     ).length;
   }
@@ -101,8 +101,8 @@ export class WilField {
    * 敵キャラクターのリストを取得する
    * @returns 敵キャラクターのリスト
    */
-  getEnemyCharacters(): Array<WilCharacter> {
-    return this.enemyCells
+  getComputerCharacters(): Array<WilCharacter> {
+    return this.computerCells
       .filter((cell) => cell.character instanceof WilCharacter)
       .map((cell) => cell.character as WilCharacter)
       .sort((a: WilCharacter, b: WilCharacter) => a.id.localeCompare(b.id));
@@ -122,8 +122,8 @@ export class WilField {
    * @param character キャラクター
    * @returns 指定したキャラクターの配置されているマス、取得できない場合はundefined
    */
-  getEnemyCharacterCell(character: WilCharacter): WilFieldCell | undefined {
-    return this.enemyCells.find((cell) => cell.character?.id === character.id);
+  getComputerCharacterCell(character: WilCharacter): WilFieldCell | undefined {
+    return this.computerCells.find((cell) => cell.character?.id === character.id);
   }
 
   /**
@@ -164,9 +164,9 @@ export class WilField {
    * 相手フィールドにキャラクターを配置する
    * @param deploy キャラクターを配置するマスのリスト
    */
-  setEnemyCharacters(deploy: Array<WilFieldCell>) {
+  setComputerCharacters(deploy: Array<WilFieldCell>) {
     for (const d of deploy) {
-      const cell = this.getEnemyCell(d.x, d.y);
+      const cell = this.getComputerCell(d.x, d.y);
       if (!cell) {
         continue;
       }
@@ -205,7 +205,7 @@ export class WilField {
 
     return fastCharacter([
       ...this.getPlayerCharacters(),
-      ...this.getEnemyCharacters(),
+      ...this.getComputerCharacters(),
     ]);
   }
 
@@ -214,7 +214,7 @@ export class WilField {
    * @param fastCharacter 最速行動可能キャラクター
    * @returns 次のターンプレイヤー
    */
-  getTurnPlayer(fastCharacter: WilCharacter): WIL_BATTLE_TEAM {
+  getTurnTeam(fastCharacter: WilCharacter): WIL_BATTLE_TEAM {
     if (
       this.getPlayerCharacters().find(
         (character) => character.id === fastCharacter.id
@@ -223,11 +223,11 @@ export class WilField {
       return WIL_BATTLE_TEAM.PLAYER;
     }
     if (
-      this.getEnemyCharacters().find(
+      this.getComputerCharacters().find(
         (character) => character.id === fastCharacter.id
       )
     ) {
-      return WIL_BATTLE_TEAM.ENEMY;
+      return WIL_BATTLE_TEAM.COMPUTER;
     }
 
     throw new WrongImplementationError("Couldn't get a move player.");
@@ -283,7 +283,7 @@ export class WilField {
       this.playerCells.forEach((cell) => {
         cell.color = WIL_CELL_COLOR.BLUE;
       });
-      this.enemyCells.forEach((cell) => {
+      this.computerCells.forEach((cell) => {
         cell.color = WIL_CELL_COLOR.RED;
       });
       return;
@@ -299,7 +299,7 @@ export class WilField {
           cell.color = WIL_CELL_COLOR.BLUE;
         }
       });
-      this.enemyCells.forEach((cell) => {
+      this.computerCells.forEach((cell) => {
         cell.color = WIL_CELL_COLOR.WHITE;
         if (cell.character) {
           cell.color = WIL_CELL_COLOR.RED;
@@ -323,7 +323,7 @@ export class WilField {
         }
       });
 
-      this.enemyCells.forEach((cell) => {
+      this.computerCells.forEach((cell) => {
         cell.color = WIL_CELL_COLOR.WHITE;
       });
     }
@@ -339,7 +339,7 @@ export class WilField {
         }
       });
 
-      this.enemyCells.forEach((cell) => {
+      this.computerCells.forEach((cell) => {
         cell.color = WIL_CELL_COLOR.WHITE;
       });
       return;
@@ -370,7 +370,7 @@ export class WilField {
         // TODO: 対象可否判定を行う
       });
 
-      this.enemyCells.forEach((cell) => {
+      this.computerCells.forEach((cell) => {
         // TODO: サポートスキル・回復スキルの場合は相手フィールドの色を白にする
         if (cell.character) {
           if (!skill) {
@@ -389,9 +389,7 @@ export class WilField {
     // スキル発動対象キャラクターが選択されている場合はスキルの影響範囲を青にする
     // スキル発動対象キャラクターが選択されていない場合は行動キャラクターと対象にできるキャラクターのいるマスを青にする
     if (timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
-      const targetCell = target
-        ? this.getEnemyCharacterCell(target)
-        : undefined;
+      const targetCell = target ? this.getComputerCharacterCell(target) : undefined;
 
       this.playerCells.forEach((cell) => {
         if (!targetCell) {
@@ -411,7 +409,7 @@ export class WilField {
         // TODO: スキル発動対象キャラクターが選択されている場合はサポートスキル・回復スキルの場合は自分フィールドの色を青にする
       });
 
-      this.enemyCells.forEach((cell) => {
+      this.computerCells.forEach((cell) => {
         if (!targetCell) {
           // スキル発動対象キャラクターが選択されていない場合
           if (cell.character) {
@@ -438,18 +436,18 @@ export class WilField {
 
         // スキル範囲によってマスの色を変える
         switch (skill.range) {
-          case WIL_MOVE_RANGE.FIRST:
+          case WIL_SKILL_RANGE.FRONT:
             targetCell.color = WIL_CELL_COLOR.BLUE;
             break;
-          case WIL_MOVE_RANGE.SKIP:
-            this.enemyCells.forEach((cell) => {
+          case WIL_SKILL_RANGE.SKIP:
+            this.computerCells.forEach((cell) => {
               if (cell.character) {
                 cell.color = WIL_CELL_COLOR.BLUE;
               }
             });
             break;
-          case WIL_MOVE_RANGE.AROUND:
-            this.enemyCells.forEach((cell) => {
+          case WIL_SKILL_RANGE.AROUND:
+            this.computerCells.forEach((cell) => {
               if (cell.x < targetCell.x - 1 || cell.x > targetCell.x + 1) {
                 return;
               }
@@ -459,8 +457,8 @@ export class WilField {
               cell.color = WIL_CELL_COLOR.BLUE;
             });
             break;
-          case WIL_MOVE_RANGE.CROSS:
-            this.enemyCells.forEach((cell) => {
+          case WIL_SKILL_RANGE.CROSS:
+            this.computerCells.forEach((cell) => {
               if (cell.x < targetCell.x - 1 || cell.x > targetCell.x + 1) {
                 return;
               }
@@ -470,22 +468,22 @@ export class WilField {
               cell.color = WIL_CELL_COLOR.BLUE;
             });
             break;
-          case WIL_MOVE_RANGE.ROW:
-            this.enemyCells.forEach((cell) => {
+          case WIL_SKILL_RANGE.ROW:
+            this.computerCells.forEach((cell) => {
               if (cell.x == targetCell.x) {
                 cell.color = WIL_CELL_COLOR.BLUE;
               }
             });
             break;
-          case WIL_MOVE_RANGE.COLUMN:
-            this.enemyCells.forEach((cell) => {
+          case WIL_SKILL_RANGE.COLUMN:
+            this.computerCells.forEach((cell) => {
               if (cell.y == targetCell.y) {
                 cell.color = WIL_CELL_COLOR.BLUE;
               }
             });
             break;
-          case WIL_MOVE_RANGE.ALL:
-            this.enemyCells.forEach((cell) => {
+          case WIL_SKILL_RANGE.ALL:
+            this.computerCells.forEach((cell) => {
               cell.color = WIL_CELL_COLOR.BLUE;
             });
             break;
@@ -499,8 +497,8 @@ export class WilField {
    * すべてのマスの選択状態を解除する
    */
   resetSelected() {
+    this.computerCells.forEach((cell) => (cell.selected = false));
     this.playerCells.forEach((cell) => (cell.selected = false));
-    this.enemyCells.forEach((cell) => (cell.selected = false));
   }
 
   /**
@@ -516,10 +514,10 @@ export class WilField {
     };
 
     // すべての配置済みキャラクターのステータスとスタックターン数をリセット
-    this.playerCells.forEach((cell) => {
+    this.computerCells.forEach((cell) => {
       process(cell.character);
     });
-    this.enemyCells.forEach((cell) => {
+    this.playerCells.forEach((cell) => {
       process(cell.character);
     });
   }
@@ -533,15 +531,15 @@ export class WilField {
     turnCharacter: WilCharacter;
     turnTeam: WIL_BATTLE_TEAM;
   } {
-    console.log(this.getPlayerCharacters(), this.getEnemyCharacters())
+    console.log(this.getPlayerCharacters(), this.getComputerCharacters());
     const fastMoveCharacter = this.getFastCharacter();
     if (!fastMoveCharacter) {
       throw new WrongImplementationError("Couldn't get the fast move player.");
     }
-    const turn = this.getTurnPlayer(fastMoveCharacter);
+    const turn = this.getTurnTeam(fastMoveCharacter);
     const consumeStack = fastMoveCharacter.stack;
 
-    console.log(fastMoveCharacter, consumeStack)
+    console.log(fastMoveCharacter, consumeStack);
     const process = (character?: WilCharacter) => {
       if (!character || character.status.life <= 0) {
         return;
@@ -553,10 +551,10 @@ export class WilField {
     };
 
     // 生存しているキャラクターのスタックターン数を一律消費
-    this.playerCells.forEach((cell) => {
+    this.computerCells.forEach((cell) => {
       process(cell.character);
     });
-    this.enemyCells.forEach((cell) => {
+    this.playerCells.forEach((cell) => {
       process(cell.character);
     });
 

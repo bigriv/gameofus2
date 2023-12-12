@@ -4,11 +4,11 @@ import { WilFieldCell } from "./field";
 export class WilBattle {
   name: string;
   background: GOUVisual;
-  enemy: Array<WilFieldCell>;
+  deploy: Array<WilFieldCell>;
 
-  constructor(name: string, background: GOUVisual, enemy: Array<WilFieldCell>) {
+  constructor(name: string, background: GOUVisual, deploy: Array<WilFieldCell>) {
     this.name = name;
     this.background = background;
-    this.enemy = enemy;
+    this.deploy = deploy;
   }
 }

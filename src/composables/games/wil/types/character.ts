@@ -51,7 +51,7 @@ export class WilCharacter {
   }
 
   /**
-   * スキルを発動する
+   * スキルを発動する（ダメージ計算処理はFieldが行う）
    * @param skill 発動するスキル
    * @returns 発動に成功すればtrue、失敗した場合はfalse
    */
@@ -59,8 +59,17 @@ export class WilCharacter {
     if (!this.skills.includes(skill.id)) {
       return false;
     }
+
     this.stack += skill.cost;
     return true;
+  }
+
+  /**
+   * マスを移動する（座標の変更はFieldで行う）
+   */
+  migrate() {
+    // TODO: 消費ターン数について要調整
+    this.stack += Math.floor((1000 - this.status.speed) / 10);
   }
 
   /**

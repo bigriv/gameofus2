@@ -10,8 +10,8 @@
       <Field
         :field="field"
         :player="player"
+        @selectComputerCell="onClickField"
         @selectPlayerCell="onClickField"
-        @selectEnemyCell="onClickField"
         @hover="(hover) => (hoverCharacter = hover)"
       />
     </div>
@@ -36,8 +36,8 @@
     </transition>
     <transition>
       <div
-        v-show="timming == WIL_BATTLE_TIMMING.BATTLE_ENEMY_TURN_START"
-        class="c-battle__enemy_turn_start"
+        v-show="timming == WIL_BATTLE_TIMMING.BATTLE_COMPUTER_TURN_START"
+        class="c-battle__computer_turn_start"
       >
         <div class="c-battle__start__text">
           {{ computer.moveCharacter?.name }}のターン
@@ -77,7 +77,6 @@ import { WilComputer } from "@/composables/games/wil/types/computer";
 import { useWilBattle } from "@/composables/games/wil/battle";
 import { WilBattle } from "@/composables/games/wil/types/battle";
 import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
-import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 
 const props = defineProps({
   skills: {
@@ -128,15 +127,25 @@ const onClickField = (x: number, y: number) => {
   // 移動先マス選択時
   if (timming.value === WIL_BATTLE_TIMMING.BATTLE_SELECT_MIGRATE_PLACE) {
     field.value.resetSelected();
-    migrate(x, y);
+
+    player.value.targetCell = field.value.getPlayerCell(x, y);
+    // 戦闘タイミングをプレイヤー戦闘処理に変更
+    timming.value = WIL_BATTLE_TIMMING.BATTLE_PROCESS_PLAYER_CHARACTER;
+    // 移動処理を実行
+    player.value.battleProcess(field.value);
+
     endTurn();
     return;
   }
 
   // スキル発動対象選択時
   if (timming.value == WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
-    // TODO: 戦闘タイミングをプレイヤー戦闘処理に変更
-    // TODO: 戦闘処理を実行
+    field.value.resetSelected();
+    // 戦闘タイミングをプレイヤー戦闘処理に変更
+    timming.value = WIL_BATTLE_TIMMING.BATTLE_PROCESS_PLAYER_CHARACTER;
+    // 戦闘処理を実行
+    player.value.battleProcess(field.value);
+    // TODO: 戦闘処理の結果を表示
     endTurn();
     return;
   }
@@ -146,7 +155,7 @@ const error = (message: string) => {
 };
 const endSet = () => {
   // 敵キャラを配置
-  field.value.setEnemyCharacters(props.battle.enemy);
+  field.value.setComputerCharacters(props.battle.deploy);
 
   // 戦闘開始の前処理を実行
   field.value.processBattleStart();
@@ -169,33 +178,6 @@ const selectSetCell = (x: number, y: number) => {
   player.value.targetCell = cell;
   return;
 };
-const migrate = (x: number, y: number) => {
-  if (!player.value.moveCharacter) {
-    alert("キャラクターが選択されていません。");
-    return;
-  }
-  const beforeCell = field.value.getPlayerCharacterCell(
-    player.value.moveCharacter
-  );
-  const afterCell = field.value.getPlayerCell(x, y);
-  if (!beforeCell || !beforeCell.character) {
-    console.log(player.value.moveCharacter, field.value.playerCells);
-    throw new WrongImplementationError(
-      "Couldn't get a cell where move character in."
-    );
-  }
-  if (!afterCell || afterCell.character) {
-    alert("移動できません。");
-    return;
-  }
-  beforeCell.character = undefined;
-  afterCell.character = player.value.moveCharacter;
-  // TODO: 移動時の消費ターン数、要調整（あとキャラクタークラスのメソッドにする）
-  player.value.moveCharacter.stack += Math.floor(
-    (1000 - player.value.moveCharacter.status.speed) / 10
-  );
-  // TODO: 結果表示処理追加
-};
 const startTurn = () => {
   // ターン開始前の前処理を実施
   const { turnCharacter, turnTeam } = field.value.processTurnStart();
@@ -204,9 +186,9 @@ const startTurn = () => {
   if (turnTeam == WIL_BATTLE_TEAM.PLAYER) {
     player.value.moveCharacter = turnCharacter;
     timming.value = WIL_BATTLE_TIMMING.BATTLE_PLAYER_TURN_START;
-  } else if (turnTeam == WIL_BATTLE_TEAM.ENEMY) {
+  } else if (turnTeam == WIL_BATTLE_TEAM.COMPUTER) {
     computer.value.moveCharacter = turnCharacter;
-    timming.value = WIL_BATTLE_TIMMING.BATTLE_ENEMY_TURN_START;
+    timming.value = WIL_BATTLE_TIMMING.BATTLE_COMPUTER_TURN_START;
   }
 
   infomationMessage.value = `${turnCharacter.name}のターン`;
@@ -216,9 +198,10 @@ const startTurn = () => {
       timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE;
       return;
     }
-    if (timming.value == WIL_BATTLE_TIMMING.BATTLE_ENEMY_TURN_START) {
-      WIL_BATTLE_TIMMING.BATTLE_PROCESS_ENEMY_CHARACTER;
-      computer.value.battleMove(endTurn);
+    if (timming.value == WIL_BATTLE_TIMMING.BATTLE_COMPUTER_TURN_START) {
+      WIL_BATTLE_TIMMING.BATTLE_PROCESS_COMPUTER_CHARACTER;
+      computer.value.decideBattleMove(field.value, props.skills);
+      computer.value.battleProcess(field.value);
       return;
     }
   }, 1000);
@@ -236,7 +219,7 @@ const endBattle = (winner: WIL_BATTLE_TEAM) => {
   timming.value = WIL_BATTLE_TIMMING.BATTLE_END;
   if (winner === WIL_BATTLE_TEAM.PLAYER) {
     infomationMessage.value = `${enemyName.value}との戦闘に勝利した！`;
-  } else if (winner === WIL_BATTLE_TEAM.ENEMY) {
+  } else if (winner === WIL_BATTLE_TEAM.COMPUTER) {
     infomationMessage.value = `${enemyName.value}との戦闘に敗北した。`;
   }
   emits("end");
@@ -273,7 +256,7 @@ watch(
         break;
       case WIL_BATTLE_TIMMING.BATTLE_START:
       case WIL_BATTLE_TIMMING.BATTLE_PLAYER_TURN_START:
-      case WIL_BATTLE_TIMMING.BATTLE_ENEMY_TURN_START:
+      case WIL_BATTLE_TIMMING.BATTLE_COMPUTER_TURN_START:
       case WIL_BATTLE_TIMMING.TALK:
         guideMessage.value = "";
         break;
@@ -292,7 +275,7 @@ watch(
       case WIL_BATTLE_TIMMING.BATTLE_PROCESS_PLAYER_CHARACTER:
         guideMessage.value = ""; // TODO: 行動結果を表示
         break;
-      case WIL_BATTLE_TIMMING.BATTLE_PROCESS_ENEMY_CHARACTER:
+      case WIL_BATTLE_TIMMING.BATTLE_PROCESS_COMPUTER_CHARACTER:
         guideMessage.value = ""; // TODO: 行動結果を表示
         break;
       case WIL_BATTLE_TIMMING.BATTLE_END:
@@ -337,7 +320,7 @@ watch(
   }
   &__start,
   &__player_turn_start,
-  &__enemy_turn_start {
+  &__computer_turn_start {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -363,7 +346,7 @@ watch(
   &__player_turn_start {
     background: linear-gradient(blue, #0000aa);
   }
-  &__enemy_turn_start {
+  &__computer_turn_start {
     background: linear-gradient(red, #aa0000);
   }
   &__guide {

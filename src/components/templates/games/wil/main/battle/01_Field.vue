@@ -5,6 +5,7 @@
         <WilBattleField
           :reverse="true"
           :cells="props.field.computerCells"
+          :damageEvents="computerDamageEvents"
           @click="onClickComputerCell"
           @hover="onHoverCharacter"
         />
@@ -12,6 +13,7 @@
       <div class="c-field__frame__player">
         <WilBattleField
           :cells="props.field.playerCells"
+          :damageEvents="playerDamageEvents"
           @click="onClickRightCell"
           @hover="onHoverCharacter"
         />
@@ -21,19 +23,32 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from "vue";
+import { PropType, computed } from "vue";
 import WilBattleField from "@/components/molecules/games/wil/WilBattleField.vue";
 import { WilField } from "@/composables/games/wil/types/field";
 import { WilCharacter } from "@/composables/games/wil/types/character";
+import { WilDamageEvent } from "@/composables/games/wil/types/event";
+import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
 
 const props = defineProps({
   field: {
     type: Object as PropType<WilField>,
     required: true,
   },
+  events: {
+    type: Array<WilDamageEvent>,
+    default: () => new Array<WilDamageEvent>(),
+  },
 });
 
 const emits = defineEmits(["selectComputerCell", "selectPlayerCell", "hover"]);
+
+const playerDamageEvents = computed(() =>
+  props.events.filter((event) => event.cell.team === WIL_BATTLE_TEAM.PLAYER)
+);
+const computerDamageEvents = computed(() =>
+  props.events.filter((event) => event.cell.team === WIL_BATTLE_TEAM.COMPUTER)
+);
 
 const onClickComputerCell = (y: number, x: number) => {
   emits("selectComputerCell", x, y);

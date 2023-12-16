@@ -7,13 +7,20 @@ import { WIL_SKILL_RANGE } from "../enums/skill";
 import { WIL_BATTLE_TEAM } from "../enums/battle";
 
 export class WilFieldCell {
+  readonly team: WIL_BATTLE_TEAM;
   readonly x: number;
   readonly y: number;
   color: WIL_CELL_COLOR = WIL_CELL_COLOR.WHITE;
   character?: WilCharacter;
   selected: boolean = false;
 
-  constructor(x: number, y: number, character?: WilCharacter) {
+  constructor(
+    team: WIL_BATTLE_TEAM,
+    x: number,
+    y: number,
+    character?: WilCharacter
+  ) {
+    this.team = team;
     this.x = x;
     this.y = y;
     if (character) {
@@ -34,8 +41,17 @@ export class WilField {
     this.playerCells = new Array(WilField.WIDTH * WilField.HEIGHT);
     for (let i = 0; i < WilField.HEIGHT; i++) {
       for (let j = 0; j < WilField.WIDTH; j++) {
-        this.computerCells[i * WilField.WIDTH + j] = new WilFieldCell(j, i);
-        this.playerCells[i * WilField.WIDTH + j] = new WilFieldCell(j, i);
+        this.computerCells[i * WilField.WIDTH + j] = new WilFieldCell(
+          WIL_BATTLE_TEAM.COMPUTER,
+          j,
+          i
+        );
+
+        this.playerCells[i * WilField.WIDTH + j] = new WilFieldCell(
+          WIL_BATTLE_TEAM.PLAYER,
+          j,
+          i
+        );
       }
     }
   }
@@ -123,7 +139,9 @@ export class WilField {
    * @returns 指定したキャラクターの配置されているマス、取得できない場合はundefined
    */
   getComputerCharacterCell(character: WilCharacter): WilFieldCell | undefined {
-    return this.computerCells.find((cell) => cell.character?.id === character.id);
+    return this.computerCells.find(
+      (cell) => cell.character?.id === character.id
+    );
   }
 
   /**
@@ -192,10 +210,10 @@ export class WilField {
           );
         })
         .sort((a, b) => {
-          // satckの少ない順⇒敏捷力の高い順⇒乱数で並び替え
+          // satckの少ない順⇒敏捷力の高い順⇒id順で並び替え
           if (a.stack == b.stack) {
             if (a.status.speed == b.status.speed) {
-              return Math.random() < 0.5 ? 1 : -1;
+              return a.id.localeCompare(b.id);
             }
             return b.status.speed - a.status.speed;
           }
@@ -257,8 +275,8 @@ export class WilField {
       throw new WrongImplementationError("キャラクターの存在しないマスです。");
     }
 
-    target.character = cell.character;
     cell.character = undefined;
+    target.character = character;
   }
 
   /**
@@ -275,7 +293,7 @@ export class WilField {
     skill?: WilSkill,
     target?: WilCharacter
   ) {
-    console.log("changeColor", timming);
+    console.log("changeColor");
     // キャラクター配置時
     // すべてのマスの色を変える
     // 相手フィールド⇒赤、自分フィールド⇒青
@@ -290,34 +308,30 @@ export class WilField {
     }
 
     // 戦闘開始時
-    // キャラクターのいるマスの色を変える
-    // 相手フィールド⇒赤、自分フィールド⇒青
+    // すべてのマスを白にする
     if (timming === WIL_BATTLE_TIMMING.BATTLE_START) {
       this.playerCells.forEach((cell) => {
         cell.color = WIL_CELL_COLOR.WHITE;
-        if (cell.character) {
-          cell.color = WIL_CELL_COLOR.BLUE;
-        }
       });
       this.computerCells.forEach((cell) => {
         cell.color = WIL_CELL_COLOR.WHITE;
-        if (cell.character) {
-          cell.color = WIL_CELL_COLOR.RED;
-        }
       });
       return;
     }
 
-    // 自分のターン開始時
-    // 行動キャラクターのいるマスのみ色を青にする
-    if (timming === WIL_BATTLE_TIMMING.BATTLE_PLAYER_TURN_START) {
+    // 自分のターン開始時・キャラクター行動選択時
+    // 行動キャラクターのいるマスのみ色を黄にする
+    if (
+      timming === WIL_BATTLE_TIMMING.BATTLE_PLAYER_TURN_START ||
+      timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE
+    ) {
       this.playerCells.forEach((cell) => {
         if (!cell.character || !character) {
           cell.color = WIL_CELL_COLOR.WHITE;
           return;
         }
         if (cell.character.id === character.id) {
-          cell.color = WIL_CELL_COLOR.BLUE;
+          cell.color = WIL_CELL_COLOR.YELLOW;
         } else {
           cell.color = WIL_CELL_COLOR.WHITE;
         }
@@ -328,12 +342,35 @@ export class WilField {
       });
     }
 
+    // 相手のターン開始時
+    // 行動キャラクターのいるマスのみ色を黄にする
+    if (timming === WIL_BATTLE_TIMMING.BATTLE_COMPUTER_TURN_START) {
+      this.playerCells.forEach((cell) => {
+        cell.color = WIL_CELL_COLOR.WHITE;
+      });
+
+      this.computerCells.forEach((cell) => {
+        if (!cell.character || !character) {
+          cell.color = WIL_CELL_COLOR.WHITE;
+          return;
+        }
+        if (cell.character.id === character.id) {
+          cell.color = WIL_CELL_COLOR.YELLOW;
+        } else {
+          cell.color = WIL_CELL_COLOR.WHITE;
+        }
+      });
+    }
+
     // キャラクター移動先選択時
     // 移動可能マスを青にする
     if (timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_MIGRATE_PLACE) {
       this.playerCells.forEach((cell) => {
         if (cell.character) {
           cell.color = WIL_CELL_COLOR.WHITE;
+          if (character && cell.character.id === character.id) {
+            cell.color = WIL_CELL_COLOR.YELLOW;
+          }
         } else {
           cell.color = WIL_CELL_COLOR.BLUE;
         }
@@ -346,8 +383,8 @@ export class WilField {
     }
 
     // 発動スキル選択時
-    // スキルが選択されている場合は行動キャラクターと対象にできるキャラクターのいるマスを青にする
-    // スキルが選択されていない場合は行動キャラクターのマスのみを青にする
+    // スキルが選択されている場合は行動キャラクターを黄、対象にできるキャラクターのいるマスを青にする
+    // スキルが選択されていない場合は行動キャラクターのマスのみを黄にする
     if (timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL) {
       this.playerCells.forEach((cell) => {
         // 行動キャラクターのいるマスを青にする
@@ -357,7 +394,7 @@ export class WilField {
         }
 
         if (cell.character.id === character.id) {
-          cell.color = WIL_CELL_COLOR.BLUE;
+          cell.color = WIL_CELL_COLOR.YELLOW;
         } else {
           cell.color = WIL_CELL_COLOR.WHITE;
         }
@@ -387,9 +424,11 @@ export class WilField {
 
     //スキル発動対象選択時
     // スキル発動対象キャラクターが選択されている場合はスキルの影響範囲を青にする
-    // スキル発動対象キャラクターが選択されていない場合は行動キャラクターと対象にできるキャラクターのいるマスを青にする
+    // スキル発動対象キャラクターが選択されていない場合は行動キャラクターを黄、対象にできるキャラクターのいるマスを青にする
     if (timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
-      const targetCell = target ? this.getComputerCharacterCell(target) : undefined;
+      const targetCell = target
+        ? this.getComputerCharacterCell(target)
+        : undefined;
 
       this.playerCells.forEach((cell) => {
         if (!targetCell) {
@@ -399,7 +438,7 @@ export class WilField {
             return;
           }
           if (cell.character.id === character.id) {
-            cell.color = WIL_CELL_COLOR.BLUE;
+            cell.color = WIL_CELL_COLOR.YELLOW;
           }
           return;
         }
@@ -489,6 +528,64 @@ export class WilField {
             break;
         }
         return;
+      });
+    }
+
+    // プレイヤーターンの処理時
+    // 行動キャラクターと自分対象キャラクターを黄、相手対象キャラクターを赤にする
+    if (timming === WIL_BATTLE_TIMMING.BATTLE_PROCESS_PLAYER_CHARACTER) {
+      this.playerCells.forEach((cell) => {
+        if (!cell.character) {
+          cell.color = WIL_CELL_COLOR.WHITE;
+          return;
+        }
+        if (target?.id === cell.character.id) {
+          cell.color = WIL_CELL_COLOR.YELLOW;
+          return;
+        }
+        if (character?.id === cell.character.id) {
+          cell.color = WIL_CELL_COLOR.YELLOW;
+          return;
+        }
+      });
+      this.computerCells.forEach((cell) => {
+        if (!cell.character) {
+          cell.color = WIL_CELL_COLOR.WHITE;
+          return;
+        }
+        if (target?.id === cell.character.id) {
+          cell.color = WIL_CELL_COLOR.RED;
+          return;
+        }
+      });
+    }
+    // コンピュータターンの処理時
+    // 行動キャラクターと相手対象キャラクターを赤、自分対象キャラクターを黄にする
+    if (timming === WIL_BATTLE_TIMMING.BATTLE_PROCESS_COMPUTER_CHARACTER) {
+      this.playerCells.forEach((cell) => {
+        if (!cell.character) {
+          cell.color = WIL_CELL_COLOR.WHITE;
+          return;
+        }
+        if (target?.id === cell.character.id) {
+          cell.color = WIL_CELL_COLOR.YELLOW;
+          return;
+        }
+      });
+
+      this.computerCells.forEach((cell) => {
+        if (!cell.character) {
+          cell.color = WIL_CELL_COLOR.WHITE;
+          return;
+        }
+        if (target?.id === cell.character.id) {
+          cell.color = WIL_CELL_COLOR.RED;
+          return;
+        }
+        if (character?.id === cell.character.id) {
+          cell.color = WIL_CELL_COLOR.RED;
+          return;
+        }
       });
     }
   }

@@ -3,6 +3,7 @@ import { GOUAnimation } from "@/composables/types/animations/GOUAnimation";
 import { GOUAudio } from "@/composables/types/audio/GOUAudio";
 import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
+import { WilFieldCell } from "./field";
 
 export class WilTalkEvent extends GOUEvent {
   talker?: string;
@@ -27,20 +28,28 @@ export class WilTalkEvent extends GOUEvent {
 }
 
 export class WilBattleEvent extends GOUEvent {
-  characterAnimation?: GOUAnimation;
-  skillEffect?: GOULottie;
+  animations?: Array<GOULottie | GOUAnimation>;
+  func?: Function;
 
   constructor(define: {
     message?: Array<string>;
     sound?: GOUAudio;
-    characterAnimation?: GOUAnimation;
-    skillEffect?: GOULottie;
+    animations?: Array<GOULottie | GOUAnimation>;
+    func?: Function;
   }) {
-    super({
-      message: define.message,
-      sound: define.sound,
-    });
-    this.characterAnimation = define.characterAnimation;
-    this.skillEffect = define.skillEffect;
+    super({ message: define.message, sound: define.sound });
+    this.animations = define.animations;
+    this.func = define.func;
+  }
+}
+
+export class WilDamageEvent {
+  cell: WilFieldCell;
+  damage: number;
+  sound?: GOUAudio;
+  constructor(cell: WilFieldCell, damage: number, sound?: GOUAudio) {
+    this.cell = cell;
+    this.damage = damage;
+    this.sound = sound;
   }
 }

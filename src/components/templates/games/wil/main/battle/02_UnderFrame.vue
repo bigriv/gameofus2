@@ -16,13 +16,13 @@
 
     <template v-else>
       <template v-if="timming === WIL_BATTLE_TIMMING.SET_SELECT_CELL">
-        <div class="c-under_frame__message_frame">
+        <div class="c-under_frame__deploy">
           <div>
             配置数 {{ playerCharacterNum }} / {{ WilField.MAX_CHARACTER }}
           </div>
           <div
             v-if="playerCharacterNum > 0"
-            class="c-under_frame__message_frame__button u-margin_top--auto"
+            class="c-under_frame__deploy__button u-margin_top--auto"
           >
             <GameButton
               label="配置終了"
@@ -128,7 +128,7 @@
           />
         </div>
         <template v-if="player.selectSkill">
-          <div class="c-under_frame__message">
+          <div class="c-under_frame__skill_detail">
             <div class="u-d_flex--between">
               <div>消費ターン数</div>
               <div>{{ player.selectSkill.cost }}</div>
@@ -146,6 +146,25 @@
               @click="onBackSelectMove"
             />
           </div>
+        </div>
+      </template>
+      <template
+        v-else-if="
+          timming === WIL_BATTLE_TIMMING.BATTLE_PROCESS_PLAYER_CHARACTER ||
+          timming === WIL_BATTLE_TIMMING.BATTLE_PROCESS_COMPUTER_CHARACTER
+        "
+      >
+        <div class="c-under_frame__message_frame">
+          <MessageFrame
+            v-model:complete="messageComplete"
+            :clickable="true"
+            :speed="3"
+            :messages="displayMessage"
+            :fontColor="WIL_FRAME_FONT_COLOR"
+            vertical="start"
+            horizontal="start"
+            @click="() => onClickMessageFrame()"
+          />
         </div>
       </template>
     </template>
@@ -173,6 +192,8 @@ import {
   WIL_BUTTON_BACKGROUND_COLOR,
 } from "@/composables/games/wil/const";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
+import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
+import { WIL_SKILL_TARGET } from "@/composables/games/wil/enums/skill";
 
 const props = defineProps({
   timming: {
@@ -199,6 +220,10 @@ const props = defineProps({
     type: Object as PropType<WilCharacter>,
     default: undefined,
   },
+  messages: {
+    type: Array<Array<string>>,
+    required: true,
+  },
 });
 
 const emits = defineEmits([
@@ -208,6 +233,7 @@ const emits = defineEmits([
   "error",
   "endSet",
   "endTurn",
+  "endMessage",
 ]);
 const timming = computed({
   get: () => props.timming,
@@ -270,6 +296,9 @@ const skillList = computed(() => {
   }
   return character.skills.map((skillId) => props.skills[skillId]);
 });
+
+const messageComplete = ref(false);
+const displayMessage: Ref<Array<string>> = ref([]);
 
 // 配置終了ボタン押下時のイベント処理
 const onEndSet = () => {
@@ -377,10 +406,40 @@ watch(
     } else if (
       timming.value === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET
     ) {
-      // TODO: 回復スキル・サポートスキルの場合は自分のキャラクターをリストに入れる
       // キャラクターリストを敵の配置済みキャラクターのリストに更新
-      characterList.value = field.value.getComputerCharacters();
+      if (player.value.selectSkill?.target === WIL_SKILL_TARGET.ALLY) {
+        characterList.value = field.value.getPlayerCharacters();
+      } else if (player.value.selectSkill?.target === WIL_SKILL_TARGET.ENEMY) {
+        characterList.value = field.value.getComputerCharacters();
+      }
     }
+  }
+);
+const onClickMessageFrame = ref();
+
+const chainMessage = (messages: string[][], afterFunction: Function) => {
+  console.log("chainMessage");
+  const message = messages.shift();
+  if (!message) {
+    displayMessage.value = [];
+    onClickMessageFrame.value = () => {};
+    messageComplete.value = true;
+    afterFunction();
+    return;
+  }
+  displayMessage.value = message;
+  onClickMessageFrame.value = () => chainMessage(messages, afterFunction);
+};
+
+watch(
+  () => props.messages,
+  () => {
+    console.log("show message", props.messages);
+    if (props.messages.length <= 0) {
+      return;
+    }
+    messageComplete.value = false;
+    chainMessage(props.messages, () => emits("endMessage"));
   }
 );
 </script>
@@ -401,13 +460,6 @@ watch(
     width: 19.2%;
     height: 90%;
   }
-  &__skills {
-    position: absolute;
-    top: 5%;
-    left: 2%;
-    width: 25%;
-    height: 90%;
-  }
   &__status {
     position: absolute;
     top: 5%;
@@ -415,13 +467,19 @@ watch(
     width: 32%;
     height: 90%;
   }
-  &__message {
+  &__skills {
+    position: absolute;
+    top: 5%;
+    left: 2%;
+    width: 25%;
+    height: 90%;
+  }
+  &__skill_detail {
     position: absolute;
     top: 5%;
     left: 30%;
     width: 35%;
     height: 90%;
-    background-color: rgba(0, 0, 0, 0.8);
     border: 2px solid rgba(255, 255, 255, 0.8);
     padding: 4px;
     color: white;
@@ -440,12 +498,11 @@ watch(
     }
     &__message {
       height: 60%;
-      background-color: rgba(0, 0, 0, 0.8);
       padding: 2%;
       color: white;
     }
   }
-  &__message_frame {
+  &__deploy {
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -453,7 +510,6 @@ watch(
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
     color: white;
     padding: 2px 5px 5px 5px;
     &__button {
@@ -461,34 +517,44 @@ watch(
       height: 30%;
     }
   }
+  &__message_frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
 @media screen and (max-width: 400px) {
-  .c-under_frame__message,
-  .c-under_frame__message_frame__button,
+  .c-under_frame__skill_detail,
   .c-under_frame__status,
   .c-under_frame__contents__message,
   .c-under_frame__contents__button,
+  .c-under_frame__deploy,
+  .c-under_frame__deploy__button,
   .c-under_frame__message_frame {
     font-size: 8px;
   }
 }
 
 @media screen and (max-width: 600px) and (min-width: 400px) {
-  .c-under_frame__message,
-  .c-under_frame__message_frame__button,
+  .c-under_frame__skill_detail,
   .c-under_frame__status,
   .c-under_frame__contents__message,
   .c-under_frame__contents__button,
+  .c-under_frame__deploy,
+  .c-under_frame__deploy__button,
   .c-under_frame__message_frame {
     font-size: 10px;
   }
 }
 @media screen and (min-width: 600px) {
-  .c-under_frame__message,
-  .c-under_frame__message_frame__button,
+  .c-under_frame__skill_detail,
   .c-under_frame__status,
   .c-under_frame__contents__message,
   .c-under_frame__contents__button,
+  .c-under_frame__deploy,
+  .c-under_frame__deploy__button,
   .c-under_frame__message_frame {
     font-size: 12px;
   }

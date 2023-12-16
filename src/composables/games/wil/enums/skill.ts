@@ -18,6 +18,11 @@ export enum WIL_SKILL_RANGE {
   ALL = "ALL", // 全範囲
 }
 
+export enum WIL_SKILL_TYPE {
+  PHISIC,
+  MAGIC,
+}
+
 export enum WIL_SKILL_TARGET {
   ALLY,
   ENEMY,

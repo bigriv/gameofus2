@@ -10,6 +10,7 @@ import { SequenceId } from "@/composables/utils/id";
 import { WIL_CHARACTER_ID } from "../enums/character";
 import { WIL_CHARACTER_DEFINES } from "../defines/character";
 import { WilBattle } from "./battle";
+import { WIL_BATTLE_TEAM } from "../enums/battle";
 
 export class WilChapter {
   title: string;
@@ -60,7 +61,12 @@ export class WilChapter {
             WIL_CHARACTER_DEFINES[cell.character],
             images
           );
-          return new WilFieldCell(cell.x, cell.y, character);
+          return new WilFieldCell(
+            WIL_BATTLE_TEAM.COMPUTER,
+            cell.x,
+            cell.y,
+            character
+          );
         })
       );
     });

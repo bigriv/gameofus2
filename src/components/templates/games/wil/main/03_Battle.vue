@@ -10,8 +10,9 @@
       <Field
         :field="field"
         :player="player"
-        @selectComputerCell="onClickField"
-        @selectPlayerCell="onClickField"
+        :events="damageEvents"
+        @selectComputerCell="onClickComputerField"
+        @selectPlayerCell="onClickPlayerField"
         @hover="(hover) => (hoverCharacter = hover)"
       />
     </div>
@@ -55,9 +56,11 @@
       :skills="props.skills"
       :computer="computer"
       :hoverCharacter="hoverCharacter"
+      :messages="messages"
       @error="error"
       @endSet="endSet"
       @endTurn="endTurn"
+      @endMessage="endTurn"
     />
   </div>
 </template>
@@ -77,6 +80,11 @@ import { WilComputer } from "@/composables/games/wil/types/computer";
 import { useWilBattle } from "@/composables/games/wil/battle";
 import { WilBattle } from "@/composables/games/wil/types/battle";
 import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
+import {
+  WilBattleEvent,
+  WilDamageEvent,
+} from "@/composables/games/wil/types/event";
+import { WilOperator } from "@/composables/games/wil/types/operator";
 
 const props = defineProps({
   skills: {
@@ -110,11 +118,33 @@ const hoverCharacter: Ref<WilCharacter | undefined> = ref();
 const computer = ref(new WilComputer());
 const infomationMessage = ref("");
 const guideMessage = ref("キャラクターを配置するマスを選択してください。");
+const damageEvents: Ref<Array<WilDamageEvent>> = ref([]);
+const battleEvents: Ref<Array<WilBattleEvent>> = ref([]);
+const messages = computed(() => {
+  return (
+    battleEvents.value
+      .filter((event) => event.message)
+      // stringに変換するために一度unknownを介しているが、filterをかけているのでundefinedが入ることはない
+      .map((event) => event.message as unknown as Array<string>)
+  );
+});
 
 onMounted(() => {
   field.value.changeColor(timming.value);
 });
-const onClickField = (x: number, y: number) => {
+const onClickComputerField = (x: number, y: number) => {
+  // スキル発動対象選択時
+  if (timming.value == WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
+    field.value.resetSelected();
+    player.value.targetCell = field.value.getComputerCell(x, y);
+    // 戦闘タイミングをプレイヤー戦闘処理に変更
+    timming.value = WIL_BATTLE_TIMMING.BATTLE_PROCESS_PLAYER_CHARACTER;
+    // 戦闘処理を実行
+    processBattle(player.value);
+    return;
+  }
+};
+const onClickPlayerField = (x: number, y: number) => {
   // キャラクター配置場所選択時
   if (
     timming.value === WIL_BATTLE_TIMMING.SET_SELECT_CELL ||
@@ -127,26 +157,22 @@ const onClickField = (x: number, y: number) => {
   // 移動先マス選択時
   if (timming.value === WIL_BATTLE_TIMMING.BATTLE_SELECT_MIGRATE_PLACE) {
     field.value.resetSelected();
-
     player.value.targetCell = field.value.getPlayerCell(x, y);
     // 戦闘タイミングをプレイヤー戦闘処理に変更
     timming.value = WIL_BATTLE_TIMMING.BATTLE_PROCESS_PLAYER_CHARACTER;
     // 移動処理を実行
-    player.value.battleProcess(field.value);
-
-    endTurn();
+    processBattle(player.value);
     return;
   }
 
   // スキル発動対象選択時
   if (timming.value == WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
     field.value.resetSelected();
+    player.value.targetCell = field.value.getPlayerCell(x, y);
     // 戦闘タイミングをプレイヤー戦闘処理に変更
     timming.value = WIL_BATTLE_TIMMING.BATTLE_PROCESS_PLAYER_CHARACTER;
     // 戦闘処理を実行
-    player.value.battleProcess(field.value);
-    // TODO: 戦闘処理の結果を表示
-    endTurn();
+    processBattle(player.value);
     return;
   }
 };
@@ -179,6 +205,14 @@ const selectSetCell = (x: number, y: number) => {
   return;
 };
 const startTurn = () => {
+  console.log("turn start");
+  // リセット
+  field.value.resetSelected();
+  player.value.resetMove();
+  computer.value.resetMove();
+  damageEvents.value = [];
+  battleEvents.value = [];
+
   // ターン開始前の前処理を実施
   const { turnCharacter, turnTeam } = field.value.processTurnStart();
 
@@ -199,14 +233,15 @@ const startTurn = () => {
       return;
     }
     if (timming.value == WIL_BATTLE_TIMMING.BATTLE_COMPUTER_TURN_START) {
-      WIL_BATTLE_TIMMING.BATTLE_PROCESS_COMPUTER_CHARACTER;
       computer.value.decideBattleMove(field.value, props.skills);
-      computer.value.battleProcess(field.value);
+      timming.value = WIL_BATTLE_TIMMING.BATTLE_PROCESS_COMPUTER_CHARACTER;
+      processBattle(computer.value);
       return;
     }
   }, 1000);
 };
 const endTurn = () => {
+  console.log("turn end");
   // 戦闘終了判定を実施
   const result = judgeBattleResult(field.value);
   if (result) {
@@ -214,6 +249,18 @@ const endTurn = () => {
     return;
   }
   startTurn();
+};
+const processBattle = (operator: WilOperator) => {
+  const result = operator.processBattle(field.value);
+  // TODO: 結果表示
+  damageEvents.value = result.damageEvents;
+  for (let event of result.battleEvents) {
+    console.log(event);
+    event.func?.();
+  }
+  battleEvents.value = result.battleEvents;
+  console.log("battle process result", result);
+  return;
 };
 const endBattle = (winner: WIL_BATTLE_TEAM) => {
   timming.value = WIL_BATTLE_TIMMING.BATTLE_END;
@@ -240,6 +287,13 @@ watch(
 watch(
   () => timming.value,
   () => {
+    console.log(
+      "change timming",
+      timming.value,
+      player.value.moveCharacter,
+      player.value.selectSkill,
+      player.value.targetCell
+    );
     field.value.changeColor(
       timming.value,
       player.value.moveCharacter,

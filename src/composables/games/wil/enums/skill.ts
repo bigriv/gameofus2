@@ -19,8 +19,10 @@ export enum WIL_SKILL_RANGE {
 }
 
 export enum WIL_SKILL_TYPE {
-  PHISIC,
-  MAGIC,
+  SHOOT_PHISIC, // 投擲
+  CLOSE_PHISIC, // 近接
+  ATTACK_MAGIC, // 攻撃魔法
+  SUPPORT_MAGIC, // 補助魔法
 }
 
 export enum WIL_SKILL_TARGET {

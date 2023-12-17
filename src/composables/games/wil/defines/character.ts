@@ -1,5 +1,5 @@
 import { WIL_ELEMENT } from "../enums/element";
-import { WIL_SKILL_ID } from "../enums/skill";
+import { WIL_SKILL_ID, WIL_SKILL_TYPE } from "../enums/skill";
 import { WIL_IMAGE_ID } from "../enums/image";
 
 export const WIL_CHARACTER_DEFINES: {
@@ -14,6 +14,7 @@ export const WIL_CHARACTER_DEFINES: {
       speed: number;
       magic: number;
     };
+    skillType: Array<WIL_SKILL_TYPE>;
     element: WIL_ELEMENT;
     skills: Array<WIL_SKILL_ID>;
   };
@@ -35,6 +36,11 @@ export const WIL_CHARACTER_DEFINES: {
       WIL_SKILL_ID.SACRED_RAZER,
       WIL_SKILL_ID.SHINE_ABSORB,
     ],
+    skillType: [
+      WIL_SKILL_TYPE.CLOSE_PHISIC,
+      WIL_SKILL_TYPE.ATTACK_MAGIC,
+      WIL_SKILL_TYPE.SUPPORT_MAGIC,
+    ],
   },
   // 聖騎士団
   HOLY_KNIGHTS_SOLDIER: {
@@ -50,6 +56,7 @@ export const WIL_CHARACTER_DEFINES: {
     },
     element: WIL_ELEMENT.THUNDER,
     skills: [WIL_SKILL_ID.SLASH],
+    skillType: [WIL_SKILL_TYPE.CLOSE_PHISIC],
   },
   HOLY_KNIGHTS_MAGICIAN: {
     name: "魔法兵",
@@ -64,6 +71,7 @@ export const WIL_CHARACTER_DEFINES: {
     },
     element: WIL_ELEMENT.THUNDER,
     skills: [WIL_SKILL_ID.SHINE_BALL],
+    skillType: [WIL_SKILL_TYPE.ATTACK_MAGIC],
   },
   HOLY_KNIGHTS_LEADER: {
     name: "騎士団長",
@@ -78,6 +86,7 @@ export const WIL_CHARACTER_DEFINES: {
     },
     element: WIL_ELEMENT.THUNDER,
     skills: [WIL_SKILL_ID.SLASH],
+    skillType: [WIL_SKILL_TYPE.CLOSE_PHISIC],
   },
 
   // 嵐の射手
@@ -94,6 +103,7 @@ export const WIL_CHARACTER_DEFINES: {
     },
     element: WIL_ELEMENT.WIND,
     skills: [WIL_SKILL_ID.SLASH],
+    skillType: [WIL_SKILL_TYPE.SHOOT_PHISIC],
   },
 
   // モンスター
@@ -110,5 +120,6 @@ export const WIL_CHARACTER_DEFINES: {
     },
     element: WIL_ELEMENT.DARK,
     skills: [WIL_SKILL_ID.SLASH],
+    skillType: [WIL_SKILL_TYPE.CLOSE_PHISIC, WIL_SKILL_TYPE.ATTACK_MAGIC],
   },
 };

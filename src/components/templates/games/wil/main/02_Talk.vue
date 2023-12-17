@@ -61,6 +61,7 @@ const props = defineProps({
 });
 const emits = defineEmits(["end"]);
 
+const talk: Ref<WilTalkEvent | undefined> = ref();
 const talker: Ref<Array<string>> = ref([]);
 const background: Ref<GOUVisual | undefined> = ref();
 const message: Ref<Array<string>> = ref([]);
@@ -74,33 +75,25 @@ const characters: {
 const onClickMessageFrame: Ref<Function> = ref(() => {});
 const isEndMessage = ref(false);
 
-const chainEvent: Function = (
+const chainTalkEvent: Function = (
   events: Array<WilTalkEvent>,
   afterFunction: Function
 ) => {
   const event = events.shift();
   if (!event) {
-    talker.value = [];
-    background.value = undefined;
-    message.value = [];
+    talk.value = undefined;
     onClickMessageFrame.value = () => {};
     afterFunction();
     return;
   }
-  message.value = event.message ?? [];
-  if (event.sound) {
-    event.sound.play();
-  }
-  talker.value = event.talker ? [event.talker] : [];
-  background.value = event.background;
-  characters.left = event.left;
-  characters.right = event.right;
+  talk.value = event;
+  talk.value.process();
 
-  onClickMessageFrame.value = () => chainEvent(events, afterFunction);
+  onClickMessageFrame.value = () => chainTalkEvent(events, afterFunction);
 };
 
 onMounted(() => {
-  chainEvent([...props.events], () => emits("end"));
+  chainTalkEvent([...props.events], () => emits("end"));
 });
 </script>
 

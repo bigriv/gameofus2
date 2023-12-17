@@ -7,8 +7,10 @@ type WiChapterDefine = {
   title: string;
   flow: Array<WIL_CHAPTER_TIMMING>;
   battles: Array<{
-    name: string;
+    playerTeamName: string;
+    computerTeamName: string;
     background: WIL_IMAGE_ID;
+    bgm?: WIL_SOUND_ID;
     deploy: Array<{
       x: number;
       y: number;
@@ -21,6 +23,7 @@ type WiChapterDefine = {
       background?: WIL_IMAGE_ID;
       message?: Array<string>;
       sound?: WIL_SOUND_ID;
+      bgm?: WIL_SOUND_ID;
       left?: WIL_IMAGE_ID;
       right?: WIL_IMAGE_ID;
     }>
@@ -40,8 +43,10 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
   ],
   battles: [
     {
-      name: "魔物の群れ",
+      playerTeamName: "ルカ&ザーグ",
+      computerTeamName: "魔物の群れ",
       background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
+      bgm: undefined,
       deploy: [
         {
           x: 0,
@@ -61,8 +66,10 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
       ],
     },
     {
-      name: "聖騎士団",
+      playerTeamName: "ルカ&騎士団員",
+      computerTeamName: "聖騎士団",
       background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      bgm: undefined,
       deploy: [
         {
           x: 0,
@@ -116,13 +123,13 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
         left: WIL_IMAGE_ID.CHARACTER_HERO,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
-        message: ["（俺はレイ。聖の国の端の田舎村に住む、ただの農民だ。）"],
+        message: ["（俺はルカ。聖の国の端の田舎村に住む、ただの農民だ。）"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
         message: [
           "もし、この村に魔物が襲ってきたとしたら...。",
@@ -132,7 +139,7 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
         left: WIL_IMAGE_ID.CHARACTER_HERO,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
         message: [
           "戦えそうなのは俺と、村長(50歳)くらいか...。",
@@ -155,26 +162,26 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
         message: ["魔物よー！"],
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
         message: ["まさか、本当に！？", "すぐに助けに行かなきゃ！"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         sound: WIL_SOUND_ID.SE_FIGHTING,
         background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
         message: ["はぁはぁ...。", "もう大丈夫。早く逃げるんだ！"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
         message: ["（子供の手前、ああ言ったけど、かなり厳しいな...。）"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
         sound: WIL_SOUND_ID.SE_MONSTER,
         message: ["...！？", "しまった！"],
@@ -203,7 +210,7 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
         message: ["聖騎士団！？", "まさか、なんでこんなところに！？"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
@@ -217,14 +224,14 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
         message: ["（逃げるか...？でも、この村は...。）"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
         message: [
           "すみません、俺にも戦わせてください！",
@@ -242,7 +249,7 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
         message: ["...はい！"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
@@ -273,14 +280,14 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
         message: ["ありがとうございます。"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
         message: ["（鍛えておいてよかった...！）"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
@@ -304,7 +311,7 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
         message: [
           "せっかくのお誘いですが、またいつこの村が襲われるか分からないので...。",
@@ -333,7 +340,7 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
         message: ["（村の皆を守るためには...。）"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
@@ -344,7 +351,7 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
     ],
     [
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
         message: ["はあ、帝都は広いなあ。えーと、聖騎士団に会うには...。"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
@@ -357,7 +364,7 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
         message: ["あなたはあの時の...！"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
@@ -374,21 +381,21 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
-        message: ["レイです。"],
+        message: ["ルカです。"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
       {
         talker: "聖騎士団団長 ザーグ",
         background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
-        message: ["レイ君、聖騎士団に入る気になったのかな？"],
+        message: ["ルカ君、聖騎士団に入る気になったのかな？"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
         message: [
           "はい。聖騎士として強くなれば、今度は一人でも村の皆を守れるようになると思って。",
@@ -414,7 +421,7 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
         message: ["入団試験？", "そんなの聞いてないんですが...。"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
@@ -439,7 +446,7 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
         message: [
           "行っちゃった。マイペースな人だな...。",
@@ -450,7 +457,7 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
     ],
     [
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
         message: ["しっかり鍛えたし、大丈夫なはずだ。"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
@@ -459,7 +466,7 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
         talker: "聖騎士団団長 ザーグ",
         background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
         message: [
-          "やあ、レイ君。準備はできてそうだね。",
+          "やあ、ルカ君。準備はできてそうだね。",
           "それじゃあ入団試験を始めよう。",
         ],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
@@ -483,7 +490,7 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
         message: ["それだけですか？"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
@@ -500,7 +507,7 @@ export const WIL_CHAPTER_1_DEFINE: WiChapterDefine = {
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
       {
-        talker: "レイ",
+        talker: "ルカ",
         background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
         message: ["（この人、こんなに脳筋だったのか...。）"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,

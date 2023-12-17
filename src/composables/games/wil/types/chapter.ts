@@ -3,19 +3,19 @@ import { WIL_IMAGE_ID } from "../enums/image";
 import { WIL_SOUND_ID } from "../enums/sound";
 import { WIL_CHAPTER_TIMMING } from "../enums/timming";
 import { WilCharacter } from "./character";
-import { WilTalkEvent } from "./event";
+import { WilBattleEvent, WilTalkEvent } from "./event";
 import { WilFieldCell } from "./field";
 import { GOUAudio } from "@/composables/types/audio/GOUAudio";
 import { SequenceId } from "@/composables/utils/id";
 import { WIL_CHARACTER_ID } from "../enums/character";
 import { WIL_CHARACTER_DEFINES } from "../defines/character";
-import { WilBattle } from "./battle";
 import { WIL_BATTLE_TEAM } from "../enums/battle";
+import { WilSkill } from "./skill";
 
 export class WilChapter {
   title: string;
   flow: Array<WIL_CHAPTER_TIMMING>;
-  battles: Array<WilBattle>;
+  battles: Array<WilBattleEvent>;
   talks: Array<Array<WilTalkEvent>>;
   private currentFlow: number = -1;
   private currentTalk: number = -1;
@@ -26,8 +26,10 @@ export class WilChapter {
       title: string;
       flow: Array<WIL_CHAPTER_TIMMING>;
       battles: Array<{
-        name: string;
-        background: WIL_IMAGE_ID;
+        playerTeamName: string;
+        computerTeamName: string;
+        background?: WIL_IMAGE_ID;
+        bgm?: WIL_SOUND_ID;
         deploy: Array<{
           x: number;
           y: number;
@@ -46,19 +48,23 @@ export class WilChapter {
       >;
     },
     sequence: SequenceId,
+    skills: { [key: string]: WilSkill },
     images: { [key: string]: GOUVisual },
     sounds: { [key: string]: GOUAudio }
   ) {
     this.title = define.title;
     this.flow = define.flow;
     this.battles = define.battles.map((battle) => {
-      return new WilBattle(
-        battle.name,
-        images[battle.background],
-        battle.deploy.map((cell) => {
+      return new WilBattleEvent({
+        playerTeamName: battle.playerTeamName,
+        computerTeamName: battle.computerTeamName,
+        background: battle.background ? images[battle.background] : undefined,
+        bgm: battle.bgm ? sounds[battle.bgm] : undefined,
+        deploy: battle.deploy.map((cell) => {
           const character = new WilCharacter(
             sequence.generateId(),
             WIL_CHARACTER_DEFINES[cell.character],
+            skills,
             images
           );
           return new WilFieldCell(
@@ -67,8 +73,8 @@ export class WilChapter {
             cell.y,
             character
           );
-        })
-      );
+        }),
+      });
     });
     this.talks = define.talks.map((talk) =>
       talk.map(
@@ -142,7 +148,7 @@ export class WilChapter {
    * 現在行うべき戦闘イベントを取得する
    * @returns 戦闘イベント
    */
-  getCurrentBattle(): WilBattle | undefined {
+  getCurrentBattle(): WilBattleEvent | undefined {
     if (this.currentFlow < 0) {
       return this.battles[0];
     }
@@ -156,7 +162,7 @@ export class WilChapter {
    * 戦闘イベントを次に進める
    * @returns 進めた後の戦闘イベント
    */
-  proceedNextBattle(): WilBattle | undefined {
+  proceedNextBattle(): WilBattleEvent | undefined {
     if (this.currentBattle + 1 >= this.battles.length) {
       return undefined;
     }

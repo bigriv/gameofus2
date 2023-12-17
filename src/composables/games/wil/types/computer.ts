@@ -1,10 +1,33 @@
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 import { WilOperator } from "./operator";
-import { WilField } from "./field";
-import { WilSkill } from "./skill";
+import { WilField, WilFieldCell } from "./field";
+import { WIL_BATTLE_TEAM } from "../enums/battle";
 
 export class WilComputer extends WilOperator {
-  decideBattleMove(field: WilField, skills: { [key: string]: WilSkill }) {
+  constructor(teamName: string) {
+    super(WIL_BATTLE_TEAM.COMPUTER, teamName);
+  }
+
+  /**
+   * キャラクターを配置する
+   * @param deploy 配置定義リスト
+   */
+  deployCharacters(deploy: Array<WilFieldCell>) {
+    for (let cell of deploy) {
+      if (!cell.character) {
+        this.field.removeCharacter(cell.x, cell.y);
+        continue;
+      }
+      this.field.setCharacter(cell.x, cell.y, cell.character);
+    }
+  }
+
+  /**
+   * 処理する行動を決定する
+   * @param enemyField 相手チームのフィールド
+   * @param skills スキル定義リスト
+   */
+  decideBattleMove(enemyField: WilField) {
     if (!this.moveCharacter) {
       throw new WrongImplementationError("Move character is not set.");
     }
@@ -14,14 +37,13 @@ export class WilComputer extends WilOperator {
     const skillRnd = Math.floor(
       Math.random() * this.moveCharacter.skills.length
     );
-    const skillId = this.moveCharacter.skills[skillRnd];
-    this.selectSkill = skills[skillId];
+    this.selectSkill = this.moveCharacter.skills[skillRnd];
 
     // 対象にするキャラクターをランダムに選択
-    const targetCandidates = field.getPlayerCharacters();
+    const targetCandidates = enemyField.getCharacters();
     const characterRnd = Math.floor(Math.random() * targetCandidates.length);
     const target = targetCandidates[characterRnd];
 
-    this.targetCell = field.getPlayerCharacterCell(target);
+    this.targetCell = enemyField.getCharacterCell(target);
   }
 }

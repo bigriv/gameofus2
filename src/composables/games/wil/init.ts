@@ -78,6 +78,7 @@ export const useWilInit = () => {
       new WilCharacter(
         characterSequence.generateId(),
         WIL_CHARACTER_DEFINES.HERO,
+        WIL_SKILLS.value,
         WIL_IMAGES
       ),
     ];

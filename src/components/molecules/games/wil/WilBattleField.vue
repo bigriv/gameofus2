@@ -9,30 +9,33 @@
           class="c-battle_field__cell"
           :class="[
             `c-battle_field__cell--${
-              props.cells[(column - 1) * WilField.WIDTH + (row - 1)].color
+              props.field.cells[(column - 1) * WilField.WIDTH + (row - 1)].color
             }`,
             {
               'c-battle_field__cell--selected':
-                props.cells[(column - 1) * WilField.WIDTH + (row - 1)].selected,
+                props.field.cells[(column - 1) * WilField.WIDTH + (row - 1)]
+                  .selected,
             },
           ]"
           @click="onClickCell(column - 1, row - 1)"
           @mouseenter="
             onHoverCharacter(
-              props.cells[(column - 1) * WilField.WIDTH + (row - 1)].character
+              props.field.cells[(column - 1) * WilField.WIDTH + (row - 1)]
+                .character
             )
           "
           @mouseleave="onHoverCharacter(undefined)"
         >
           <div
             v-if="
-              props.cells[(column - 1) * WilField.WIDTH + (row - 1)].character
+              props.field.cells[(column - 1) * WilField.WIDTH + (row - 1)]
+                .character
             "
             class="c-battle_field__cell__character"
           >
             <GOUVisualCanvas
               :objects="{
-                army: cells[(column - 1) * WilField.WIDTH + (row - 1)].character!.miniVisual,
+                army: props.field.cells[(column - 1) * WilField.WIDTH + (row - 1)].character!.miniVisual,
               }"
             />
           </div>
@@ -40,7 +43,7 @@
       </template>
     </template>
     <div
-      v-for="(event, index) in props.damageEvents"
+      v-for="(event, index) in props.damageResults"
       class="c-battle_field__damage a-fade"
       :style="{
         left: `${event.cell.x * 33}%`,
@@ -59,26 +62,29 @@
 <script setup lang="ts">
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 import { WIL_CELL_COLOR } from "@/composables/games/wil/enums/cell";
+import { WilBattleDamegeResult } from "@/composables/games/wil/types/battle";
 import { WilCharacter } from "@/composables/games/wil/types/character";
-import { WilDamageEvent } from "@/composables/games/wil/types/event";
-import { WilFieldCell, WilField } from "@/composables/games/wil/types/field";
-import { watch } from "vue";
+import { WilField } from "@/composables/games/wil/types/field";
+import { PropType, watch } from "vue";
 
 const props = defineProps({
   reverse: {
     type: Boolean,
     default: false,
   },
-  cells: { type: Array<WilFieldCell>, required: true },
-  damageEvents: {
-    type: Array<WilDamageEvent>,
+  field: {
+    type: Object as PropType<WilField>,
+    required: true,
+  },
+  damageResults: {
+    type: Array<WilBattleDamegeResult>,
     default: () => [],
   },
 });
 const emits = defineEmits(["click", "hover"]);
 
 const onClickCell = (x: number, y: number) => {
-  if (props.cells[x * WilField.WIDTH + y].color !== WIL_CELL_COLOR.BLUE) {
+  if (props.field.getCell(x, y).color !== WIL_CELL_COLOR.BLUE) {
     return;
   }
   emits("click", x, y);
@@ -90,9 +96,10 @@ const onHoverCharacter = (character: WilCharacter | undefined) => {
 // ダメージイベントが更新された時の処理
 // 300msずつずらしてSEを鳴らす
 watch(
-  () => props.damageEvents,
+  () => props.damageResults,
   () => {
-    props.damageEvents.forEach((event, index) => {
+    props.damageResults.forEach((event, index) => {
+      event.process();
       if (event.sound) {
         setTimeout(() => {
           event.sound?.play();

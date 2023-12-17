@@ -1,8 +1,8 @@
 <template>
   <div class="c-under_frame">
-    <template v-if="hoverCharacter">
+    <template v-if="hoverCell?.character">
       <div class="c-under_frame__card">
-        <WilCharacterCard :character="hoverCharacter" />
+        <WilCharacterCard :character="hoverCell.character" />
       </div>
       <div class="c-under_frame__status">
         <NameValueTable
@@ -15,7 +15,7 @@
     </template>
 
     <template v-else>
-      <template v-if="timming === WIL_BATTLE_TIMMING.SET_SELECT_CELL">
+      <template v-if="battle.timming === WIL_BATTLE_TIMMING.SET_SELECT_CELL">
         <div class="c-under_frame__deploy">
           <div>
             配置数 {{ playerCharacterNum }} / {{ WilField.MAX_CHARACTER }}
@@ -34,20 +34,24 @@
         </div>
       </template>
 
-      <template v-else-if="timming === WIL_BATTLE_TIMMING.SET_SELECT_CHARACTER">
+      <template
+        v-else-if="battle.timming === WIL_BATTLE_TIMMING.SET_SELECT_CHARACTER"
+      >
         <WilCardList
           :dataList="[
             ...characterList,
             { label: '外す', onClick: onRemoveSetCharacter },
           ]"
-          @selectCharacter="onSetCharacter"
+          @selectCharacter="onSelectSetCharacter"
         />
       </template>
 
-      <template v-else-if="timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE">
-        <template v-if="player.moveCharacter">
+      <template
+        v-else-if="battle.timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE"
+      >
+        <template v-if="battle.player.moveCharacter">
           <div class="c-under_frame__card">
-            <WilCharacterCard :character="player.moveCharacter" />
+            <WilCharacterCard :character="battle.player.moveCharacter" />
           </div>
           <div class="c-under_frame__status">
             <NameValueTable
@@ -87,11 +91,13 @@
       </template>
 
       <template
-        v-else-if="timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_MIGRATE_PLACE"
+        v-else-if="
+          battle.timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_MIGRATE_PLACE
+        "
       >
-        <template v-if="player.moveCharacter">
+        <template v-if="battle.player.moveCharacter">
           <div class="c-under_frame__card">
-            <WilCharacterCard :character="player.moveCharacter" />
+            <WilCharacterCard :character="battle.player.moveCharacter" />
           </div>
           <div class="c-under_frame__status">
             <NameValueTable
@@ -116,25 +122,25 @@
 
       <template
         v-else-if="
-          timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL ||
-          timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET
+          battle.timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL ||
+          battle.timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET
         "
       >
         <div class="c-under_frame__skills">
           <WilSkillList
             :skillList="skillList"
-            :selected="player.selectSkill?.id"
+            :selected="battle.player.selectSkill?.id"
             @select="onSelectSkill"
           />
         </div>
-        <template v-if="player.selectSkill">
+        <template v-if="battle.player.selectSkill">
           <div class="c-under_frame__skill_detail">
             <div class="u-d_flex--between">
               <div>消費ターン数</div>
-              <div>{{ player.selectSkill.cost }}</div>
+              <div>{{ battle.player.selectSkill.cost }}</div>
             </div>
             <div>効果</div>
-            <div>{{ player.selectSkill.description }}</div>
+            <div>{{ battle.player.selectSkill.description }}</div>
           </div>
         </template>
         <div class="c-under_frame__contents">
@@ -149,10 +155,7 @@
         </div>
       </template>
       <template
-        v-else-if="
-          timming === WIL_BATTLE_TIMMING.BATTLE_PROCESS_PLAYER_CHARACTER ||
-          timming === WIL_BATTLE_TIMMING.BATTLE_PROCESS_COMPUTER_CHARACTER
-        "
+        v-else-if="battle.timming === WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE"
       >
         <div class="c-under_frame__message_frame">
           <MessageFrame
@@ -180,10 +183,8 @@ import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import { WIL_BATTLE_TIMMING } from "@/composables/games/wil/enums/timming";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 import { WilSkill } from "@/composables/games/wil/types/skill";
-import { WilField } from "@/composables/games/wil/types/field";
+import { WilField, WilFieldCell } from "@/composables/games/wil/types/field";
 import WilCardList from "@/components/molecules/games/wil/WilCardList.vue";
-import { WilPlayer } from "@/composables/games/wil/types/player";
-import { WilComputer } from "@/composables/games/wil/types/computer";
 import {
   WIL_FRAME_FONT_COLOR,
   WIL_FRAME_BORDER_COLOR,
@@ -194,76 +195,51 @@ import {
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import { WIL_SKILL_TARGET } from "@/composables/games/wil/enums/skill";
+import { WilBattle } from "@/composables/games/wil/types/battle";
+import { WilConditionUtil } from "@/composables/games/wil/types/condition";
+import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
+import { useWilDisplay } from "@/composables/games/wil/display";
 
 const props = defineProps({
-  timming: {
-    type: String as PropType<WIL_BATTLE_TIMMING>,
-    required: true,
-  },
   skills: {
     type: Object as PropType<{ [key: string]: WilSkill }>,
     required: true,
   },
-  field: {
-    type: Object as PropType<WilField>,
+  battle: {
+    type: Object as PropType<WilBattle>,
     required: true,
   },
-  player: {
-    type: Object as PropType<WilPlayer>,
-    required: true,
-  },
-  computer: {
-    type: Object as PropType<WilComputer>,
-    required: true,
-  },
-  hoverCharacter: {
-    type: Object as PropType<WilCharacter>,
+  hoverCell: {
+    type: Object as PropType<WilFieldCell>,
     default: undefined,
-  },
-  messages: {
-    type: Array<Array<string>>,
-    required: true,
   },
 });
 
-const emits = defineEmits([
-  "update:timming",
-  "update:field",
-  "update:player",
-  "error",
-  "endSet",
-  "endTurn",
-  "endMessage",
-]);
-const timming = computed({
-  get: () => props.timming,
-  set: (newValue: WIL_BATTLE_TIMMING) => emits("update:timming", newValue),
-});
-const field = computed({
-  get: () => props.field,
-  set: (newValue: WilField) => emits("update:field", newValue),
-});
+const emits = defineEmits(["error", "endSet", "endTurn", "endMessage"]);
+
+const { messageComplete, displayMessage, onClickMessageFrame } =
+  useWilDisplay();
+
+const battle = computed(() => props.battle);
 const playerCharacterNum = computed(() => {
-  return field.value.getPlayerCharacterNum();
+  return battle.value.player.field.countCharacterNum();
 });
-const player = computed({
-  get: () => props.player,
-  set: (newValue: WilPlayer) => emits("update:player", newValue),
-});
-const characterList: Ref<Array<WilCharacter>> = ref(props.player.allCharacters);
+const characterList: Ref<Array<WilCharacter>> = ref(
+  battle.value.player.allCharacters
+);
 const characterStatusList = computed(() => {
-  let character = player.value.moveCharacter;
-  if (props.hoverCharacter) {
-    character = props.hoverCharacter;
+  let character = battle.value.turnOperator.moveCharacter;
+  if (props.hoverCell && props.hoverCell.character) {
+    character = props.hoverCell.character;
   }
   if (!character) {
     return [];
   }
 
-  if (field.value.getComputerCharacterCell(character)) {
+  if (battle.value.computer.field.getCharacterCell(character)) {
     // 表示するキャラクターが相手フィールドのキャラクターならステータスを隠蔽する
     return [
-      { name: "状態", value: character.condition.getLabel() },
+      { name: "状態", value: WilConditionUtil.getLabel(character.condition) },
       { name: "体力", value: "???/???" },
       { name: "攻撃力", value: "???" },
       { name: "防御力", value: "???" },
@@ -276,7 +252,7 @@ const characterStatusList = computed(() => {
   const defaultStatus = character.defaultStatus;
   const status = character.status;
   return [
-    { name: "状態", value: character.condition.getLabel() },
+    { name: "状態", value: WilConditionUtil.getLabel(character.condition) },
     { name: "体力", value: `${status.life}/${defaultStatus.life}` },
     { name: "攻撃力", value: `${status.attack}` },
     { name: "防御力", value: `${status.defense}` },
@@ -287,159 +263,97 @@ const characterStatusList = computed(() => {
 });
 
 const skillList = computed(() => {
-  if (!player.value.moveCharacter) {
+  if (!battle.value.player.moveCharacter) {
     return [];
   }
-  const character = player.value.moveCharacter;
+  const character = battle.value.player.moveCharacter;
   if (!character?.skills) {
     return [];
   }
-  return character.skills.map((skillId) => props.skills[skillId]);
+  return character.skills;
 });
-
-const messageComplete = ref(false);
-const displayMessage: Ref<Array<string>> = ref([]);
 
 // 配置終了ボタン押下時のイベント処理
 const onEndSet = () => {
   emits("endSet");
 };
 // 配置キャラクターの選択時のイベント処理
-const onSetCharacter = (character: WilCharacter) => {
-  if (!player.value.targetCell) {
-    emits("error", "配置場所が選択されていません。");
-    return;
-  }
+const onSelectSetCharacter = (character: WilCharacter) => {
   if (WilField.MAX_CHARACTER <= playerCharacterNum.value) {
     emits("error", "これ以上配置できません。");
     return;
   }
-  if (player.value.targetCell.character) {
-    // キャラクターリストに元々配置されていたキャラクターを追加
-    characterList.value.push(player.value.targetCell.character);
-    characterList.value.sort((a: WilCharacter, b: WilCharacter) =>
-      a.id.localeCompare(b.id)
-    );
-  }
-  // キャラクターリストから配置するキャラクターを排除
-  characterList.value = characterList.value.filter(
-    (c) => c.id !== character.id
-  );
 
-  // 選択マスにキャラクターを配置
-  player.value.targetCell.character = character;
-
-  // 配置マス選択の表示に切り替え
-  field.value.resetSelected();
-  player.value.resetMove();
-  timming.value = WIL_BATTLE_TIMMING.SET_SELECT_CELL;
+  battle.value.player.moveCharacter = character;
+  battle.value.player.deployCharacter();
+  battle.value.changeTimming(WIL_BATTLE_TIMMING.SET_SELECT_CELL);
 };
 // 配置済みキャラクターの解除時のイベント処理
 const onRemoveSetCharacter = () => {
-  if (!player.value.targetCell) {
-    emits("error", "配置場所が選択されていません。");
-    return;
-  }
-  if (player.value.targetCell.character) {
-    // キャラクターリストに元々配置されていたキャラクターを追加
-    characterList.value.push(player.value.targetCell.character);
-    characterList.value.sort((a: WilCharacter, b: WilCharacter) =>
-      a.id.localeCompare(b.id)
-    );
-  }
-
-  // 選択マスのキャラクターを排除
-  player.value.targetCell.character = undefined;
-
+  battle.value.player.removeDeployedCharacter();
   // 配置マス選択の表示に切り替え
-  field.value.resetSelected();
-  player.value.resetMove();
-  timming.value = WIL_BATTLE_TIMMING.SET_SELECT_CELL;
+  battle.value.player.field.resetSelected();
+  battle.value.changeTimming(WIL_BATTLE_TIMMING.SET_SELECT_CELL);
 };
 
 // 移動コマンド選択時のイベント処理
 const onMigrate = () => {
   // 移動先選択の表示に切り替え
-  timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_MIGRATE_PLACE;
+  battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_SELECT_MIGRATE_PLACE);
 };
 // 攻撃・魔法コマンド選択時のイベント処理
 const onShowSkillList = () => {
-  player.value.selectSkill = undefined;
+  battle.value.player.selectSkill = undefined;
   // 発動スキル選択の表示に切り替え
-  timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL;
+  battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL);
 };
 // 行動選択画面に戻る
 const onBackSelectMove = () => {
-  player.value.selectSkill = undefined;
-  player.value.targetCell = undefined;
-
+  battle.value.player.selectSkill = undefined;
+  battle.value.player.targetCell = undefined;
   // 行動選択の表示に切り替え
-  timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE;
+  battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE);
 };
 // 発動スキル選択時のイベント処理
 const onSelectSkill = (skill: WilSkill) => {
-  player.value.selectSkill = skill;
+  battle.value.player.selectSkill = skill;
   // スキル発動対象の選択に切り替え
-  timming.value = WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET;
+  battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET);
 };
 // ターンスキップ時のイベント処理
 const onSkipTurn = () => {
-  if (!player.value.moveCharacter) {
+  if (!battle.value.player.moveCharacter) {
     throw new WrongImplementationError("Move character is not set.");
   }
-  const nextMoveCharacter = field.value.getFastCharacter(
-    player.value.moveCharacter
-  );
+  const nextMoveCharacter = battle.value.player.getMoveSequense()[1];
   if (!nextMoveCharacter) {
     throw new WrongImplementationError("Couldn't get a next move character.");
   }
-  player.value.moveCharacter.stack = nextMoveCharacter.stack + 1;
+  battle.value.player.moveCharacter.skip(nextMoveCharacter.stack);
   emits("endTurn");
 };
 
 watch(
-  () => timming.value,
+  () => battle.value.timming,
   () => {
-    if (timming.value === WIL_BATTLE_TIMMING.BATTLE_PLAYER_TURN_START) {
-      // キャラクターリストをプレイヤーの配置済みキャラクターのリストに更新
-      characterList.value = field.value.getPlayerCharacters();
-    } else if (
-      timming.value === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET
-    ) {
-      // キャラクターリストを敵の配置済みキャラクターのリストに更新
-      if (player.value.selectSkill?.target === WIL_SKILL_TARGET.ALLY) {
-        characterList.value = field.value.getPlayerCharacters();
-      } else if (player.value.selectSkill?.target === WIL_SKILL_TARGET.ENEMY) {
-        characterList.value = field.value.getComputerCharacters();
-      }
-    }
-  }
-);
-const onClickMessageFrame = ref();
-
-const chainMessage = (messages: string[][], afterFunction: Function) => {
-  console.log("chainMessage");
-  const message = messages.shift();
-  if (!message) {
-    displayMessage.value = [];
-    onClickMessageFrame.value = () => {};
-    messageComplete.value = true;
-    afterFunction();
-    return;
-  }
-  displayMessage.value = message;
-  onClickMessageFrame.value = () => chainMessage(messages, afterFunction);
-};
-
-watch(
-  () => props.messages,
-  () => {
-    console.log("show message", props.messages);
-    if (props.messages.length <= 0) {
+    if (battle.value.turnOperator.team !== WIL_BATTLE_TEAM.PLAYER) {
+      characterList.value = [];
       return;
     }
-    messageComplete.value = false;
-    chainMessage(props.messages, () => emits("endMessage"));
+
+    if (
+      battle.value.timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET
+    ) {
+      if (battle.value.player.selectSkill?.target === WIL_SKILL_TARGET.ALLY) {
+        // キャラクターリストを味方の配置済みキャラクターのリストに更新
+        characterList.value = battle.value.player.field.getCharacters();
+      } else if (
+        battle.value.player.selectSkill?.target === WIL_SKILL_TARGET.ENEMY
+      ) {
+        // キャラクターリストを敵の配置済みキャラクターのリストに更新
+        characterList.value = battle.value.computer.field.getCharacters();
+      }
+    }
   }
 );
 </script>

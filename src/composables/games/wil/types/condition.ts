@@ -1,121 +1,16 @@
 import { WIL_CONDITION_ID } from "../enums/condition";
-import { WilCharacter } from "./character";
 
-export class WilCondition {
-  current: WIL_CONDITION_ID = WIL_CONDITION_ID.HEALTH;
-  turn: number = 0; // 持続ターン数
-  static readonly DEFAULT_SUSTAINABLE_TURN = 3;
-
-  constructor() {}
-
-  consume() {
-    if (this.current === WIL_CONDITION_ID.HEALTH) {
-      return;
-    }
-
-    this.turn--;
-    if (this.turn <= 0) {
-      this.current = WIL_CONDITION_ID.HEALTH;
-    }
-  }
-
-  isHealth() {
-    return this.current === WIL_CONDITION_ID.HEALTH || this.turn <= 0;
-  }
-
+export class WilConditionUtil {
+  static readonly SUSTAINED_TURN = 3;
+  static readonly LITTELE_DECREASE = 10;
+  static readonly MEDIUM_DECREASE = 20;
   /**
-   * 状態異常を上書きし、持続ターン数をリセットする
-   * @param newCondition 上書き後の状態異常
-   * @returns 上書きに成功した場合はtrue、それ以外はfalse
+   * 状態異常の表示名を取得する
+   * @param id 状態異常ID
+   * @returns 状態異常の表示名
    */
-  overwrite(newCondition: WIL_CONDITION_ID): boolean {
-    if (this.current === WIL_CONDITION_ID.HOLY) {
-      return false;
-    }
-    this.current = newCondition;
-    this.turn = WilCondition.DEFAULT_SUSTAINABLE_TURN;
-    return true;
-  }
-
-  // 状態異常開始時に行う処理（主にステータス弱体化）
-  // TODO: 戻り値要検討
-  static passive(character: WilCharacter) {
-    switch (character.condition.current) {
-      case WIL_CONDITION_ID.HEALTH:
-        return;
-      case WIL_CONDITION_ID.BURN:
-        // 防御力弱減少
-        return;
-      case WIL_CONDITION_ID.PARALYSIS:
-        // 敏捷性弱減少
-        // 攻撃力弱減少
-        return;
-      case WIL_CONDITION_ID.DEBILITY:
-        // 攻撃力弱減少
-        // 防御力弱減少
-        return;
-      case WIL_CONDITION_ID.WEATHERING:
-        // 防御力中減少
-        return;
-      case WIL_CONDITION_ID.MUDDY:
-        // 敏捷力中減少
-        return;
-      case WIL_CONDITION_ID.POISON:
-        return;
-      case WIL_CONDITION_ID.HOLY:
-        return;
-    }
-  }
-
-  // ターン開始時に行う処理（主にダメージ処理）
-  // TODO: 戻り値要検討
-  static turnStartEffect(character: WilCharacter) {
-    if (character.condition.current === WIL_CONDITION_ID.BURN) {
-      // 弱ダメージ
-      return;
-    }
-
-    return;
-  }
-
-  // ターン終了時に行う処理（主にダメージ処理）
-  // TODO: 戻り値要検討
-  static turnEndEffect(character: WilCharacter) {
-    if (character.condition.current === WIL_CONDITION_ID.POISON) {
-      // 中ダメージ
-    }
-
-    return;
-  }
-
-  // 状態異常終了時に行う処理（主にステータス弱体化の戻し）
-  // TODO: 戻り値要検討
-  static end(character: WilCharacter): void {
-    switch (character.condition.current) {
-      case WIL_CONDITION_ID.HEALTH:
-        return;
-      case WIL_CONDITION_ID.BURN:
-        const increase = character.defaultStatus.attack * 0.1;
-        // 初期値を超えた場合は別のパッシブが働いているとみなすため、超過判定は行わない
-        character.status.attack += increase;
-        return;
-      case WIL_CONDITION_ID.PARALYSIS:
-        return;
-      case WIL_CONDITION_ID.DEBILITY:
-        return;
-      case WIL_CONDITION_ID.WEATHERING:
-        return;
-      case WIL_CONDITION_ID.MUDDY:
-        return;
-      case WIL_CONDITION_ID.POISON:
-        return;
-      case WIL_CONDITION_ID.HOLY:
-        return;
-    }
-  }
-
-  getLabel(): string {
-    switch (this.current) {
+  static getLabel(id: WIL_CONDITION_ID): string {
+    switch (id) {
       case WIL_CONDITION_ID.HEALTH:
         return "健康";
       case WIL_CONDITION_ID.BURN:
@@ -132,6 +27,27 @@ export class WilCondition {
         return "被毒";
       case WIL_CONDITION_ID.HOLY:
         return "神聖";
+    }
+  }
+
+  static getDescription(id: WIL_CONDITION_ID): string {
+    switch (id) {
+      case WIL_CONDITION_ID.HEALTH:
+        return "影響なし";
+      case WIL_CONDITION_ID.BURN:
+        return `${WilConditionUtil.SUSTAINED_TURN}ターンの間、防御力${WilConditionUtil.LITTELE_DECREASE}%減少+ターン終了時に${WilConditionUtil.LITTELE_DECREASE}%の被ダメージ`;
+      case WIL_CONDITION_ID.PARALYSIS:
+        return `${WilConditionUtil.SUSTAINED_TURN}ターンの間、攻撃力${WilConditionUtil.LITTELE_DECREASE}%減少+ターン終了時に次のターンまでのスタックを${this.LITTELE_DECREASE}%増加`;
+      case WIL_CONDITION_ID.DEBILITY:
+        return `${WilConditionUtil.SUSTAINED_TURN}ターンの間、攻撃力${WilConditionUtil.LITTELE_DECREASE}%減少+防御力${this.LITTELE_DECREASE}%減少`;
+      case WIL_CONDITION_ID.WEATHERING:
+        return `${WilConditionUtil.SUSTAINED_TURN}ターンの間、防御力${WilConditionUtil.MEDIUM_DECREASE}%減少`;
+      case WIL_CONDITION_ID.MUDDY:
+        return `${WilConditionUtil.SUSTAINED_TURN}ターンの間、ターン終了時に次のターンまでのスタックを${WilConditionUtil.MEDIUM_DECREASE}%増加`;
+      case WIL_CONDITION_ID.POISON:
+        return `${WilConditionUtil.SUSTAINED_TURN}ターンの間、ターン終了時に${WilConditionUtil.MEDIUM_DECREASE}%の被ダメージ`;
+      case WIL_CONDITION_ID.HOLY:
+        return `${WilConditionUtil.SUSTAINED_TURN}ターンの間、状態異常が上書きされない`;
     }
   }
 }

@@ -12,10 +12,10 @@
     </template>
     <template v-else-if="timming == WIL_CHAPTER_TIMMING.BATTLE">
       <Battle
-        v-if="battle"
+        v-if="battleEvent"
         v-model:player="player"
         :skills="WIL_SKILLS"
-        :battle="battle"
+        :event="battleEvent"
         @end="proceed"
       />
     </template>
@@ -41,6 +41,10 @@ import { useWilInit } from "@/composables/games/wil/init";
 import { WilChapter } from "@/composables/games/wil/types/chapter";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 import { WIL_CHAPTER_1_DEFINE } from "@/composables/games/wil/defines/chapter";
+import {
+  WilBattleEvent,
+  WilTalkEvent,
+} from "@/composables/games/wil/types/event";
 
 const props = defineProps({
   start: {
@@ -66,8 +70,8 @@ const {
 } = useWilInit();
 
 const timming: Ref<WIL_CHAPTER_TIMMING> = ref(WIL_CHAPTER_TIMMING.OPENING);
-const talkEvents = ref();
-const battle = ref();
+const talkEvents: Ref<Array<WilTalkEvent> | undefined> = ref();
+const battleEvent: Ref<WilBattleEvent | undefined> = ref();
 
 const currentCapter: Ref<WilChapter | undefined> = ref();
 
@@ -79,7 +83,12 @@ const proceed = () => {
   if (timming.value === WIL_CHAPTER_TIMMING.TALK) {
     talkEvents.value = currentCapter.value.proceedNextTalks();
   } else if (timming.value === WIL_CHAPTER_TIMMING.BATTLE) {
-    battle.value = currentCapter.value.proceedNextBattle();
+    battleEvent.value = currentCapter.value.proceedNextBattle();
+    if (!battleEvent.value) {
+      proceed();
+      return;
+    }
+    player.value.teamName = battleEvent.value.playerTeamName;
   }
 };
 
@@ -92,6 +101,7 @@ onMounted(() => {
   currentCapter.value = new WilChapter(
     WIL_CHAPTER_1_DEFINE,
     characterSequence,
+    WIL_SKILLS.value,
     WIL_IMAGES,
     WIL_SOUNDS
   );

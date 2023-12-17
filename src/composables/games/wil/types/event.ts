@@ -1,55 +1,81 @@
-import { GOUEvent } from "@/composables/types/GOUEvent";
-import { GOUAnimation } from "@/composables/types/animations/GOUAnimation";
 import { GOUAudio } from "@/composables/types/audio/GOUAudio";
-import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WilFieldCell } from "./field";
 
-export class WilTalkEvent extends GOUEvent {
+/**
+ * 会話イベント
+ */
+export class WilTalkEvent {
+  message?: Array<string>;
+  sound?: GOUAudio;
+  bgm?: GOUAudio;
   talker?: string;
   background?: GOUVisual;
   left?: GOUVisual;
   right?: GOUVisual;
 
   constructor(define: {
-    talker?: string;
-    background?: GOUVisual;
     message?: Array<string>;
     sound?: GOUAudio;
+    bgm?: GOUAudio;
+    talker?: string;
+    background?: GOUVisual;
     left?: GOUVisual;
     right?: GOUVisual;
   }) {
-    super(define);
+    this.message = define.message;
+    this.sound = define.sound;
+    this.bgm = define.bgm;
     this.talker = define.talker;
     this.background = define.background;
     this.left = define.left;
     this.right = define.right;
   }
-}
 
-export class WilBattleEvent extends GOUEvent {
-  animations?: Array<GOULottie | GOUAnimation>;
-  func?: Function;
-
-  constructor(define: {
-    message?: Array<string>;
-    sound?: GOUAudio;
-    animations?: Array<GOULottie | GOUAnimation>;
-    func?: Function;
-  }) {
-    super({ message: define.message, sound: define.sound });
-    this.animations = define.animations;
-    this.func = define.func;
+  /**
+   * SEとBGMの発生を行う
+   * BGMは同じBGMが再生中なら発生しない
+   */
+  process() {
+    if (this.sound) {
+      this.sound.play();
+    }
+    if (this.bgm && !this.bgm.isPlaying()) {
+      this.bgm.play();
+    }
   }
 }
 
-export class WilDamageEvent {
-  cell: WilFieldCell;
-  damage: number;
-  sound?: GOUAudio;
-  constructor(cell: WilFieldCell, damage: number, sound?: GOUAudio) {
-    this.cell = cell;
-    this.damage = damage;
-    this.sound = sound;
+/**
+ * 戦闘イベント
+ */
+export class WilBattleEvent {
+  playerTeamName: string;
+  computerTeamName: string;
+  background?: GOUVisual;
+  bgm?: GOUAudio;
+  deploy: Array<WilFieldCell>;
+
+  constructor(define: {
+    playerTeamName: string;
+    computerTeamName: string;
+    background?: GOUVisual;
+    bgm?: GOUAudio;
+    deploy: Array<WilFieldCell>;
+  }) {
+    this.playerTeamName = define.playerTeamName;
+    this.computerTeamName = define.computerTeamName;
+    this.background = define.background;
+    this.bgm = define.bgm;
+    this.deploy = define.deploy;
+  }
+
+  /**
+   * BGMは同じBGMが再生中なら発生しない
+   */
+  process() {
+    if (this.bgm) {
+      this.bgm.play();
+    }
   }
 }

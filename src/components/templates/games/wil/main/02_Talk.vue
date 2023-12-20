@@ -1,13 +1,13 @@
 <template>
-  <div class="c-talk">
+  <div v-if="talk" class="c-talk">
     <div class="c-talk__background">
-      <GOUVisualCanvas :objects="{ background: background }" />
+      <GOUVisualCanvas :objects="{ background: talk.background }" />
     </div>
-    <div v-if="characters.left" class="c-talk__character--left">
-      <GOUVisualCanvas :objects="{ character: characters.left }" />
+    <div v-if="talk.left" class="c-talk__character--left">
+      <GOUVisualCanvas :objects="{ character: talk.left }" />
     </div>
-    <div v-if="characters.right" class="c-talk__character--right">
-      <GOUVisualCanvas :objects="{ character: characters.right }" />
+    <div v-if="talk.right" class="c-talk__character--right">
+      <GOUVisualCanvas :objects="{ character: talk.right }" />
     </div>
     <div class="c-talk__talker">
       <MessageFrame
@@ -23,12 +23,12 @@
     <div class="c-talk__message">
       <MessageFrame
         v-model:complete="isEndMessage"
-        :messages="message"
+        :messages="talk.message"
         :fontColor="WIL_FRAME_FONT_COLOR"
         :backgroundColor="WIL_FRAME_BACKGROUND_COLOR"
         :borderColor="WIL_FRAME_BORDER_COLOR"
         :speed="1"
-        :clickable="message.length > 0"
+        :clickable="talk.message && talk.message.length > 0"
         vertical="start"
         horizontal="start"
         @click="() => onClickMessageFrame()"
@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, Ref, onMounted, reactive, ref } from "vue";
+import { PropType, Ref, computed, onMounted, ref } from "vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
@@ -62,15 +62,11 @@ const props = defineProps({
 const emits = defineEmits(["end"]);
 
 const talk: Ref<WilTalkEvent | undefined> = ref();
-const talker: Ref<Array<string>> = ref([]);
-const background: Ref<GOUVisual | undefined> = ref();
-const message: Ref<Array<string>> = ref([]);
-const characters: {
-  left?: GOUVisual;
-  right?: GOUVisual;
-} = reactive({
-  left: undefined,
-  right: undefined,
+const talker = computed(() => {
+  if (!talk.value?.talker) {
+    return [];
+  }
+  return [talk.value.talker];
 });
 const onClickMessageFrame: Ref<Function> = ref(() => {});
 const isEndMessage = ref(false);

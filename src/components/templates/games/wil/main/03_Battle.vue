@@ -11,7 +11,8 @@
         :battle="(battle as WilBattle)"
         @selectComputerCell="onClickComputerField"
         @selectPlayerCell="onClickPlayerField"
-        @hover="(hover) => (hoverCell = hover)"
+        @hover="onHoverFieldCell"
+        @leave="onLeaveFieldCell"
       />
     </div>
 
@@ -56,7 +57,6 @@
       @error="error"
       @endSet="endSet"
       @endTurn="endTurn"
-      @endMessage="endTurn"
     />
   </div>
 </template>
@@ -98,13 +98,14 @@ const player = computed({
 const battle = ref(new WilBattle(props.player, props.event));
 const hoverCell: Ref<WilFieldCell | undefined> = ref();
 const infomationMessage = ref("");
-const guideMessage = ref("配置するキャラクターを選択してください。");
+const guideMessage = ref("キャラクターを配置するマスを選択してください。");
 
-const onClickComputerField = (x: number, y: number) => {
+const onClickComputerField = (cell: WilFieldCell) => {
+  console.log("click", cell, battle.value.timming);
   // スキル発動対象選択時
-  if (battle.value.timming == WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
+  if (battle.value.timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
     battle.value.resetFieldSelected();
-    battle.value.setMoveTarget(WIL_BATTLE_TEAM.COMPUTER, x, y);
+    battle.value.setMoveTarget(cell);
     // 戦闘タイミングを行動処理に変更
     battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
     // 戦闘処理を実行
@@ -112,14 +113,14 @@ const onClickComputerField = (x: number, y: number) => {
     return;
   }
 };
-const onClickPlayerField = (x: number, y: number) => {
+const onClickPlayerField = (cell: WilFieldCell) => {
   // キャラクター配置場所選択時
   if (
     battle.value.timming === WIL_BATTLE_TIMMING.SET_SELECT_CELL ||
     battle.value.timming === WIL_BATTLE_TIMMING.SET_SELECT_CHARACTER
   ) {
     battle.value.resetFieldSelected();
-    battle.value.setMoveTarget(WIL_BATTLE_TEAM.PLAYER, x, y);
+    battle.value.setMoveTarget(cell);
 
     battle.value.changeTimming(WIL_BATTLE_TIMMING.SET_SELECT_CHARACTER);
     return;
@@ -131,7 +132,7 @@ const onClickPlayerField = (x: number, y: number) => {
     battle.value.timming == WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET
   ) {
     battle.value.resetFieldSelected();
-    battle.value.setMoveTarget(WIL_BATTLE_TEAM.PLAYER, x, y);
+    battle.value.setMoveTarget(cell);
     // 戦闘タイミングをプレイヤー行動処理に変更
     battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
     // 行動処理を実行
@@ -143,6 +144,7 @@ const error = (message: string) => {
   alert(message);
 };
 const endSet = () => {
+  battle.value.computer.deployCharacters(props.event.deploy);
   // 戦闘開始の前処理を実行
   battle.value.startBattle();
 
@@ -183,16 +185,25 @@ const endBattle = () => {
   }
   emits("end");
 };
-watch(
-  () => hoverCell.value,
-  () => {
-    if (
-      battle.value.timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET
-    ) {
-      battle.value.changeFieldColor(hoverCell.value);
-    }
+const onHoverFieldCell = (cell: WilFieldCell) => {
+  console.log(cell);
+  hoverCell.value = cell;
+  if (!hoverCell.value.character) {
+    return;
   }
-);
+  if (battle.value.timming !== WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
+    return;
+  }
+  battle.value.changeFieldColor(hoverCell.value);
+};
+const onLeaveFieldCell = () => {
+  hoverCell.value = undefined;
+  if (battle.value.timming !== WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
+    return;
+  }
+  battle.value.changeFieldColor(hoverCell.value);
+};
+
 watch(
   () => battle.value.timming,
   () => {

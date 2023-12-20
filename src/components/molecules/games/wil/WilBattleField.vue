@@ -9,33 +9,32 @@
           class="c-battle_field__cell"
           :class="[
             `c-battle_field__cell--${
-              props.field.cells[(column - 1) * WilField.WIDTH + (row - 1)].color
+              field.cells[(column - 1) * WilField.WIDTH + (row - 1)].color
             }`,
             {
               'c-battle_field__cell--selected':
-                props.field.cells[(column - 1) * WilField.WIDTH + (row - 1)]
-                  .selected,
+                field.cells[(column - 1) * WilField.WIDTH + (row - 1)].selected,
             },
           ]"
-          @click="onClickCell(column - 1, row - 1)"
+          @click="
+            onClickCell(field.cells[(column - 1) * WilField.WIDTH + (row - 1)])
+          "
           @mouseenter="
             onHoverCharacter(
-              props.field.cells[(column - 1) * WilField.WIDTH + (row - 1)]
-                .character
+              field.cells[(column - 1) * WilField.WIDTH + (row - 1)]
             )
           "
-          @mouseleave="onHoverCharacter(undefined)"
+          @mouseleave="onLeave"
         >
           <div
             v-if="
-              props.field.cells[(column - 1) * WilField.WIDTH + (row - 1)]
-                .character
+              field.cells[(column - 1) * WilField.WIDTH + (row - 1)].character
             "
             class="c-battle_field__cell__character"
           >
             <GOUVisualCanvas
               :objects="{
-                army: props.field.cells[(column - 1) * WilField.WIDTH + (row - 1)].character!.miniVisual,
+                army: field.cells[(column - 1) * WilField.WIDTH + (row - 1)].character!.miniVisual,
               }"
             />
           </div>
@@ -63,9 +62,8 @@
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 import { WIL_CELL_COLOR } from "@/composables/games/wil/enums/cell";
 import { WilBattleDamegeResult } from "@/composables/games/wil/types/battle";
-import { WilCharacter } from "@/composables/games/wil/types/character";
-import { WilField } from "@/composables/games/wil/types/field";
-import { PropType, watch } from "vue";
+import { WilField, WilFieldCell } from "@/composables/games/wil/types/field";
+import { PropType, computed, watch } from "vue";
 
 const props = defineProps({
   reverse: {
@@ -81,18 +79,21 @@ const props = defineProps({
     default: () => [],
   },
 });
-const emits = defineEmits(["click", "hover"]);
+const emits = defineEmits(["click", "hover", "leave"]);
 
-const onClickCell = (x: number, y: number) => {
-  if (props.field.getCell(x, y).color !== WIL_CELL_COLOR.BLUE) {
+const field = computed(() => props.field);
+const onClickCell = (cell: WilFieldCell) => {
+  if (cell.color !== WIL_CELL_COLOR.BLUE) {
     return;
   }
-  emits("click", x, y);
+  emits("click", cell);
 };
-const onHoverCharacter = (character: WilCharacter | undefined) => {
-  emits("hover", character);
+const onHoverCharacter = (cell: WilFieldCell | undefined) => {
+  emits("hover", cell);
 };
-
+const onLeave = () => {
+  emits("leave");
+};
 // ダメージイベントが更新された時の処理
 // 300msずつずらしてSEを鳴らす
 watch(
@@ -122,7 +123,7 @@ watch(
   &--reverse {
     transform: scaleX(-1);
     .c-battle_field__damage {
-      transform: scaleX(-1);
+      transform: translate(-50%, -50%) scaleX(-1);
     }
   }
   &__cell {
@@ -158,14 +159,15 @@ watch(
     &__character {
       width: 100%;
       height: 100%;
-      transform: perspective(40px) rotateX(-20deg) translateY(-25%);
+      transform: perspective(40px) translateY(-25%);
       transform-origin: 50% 50%;
     }
   }
   &__damage {
     position: absolute;
     font-size: 20px;
-    color: black;
+    color: white;
+    text-shadow: 2px 0 black, 0px 2px black, -2px 0 black, 0 -2px black;
     font-weight: bold;
     animation-delay: var(--delay);
     transform: translate(-50%, -50%);

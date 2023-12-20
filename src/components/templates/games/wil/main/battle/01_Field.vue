@@ -8,6 +8,7 @@
           :damageResults="computerDamageEvents"
           @click="onClickComputerCell"
           @hover="onHoverCell"
+          @leave="onLeaveCell"
         />
       </div>
       <div class="c-field__frame__player">
@@ -16,6 +17,7 @@
           :damageResults="playerDamageEvents"
           @click="onClickPlayerCell"
           @hover="onHoverCell"
+          @leave="onLeaveCell"
         />
       </div>
     </div>
@@ -36,7 +38,12 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["selectComputerCell", "selectPlayerCell", "hover"]);
+const emits = defineEmits([
+  "selectComputerCell",
+  "selectPlayerCell",
+  "hover",
+  "leave",
+]);
 
 const playerDamageEvents = computed(() =>
   props.battle.damageResults.filter(
@@ -49,14 +56,17 @@ const computerDamageEvents = computed(() =>
   )
 );
 
-const onClickComputerCell = (y: number, x: number) => {
-  emits("selectComputerCell", x, y);
+const onClickComputerCell = (cell: WilFieldCell) => {
+  emits("selectComputerCell", cell);
 };
-const onClickPlayerCell = (y: number, x: number) => {
-  emits("selectPlayerCell", x, y);
+const onClickPlayerCell = (cell: WilFieldCell) => {
+  emits("selectPlayerCell", cell);
 };
 const onHoverCell = (cell: WilFieldCell | undefined) => {
   emits("hover", cell);
+};
+const onLeaveCell = () => {
+  emits("leave");
 };
 </script>
 
@@ -78,7 +88,7 @@ const onHoverCell = (cell: WilFieldCell | undefined) => {
     padding: 0 5%;
     &__computer,
     &__player {
-      width: 25%;
+      width: 30%;
     }
   }
 }

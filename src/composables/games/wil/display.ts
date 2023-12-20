@@ -1,5 +1,4 @@
 import { Ref, ref } from "vue";
-import { WilBattleMoveResult } from "./types/battle";
 
 export const useWilDisplay = () => {
   const messageComplete: Ref<boolean> = ref(false);
@@ -20,23 +19,10 @@ export const useWilDisplay = () => {
     onClickMessageFrame.value = () => chainMessage(messages, afterFunction);
   };
 
-  const battleResult: Ref<WilBattleMoveResult | undefined> = ref();
-  const chainBattleMoveResult = (results: Array<WilBattleMoveResult>) => {
-    const result = results.shift();
-    if (!result) {
-      battleResult.value = undefined;
-      onClickMessageFrame.value = () => {};
-      return;
-    }
-    battleResult.value = result;
-    battleResult.value.process();
-  };
-
   return {
     messageComplete,
     displayMessage,
     onClickMessageFrame,
     chainMessage,
-    chainBattleMoveResult,
   };
 };

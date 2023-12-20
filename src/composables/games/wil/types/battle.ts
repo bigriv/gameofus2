@@ -1,7 +1,11 @@
 import { WilFieldCell } from "./field";
 import { GOUAudio } from "@/composables/types/audio/GOUAudio";
 import { GOULottie } from "@/composables/types/visuals/GOULottie";
-import { GOUAnimation } from "@/composables/types/animations/GOUAnimation";
+import {
+  ANIMATION_EASING_TYPE,
+  ANIMATION_TYPE,
+  GOUAnimation,
+} from "@/composables/types/animations/GOUAnimation";
 import { WilPlayer } from "./player";
 import { WilComputer } from "./computer";
 import { WIL_BATTLE_TEAM } from "../enums/battle";
@@ -10,6 +14,8 @@ import { WilBattleEvent } from "./event";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 import { WilCharacter } from "./character";
 import { WilOperator } from "./operator";
+import { WilSkill } from "./skill";
+import { WIL_SKILL_RANGE } from "../enums/skill";
 
 /**
  * 戦闘管理クラス
@@ -27,13 +33,13 @@ export class WilBattle {
   constructor(player: WilPlayer, event: WilBattleEvent) {
     this.player = player;
     this.player.teamName = event.playerTeamName;
+    this.player.deployableCharacters = [...this.player.allCharacters];
     this.player.resetField();
 
     this.computer = new WilComputer(event.computerTeamName);
-    this.computer.deployCharacters(event.deploy);
 
     this.turnOperator = this.player; // 便宜上デフォルトのターンプレイヤーはプレイヤーとする
-    this.timming = WIL_BATTLE_TIMMING.SET_SELECT_CHARACTER;
+    this.timming = WIL_BATTLE_TIMMING.SET_SELECT_CELL;
     this.changeFieldColor();
   }
 
@@ -86,8 +92,8 @@ export class WilBattle {
     this.resetFieldSelected();
     this.player.resetMove();
     this.computer.resetMove();
-    this.damageResults = [];
     this.moveResults = [];
+    this.damageResults = [];
 
     // ターンキャラクターを取得し、ターンプレイヤーを決定
     const playerCharacter = this.player.getMoveSequense()[0];
@@ -113,9 +119,13 @@ export class WilBattle {
     this.player.consumeStack(consumeStack);
     this.computer.consumeStack(consumeStack);
 
-    // コンピュータのターンなら行動の決定まで行う
+    // コンピュータのターンなら行動の決定まで行い、行動処理に遷移
     if (this.turnOperator instanceof WilComputer) {
       this.turnOperator.decideBattleMove(this.player.field);
+      setTimeout(() => {
+        this.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
+        this.processMove();
+      }, 2000);
     }
   }
 
@@ -125,33 +135,166 @@ export class WilBattle {
    * @param x 対象マスのx座標
    * @param y 対象マスのy座標
    */
-  setMoveTarget(team: WIL_BATTLE_TEAM, x: number, y: number) {
+  setMoveTarget(cell: WilFieldCell) {
     let turnPlayer;
-    if (this.turnOperator instanceof WilPlayer) {
+    if (this.turnOperator.team === WIL_BATTLE_TEAM.PLAYER) {
       turnPlayer = this.player;
-    } else if (this.turnOperator instanceof WilComputer) {
+    } else if (this.turnOperator.team === WIL_BATTLE_TEAM.COMPUTER) {
       turnPlayer = this.computer;
     }
     if (!turnPlayer) {
       throw new WrongImplementationError("Turn player is empty.");
     }
-    if (team == WIL_BATTLE_TEAM.PLAYER) {
-      turnPlayer.targetCell = this.player.field.getCell(x, y);
-    } else if (team == WIL_BATTLE_TEAM.COMPUTER) {
-      turnPlayer.targetCell = this.computer.field.getCell(x, y);
-    }
+
+    turnPlayer.targetCell = cell;
   }
 
   /**
    * ターンキャラクターの行動を処理する
    */
-  processMove() {}
+  processMove() {
+    if (!this.turnOperator.moveCharacter) {
+      throw new WrongImplementationError(
+        "The operator's move character is empty."
+      );
+    }
+    if (!this.turnOperator.targetCell) {
+      throw new WrongImplementationError(
+        "The operator's target cell is empty."
+      );
+    }
+
+    if (!this.turnOperator.selectSkill) {
+      // スキルが選択されていない場合は移動処理を行う
+      this.turnOperator.field.migrateCharacter(
+        this.turnOperator.moveCharacter,
+        this.turnOperator.targetCell
+      );
+      this.turnOperator.moveCharacter.migrate();
+      this.moveResults = [
+        new WilBattleMoveResult({
+          message: [`${this.turnOperator.moveCharacter.name}は移動した。`],
+        }),
+      ];
+      return;
+    }
+
+    if (!this.turnOperator.targetCell.character) {
+      throw new WrongImplementationError(
+        "The move target cell is not exist character."
+      );
+    }
+
+    // スキルの発動処理
+    if (
+      !this.turnOperator.moveCharacter.isUsableSkill(
+        this.turnOperator.selectSkill
+      )
+    ) {
+      // 発動に失敗した場合の処理
+      this.moveResults = [
+        new WilBattleMoveResult({
+          message: [`${this.turnOperator.selectSkill.name}の発動に失敗した。`],
+        }),
+      ];
+      return;
+    }
+
+    let moveResults = new Array<WilBattleMoveResult>();
+    this.turnOperator.moveCharacter.useSkill(this.turnOperator.selectSkill);
+    // FIXME: 仮実装として範囲によらず対象のキャラクターにスキルを適用する
+    moveResults.push(
+      new WilBattleMoveResult({
+        message: [
+          `${this.turnOperator.moveCharacter.name}は${this.turnOperator.selectSkill.name}を発動した。`,
+        ],
+      })
+    );
+
+    let damageResults = new Array<WilBattleDamegeResult>();
+    // ダメージ処理
+    const isNeedCalcDamage =
+      this.turnOperator.selectSkill.power !== undefined &&
+      this.turnOperator.selectSkill.power > 0;
+    if (isNeedCalcDamage) {
+      let damage = WilSkill.calcDamage(
+        this.turnOperator.moveCharacter,
+        this.turnOperator.targetCell.character,
+        this.turnOperator.selectSkill
+      );
+
+      // ダメージとして最大10%を加算
+      damage += Math.round(Math.random() * damage * 0.1);
+
+      damageResults.push(
+        new WilBattleDamegeResult({
+          cell: this.turnOperator.targetCell,
+          damage,
+        })
+      );
+      moveResults.push(
+        new WilBattleMoveResult({
+          message: [
+            `${this.turnOperator.targetCell.character.name}に${damage}のダメージ！`,
+          ],
+          damage: damageResults,
+        })
+      );
+
+      this.turnOperator.targetCell.character.status.life -= damage;
+      if (this.turnOperator.targetCell.character.status.life <= 0) {
+        this.turnOperator.targetCell.character.status.life = 0;
+        moveResults.push(
+          new WilBattleMoveResult({
+            message: [
+              `${this.turnOperator.targetCell.character.name}は力尽きた。`,
+            ],
+            animation: new GOUAnimation(
+              ANIMATION_TYPE.FADEOUT,
+              ANIMATION_EASING_TYPE.EASE,
+              1
+            ),
+            cell: this.turnOperator.targetCell,
+          })
+        );
+      }
+    }
+    // スキル効果の適用
+    if (this.turnOperator.selectSkill.effect) {
+      moveResults.push(
+        ...this.turnOperator.selectSkill.effect(
+          this.turnOperator.moveCharacter,
+          this.turnOperator.targetCell.character
+        )
+      );
+    }
+    const targetCells = [];
+    switch (this.turnOperator.selectSkill.range) {
+      case WIL_SKILL_RANGE.SOLO:
+        targetCells.push(this.turnOperator.targetCell);
+        break;
+      case WIL_SKILL_RANGE.AROUND:
+        break;
+      case WIL_SKILL_RANGE.CROSS:
+        break;
+      case WIL_SKILL_RANGE.ROW:
+        break;
+      case WIL_SKILL_RANGE.COLUMN:
+        break;
+      case WIL_SKILL_RANGE.ALL:
+        break;
+    }
+
+    this.moveResults = moveResults;
+    // TODO: ログを記録
+  }
 
   /**
    * ターン終了時の処理を行う
    */
   endTurn() {
     this.moveResults = this.turnOperator.endTurn();
+    // TODO: ログを記録
 
     // 勝者判定
     this.winner = this.judgeWinner();
@@ -163,10 +306,10 @@ export class WilBattle {
    */
   judgeWinner(): WIL_BATTLE_TEAM | undefined {
     if (!this.player.isExisitAlives()) {
-      return WIL_BATTLE_TEAM.PLAYER;
+      return WIL_BATTLE_TEAM.COMPUTER;
     }
     if (!this.computer.isExisitAlives()) {
-      return WIL_BATTLE_TEAM.COMPUTER;
+      return WIL_BATTLE_TEAM.PLAYER;
     }
     return undefined;
   }
@@ -191,11 +334,19 @@ export class WilBattle {
    * @param target 選択されているマス
    */
   changeFieldColor(target?: WilFieldCell) {
-    this.player.changeFieldColor(this.turnOperator.team, this.timming, target);
-    this.computer.changeFieldColor(
+    this.player.field.changeColor(
       this.turnOperator.team,
       this.timming,
-      target
+      this.turnOperator.moveCharacter,
+      this.turnOperator.selectSkill,
+      target ?? this.turnOperator.targetCell
+    );
+    this.computer.field.changeColor(
+      this.turnOperator.team,
+      this.timming,
+      this.turnOperator.moveCharacter,
+      this.turnOperator.selectSkill,
+      target ?? this.turnOperator.targetCell
     );
   }
 }
@@ -208,17 +359,20 @@ export class WilBattleMoveResult {
   sound?: GOUAudio;
   animation?: GOULottie | GOUAnimation;
   cell?: WilFieldCell;
+  damage?: Array<WilBattleDamegeResult>;
 
   constructor(define: {
     message?: Array<string>;
     sound?: GOUAudio;
     animation?: GOULottie | GOUAnimation;
     cell?: WilFieldCell;
+    damage?: Array<WilBattleDamegeResult>;
   }) {
     this.message = define.message;
     this.sound = define.sound;
     this.animation = define.animation;
     this.cell = define.cell;
+    this.damage = define.damage;
   }
 
   /**

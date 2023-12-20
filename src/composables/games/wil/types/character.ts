@@ -83,10 +83,7 @@ export class WilCharacter {
     menu: WilTrainingMenu,
     skills: { [key: string]: WilSkill }
   ): WilTrainingResult {
-    const result = new WilTrainingResult(
-      menu.id,
-      this.defaultStatus.deepCopy()
-    );
+    const result = new WilTrainingResult(menu, this.defaultStatus.deepCopy());
     // ステータスの上昇
     this.defaultStatus = WilStatus.add(this.defaultStatus, menu.getRise());
     result.after = this.defaultStatus.deepCopy();
@@ -176,7 +173,10 @@ export class WilCharacter {
   overwriteCondition(
     condition: WIL_CONDITION_ID
   ): WilBattleMoveResult | undefined {
-    if (this.condition === WIL_CONDITION_ID.HOLY) {
+    if (
+      this.condition === WIL_CONDITION_ID.HOLY &&
+      condition !== WIL_CONDITION_ID.HOLY
+    ) {
       return new WilBattleMoveResult({
         message: [
           `${this.name}は${WilConditionUtil.getLabel(

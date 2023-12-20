@@ -39,7 +39,7 @@
       >
         <WilCardList
           :dataList="[
-            ...characterList,
+            ...battle.player.deployableCharacters,
             { label: '外す', onClick: onRemoveSetCharacter },
           ]"
           @selectCharacter="onSelectSetCharacter"
@@ -162,7 +162,7 @@
             v-model:complete="messageComplete"
             :clickable="true"
             :speed="3"
-            :messages="displayMessage"
+            :messages="battleResult?.message"
             :fontColor="WIL_FRAME_FONT_COLOR"
             vertical="start"
             horizontal="start"
@@ -194,10 +194,11 @@ import {
 } from "@/composables/games/wil/const";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
-import { WIL_SKILL_TARGET } from "@/composables/games/wil/enums/skill";
-import { WilBattle } from "@/composables/games/wil/types/battle";
+import {
+  WilBattle,
+  WilBattleMoveResult,
+} from "@/composables/games/wil/types/battle";
 import { WilConditionUtil } from "@/composables/games/wil/types/condition";
-import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
 import { useWilDisplay } from "@/composables/games/wil/display";
 
 const props = defineProps({
@@ -215,18 +216,14 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["error", "endSet", "endTurn", "endMessage"]);
+const emits = defineEmits(["error", "endSet", "endTurn"]);
 
-const { messageComplete, displayMessage, onClickMessageFrame } =
-  useWilDisplay();
+const { messageComplete, onClickMessageFrame } = useWilDisplay();
 
 const battle = computed(() => props.battle);
 const playerCharacterNum = computed(() => {
   return battle.value.player.field.countCharacterNum();
 });
-const characterList: Ref<Array<WilCharacter>> = ref(
-  battle.value.player.allCharacters
-);
 const characterStatusList = computed(() => {
   let character = battle.value.turnOperator.moveCharacter;
   if (props.hoverCell && props.hoverCell.character) {
@@ -333,27 +330,33 @@ const onSkipTurn = () => {
   emits("endTurn");
 };
 
+const battleResult: Ref<WilBattleMoveResult | undefined> = ref();
+const chainBattleMoveResult = (results: Array<WilBattleMoveResult>) => {
+  const result = results.shift();
+  console.log(result);
+  if (!result) {
+    battleResult.value = undefined;
+    messageComplete.value = true;
+    onClickMessageFrame.value = () => {};
+    emits("endTurn");
+    return;
+  }
+  battleResult.value = result;
+  if (result.damage && result.damage.length > 0) {
+    battle.value.damageResults = result.damage;
+  }
+  onClickMessageFrame.value = () => chainBattleMoveResult(results);
+  battleResult.value.process();
+};
+
 watch(
-  () => battle.value.timming,
+  () => battle.value.moveResults,
   () => {
-    if (battle.value.turnOperator.team !== WIL_BATTLE_TEAM.PLAYER) {
-      characterList.value = [];
+    if (battle.value.moveResults.length <= 0) {
       return;
     }
-
-    if (
-      battle.value.timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET
-    ) {
-      if (battle.value.player.selectSkill?.target === WIL_SKILL_TARGET.ALLY) {
-        // キャラクターリストを味方の配置済みキャラクターのリストに更新
-        characterList.value = battle.value.player.field.getCharacters();
-      } else if (
-        battle.value.player.selectSkill?.target === WIL_SKILL_TARGET.ENEMY
-      ) {
-        // キャラクターリストを敵の配置済みキャラクターのリストに更新
-        characterList.value = battle.value.computer.field.getCharacters();
-      }
-    }
+    messageComplete.value = false;
+    chainBattleMoveResult(battle.value.moveResults);
   }
 );
 </script>

@@ -5,6 +5,7 @@ import {
   WIL_SKILL_TYPE,
 } from "../enums/skill";
 import { WIL_SKILL_ID } from "../enums/skill";
+import { WilBattleMoveResult } from "./battle";
 import { WilCharacter } from "./character";
 
 export class WilSkill {
@@ -16,7 +17,10 @@ export class WilSkill {
   readonly type: WIL_SKILL_TYPE;
   readonly cost: number;
   readonly power?: number;
-  readonly effect?: Function; // TODO: 引数と戻り値の型を指定できるならする
+  readonly effect?: (
+    __activest: WilCharacter,
+    __target: WilCharacter
+  ) => Array<WilBattleMoveResult>;
   readonly target: WIL_SKILL_TARGET;
   readonly range: WIL_SKILL_RANGE;
   readonly element: WIL_ELEMENT;
@@ -31,7 +35,10 @@ export class WilSkill {
     type: WIL_SKILL_TYPE;
     cost: number;
     power?: number;
-    effect?: Function;
+    effect?: (
+      __activest: WilCharacter,
+      __target: WilCharacter
+    ) => Array<WilBattleMoveResult>;
     target: WIL_SKILL_TARGET;
     range: WIL_SKILL_RANGE;
     element: WIL_ELEMENT;

@@ -136,8 +136,8 @@
         <template v-if="battle.player.selectSkill">
           <div class="c-under_frame__skill_detail">
             <div class="u-d_flex--between">
-              <div>消費ターン数</div>
-              <div>{{ battle.player.selectSkill.cost }}</div>
+              <div>スタック数</div>
+              <div>{{ skillCost }}</div>
             </div>
             <div>効果</div>
             <div>{{ battle.player.selectSkill.description }}</div>
@@ -268,6 +268,18 @@ const skillList = computed(() => {
     return [];
   }
   return character.skills;
+});
+const skillCost = computed(() => {
+  if (!battle.value.turnOperator.moveCharacter) {
+    return 0;
+  }
+  if (!battle.value.turnOperator.selectSkill) {
+    return 0;
+  }
+  return WilSkill.calcCost(
+    battle.value.turnOperator.moveCharacter.condition,
+    battle.value.turnOperator.selectSkill
+  );
 });
 
 // 配置終了ボタン押下時のイベント処理

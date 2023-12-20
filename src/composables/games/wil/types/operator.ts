@@ -2,7 +2,7 @@ import { WrongImplementationError } from "@/composables/types/errors/WrongImplem
 import { WilCharacter } from "./character";
 import { WilField, WilFieldCell } from "./field";
 import { WilSkill } from "./skill";
-import {  WilBattleMoveResult } from "./battle";
+import { WilBattleMoveResult } from "./battle";
 import { WIL_BATTLE_TEAM } from "../enums/battle";
 import {
   ANIMATION_EASING_TYPE,
@@ -49,8 +49,14 @@ export abstract class WilOperator {
     }
     const results = new Array<WilBattleMoveResult>();
     // 状態異常の効果を適用する
+    const moveCharacterCell = this.field.getCharacterCell(this.moveCharacter);
+    if (!moveCharacterCell) {
+      throw new WrongImplementationError(
+        "The move character is not exist in field."
+      );
+    }
     let processConditionTurnEndresult =
-      this.moveCharacter.processConditionTurnEnd();
+      this.moveCharacter.processConditionTurnEnd(moveCharacterCell);
     if (processConditionTurnEndresult) {
       results.push(processConditionTurnEndresult);
     }

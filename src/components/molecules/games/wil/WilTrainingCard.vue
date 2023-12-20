@@ -3,9 +3,7 @@
     <div class="c-card">
       <div>{{ props.training.name }}</div>
       <div class="c-card__image">
-        <GOUVisualCanvas
-          :objects="{ training: props.training.image }"
-        />
+        <GOUVisualCanvas :objects="{ training: props.training.image }" />
       </div>
     </div>
   </WilCard>
@@ -14,12 +12,12 @@
 <script setup lang="ts">
 import { PropType } from "vue";
 import WilCard from "@/components/molecules/games/wil/WilCard.vue";
-import { WilTraining } from "@/composables/games/wil/types/training";
+import { WilTrainingMenu } from "@/composables/games/wil/types/training";
 import GOUVisualCanvas from "../../GOUVisualCanvas.vue";
 
 const props = defineProps({
   training: {
-    type: Object as PropType<WilTraining>,
+    type: Object as PropType<WilTrainingMenu>,
     required: true,
   },
 });

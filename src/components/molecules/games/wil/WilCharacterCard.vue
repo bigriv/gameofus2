@@ -6,7 +6,7 @@
     ></div>
     <div class="c-card__name">{{ props.character.name }}</div>
     <div class="c-card__visual">
-      <GOUVisualCanvas :objects="{ character: props.character.visual }" />
+      <GOUVisualCanvas :objects="{ character: props.character.visual.standing }" />
     </div>
   </WilCard>
 </template>

@@ -385,15 +385,15 @@ export class WilBattleMoveResult {
     if (this.cell?.character) {
       if (this.animation instanceof GOULottie) {
         const character = this.cell.character;
-        const temp = this.cell.character.miniVisual;
-        this.cell.character.miniVisual = this.animation;
+        const temp = this.cell.character.visual;
+        this.cell.character.visual.current = this.animation;
         // FIXME: 何秒で戻すかは要調整
-        setTimeout(() => (character.miniVisual = temp), 1000);
+        setTimeout(() => (character.visual.current = temp.standing), 1000);
       } else if (this.animation instanceof GOUAnimation) {
         const character = this.cell.character;
-        this.cell.character.miniVisual.animation = this.animation;
+        this.cell.character.visual.current.animation = this.animation;
         setTimeout(
-          () => (character.miniVisual.animation = undefined),
+          () => (character.visual.current.animation = undefined),
           this.animation.duration * 1000
         );
       }
@@ -431,9 +431,9 @@ export class WilBattleDamegeResult {
     }
     if (this.animation && this.cell.character) {
       const character = this.cell.character;
-      character.miniVisual.animation = this.animation;
+      character.visual.current.animation = this.animation;
       setTimeout(
-        () => (character.miniVisual.animation = undefined),
+        () => (character.visual.current.animation = undefined),
         this.animation.duration * 1000
       );
     }

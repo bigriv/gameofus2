@@ -1,16 +1,14 @@
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import { WIL_IMAGE_ID } from "../enums/image";
-import { WIL_SOUND_ID } from "../enums/sound";
 import { WIL_CHAPTER_TIMMING } from "../enums/timming";
 import { WilCharacter } from "./character";
 import { WilBattleEvent, WilTalkEvent } from "./event";
 import { WilFieldCell } from "./field";
-import { GOUAudio } from "@/composables/types/audio/GOUAudio";
 import { SequenceId } from "@/composables/utils/id";
-import { WIL_CHARACTER_ID } from "../enums/character";
 import { WIL_CHARACTER_DEFINES } from "../defines/character";
 import { WIL_BATTLE_TEAM } from "../enums/battle";
 import { WilSkill } from "./skill";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import { WilChapterDefine } from "../defines/chapter";
 
 export class WilChapter {
   title: string;
@@ -22,35 +20,11 @@ export class WilChapter {
   private currentBattle: number = -1;
 
   constructor(
-    define: {
-      title: string;
-      flow: Array<WIL_CHAPTER_TIMMING>;
-      battles: Array<{
-        playerTeamName: string;
-        computerTeamName: string;
-        background?: WIL_IMAGE_ID;
-        bgm?: WIL_SOUND_ID;
-        deploy: Array<{
-          x: number;
-          y: number;
-          character: WIL_CHARACTER_ID;
-        }>;
-      }>;
-      talks: Array<
-        Array<{
-          talker?: string;
-          background?: WIL_IMAGE_ID;
-          message?: Array<string>;
-          sound?: WIL_SOUND_ID;
-          left?: WIL_IMAGE_ID;
-          right?: WIL_IMAGE_ID;
-        }>
-      >;
-    },
+    define: WilChapterDefine,
     sequence: SequenceId,
     skills: { [key: string]: WilSkill },
     images: { [key: string]: GOUVisual },
-    sounds: { [key: string]: GOUAudio }
+    sounds: { [key: string]: GOUReadAudio }
   ) {
     this.title = define.title;
     this.flow = define.flow;
@@ -59,7 +33,8 @@ export class WilChapter {
         playerTeamName: battle.playerTeamName,
         computerTeamName: battle.computerTeamName,
         background: battle.background ? images[battle.background] : undefined,
-        bgm: battle.bgm ? sounds[battle.bgm] : undefined,
+        deployBgm: battle.deployBgm ? sounds[battle.deployBgm] : undefined,
+        battleBgm: battle.battleBgm ? sounds[battle.battleBgm] : undefined,
         deploy: battle.deploy.map((cell) => {
           const character = new WilCharacter(
             sequence.generateId(),
@@ -88,6 +63,7 @@ export class WilChapter {
             left: define.left ? images[define.left] : undefined,
             right: define.right ? images[define.right] : undefined,
             sound: define.sound ? sounds[define.sound] : undefined,
+            bgm: define.bgm ? sounds[define.bgm] : undefined,
           })
       )
     );

@@ -5,8 +5,12 @@ import { WIL_IMAGE_ID } from "../enums/image";
 export const WIL_CHARACTER_DEFINES: {
   [key: string]: {
     name: string;
-    visual: WIL_IMAGE_ID;
-    miniVisual: WIL_IMAGE_ID;
+    visual: {
+      standing: WIL_IMAGE_ID;
+      closePhisic?: WIL_IMAGE_ID;
+      shootPhisic?: WIL_IMAGE_ID;
+      magic?: WIL_IMAGE_ID;
+    };
     status: {
       life: number;
       attack: number;
@@ -20,9 +24,10 @@ export const WIL_CHARACTER_DEFINES: {
   };
 } = {
   HERO: {
-    name: "主人公",
-    visual: WIL_IMAGE_ID.CHARACTER_HERO,
-    miniVisual: WIL_IMAGE_ID.MINI_CHARACTER_HERO,
+    name: "ヒカル",
+    visual: {
+      standing: WIL_IMAGE_ID.MINI_CHARACTER_HERO,
+    },
     status: {
       life: 100,
       attack: 15,
@@ -46,8 +51,7 @@ export const WIL_CHARACTER_DEFINES: {
   // 聖騎士団
   HOLY_KNIGHTS_SOLDIER: {
     name: "近接兵",
-    visual: WIL_IMAGE_ID.CHARACTER_OTHER,
-    miniVisual: WIL_IMAGE_ID.CHARACTER_OTHER,
+    visual: { standing: WIL_IMAGE_ID.CHARACTER_OTHER },
     status: {
       life: 100,
       attack: 15,
@@ -61,8 +65,7 @@ export const WIL_CHARACTER_DEFINES: {
   },
   HOLY_KNIGHTS_MAGICIAN: {
     name: "魔法兵",
-    visual: WIL_IMAGE_ID.CHARACTER_OTHER,
-    miniVisual: WIL_IMAGE_ID.CHARACTER_OTHER,
+    visual: { standing: WIL_IMAGE_ID.CHARACTER_OTHER },
     status: {
       life: 100,
       attack: 15,
@@ -76,8 +79,7 @@ export const WIL_CHARACTER_DEFINES: {
   },
   HOLY_KNIGHTS_LEADER: {
     name: "騎士団長",
-    visual: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
-    miniVisual: WIL_IMAGE_ID.MINI_CHARACTER_HOLY_KNIGHTS_LEADER,
+    visual: { standing: WIL_IMAGE_ID.MINI_CHARACTER_HOLY_KNIGHTS_LEADER },
     status: {
       life: 100,
       attack: 15,
@@ -93,8 +95,7 @@ export const WIL_CHARACTER_DEFINES: {
   // 嵐の射手
   STORM_SHOOTERS_ARCHER: {
     name: "弓兵",
-    visual: WIL_IMAGE_ID.CHARACTER_OTHER,
-    miniVisual: WIL_IMAGE_ID.CHARACTER_OTHER,
+    visual: { standing: WIL_IMAGE_ID.CHARACTER_OTHER },
     status: {
       life: 100,
       attack: 15,
@@ -110,8 +111,7 @@ export const WIL_CHARACTER_DEFINES: {
   // モンスター
   DARK_MONSTER_SHADOW: {
     name: "シャドウ",
-    visual: WIL_IMAGE_ID.CHARACTER_OTHER,
-    miniVisual: WIL_IMAGE_ID.CHARACTER_OTHER,
+    visual: { standing: WIL_IMAGE_ID.CHARACTER_OTHER },
     status: {
       life: 100,
       attack: 15,

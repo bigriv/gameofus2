@@ -27,7 +27,7 @@
         :fontColor="WIL_FRAME_FONT_COLOR"
         :backgroundColor="WIL_FRAME_BACKGROUND_COLOR"
         :borderColor="WIL_FRAME_BORDER_COLOR"
-        :speed="1"
+        :speed="2"
         :clickable="talk.message && talk.message.length > 0"
         vertical="start"
         horizontal="start"
@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, Ref, computed, onMounted, ref } from "vue";
+import { PropType, Ref, computed, onMounted, onUnmounted, ref } from "vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
@@ -48,6 +48,7 @@ import {
   WIL_FRAME_BORDER_COLOR,
   WIL_FRAME_BACKGROUND_COLOR,
 } from "@/composables/games/wil/const";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 
 const props = defineProps({
   images: {
@@ -68,6 +69,7 @@ const talker = computed(() => {
   }
   return [talk.value.talker];
 });
+let bgm: GOUReadAudio | undefined = undefined;
 const onClickMessageFrame: Ref<Function> = ref(() => {});
 const isEndMessage = ref(false);
 
@@ -83,13 +85,21 @@ const chainTalkEvent: Function = (
     return;
   }
   talk.value = event;
-  talk.value.process();
+  talk.value.process(bgm);
+  if (talk.value.bgm) {
+    bgm = talk.value.bgm;
+  }
 
   onClickMessageFrame.value = () => chainTalkEvent(events, afterFunction);
 };
 
 onMounted(() => {
   chainTalkEvent([...props.events], () => emits("end"));
+});
+onUnmounted(() => {
+  if (bgm && bgm.isPlaying()) {
+    bgm?.stop();
+  }
 });
 </script>
 

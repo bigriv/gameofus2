@@ -1,3 +1,4 @@
+import { WIL_CONDITION_ID } from "../enums/condition";
 import { WIL_ELEMENT } from "../enums/element";
 import {
   WIL_SKILL_RANGE,
@@ -7,6 +8,7 @@ import {
 import { WIL_SKILL_ID } from "../enums/skill";
 import { WilBattleMoveResult } from "./battle";
 import { WilCharacter } from "./character";
+import { WilConditionUtil } from "./condition";
 
 export class WilSkill {
   readonly id: WIL_SKILL_ID;
@@ -95,11 +97,9 @@ export class WilSkill {
   static isResistance(attacker: WIL_ELEMENT, defenser: WIL_ELEMENT): boolean {
     switch (attacker) {
       case WIL_ELEMENT.NONE:
-        return false;
       case WIL_ELEMENT.SHINE:
-        return defenser === WIL_ELEMENT.DARK;
       case WIL_ELEMENT.DARK:
-        return defenser === WIL_ELEMENT.SHINE;
+        return false;
       case WIL_ELEMENT.FIRE:
         return defenser === WIL_ELEMENT.WATER;
       case WIL_ELEMENT.SOIL:
@@ -115,6 +115,9 @@ export class WilSkill {
 
   /**
    * ダメージ量の計算を行う
+   * @param activist スキル発動者
+   * @param target スキル対象
+   * @param skill 発動するスキル
    */
   static calcDamage(
     activist: WilCharacter,
@@ -135,13 +138,40 @@ export class WilSkill {
       damage = 0;
     }
 
+    // 弱点判定
     if (WilSkill.isWeekness(skill.element, target.element)) {
       damage *= 2;
     }
+    // 抵抗判定
     if (WilSkill.isResistance(skill.element, target.element)) {
       damage *= 0.5;
     }
 
-    return damage;
+    // ダメージの最大10%を加算
+    damage += damage * Math.random() * 10;
+
+    return Math.round(damage);
+  }
+
+  /**
+   * コストの計算を行う
+   * @param condition スキル使用者の状態異常
+   * @param skill 発動するスキル
+   * @returns 必要コスト
+   */
+  static calcCost(condition: WIL_CONDITION_ID, skill: WilSkill): number {
+    let cost = skill.cost;
+    if (condition === WIL_CONDITION_ID.MUDDY) {
+      return WilConditionUtil.calcIncreaseStack(
+        cost,
+        WilConditionUtil.MEDIUM_STACK_RATE
+      );
+    } else if (condition === WIL_CONDITION_ID.PARALYSIS) {
+      return WilConditionUtil.calcIncreaseStack(
+        cost,
+        WilConditionUtil.LITTELE_DAMAGE_RATE
+      );
+    }
+    return cost;
   }
 }

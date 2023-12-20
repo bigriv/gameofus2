@@ -3,20 +3,20 @@
     <div class="c-training__characters">
       <WilCardList
         :selected="selectedCharacter?.id"
-        :dataList="playerCharacters"
+        :dataList="training.selectableCharacters"
         @update:selected="onSelectCharacter"
       />
     </div>
     <div class="c-training__plan">
       <div class="c-training__plan__cards">
         <div
-          v-for="plan in trainingPlans"
+          v-for="plan in training.plan"
           class="c-training__plan__cards__content"
         >
           <div class="c-training__plan__cards__content__training">
             <WilTrainingCard
-              :training="plan.training"
-              @click="onSelectTraining(plan.training.id)"
+              :training="(plan.menu as WilTrainingMenu)"
+              @click="onSelectTraining(plan.menu.id)"
             />
           </div>
           <template v-if="plan.character">
@@ -28,7 +28,7 @@
                 label="選択を解除"
                 :fontColor="WIL_BUTTON_FONT_COLOR"
                 :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
-                @click="onRemoveCharacter(plan.training.id)"
+                @click="onRemoveCharacter(plan.menu.id)"
               />
             </div>
           </template>
@@ -36,7 +36,7 @@
       </div>
     </div>
     <div class="c-training__infomation">
-      <div>残り日数 {{ TRAINING_DAYS - day }}日</div>
+      <div>残り日数 {{ WilTraining.TRAINING_DAYS - training.days }}日</div>
       <div class="c-training__infomation__button">
         <GameButton
           v-if="isStartableTraining"
@@ -67,96 +67,96 @@
         >
           <div class="c-training__result_modal__cards">
             <div
-              v-if="resultModal.character"
+              v-if="resultModal.result?.character"
               class="c-training__result_modal__cards__character"
             >
-              <WilCharacterCard :character="resultModal.character" />
+              <WilCharacterCard :character="resultModal.result.character" />
             </div>
             <div
-              v-if="resultModal.training"
+              v-if="resultModal.result"
               class="c-training__result_modal__cards__training"
             >
-              <WilTrainingCard :training="resultModal.training" />
+              <WilTrainingCard :training="resultModal.result.menu" />
             </div>
           </div>
-          <template v-if="resultModal.training && resultModal.character">
+          <template v-if="resultModal.result">
             <div class="c-training__result_modal__result">
               <dl>
                 <dt>体力</dt>
-                <dd>{{ resultModal.training.before.life }}</dd>
+                <dd>{{ resultModal.result.before.life }}</dd>
                 <dd>⇒</dd>
                 <dd
                   :class="{
                     'u-color--red':
-                      resultModal.training.before.life <
-                      resultModal.character.defaultStatus.life,
+                      resultModal.result.before.life <
+                      resultModal.result.after.life,
                   }"
                 >
-                  {{ resultModal.character.defaultStatus.life }}
+                  {{ resultModal.result.after.life }}
                 </dd>
               </dl>
               <dl>
                 <dt>攻撃力</dt>
-                <dd>{{ resultModal.training.before.attack }}</dd>
+                <dd>{{ resultModal.result.before.attack }}</dd>
                 <dd>⇒</dd>
                 <dd
                   :class="{
                     'u-color--red':
-                      resultModal.training.before.attack <
-                      resultModal.character.defaultStatus.attack,
+                      resultModal.result.before.attack <
+                      resultModal.result.after.attack,
                   }"
                 >
-                  {{ resultModal.character.defaultStatus.attack }}
+                  {{ resultModal.result.after.attack }}
                 </dd>
               </dl>
               <dl>
                 <dt>防御力</dt>
-                <dd>{{ resultModal.training.before.defense }}</dd>
+                <dd>{{ resultModal.result.before.defense }}</dd>
                 <dd>⇒</dd>
                 <dd
                   :class="{
                     'u-color--red':
-                      resultModal.training.before.defense <
-                      resultModal.character.defaultStatus.defense,
+                      resultModal.result.before.defense <
+                      resultModal.result.after.defense,
                   }"
                 >
-                  {{ resultModal.character.defaultStatus.defense }}
+                  {{ resultModal.result.after.defense }}
                 </dd>
               </dl>
               <dl>
                 <dt>魔力</dt>
-                <dd>{{ resultModal.training.before.magic }}</dd>
+                <dd>{{ resultModal.result.before.magic }}</dd>
                 <dd>⇒</dd>
                 <dd
                   :class="{
                     'u-color--red':
-                      resultModal.training.before.magic <
-                      resultModal.character.defaultStatus.magic,
+                      resultModal.result.before.magic <
+                      resultModal.result.after.magic,
                   }"
                 >
-                  {{ resultModal.character.defaultStatus.magic }}
+                  {{ resultModal.result.after.magic }}
                 </dd>
               </dl>
               <dl>
                 <dt>敏捷力</dt>
-                <dd>{{ resultModal.training.before.speed }}</dd>
+                <dd>{{ resultModal.result.before.speed }}</dd>
                 <dd>⇒</dd>
                 <dd
                   :class="{
                     'u-color--red':
-                      resultModal.training.before.speed <
-                      resultModal.character.defaultStatus.speed,
+                      resultModal.result.before.speed <
+                      resultModal.result.after.speed,
                   }"
                 >
-                  {{ resultModal.character.defaultStatus.speed }}
+                  {{ resultModal.result.after.speed }}
                 </dd>
               </dl>
             </div>
             <div
-              v-if="resultModal.training.learned"
+              v-if="resultModal.result.learned"
               class="c-training__result_modal__learned"
             >
-              {{ props.skills[resultModal.training.learned].name }}を習得した！
+              {{ resultModal.result.learned.name }}を習得した！
             </div>
             <div class="c-training__result_modal__button">
               <GameButton
@@ -204,14 +204,18 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, Ref, computed, reactive, ref } from "vue";
+import { PropType, Ref, computed, onMounted, reactive, ref } from "vue";
 import WilCardList from "@/components/molecules/games/wil/WilCardList.vue";
 import { WIL_TRAINING_ID } from "@/composables/games/wil/enums/training";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 import WilCharacterCard from "@/components/molecules/games/wil/WilCharacterCard.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
-import { WilTraining } from "@/composables/games/wil/types/training";
+import {
+  WilTraining,
+  WilTrainingMenu,
+  WilTrainingResult,
+} from "@/composables/games/wil/types/training";
 import WilTrainingCard from "@/components/molecules/games/wil/WilTrainingCard.vue";
 import { WilPlayer } from "@/composables/games/wil/types/player";
 import {
@@ -223,7 +227,6 @@ import {
 } from "@/composables/games/wil/const";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WilSkill } from "@/composables/games/wil/types/skill";
-import { useWilTraining } from "@/composables/games/wil/training";
 
 const props = defineProps({
   images: {
@@ -241,30 +244,31 @@ const props = defineProps({
 });
 const emits = defineEmits(["end"]);
 
-const {
-  TRAINING_DAYS,
-  day,
-  playerCharacters,
-  trainingPlans,
-  training,
-  endDay,
-} = useWilTraining(props.images, props.player);
-
 // 選択中キャラクター
+const training = ref(new WilTraining(props.player.allCharacters, props.images));
 const selectedCharacter: Ref<WilCharacter | undefined> = ref();
 
 // 訓練開始可否フラグ
 const isStartableTraining = computed(() => {
-  // 訓練実施日数が一定以上なら訓練開始不可
-  if (day.value >= TRAINING_DAYS) {
+  if (training.value.isEnd()) {
     return false;
   }
 
   // 一人でも訓練に設定されていれば訓練開始可能
-  for (const key of Object.keys(trainingPlans)) {
-    if (trainingPlans[key].character) {
-      return true;
-    }
+  if (training.value.plan.attack.character) {
+    return true;
+  }
+  if (training.value.plan.defense.character) {
+    return true;
+  }
+  if (training.value.plan.migration.character) {
+    return true;
+  }
+  if (training.value.plan.magic.character) {
+    return true;
+  }
+  if (training.value.plan.phisic.character) {
+    return true;
   }
   return false;
 });
@@ -272,14 +276,10 @@ const isStartableTraining = computed(() => {
 // 訓練結果表示モーダル
 const resultModal: {
   isShow: boolean;
-  character?: WilCharacter;
-  training?: WilTraining;
-  next?: WIL_TRAINING_ID;
+  result?: WilTrainingResult;
 } = reactive({
   isShow: false,
-  character: undefined,
-  training: undefined,
-  next: undefined,
+  result: undefined,
 });
 
 // 確認モーダル
@@ -295,61 +295,26 @@ const confirmModal: {
   onClickCancel: undefined,
 });
 
-const onSelectTraining = (training: WIL_TRAINING_ID) => {
+const onSelectTraining = (trainingId: WIL_TRAINING_ID) => {
   if (!selectedCharacter.value) {
     return;
   }
-
-  if (trainingPlans[training].character) {
-    // 元々配置されていたキャラをリストに追加
-    const character = trainingPlans[training].character;
-    if (!character) {
-      return;
-    }
-    playerCharacters.value.push(character);
-    playerCharacters.value = playerCharacters.value.sort(
-      (a: WilCharacter, b: WilCharacter) => a.id.localeCompare(b.id)
-    );
-  }
-
-  // 選択したキャラクターを配置し、リストから削除
-  trainingPlans[training].character = selectedCharacter.value;
-  playerCharacters.value = playerCharacters.value.filter(
-    (c: WilCharacter) => c.id !== selectedCharacter.value?.id
-  );
-  selectedCharacter.value = undefined;
+  training.value.setCharacter(trainingId, selectedCharacter.value);
 };
 
-const onRemoveCharacter = (training: WIL_TRAINING_ID) => {
-  if (trainingPlans[training].character) {
-    // 元々配置されていたキャラをリストに追加
-    const character = trainingPlans[training].character;
-    if (!character) {
-      return;
-    }
-    playerCharacters.value.push(character);
-    playerCharacters.value = playerCharacters.value.sort(
-      (a: WilCharacter, b: WilCharacter) => a.id.localeCompare(b.id)
-    );
-  }
-
-  // 選択を解除
-  trainingPlans[training].character = undefined;
+const onRemoveCharacter = (trainingId: WIL_TRAINING_ID) => {
+  training.value.removeCharacter(trainingId);
 };
-const showResult = (plan?: WIL_TRAINING_ID) => {
-  resultModal.training = undefined;
-  resultModal.character = undefined;
-  resultModal.next = undefined;
+const chainTrainingResult = () => {
+  const result = training.value.results.shift();
+  resultModal.result = result ? (result as WilTrainingResult) : undefined;
 
-  if (!plan) {
+  if (!resultModal.result) {
     // 次の訓練結果がない場合はその日の訓練を終わる
-    confirmModal.message = `${
-      day.value + 1
-    }日目の訓練が終了しました。`;
+    confirmModal.message = `${training.value.days}日目の訓練が終了しました。`;
     confirmModal.onClickOk = () => {
-      endDay();
       // 最終日の場合は訓練自体を終わる
-      if (day.value >= TRAINING_DAYS) {
+      if (training.value.isEnd()) {
         confirmModal.message = "訓練を終了します。";
         confirmModal.onClickOk = () => {
           confirmModal.isShow = false;
@@ -358,6 +323,10 @@ const showResult = (plan?: WIL_TRAINING_ID) => {
         confirmModal.onClickCancel = undefined;
         confirmModal.isShow = true;
       }
+
+      // 次の日の訓練を開始
+      selectedCharacter.value = undefined;
+      training.value.startDay();
       confirmModal.isShow = false;
     };
     confirmModal.onClickCancel = undefined;
@@ -365,39 +334,23 @@ const showResult = (plan?: WIL_TRAINING_ID) => {
     return;
   }
 
-  if (!trainingPlans[plan].character) {
-    // キャラクターが設定されていなければ次の訓練結果を表示する
-    showResult(trainingPlans[plan].next);
-    return;
-  }
-  resultModal.character = trainingPlans[plan].character;
-  resultModal.training = trainingPlans[plan].training;
-  resultModal.next = trainingPlans[plan].next;
-  setTimeout(() => {
-    resultModal.isShow = true;
-  }, 50);
+  resultModal.isShow = true;
 };
 const onStartTraining = () => {
-  for (const key of Object.keys(trainingPlans)) {
-    if (!trainingPlans[key].character) {
-      continue;
-    }
-    training(
-      trainingPlans[key].character as WilCharacter,
-      trainingPlans[key].training
-    );
-  }
-
-  showResult(WIL_TRAINING_ID.ATTACK);
+  training.value.process(props.skills);
+  chainTrainingResult();
 };
 const onSelectCharacter = (id: string) => {
-  selectedCharacter.value = playerCharacters.value.find(
+  selectedCharacter.value = training.value.selectableCharacters.find(
     (character: WilCharacter) => character.id === id
   );
 };
 const onClickOk = () => {
   resultModal.isShow = false;
-  showResult(resultModal.next);
+
+  // 次の結果表示
+  // 前のモーダルが閉じたのと時差をつけるために50ms遅らせて処理
+  setTimeout(chainTrainingResult, 50);
 };
 
 const onEndTraining = () => {
@@ -411,6 +364,10 @@ const onEndTraining = () => {
   };
   confirmModal.isShow = true;
 };
+
+onMounted(() => {
+  training.value.startDay();
+});
 </script>
 
 <style scoped lang="scss">

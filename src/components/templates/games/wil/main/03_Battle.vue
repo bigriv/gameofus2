@@ -62,7 +62,15 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, Ref, computed, ref, watch } from "vue";
+import {
+  PropType,
+  Ref,
+  computed,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch,
+} from "vue";
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 import Field from "@/components/templates/games/wil/main/battle/01_Field.vue";
 import UnderFrame from "@/components/templates/games/wil/main/battle/02_UnderFrame.vue";
@@ -100,6 +108,12 @@ const hoverCell: Ref<WilFieldCell | undefined> = ref();
 const infomationMessage = ref("");
 const guideMessage = ref("キャラクターを配置するマスを選択してください。");
 
+onMounted(() => {
+  props.event.processDeploy();
+});
+onUnmounted(() => {
+  props.event.processEnd();
+});
 const onClickComputerField = (cell: WilFieldCell) => {
   console.log("click", cell, battle.value.timming);
   // スキル発動対象選択時
@@ -145,6 +159,7 @@ const error = (message: string) => {
 };
 const endSet = () => {
   battle.value.computer.deployCharacters(props.event.deploy);
+  props.event.processBattle();
   // 戦闘開始の前処理を実行
   battle.value.startBattle();
 
@@ -176,6 +191,7 @@ const endTurn = () => {
   startTurn();
 };
 const endBattle = () => {
+  props.event.processEnd();
   battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_END);
   battle.value.endBattle();
   if (battle.value.winner === WIL_BATTLE_TEAM.PLAYER) {

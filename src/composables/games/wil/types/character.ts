@@ -6,14 +6,20 @@ import { WilSkill } from "./skill";
 import { WIL_IMAGE_ID } from "../enums/image";
 import { WIL_CONDITION_ID } from "../enums/condition";
 import { WilTrainingMenu, WilTrainingResult } from "./training";
-import { WilBattleMoveResult } from "./battle";
+import { WilBattleDamegeResult, WilBattleMoveResult } from "./battle";
 import { WilConditionUtil } from "./condition";
+import { WilFieldCell } from "./field";
 
 export class WilCharacter {
   readonly id: string;
   readonly name: string;
-  visual: GOUVisual;
-  miniVisual: GOUVisual;
+  visual: {
+    current: GOUVisual;
+    standing: GOUVisual;
+    closePhisic: GOUVisual;
+    shootPhisic: GOUVisual;
+    magic: GOUVisual;
+  };
   skills: Array<WilSkill> = [];
   skillType: Array<WIL_SKILL_TYPE>;
   defaultStatus: WilStatus;
@@ -27,8 +33,12 @@ export class WilCharacter {
     sequence: number,
     define: {
       name: string;
-      visual: WIL_IMAGE_ID;
-      miniVisual: WIL_IMAGE_ID;
+      visual: {
+        standing: WIL_IMAGE_ID;
+        closePhisic?: WIL_IMAGE_ID;
+        shootPhisic?: WIL_IMAGE_ID;
+        magic?: WIL_IMAGE_ID;
+      };
       status: {
         life: number;
         attack: number;
@@ -45,8 +55,19 @@ export class WilCharacter {
   ) {
     this.id = String(sequence);
     this.name = define.name;
-    this.visual = images[define.visual];
-    this.miniVisual = images[define.miniVisual];
+    this.visual = {
+      current: images[define.visual.standing],
+      standing: images[define.visual.standing],
+      closePhisic: define.visual.closePhisic
+        ? images[define.visual.closePhisic]
+        : images[define.visual.standing],
+      shootPhisic: define.visual.shootPhisic
+        ? images[define.visual.shootPhisic]
+        : images[define.visual.standing],
+      magic: define.visual.magic
+        ? images[define.visual.magic]
+        : images[define.visual.standing],
+    };
     this.defaultStatus = new WilStatus(define.status);
     this.status = new WilStatus(define.status);
     this.element = define.element ?? WIL_ELEMENT.NONE;
@@ -135,8 +156,20 @@ export class WilCharacter {
    * マスを移動する（座標の変更はFieldで行う）
    */
   migrate() {
-    // TODO: 消費ターン数について要調整
-    this.stack += Math.floor((1000 - this.status.speed) / 10);
+    this.stack += WilStatus.MAX_STATUS + 1 - this.status.speed;
+    if (this.condition === WIL_CONDITION_ID.MUDDY) {
+      // 泥々の場合はスタック数中上昇
+      this.stack += WilConditionUtil.calcIncreaseStack(
+        this.stack,
+        WilConditionUtil.MEDIUM_STACK_RATE
+      );
+    } else if (this.condition === WIL_CONDITION_ID.PARALYSIS) {
+      // 麻痺の場合はスタック数弱上昇
+      this.stack += WilConditionUtil.calcIncreaseStack(
+        this.stack,
+        WilConditionUtil.LITTELE_DAMAGE_RATE
+      );
+    }
   }
 
   /**
@@ -145,7 +178,8 @@ export class WilCharacter {
    * @returns 発動に成功すればtrue、失敗した場合はfalse
    */
   useSkill(skill: WilSkill) {
-    this.stack += skill.cost;
+    const cost = WilSkill.calcCost(this.condition, skill);
+    this.stack += cost;
   }
 
   /**
@@ -201,29 +235,41 @@ export class WilCharacter {
    * 現在の状態異常のパッシブ適用処理を行う
    * @returns パッシブ適用結果
    */
-  processConditionPassiveStart(): WilBattleMoveResult | undefined {
+  processConditionPassiveStart() {
     if (this.condition === WIL_CONDITION_ID.DEBILITY) {
-      // TODO: 攻撃力弱減少+防御力弱減少
+      // 攻撃力弱減少+防御力弱減少
+      this.status.attack -= WilConditionUtil.calcDecrease(
+        this.status.attack,
+        this.defaultStatus.attack,
+        WilConditionUtil.LITTELE_DECREASE_RATE
+      );
+      this.status.defense -= WilConditionUtil.calcDecrease(
+        this.status.defense,
+        this.defaultStatus.defense,
+        WilConditionUtil.LITTELE_DECREASE_RATE
+      );
     } else if (this.condition === WIL_CONDITION_ID.PARALYSIS) {
-      // TODO: 攻撃力弱減少
+      // 攻撃力弱減少
+      this.status.attack -= WilConditionUtil.calcDecrease(
+        this.status.attack,
+        this.defaultStatus.attack,
+        WilConditionUtil.LITTELE_DECREASE_RATE
+      );
     } else if (this.condition === WIL_CONDITION_ID.WEATHERING) {
-      // TODO: 防御力中減少
+      // 防御力中減少
+      this.status.defense -= WilConditionUtil.calcDecrease(
+        this.status.defense,
+        this.defaultStatus.defense,
+        WilConditionUtil.MEDIUM_DECREASE_RATE
+      );
     } else if (this.condition === WIL_CONDITION_ID.BURN) {
       // 防御力弱減少
-      const decrease = this.defaultStatus.attack * 0.1;
-      this.status.attack -= decrease;
-      if (this.status.attack <= 0) {
-        this.status.attack = 0;
-      }
-      return new WilBattleMoveResult({
-        message: [
-          `${WilConditionUtil.getLabel(
-            this.condition
-          )}の効果で防御力が10%減少した。`,
-        ],
-      });
+      this.status.defense -= WilConditionUtil.calcDecrease(
+        this.status.defense,
+        this.defaultStatus.defense,
+        WilConditionUtil.LITTELE_DECREASE_RATE
+      );
     }
-    return undefined;
   }
 
   /**
@@ -231,32 +277,88 @@ export class WilCharacter {
    */
   processConditionPassiveEnd() {
     if (this.condition === WIL_CONDITION_ID.DEBILITY) {
-      // TODO: 攻撃力弱増加+防御力弱増加
+      // 攻撃力弱増加+防御力弱増加
+      this.status.attack += WilConditionUtil.calcIncrease(
+        this.defaultStatus.attack,
+        WilConditionUtil.LITTELE_DECREASE_RATE
+      );
+      this.status.defense += WilConditionUtil.calcIncrease(
+        this.defaultStatus.defense,
+        WilConditionUtil.LITTELE_DECREASE_RATE
+      );
     } else if (this.condition === WIL_CONDITION_ID.PARALYSIS) {
-      // TODO: 攻撃力弱増加
+      // 攻撃力弱増加
+      this.status.attack += WilConditionUtil.calcIncrease(
+        this.defaultStatus.attack,
+        WilConditionUtil.LITTELE_DECREASE_RATE
+      );
     } else if (this.condition === WIL_CONDITION_ID.WEATHERING) {
-      // TODO: 防御力中増加
+      // 防御力中増加
+      this.status.defense += WilConditionUtil.calcIncrease(
+        this.defaultStatus.defense,
+        WilConditionUtil.MEDIUM_DECREASE_RATE
+      );
     } else if (this.condition === WIL_CONDITION_ID.BURN) {
-      // TODO: 防御力弱増加
-      const increase = this.defaultStatus.attack * 0.1;
-      // 初期値を超えた場合は別のパッシブが働いているとみなすため、超過判定は行わない
-      this.status.attack += increase;
+      // 防御力弱増加
+      this.status.attack -= WilConditionUtil.calcIncrease(
+        this.defaultStatus.attack,
+        WilConditionUtil.LITTELE_DECREASE_RATE
+      );
     }
   }
 
   /**
    * 現在の状態異常のターン終了時処理を行う
+   * @param cell キャラクターのいるマス（ダメージ表示用）
    * @returns 処理結果
    */
-  processConditionTurnEnd(): WilBattleMoveResult | undefined {
+  processConditionTurnEnd(cell: WilFieldCell): WilBattleMoveResult | undefined {
     if (this.condition === WIL_CONDITION_ID.BURN) {
-      // TODO: 弱ダメージ
+      // 弱ダメージ
+      const damage = WilConditionUtil.calcDamage(
+        this.defaultStatus.life,
+        WilConditionUtil.LITTELE_DAMAGE_RATE
+      );
+      this.status.life -= damage;
+      if (this.status.life < 0) {
+        this.status.life = 0;
+      }
+      return new WilBattleMoveResult({
+        message: [
+          `${this.name}は${WilConditionUtil.getLabel(
+            this.condition
+          )}によって${damage}のダメージを受けた。`,
+        ],
+        damage: [
+          new WilBattleDamegeResult({
+            cell: cell,
+            damage: damage,
+          }),
+        ],
+      });
     } else if (this.condition === WIL_CONDITION_ID.POISON) {
-      // TODO: 中ダメージ
-    } else if (this.condition === WIL_CONDITION_ID.MUDDY) {
-      // TODO: スタック中増加
-    } else if (this.condition === WIL_CONDITION_ID.PARALYSIS) {
-      // TODO: スタック弱増加
+      // 中ダメージ
+      const damage = WilConditionUtil.calcDamage(
+        this.defaultStatus.life,
+        WilConditionUtil.MEDIUM_DAMAGE_RATE
+      );
+      this.status.life -= damage;
+      if (this.status.life < 0) {
+        this.status.life = 0;
+      }
+      return new WilBattleMoveResult({
+        message: [
+          `${this.name}は${WilConditionUtil.getLabel(
+            this.condition
+          )}によって${damage}のダメージを受けた。`,
+        ],
+        damage: [
+          new WilBattleDamegeResult({
+            cell: cell,
+            damage: damage,
+          }),
+        ],
+      });
     }
     return undefined;
   }

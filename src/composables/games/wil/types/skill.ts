@@ -9,8 +9,12 @@ import { WIL_SKILL_ID } from "../enums/skill";
 import { WilBattleMoveResult } from "./battle";
 import { WilCharacter } from "./character";
 import { WilConditionUtil } from "./condition";
+import { WilFieldCell } from "./field";
 
 export class WilSkill {
+  static readonly LOW_CONDITION_RATE = 20; // 状態異常にかかる確率（低）
+  static readonly MEDIUM_CONDITION_RATE = 50; // 状態異常にかかる確率（中）
+  static readonly HIGH_CONDITION_RATE = 80; // 状態異常にかかる確率（高）
   readonly id: WIL_SKILL_ID;
   readonly name: string;
   readonly description: string;
@@ -21,7 +25,7 @@ export class WilSkill {
   readonly power?: number;
   readonly effect?: (
     __activest: WilCharacter,
-    __target: WilCharacter
+    __target: WilFieldCell
   ) => Array<WilBattleMoveResult>;
   readonly target: WIL_SKILL_TARGET;
   readonly range: WIL_SKILL_RANGE;
@@ -39,7 +43,7 @@ export class WilSkill {
     power?: number;
     effect?: (
       __activest: WilCharacter,
-      __target: WilCharacter
+      __target: WilFieldCell
     ) => Array<WilBattleMoveResult>;
     target: WIL_SKILL_TARGET;
     range: WIL_SKILL_RANGE;
@@ -127,17 +131,20 @@ export class WilSkill {
     const power = (skill.power ?? 0) * 0.01;
     let damage = 0;
     // スキル種別によってダメージ計算を変える
-    if (
-      skill.type === WIL_SKILL_TYPE.CLOSE_PHISIC ||
-      skill.type === WIL_SKILL_TYPE.SHOOT_PHISIC
-    ) {
+    if (skill.type === WIL_SKILL_TYPE.CLOSE_PHISIC) {
       damage = power * activist.status.attack - target.status.defense * 0.5;
+    } else if (skill.type === WIL_SKILL_TYPE.SHOOT_PHISIC) {
+      damage =
+        power * activist.status.attack * 0.8 - target.status.defense * 0.5;
     } else if (skill.type === WIL_SKILL_TYPE.ATTACK_MAGIC) {
       damage = power * activist.status.magic - target.status.magic * 0.5;
     } else if (skill.type === WIL_SKILL_TYPE.SUPPORT_MAGIC) {
       damage = 0;
     }
 
+    if (damage < 0) {
+      damage = 0;
+    }
     // 弱点判定
     if (WilSkill.isWeekness(skill.element, target.element)) {
       damage *= 2;
@@ -149,6 +156,9 @@ export class WilSkill {
 
     // ダメージの最大10%を加算
     damage += damage * Math.random() * 10;
+
+    // ダメージ0が続くのを避けるために50%で1を足す
+    damage += Math.random() < 0.5 ? 1 : 0;
 
     return Math.round(damage);
   }
@@ -173,5 +183,15 @@ export class WilSkill {
       );
     }
     return cost;
+  }
+
+  /**
+   * 状態異常の上書き判定に成功したかを判定する
+   * 今かかっている状態異常は考慮せず、確率のみで判定する
+   * @param rate 成功率
+   * @returns 上書きに成功した場合はtrue、失敗した場合はfalse
+   */
+  static isSuccessOverwriteCondition(rate: number): boolean {
+    return rate * 0.01 < Math.random();
   }
 }

@@ -54,163 +54,40 @@
         />
       </div>
     </div>
-    <div
-      v-if="resultModal.isShow || confirmModal.isShow"
-      class="c-training__modal_backgrond"
-    ></div>
-    <transition name="result_modal">
-      <div v-show="resultModal.isShow" class="c-training__result_modal">
-        <MessageFrame
-          :fontColor="WIL_FRAME_FONT_COLOR"
-          :backgroundColor="WIL_FRAME_BACKGROUND_COLOR"
-          :borderColor="WIL_FRAME_BORDER_COLOR"
-        >
-          <div class="c-training__result_modal__cards">
-            <div
-              v-if="resultModal.result?.character"
-              class="c-training__result_modal__cards__character"
-            >
-              <WilCharacterCard :character="resultModal.result.character" />
-            </div>
-            <div
-              v-if="resultModal.result"
-              class="c-training__result_modal__cards__training"
-            >
-              <WilTrainingCard :training="resultModal.result.menu" />
-            </div>
-          </div>
-          <template v-if="resultModal.result">
-            <div class="c-training__result_modal__result">
-              <dl>
-                <dt>体力</dt>
-                <dd>{{ resultModal.result.before.life }}</dd>
-                <dd>⇒</dd>
-                <dd
-                  :class="{
-                    'u-color--red':
-                      resultModal.result.before.life <
-                      resultModal.result.after.life,
-                  }"
-                >
-                  {{ resultModal.result.after.life }}
-                </dd>
-              </dl>
-              <dl>
-                <dt>攻撃力</dt>
-                <dd>{{ resultModal.result.before.attack }}</dd>
-                <dd>⇒</dd>
-                <dd
-                  :class="{
-                    'u-color--red':
-                      resultModal.result.before.attack <
-                      resultModal.result.after.attack,
-                  }"
-                >
-                  {{ resultModal.result.after.attack }}
-                </dd>
-              </dl>
-              <dl>
-                <dt>防御力</dt>
-                <dd>{{ resultModal.result.before.defense }}</dd>
-                <dd>⇒</dd>
-                <dd
-                  :class="{
-                    'u-color--red':
-                      resultModal.result.before.defense <
-                      resultModal.result.after.defense,
-                  }"
-                >
-                  {{ resultModal.result.after.defense }}
-                </dd>
-              </dl>
-              <dl>
-                <dt>魔力</dt>
-                <dd>{{ resultModal.result.before.magic }}</dd>
-                <dd>⇒</dd>
-                <dd
-                  :class="{
-                    'u-color--red':
-                      resultModal.result.before.magic <
-                      resultModal.result.after.magic,
-                  }"
-                >
-                  {{ resultModal.result.after.magic }}
-                </dd>
-              </dl>
-              <dl>
-                <dt>敏捷力</dt>
-                <dd>{{ resultModal.result.before.speed }}</dd>
-                <dd>⇒</dd>
-                <dd
-                  :class="{
-                    'u-color--red':
-                      resultModal.result.before.speed <
-                      resultModal.result.after.speed,
-                  }"
-                >
-                  {{ resultModal.result.after.speed }}
-                </dd>
-              </dl>
-            </div>
-            <div
-              v-if="resultModal.result.learned"
-              class="c-training__result_modal__learned"
-            >
-              {{ resultModal.result.learned.name }}を習得した！
-            </div>
-            <div class="c-training__result_modal__button">
-              <GameButton
-                label="OK"
-                :fontColor="WIL_BUTTON_FONT_COLOR"
-                :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
-                @click="onClickOk"
-              />
-            </div>
-          </template>
-        </MessageFrame>
-      </div>
-    </transition>
-    <transition name="confirm_modal">
-      <div v-show="confirmModal.isShow" class="c-training__confirm_modal">
-        <MessageFrame
-          :fontColor="WIL_FRAME_FONT_COLOR"
-          :backgroundColor="WIL_FRAME_BACKGROUND_COLOR"
-          :borderColor="WIL_FRAME_BORDER_COLOR"
-        >
-          <div class="c-training__confirm_modal__inner">
-            <div class="c-training__confirm_modal__inner__message">
-              {{ confirmModal.message }}
-            </div>
-            <div class="c-training__confirm_modal__inner__buttons">
-              <GameButton
-                label="OK"
-                :fontColor="WIL_BUTTON_FONT_COLOR"
-                :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
-                @click="confirmModal.onClickOk"
-              />
-              <GameButton
-                v-if="confirmModal.onClickCancel"
-                label="キャンセル"
-                :fontColor="WIL_BUTTON_FONT_COLOR"
-                :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
-                @click="confirmModal.onClickCancel"
-              />
-            </div>
-          </div>
-        </MessageFrame>
-      </div>
-    </transition>
+    <div class="c-training__result_dialog">
+      <WilTrainingResultDialog
+        v-model:isShow="resultModal.isShow"
+        :result="resultModal.result"
+        @submit="onClickOk"
+      />
+    </div>
+    <div class="c-training__confirm_dialog">
+      <WilConfirmDialog
+        v-model:isShow="confirmModal.isShow"
+        :cancelable="!!confirmModal.onClickCancel"
+        :message="confirmModal.message"
+        @submit="confirmModal.onClickOk"
+        @cancel="confirmModal.onClickCancel"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { PropType, Ref, computed, onMounted, reactive, ref } from "vue";
+import {
+  PropType,
+  Ref,
+  computed,
+  onMounted,
+  onUnmounted,
+  reactive,
+  ref,
+} from "vue";
 import WilCardList from "@/components/molecules/games/wil/WilCardList.vue";
 import { WIL_TRAINING_ID } from "@/composables/games/wil/enums/training";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 import WilCharacterCard from "@/components/molecules/games/wil/WilCharacterCard.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
-import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import {
   WilTraining,
   WilTrainingMenu,
@@ -219,14 +96,14 @@ import {
 import WilTrainingCard from "@/components/molecules/games/wil/WilTrainingCard.vue";
 import { WilPlayer } from "@/composables/games/wil/types/player";
 import {
-  WIL_FRAME_FONT_COLOR,
-  WIL_FRAME_BORDER_COLOR,
-  WIL_FRAME_BACKGROUND_COLOR,
   WIL_BUTTON_FONT_COLOR,
   WIL_BUTTON_BACKGROUND_COLOR,
 } from "@/composables/games/wil/const";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WilSkill } from "@/composables/games/wil/types/skill";
+import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
+import WilTrainingResultDialog from "@/components/molecules/games/wil/WilTrainingResultDialog.vue";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 
 const props = defineProps({
   images: {
@@ -236,6 +113,10 @@ const props = defineProps({
   skills: {
     type: Object as PropType<{ [key: string]: WilSkill }>,
     required: true,
+  },
+  bgm: {
+    type: Object as PropType<GOUReadAudio>,
+    default: undefined,
   },
   player: {
     type: Object as PropType<WilPlayer>,
@@ -366,7 +247,16 @@ const onEndTraining = () => {
 };
 
 onMounted(() => {
+  if (props.bgm) {
+    props.bgm.loop = true;
+    props.bgm.play();
+  }
   training.value.startDay();
+});
+onUnmounted(() => {
+  if (props.bgm) {
+    props.bgm.stop();
+  }
 });
 </script>
 
@@ -438,116 +328,12 @@ onMounted(() => {
       height: 80%;
     }
   }
-  &__modal_backgrond {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-  &__result_modal {
-    width: 50%;
-    height: 60%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    overflow: hidden;
-    &__cards {
-      display: flex;
-      justify-content: space-around;
-      height: 36%;
-      width: 100%;
-      color: black;
-      padding: 0% 2%;
-      margin-top: 2%;
-      &__character {
-        width: 36%;
-        height: 100%;
-      }
-      &__training {
-        width: 36%;
-        height: 100%;
-      }
-    }
-    &__result {
-      width: 80%;
-      color: white;
-      padding: 0% 2%;
-      margin-top: 4%;
-      dl {
-        display: flex;
-        justify-content: space-between;
-        dt {
-          width: 50%;
-        }
-        dd {
-          width: 20%;
-          text-align: right;
-        }
-      }
-    }
-    &__learned {
-      width: 80%;
-      padding: 0% 2%;
-      margin-top: 2%;
-    }
-    &__button {
-      width: 20%;
-      height: 8%;
-      padding: 0% 2%;
-      margin-top: auto;
-      margin-bottom: 2%;
-      align-self: center;
-    }
-  }
-  &__confirm_modal {
-    width: 50%;
-    height: 20%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    overflow: hidden;
-    &__inner {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      width: 100%;
-      height: 100%;
-      padding: 2%;
-      &__message {
-        text-align: center;
-      }
-      &__buttons {
-        margin-top: 8%;
-        display: flex;
-        justify-content: space-around;
-        > div {
-          width: 36%;
-        }
-      }
-    }
-  }
 }
 @media screen and (max-width: 400px) {
   .c-training__infomation,
   .c-training__plan__cards__content__button {
     font-size: 10px;
   }
-}
-
-.result_modal-enter-active,
-.result_modal-leave-active,
-.confirm_modal-enter-active,
-.confirm_modal-leave-active {
-  transition: height 0.2s ease;
-}
-.result_modal-enter-from,
-.result_modal-leave-to,
-.confirm_modal-enter-from,
-.confirm_modal-leave-to {
-  height: 0;
 }
 @media screen and (max-width: 600px) and (min-width: 400px) {
   .c-training__infomation,

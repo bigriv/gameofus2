@@ -115,22 +115,22 @@ export class WilTraining {
     }
     if (this.plan.defense.character) {
       result.push(
-        this.plan.defense.character.training(this.plan.attack.menu, skills)
+        this.plan.defense.character.training(this.plan.defense.menu, skills)
       );
     }
     if (this.plan.migration.character) {
       result.push(
-        this.plan.migration.character.training(this.plan.attack.menu, skills)
+        this.plan.migration.character.training(this.plan.migration.menu, skills)
       );
     }
     if (this.plan.magic.character) {
       result.push(
-        this.plan.magic.character.training(this.plan.attack.menu, skills)
+        this.plan.magic.character.training(this.plan.magic.menu, skills)
       );
     }
     if (this.plan.phisic.character) {
       result.push(
-        this.plan.phisic.character.training(this.plan.attack.menu, skills)
+        this.plan.phisic.character.training(this.plan.phisic.menu, skills)
       );
     }
 
@@ -264,10 +264,10 @@ export class WilTrainingMenu {
     for (let i = 0; i < range; i++) {
       // 1 / sum(0, max - min + 1) * sum(0, i)が乱数以下で判定
       if ((1 / sum) * (((i + 2) / 2) * (i + 1)) <= rnd) {
-        return i;
+        return max - i - min;
       }
     }
-    return 0;
+    return min;
   }
 
   /**

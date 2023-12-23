@@ -202,7 +202,6 @@ export class WilBattle {
 
     let moveResults = new Array<WilBattleMoveResult>();
     this.turnOperator.moveCharacter.useSkill(this.turnOperator.selectSkill);
-    // FIXME: 仮実装として範囲によらず対象のキャラクターにスキルを適用する
     moveResults.push(
       new WilBattleMoveResult({
         message: [
@@ -211,6 +210,7 @@ export class WilBattle {
       })
     );
 
+    // FIXME: 仮実装として範囲によらず対象のキャラクターにスキルを適用する
     let damageResults = new Array<WilBattleDamegeResult>();
     // ダメージ処理
     const isNeedCalcDamage =
@@ -261,12 +261,14 @@ export class WilBattle {
     }
     // スキル効果の適用
     if (this.turnOperator.selectSkill.effect) {
-      moveResults.push(
-        ...this.turnOperator.selectSkill.effect(
-          this.turnOperator.moveCharacter,
-          this.turnOperator.targetCell.character
-        )
-      );
+      if (this.turnOperator.targetCell.character) {
+        moveResults.push(
+          ...this.turnOperator.selectSkill.effect(
+            this.turnOperator.moveCharacter,
+            this.turnOperator.targetCell
+          )
+        );
+      }
     }
     const targetCells = [];
     switch (this.turnOperator.selectSkill.range) {

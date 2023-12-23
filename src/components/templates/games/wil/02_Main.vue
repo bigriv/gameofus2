@@ -23,6 +23,7 @@
       <Training
         :images="WIL_IMAGES"
         :skills="WIL_SKILLS"
+        :bgm="WIL_SOUNDS.BGM_TRAINING_1"
         :player="player"
         @end="proceed"
       />

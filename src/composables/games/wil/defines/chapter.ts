@@ -29,6 +29,10 @@ export type WilChapterDefine = {
       right?: WIL_IMAGE_ID;
     }>
   >;
+  updateTeam: Array<{
+    in: Array<WIL_CHARACTER_ID>;
+    out: Array<WIL_CHARACTER_ID>;
+  }>;
 };
 
 export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
@@ -37,9 +41,15 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
     WIL_CHAPTER_TIMMING.OPENING,
     WIL_CHAPTER_TIMMING.TRAINING,
     WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.TEAM,
     WIL_CHAPTER_TIMMING.BATTLE,
     WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.TEAM,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.TEAM,
     WIL_CHAPTER_TIMMING.BATTLE,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.TEAM,
     WIL_CHAPTER_TIMMING.ENDING,
   ],
   battles: [
@@ -273,6 +283,7 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
       {
         talker: "聖騎士団団長 ザーグ",
         background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
+        bgm: WIL_SOUND_ID.BGM_VILLAGE_1,
         message: ["ふう、なんとか凌いだかな...。"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
@@ -356,6 +367,7 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
       {
         talker: "ヒカル",
         background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+        bgm: WIL_SOUND_ID.BGM_HOLY_CASLE_1,
         message: ["はあ、帝都は広いなあ。えーと、聖騎士団に会うには...。"],
         left: WIL_IMAGE_ID.CHARACTER_HERO,
       },
@@ -527,5 +539,26 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
         right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       },
     ],
+  ],
+  updateTeam: [
+    {
+      in: [WIL_CHARACTER_ID.HOLY_KNIGHTS_LEADER],
+      out: [],
+    },
+    {
+      in: [],
+      out: [WIL_CHARACTER_ID.HOLY_KNIGHTS_LEADER],
+    },
+    {
+      in: [
+        WIL_CHARACTER_ID.HOLY_KNIGHTS_SOLDIER,
+        WIL_CHARACTER_ID.HOLY_KNIGHTS_MAGICIAN,
+      ],
+      out: [],
+    },
+    {
+      in: [WIL_CHARACTER_ID.HOLY_KNIGHTS_LEADER],
+      out: [],
+    },
   ],
 };

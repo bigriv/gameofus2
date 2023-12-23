@@ -1,0 +1,96 @@
+<template>
+  <div class="c-update_team">
+    <WilConfirmDialog
+      v-model:isShow="isShow"
+      :message="displayMessage"
+      :cancelable="false"
+      @submit="onSubmit"
+    />
+  </div>
+</template>
+
+<script setup lang="ts">
+import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
+import { WIL_CHARACTER_DEFINES } from "@/composables/games/wil/defines/character";
+import { useWilDisplay } from "@/composables/games/wil/display";
+import { WilCharacter } from "@/composables/games/wil/types/character";
+import { WilTeamEvent } from "@/composables/games/wil/types/event";
+import { WilPlayer } from "@/composables/games/wil/types/player";
+import { WilSkill } from "@/composables/games/wil/types/skill";
+import GOUVisual from "@/composables/types/visuals/GOUVisual";
+import { SequenceId } from "@/composables/utils/id";
+import { PropType, onMounted, ref } from "vue";
+
+const props = defineProps({
+  event: {
+    type: Object as PropType<WilTeamEvent>,
+    required: true,
+  },
+  sequence: { type: Object as PropType<SequenceId>, required: true },
+  images: {
+    type: Object as PropType<{ [key: string]: GOUVisual }>,
+    required: true,
+  },
+  skills: {
+    type: Object as PropType<{ [key: string]: WilSkill }>,
+    required: true,
+  },
+  player: {
+    type: Object as PropType<WilPlayer>,
+    required: true,
+  },
+});
+
+const emits = defineEmits(["end"]);
+const { displayMessage, onNextMessage } = useWilDisplay();
+const isShow = ref(false);
+const onSubmit = () => {
+  isShow.value = false;
+  setTimeout(() => {
+    onNextMessage.value();
+  }, 200);
+};
+const chainMessage = (messages: string[], afterFunction: Function) => {
+  console.log("chainMessage");
+  const message = messages.shift();
+  if (!message) {
+    displayMessage.value = undefined;
+    onNextMessage.value = () => {};
+    afterFunction();
+    return;
+  }
+  isShow.value = true;
+  displayMessage.value = message;
+  onNextMessage.value = () => {
+    chainMessage(messages, afterFunction);
+  };
+};
+onMounted(() => {
+  console.log("watch", props.event);
+  const messages = new Array<string>();
+  for (const inCharacter of props.event.in) {
+    const character = new WilCharacter(
+      props.sequence.generateId(),
+      WIL_CHARACTER_DEFINES[inCharacter],
+      props.skills,
+      props.images
+    );
+    messages.push(`${character.name}が仲間になった！`);
+    props.player.allCharacters.push(character);
+  }
+
+  for (const outCharacter of props.event.out) {
+    props.player.allCharacters = props.player.allCharacters.filter(
+      (character) => {
+        //   キャラクターIDに一致するキャラクターを排除
+        if (new RegExp(`${outCharacter}_\d`).test(character.id)) {
+          messages.push(`${character.name}が離脱した。`);
+          return false;
+        }
+        return true;
+      }
+    );
+  }
+  chainMessage(messages, () => emits("end"));
+});
+</script>

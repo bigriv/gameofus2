@@ -1,7 +1,7 @@
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WIL_CHAPTER_TIMMING } from "../enums/timming";
 import { WilCharacter } from "./character";
-import { WilBattleEvent, WilTalkEvent } from "./event";
+import { WilBattleEvent, WilTalkEvent, WilTeamEvent } from "./event";
 import { WilFieldCell } from "./field";
 import { SequenceId } from "@/composables/utils/id";
 import { WIL_CHARACTER_DEFINES } from "../defines/character";
@@ -9,15 +9,18 @@ import { WIL_BATTLE_TEAM } from "../enums/battle";
 import { WilSkill } from "./skill";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import { WilChapterDefine } from "../defines/chapter";
+import { WIL_CHARACTER_ID } from "../enums/character";
 
 export class WilChapter {
   title: string;
   flow: Array<WIL_CHAPTER_TIMMING>;
-  battles: Array<WilBattleEvent>;
-  talks: Array<Array<WilTalkEvent>>;
+  battleEvents: Array<WilBattleEvent>;
+  talkEvents: Array<Array<WilTalkEvent>>;
+  teamEvents: Array<WilTeamEvent>;
   private currentFlow: number = -1;
-  private currentTalk: number = -1;
-  private currentBattle: number = -1;
+  private currentTalkEvent: number = -1;
+  private currentBatEventtle: number = -1;
+  private currentTeamEvent: number = -1;
 
   constructor(
     define: WilChapterDefine,
@@ -28,7 +31,7 @@ export class WilChapter {
   ) {
     this.title = define.title;
     this.flow = define.flow;
-    this.battles = define.battles.map((battle) => {
+    this.battleEvents = define.battles.map((battle) => {
       return new WilBattleEvent({
         playerTeamName: battle.playerTeamName,
         computerTeamName: battle.computerTeamName,
@@ -51,7 +54,7 @@ export class WilChapter {
         }),
       });
     });
-    this.talks = define.talks.map((talk) =>
+    this.talkEvents = define.talks.map((talk) =>
       talk.map(
         (define) =>
           new WilTalkEvent({
@@ -67,6 +70,7 @@ export class WilChapter {
           })
       )
     );
+    this.teamEvents = define.updateTeam;
   }
 
   /**
@@ -87,7 +91,7 @@ export class WilChapter {
    * イベントタイミングを次に進める
    * @returns 進めた後のイベントタイミング（進めた後が最後ならENDINGを返す）
    */
-  proceedNextEvent(): WIL_CHAPTER_TIMMING {
+  proceedEvent(): WIL_CHAPTER_TIMMING {
     if (this.currentFlow >= this.flow.length) {
       this.currentFlow = this.flow.length;
       return WIL_CHAPTER_TIMMING.ENDING;
@@ -99,49 +103,78 @@ export class WilChapter {
    * 現在表示すべき会話イベントを取得する
    * @returns 会話イベント
    */
-  getCurrentTalks(): Array<WilTalkEvent> | undefined {
-    if (this.currentTalk < 0) {
-      return this.talks[0];
+  getCurrentTalkEvent(): Array<WilTalkEvent> | undefined {
+    if (this.currentTalkEvent < 0) {
+      return this.talkEvents[0];
     }
-    if (this.currentTalk >= this.talks.length) {
+    if (this.currentTalkEvent >= this.talkEvents.length) {
       return undefined;
     }
-    return this.talks[this.currentTalk];
+    return this.talkEvents[this.currentTalkEvent];
   }
 
   /**
    * 会話イベントを次に進める
    * @returns 進めた後の会話イベント
    */
-  proceedNextTalks(): Array<WilTalkEvent> | undefined {
-    if (this.currentTalk + 1 >= this.talks.length) {
+  proceedTalkEvent(): Array<WilTalkEvent> | undefined {
+    if (this.currentTalkEvent + 1 >= this.talkEvents.length) {
       return undefined;
     }
-    return this.talks[++this.currentTalk];
+    return this.talkEvents[++this.currentTalkEvent];
   }
 
   /**
    * 現在行うべき戦闘イベントを取得する
    * @returns 戦闘イベント
    */
-  getCurrentBattle(): WilBattleEvent | undefined {
-    if (this.currentFlow < 0) {
-      return this.battles[0];
+  getCurrentBattleEvent(): WilBattleEvent | undefined {
+    if (this.currentBatEventtle < 0) {
+      return this.battleEvents[0];
     }
-    if (this.currentBattle >= this.battles.length) {
+    if (this.currentBatEventtle >= this.battleEvents.length) {
       return undefined;
     }
-    return this.battles[this.currentBattle];
+    return this.battleEvents[this.currentBatEventtle];
   }
 
   /**
    * 戦闘イベントを次に進める
    * @returns 進めた後の戦闘イベント
    */
-  proceedNextBattle(): WilBattleEvent | undefined {
-    if (this.currentBattle + 1 >= this.battles.length) {
+  proceedBattleEvent(): WilBattleEvent | undefined {
+    if (this.currentBatEventtle + 1 >= this.battleEvents.length) {
       return undefined;
     }
-    return this.battles[++this.currentBattle];
+    return this.battleEvents[++this.currentBatEventtle];
+  }
+
+  /**
+   * 現在行うべき理加入イベントを取得する
+   * @returns 離加入イベント
+   */
+  getCurrentTeamEvent():
+    | { in: Array<WIL_CHARACTER_ID>; out: Array<WIL_CHARACTER_ID> }
+    | undefined {
+    if (this.currentTeamEvent < 0) {
+      return this.teamEvents[0];
+    }
+    if (this.currentTeamEvent >= this.teamEvents.length) {
+      return undefined;
+    }
+    return this.teamEvents[this.currentTeamEvent];
+  }
+
+  /**
+   * 離加入イベントを次に進める
+   * @returns 進めた後の離加入イベント
+   */
+  proceedTeamEvent():
+    | { in: Array<WIL_CHARACTER_ID>; out: Array<WIL_CHARACTER_ID> }
+    | undefined {
+    if (this.currentTeamEvent + 1 >= this.teamEvents.length) {
+      return undefined;
+    }
+    return this.teamEvents[++this.currentTeamEvent];
   }
 }

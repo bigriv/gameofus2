@@ -1,6 +1,7 @@
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WilFieldCell } from "./field";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import { WIL_CHARACTER_ID } from "../enums/character";
 
 /**
  * 会話イベント
@@ -113,5 +114,21 @@ export class WilBattleEvent {
     if (this.battleBgm && this.battleBgm.isPlaying()) {
       this.battleBgm.stop();
     }
+  }
+}
+
+/**
+ * 離加入イベント
+ */
+export class WilTeamEvent {
+  in: Array<WIL_CHARACTER_ID>;
+  out: Array<WIL_CHARACTER_ID>;
+
+  constructor(define: {
+    in: Array<WIL_CHARACTER_ID>;
+    out: Array<WIL_CHARACTER_ID>;
+  }) {
+    this.in = define.in;
+    this.out = define.out;
   }
 }

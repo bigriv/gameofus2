@@ -28,6 +28,17 @@
         @end="proceed"
       />
     </template>
+    <template v-else-if="timming == WIL_CHAPTER_TIMMING.TEAM">
+      <UpdateTeam
+        v-if="teamEvent"
+        :images="WIL_IMAGES"
+        :skills="WIL_SKILLS"
+        :event="teamEvent"
+        :sequence="characterSequence"
+        :player="player"
+        @end="proceed"
+      />
+    </template>
   </div>
 </template>
 
@@ -37,6 +48,7 @@ import ChapterStart from "@/components/templates/games/wil/main/01_ChapterStart.
 import Talk from "@/components/templates/games/wil/main/02_Talk.vue";
 import Battle from "@/components/templates/games/wil/main/03_Battle.vue";
 import Training from "@/components/templates/games/wil/main/04_Training.vue";
+import UpdateTeam from "@/components/templates/games/wil/main/05_UpdateTeam.vue";
 import { WIL_CHAPTER_TIMMING } from "@/composables/games/wil/enums/timming";
 import { useWilInit } from "@/composables/games/wil/init";
 import { WilChapter } from "@/composables/games/wil/types/chapter";
@@ -45,6 +57,7 @@ import { WIL_CHAPTER_1_DEFINE } from "@/composables/games/wil/defines/chapter";
 import {
   WilBattleEvent,
   WilTalkEvent,
+  WilTeamEvent,
 } from "@/composables/games/wil/types/event";
 
 const props = defineProps({
@@ -73,6 +86,7 @@ const {
 const timming: Ref<WIL_CHAPTER_TIMMING> = ref(WIL_CHAPTER_TIMMING.OPENING);
 const talkEvents: Ref<Array<WilTalkEvent> | undefined> = ref();
 const battleEvent: Ref<WilBattleEvent | undefined> = ref();
+const teamEvent: Ref<WilTeamEvent | undefined> = ref();
 
 const currentCapter: Ref<WilChapter | undefined> = ref();
 
@@ -80,16 +94,23 @@ const proceed = () => {
   if (!currentCapter.value) {
     throw new WrongImplementationError("Current Chapter is not initialized.");
   }
-  timming.value = currentCapter.value.proceedNextEvent();
+  timming.value = currentCapter.value.proceedEvent();
   if (timming.value === WIL_CHAPTER_TIMMING.TALK) {
-    talkEvents.value = currentCapter.value.proceedNextTalks();
+    talkEvents.value = currentCapter.value.proceedTalkEvent();
   } else if (timming.value === WIL_CHAPTER_TIMMING.BATTLE) {
-    battleEvent.value = currentCapter.value.proceedNextBattle();
+    battleEvent.value = currentCapter.value.proceedBattleEvent();
     if (!battleEvent.value) {
       proceed();
       return;
     }
     player.value.teamName = battleEvent.value.playerTeamName;
+  } else if (timming.value === WIL_CHAPTER_TIMMING.TEAM) {
+    teamEvent.value = currentCapter.value.proceedTeamEvent();
+  console.log(teamEvent.value)
+    if (!teamEvent.value) {
+      proceed();
+      return;
+    }
   }
 };
 
@@ -106,7 +127,7 @@ onMounted(() => {
     WIL_IMAGES,
     WIL_SOUNDS
   );
-  timming.value = currentCapter.value.proceedNextEvent();
+  timming.value = currentCapter.value.proceedEvent();
 });
 watch(
   () => isLoadedFiles.value,

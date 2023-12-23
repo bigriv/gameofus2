@@ -9,6 +9,7 @@ import { WilTrainingMenu, WilTrainingResult } from "./training";
 import { WilBattleDamegeResult, WilBattleMoveResult } from "./battle";
 import { WilConditionUtil } from "./condition";
 import { WilFieldCell } from "./field";
+import { WIL_CHARACTER_ID } from "../enums/character";
 
 export class WilCharacter {
   readonly id: string;
@@ -32,6 +33,7 @@ export class WilCharacter {
   constructor(
     sequence: number,
     define: {
+      id: WIL_CHARACTER_ID;
       name: string;
       visual: {
         standing: WIL_IMAGE_ID;
@@ -53,7 +55,7 @@ export class WilCharacter {
     skills: { [key: string]: WilSkill },
     images: { [key: string]: GOUVisual }
   ) {
-    this.id = String(sequence);
+    this.id = `${define.id}_${sequence}`;
     this.name = define.name;
     this.visual = {
       current: images[define.visual.standing],
@@ -109,7 +111,7 @@ export class WilCharacter {
     this.defaultStatus = WilStatus.add(this.defaultStatus, menu.getRise());
     result.after = this.defaultStatus.deepCopy();
     // スキルの習得
-    result.learned = this.learn(skills);
+    result.learned = this.learn(menu, skills);
 
     return result;
   }
@@ -118,15 +120,21 @@ export class WilCharacter {
    * スキルを習得する
    * @returns 習得したスキル
    */
-  learn(skills: { [key: string]: WilSkill }): WilSkill | undefined {
+  learn(
+    menu: WilTrainingMenu,
+    skills: { [key: string]: WilSkill }
+  ): WilSkill | undefined {
     const learnedSKillList = this.getSkillIdList();
     let sortedSkilList = [];
     // 以下の条件で習得可能なスキルのリストを絞込む
-    // - キャラクターの属性とスキルの属性が一致している
+    // - スキルの属性が無属性またはキャラクターの属性とスキルの属性が一致している
     // - キャラクターの持っているスキル種別に含まれている
     // - 未習得
     for (let key of Object.keys(skills)) {
-      if (skills[key].element !== this.element) {
+      if (
+        skills[key].element !== WIL_ELEMENT.NONE &&
+        skills[key].element !== this.element
+      ) {
         continue;
       }
       if (!this.skillType.includes(skills[key].type)) {
@@ -142,8 +150,24 @@ export class WilCharacter {
 
     // スキル習得判定
     for (let skill of sortedSkilList) {
+      let learnRate = skill.learnRate * 0.01;
+      if (
+        [WIL_SKILL_TYPE.CLOSE_PHISIC, WIL_SKILL_TYPE.SHOOT_PHISIC].includes(
+          skill.type
+        )
+      ) {
+        learnRate *= menu.learnRate.phisic * 0.01;
+      } else if (
+        [WIL_SKILL_TYPE.ATTACK_MAGIC, WIL_SKILL_TYPE.SUPPORT_MAGIC].includes(
+          skill.type
+        )
+      ) {
+        learnRate *= menu.learnRate.magic * 0.01;
+      }
+      const rnd = Math.random();
+      console.log("learnRate", rnd, learnRate);
       // 乱数で習得可否を判定
-      if (Math.random() >= skill.learnRate) {
+      if (rnd >= learnRate) {
         continue;
       }
       this.skills.push(skill);
@@ -204,9 +228,7 @@ export class WilCharacter {
    * @param condition 上書き後の状態異常
    * @returns 上書きに成功した場合はtrue、失敗した場合はfalse
    */
-  overwriteCondition(
-    condition: WIL_CONDITION_ID
-  ): WilBattleMoveResult | undefined {
+  overwriteCondition(condition: WIL_CONDITION_ID): WilBattleMoveResult {
     if (
       this.condition === WIL_CONDITION_ID.HOLY &&
       condition !== WIL_CONDITION_ID.HOLY

@@ -166,7 +166,7 @@
             :fontColor="WIL_FRAME_FONT_COLOR"
             vertical="start"
             horizontal="start"
-            @click="() => onClickMessageFrame()"
+            @click="() => onNextMessage()"
           />
         </div>
       </template>
@@ -218,7 +218,7 @@ const props = defineProps({
 
 const emits = defineEmits(["error", "endSet", "endTurn"]);
 
-const { messageComplete, onClickMessageFrame } = useWilDisplay();
+const { messageComplete, onNextMessage } = useWilDisplay();
 
 const battle = computed(() => props.battle);
 const playerCharacterNum = computed(() => {
@@ -349,7 +349,7 @@ const chainBattleMoveResult = (results: Array<WilBattleMoveResult>) => {
   if (!result) {
     battleResult.value = undefined;
     messageComplete.value = true;
-    onClickMessageFrame.value = () => {};
+    onNextMessage.value = () => {};
     emits("endTurn");
     return;
   }
@@ -357,7 +357,7 @@ const chainBattleMoveResult = (results: Array<WilBattleMoveResult>) => {
   if (result.damage && result.damage.length > 0) {
     battle.value.damageResults = result.damage;
   }
-  onClickMessageFrame.value = () => chainBattleMoveResult(results);
+  onNextMessage.value = () => chainBattleMoveResult(results);
   battleResult.value.process();
 };
 

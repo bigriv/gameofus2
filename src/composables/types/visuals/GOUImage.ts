@@ -54,6 +54,12 @@ class GOUImage extends GOUVisual {
     }
     return true;
   }
+  deepCopy(): GOUImage {
+    const copy = new GOUImage(this.path, this.width, this.height);
+    copy.image = this.image;
+
+    return copy;
+  }
 }
 
 export default GOUImage;

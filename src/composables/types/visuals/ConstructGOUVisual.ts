@@ -10,6 +10,7 @@ import GOURect from "@/composables/types/visuals/diagrams/GOURect";
 import GOUDiagram from "@/composables/types/visuals/GOUDiagram";
 import GOUFrame from "@/composables/types/visuals/GOUFrame";
 import GOUText from "@/composables/types/visuals/GOUText";
+import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import { GOUColor } from "@/composables/types/GOUColor";
 import GOUPosition from "@/composables/types/GOUPosition";
 
@@ -81,7 +82,7 @@ const ConstructGOUVisual = (definition: GOUVisualDefinition): GOUVisual => {
       );
       break;
     case GOUVisualType.ANIMATION_LOTTIE:
-      visual = new GOUImage(
+      visual = new GOULottie(
         definition.path,
         definition.width,
         definition.height

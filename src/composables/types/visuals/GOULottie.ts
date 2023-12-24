@@ -5,6 +5,7 @@ import GOUVisual from "@/composables/types/visuals/GOUVisual";
 export class GOULottie extends GOUVisual {
   object: Object | null;
   readonly path: string;
+  private loaded = false;
   loop: boolean;
   speed: number;
   constructor(
@@ -34,10 +35,14 @@ export class GOULottie extends GOUVisual {
           return;
         }
         this.object = response.data;
+        this.loaded = true;
       })
       .catch((error) => console.log(error));
 
     return this;
+  }
+  isLoaded(): boolean {
+    return this.loaded;
   }
   getMinX(): number {
     return 0;

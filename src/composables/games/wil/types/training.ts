@@ -180,23 +180,33 @@ export class WilTraining {
       (c: WilCharacter) => c.id !== character?.id
     );
   }
+
+  /**
+   * 訓練にセットされているキャラクターを排除し、選択可能リストに戻す
+   * @param trainingId キャラクターを排除する訓練のID
+   */
   removeCharacter(trainingId: WIL_TRAINING_ID) {
     let temp = undefined;
     switch (trainingId) {
       case WIL_TRAINING_ID.ATTACK:
         temp = this.plan.attack.character;
+        this.plan.attack.character = undefined;
         break;
       case WIL_TRAINING_ID.DEFENSE:
         temp = this.plan.defense.character;
+        this.plan.defense.character = undefined;
         break;
       case WIL_TRAINING_ID.MIGRATION:
         temp = this.plan.migration.character;
+        this.plan.migration.character = undefined;
         break;
       case WIL_TRAINING_ID.MAGIC:
         temp = this.plan.magic.character;
+        this.plan.magic.character = undefined;
         break;
       case WIL_TRAINING_ID.PHISIC:
         temp = this.plan.phisic.character;
+        this.plan.phisic.character = undefined;
         break;
     }
 

@@ -1,19 +1,19 @@
 <template>
-  <div class="c-game__drawer">
-    <span class="c-game__drawer__title">聖騎士と五つの国</span>
-    <div class="c-game__drawer__buttons">
+  <div class="c-title">
+    <span class="c-title__text">聖騎士と五つの国</span>
+    <div class="c-title__buttons">
       <GameButton
         label="さいしょから"
         :fontColor="WIL_BUTTON_FONT_COLOR"
         :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
-        class="c-game__drawer__buttons__button--start"
+        class="c-title__buttons__button--start"
         @click="onStart"
       />
       <GameButton
         label="つづきから"
         :fontColor="WIL_BUTTON_FONT_COLOR"
         :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
-        class="c-game__drawer__buttons__button--continue"
+        class="c-title__buttons__button--continue"
         @click="onContinue"
       />
     </div>
@@ -37,12 +37,12 @@ const onContinue = () => {
 </script>
 
 <style scoped lang="scss">
-.c-game__drawer {
+.c-title {
   position: relative;
   width: 100%;
   height: 100%;
   background: linear-gradient(170deg, #ffffff 30%, #ffd000 70%, #ffffff 100%);
-  &__title {
+  &__text {
     position: absolute;
     top: 20%;
     left: 50%;
@@ -60,7 +60,6 @@ const onContinue = () => {
     color: transparent;
     -webkit-background-clip: text;
     text-shadow: 0px 0px 20px white;
-    user-select: none;
   }
   &__buttons {
     position: absolute;
@@ -89,30 +88,30 @@ const onContinue = () => {
   }
 }
 @media screen and (max-width: 400px) {
-  .c-game__drawer__buttons {
+  .c-title__buttons {
     font-size: 10px;
     width: 25%;
   }
-  .c-game__drawer__title {
+  .c-title__text {
     font-size: 30px;
   }
 }
 
 @media screen and (max-width: 600px) and (min-width: 400px) {
-  .c-game__drawer__buttons {
+  .c-title__buttons {
     font-size: 12px;
     width: 23%;
   }
-  .c-game__drawer__title {
+  .c-title__text {
     font-size: 40px;
   }
 }
 @media screen and (min-width: 600px) {
-  .c-game__drawer__buttons {
+  .c-title__buttons {
     font-size: 14px;
     width: 20%;
   }
-  .c-game__drawer__title {
+  .c-title__text {
     font-size: 50px;
   }
 }

@@ -13,10 +13,10 @@
     <template v-else-if="timming == WIL_CHAPTER_TIMMING.BATTLE">
       <Battle
         v-if="battleEvent"
-        v-model:player="player"
+        :player="(player as WilPlayer)"
         :skills="WIL_SKILLS"
         :event="battleEvent"
-        @end="proceed"
+        @end="endBattle"
       />
     </template>
     <template v-else-if="timming == WIL_CHAPTER_TIMMING.TRAINING">
@@ -24,7 +24,7 @@
         :images="WIL_IMAGES"
         :skills="WIL_SKILLS"
         :bgm="WIL_SOUNDS.BGM_TRAINING_1"
-        :player="player"
+        :player="(player as WilPlayer)"
         @end="proceed"
       />
     </template>
@@ -35,7 +35,7 @@
         :skills="WIL_SKILLS"
         :event="teamEvent"
         :sequence="characterSequence"
-        :player="player"
+        :player="(player as WilPlayer)"
         @end="proceed"
       />
     </template>
@@ -59,6 +59,9 @@ import {
   WilTalkEvent,
   WilTeamEvent,
 } from "@/composables/games/wil/types/event";
+import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
+import { WIL_ENDING_ID } from "@/composables/games/wil/enums/ending";
+import { WilPlayer } from "@/composables/games/wil/types/player";
 
 const props = defineProps({
   start: {
@@ -71,7 +74,7 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["loaded"]);
+const emits = defineEmits(["loaded", "end"]);
 
 const {
   WIL_IMAGES,
@@ -89,7 +92,13 @@ const battleEvent: Ref<WilBattleEvent | undefined> = ref();
 const teamEvent: Ref<WilTeamEvent | undefined> = ref();
 
 const currentCapter: Ref<WilChapter | undefined> = ref();
-
+const endBattle = (winner: WIL_BATTLE_TEAM) => {
+  if (winner === WIL_BATTLE_TEAM.COMPUTER) {
+    emits("end", WIL_ENDING_ID.GAME_OVER);
+    return;
+  }
+  proceed();
+};
 const proceed = () => {
   if (!currentCapter.value) {
     throw new WrongImplementationError("Current Chapter is not initialized.");
@@ -106,11 +115,12 @@ const proceed = () => {
     player.value.teamName = battleEvent.value.playerTeamName;
   } else if (timming.value === WIL_CHAPTER_TIMMING.TEAM) {
     teamEvent.value = currentCapter.value.proceedTeamEvent();
-  console.log(teamEvent.value)
     if (!teamEvent.value) {
       proceed();
       return;
     }
+  } else if (timming.value === WIL_CHAPTER_TIMMING.ENDING) {
+    emits("end", WIL_ENDING_ID.TO_BE_CONTINUED);
   }
 };
 

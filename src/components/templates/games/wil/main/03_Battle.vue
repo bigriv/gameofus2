@@ -36,7 +36,7 @@
       >
         <div class="c-battle__start__text">
           <template v-if="battle.turnOperator.team === WIL_BATTLE_TEAM.PLAYER">
-            {{ player.moveCharacter?.name }}のターン
+            {{ battle.player.moveCharacter?.name }}のターン
           </template>
           <template
             v-else-if="battle.turnOperator.team === WIL_BATTLE_TEAM.COMPUTER"
@@ -59,15 +59,23 @@
       @endTurn="endTurn"
     />
   </div>
+  <div class="c-battle__confirm_dialog">
+    <WilConfirmDialog
+      v-model:isShow="confirmModal.isShow"
+      :cancelable="false"
+      :message="confirmModal.message"
+      @submit="confirmModal.onClickOk"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
 import {
   PropType,
   Ref,
-  computed,
   onMounted,
   onUnmounted,
+  reactive,
   ref,
   watch,
 } from "vue";
@@ -81,6 +89,7 @@ import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
 import { WilBattleEvent } from "@/composables/games/wil/types/event";
 import { WilBattle } from "@/composables/games/wil/types/battle";
 import { WilFieldCell } from "@/composables/games/wil/types/field";
+import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
 
 const props = defineProps({
   skills: {
@@ -96,17 +105,24 @@ const props = defineProps({
     required: true,
   },
 });
-const emits = defineEmits(["update:player", "end"]);
+const emits = defineEmits(["end"]);
 
 const background = props.event.background;
-const player = computed({
-  get: () => props.player,
-  set: (newValue: WilPlayer) => emits("update:player", newValue),
-});
 const battle = ref(new WilBattle(props.player, props.event));
 const hoverCell: Ref<WilFieldCell | undefined> = ref();
 const infomationMessage = ref("");
 const guideMessage = ref("キャラクターを配置するマスを選択してください。");
+
+// 確認モーダル
+const confirmModal: {
+  isShow: boolean;
+  message: string;
+  onClickOk: Function;
+} = reactive({
+  isShow: false,
+  message: "",
+  onClickOk: () => {},
+});
 
 onMounted(() => {
   props.event.processDeploy();
@@ -118,7 +134,6 @@ const onClickComputerField = (cell: WilFieldCell) => {
   console.log("click", cell, battle.value.timming);
   // スキル発動対象選択時
   if (battle.value.timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
-    battle.value.resetFieldSelected();
     battle.value.setMoveTarget(cell);
     // 戦闘タイミングを行動処理に変更
     battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
@@ -133,9 +148,7 @@ const onClickPlayerField = (cell: WilFieldCell) => {
     battle.value.timming === WIL_BATTLE_TIMMING.SET_SELECT_CELL ||
     battle.value.timming === WIL_BATTLE_TIMMING.SET_SELECT_CHARACTER
   ) {
-    battle.value.resetFieldSelected();
     battle.value.setMoveTarget(cell);
-
     battle.value.changeTimming(WIL_BATTLE_TIMMING.SET_SELECT_CHARACTER);
     return;
   }
@@ -145,7 +158,6 @@ const onClickPlayerField = (cell: WilFieldCell) => {
     battle.value.timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_MIGRATE_PLACE ||
     battle.value.timming == WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET
   ) {
-    battle.value.resetFieldSelected();
     battle.value.setMoveTarget(cell);
     // 戦闘タイミングをプレイヤー行動処理に変更
     battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
@@ -195,14 +207,20 @@ const endBattle = () => {
   battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_END);
   battle.value.endBattle();
   if (battle.value.winner === WIL_BATTLE_TEAM.PLAYER) {
-    infomationMessage.value = `${battle.value.computer.teamName}との戦闘に勝利した！`;
+    confirmModal.message = `${battle.value.computer.teamName}との戦闘に勝利した！`;
+    confirmModal.onClickOk = () => {
+      emits("end", battle.value.winner);
+    };
+    confirmModal.isShow = true;
   } else if (battle.value.winner === WIL_BATTLE_TEAM.COMPUTER) {
-    infomationMessage.value = `${battle.value.computer.teamName}との戦闘に敗北した。`;
+    confirmModal.message = `${battle.value.computer.teamName}との戦闘に敗北した。`;
+    confirmModal.onClickOk = () => {
+      emits("end", battle.value.winner);
+    };
+    confirmModal.isShow = true;
   }
-  emits("end");
 };
 const onHoverFieldCell = (cell: WilFieldCell) => {
-  console.log(cell);
   hoverCell.value = cell;
   if (!hoverCell.value.character) {
     return;
@@ -210,6 +228,7 @@ const onHoverFieldCell = (cell: WilFieldCell) => {
   if (battle.value.timming !== WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
     return;
   }
+  battle.value.updateFieldSelectable();
   battle.value.changeFieldColor(hoverCell.value);
 };
 const onLeaveFieldCell = () => {
@@ -217,6 +236,7 @@ const onLeaveFieldCell = () => {
   if (battle.value.timming !== WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
     return;
   }
+  battle.value.updateFieldSelectable();
   battle.value.changeFieldColor(hoverCell.value);
 };
 

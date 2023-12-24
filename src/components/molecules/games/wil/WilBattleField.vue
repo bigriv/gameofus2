@@ -11,10 +11,6 @@
             `c-battle_field__cell--${
               field.cells[(column - 1) * WilField.WIDTH + (row - 1)].color
             }`,
-            {
-              'c-battle_field__cell--selected':
-                field.cells[(column - 1) * WilField.WIDTH + (row - 1)].selected,
-            },
           ]"
           @click="
             onClickCell(field.cells[(column - 1) * WilField.WIDTH + (row - 1)])
@@ -35,6 +31,7 @@
             <GOUVisualCanvas
               :objects="{
                 army: field.cells[(column - 1) * WilField.WIDTH + (row - 1)].character!.visual.current,
+                animation: field.cells[(column - 1) * WilField.WIDTH + (row - 1)].animation,
               }"
             />
           </div>
@@ -95,17 +92,11 @@ const onLeave = () => {
   emits("leave");
 };
 // ダメージイベントが更新された時の処理
-// 300msずつずらしてSEを鳴らす
 watch(
   () => props.damageResults,
   () => {
-    props.damageResults.forEach((event, index) => {
+    props.damageResults.forEach((event) => {
       event.process();
-      if (event.sound) {
-        setTimeout(() => {
-          event.sound?.play();
-        }, index * 300);
-      }
     });
   }
 );

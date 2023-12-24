@@ -55,7 +55,7 @@ export abstract class WilOperator {
         "The move character is not exist in field."
       );
     }
-    let processConditionTurnEndresult =
+    const processConditionTurnEndresult =
       this.moveCharacter.processConditionTurnEnd(moveCharacterCell);
     if (processConditionTurnEndresult) {
       results.push(processConditionTurnEndresult);
@@ -72,12 +72,12 @@ export abstract class WilOperator {
       results.push(
         new WilBattleMoveResult({
           message: [`${this.moveCharacter.name}は力尽きた。`],
-          animation: new GOUAnimation(
+          characterAnimation: new GOUAnimation(
             ANIMATION_TYPE.FADEOUT,
             ANIMATION_EASING_TYPE.EASE,
             1
           ),
-          cell: this.targetCell,
+          character: moveCharacterCell.character,
         })
       );
     }

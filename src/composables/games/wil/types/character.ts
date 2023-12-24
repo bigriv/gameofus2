@@ -10,6 +10,7 @@ import { WilBattleDamegeResult, WilBattleMoveResult } from "./battle";
 import { WilConditionUtil } from "./condition";
 import { WilFieldCell } from "./field";
 import { WIL_CHARACTER_ID } from "../enums/character";
+import GOUImage from "@/composables/types/visuals/GOUImage";
 
 export class WilCharacter {
   readonly id: string;
@@ -58,7 +59,7 @@ export class WilCharacter {
     this.id = `${define.id}_${sequence}`;
     this.name = define.name;
     this.visual = {
-      current: images[define.visual.standing],
+      current: (images[define.visual.standing] as GOUImage).deepCopy(),
       standing: images[define.visual.standing],
       closePhisic: define.visual.closePhisic
         ? images[define.visual.closePhisic]

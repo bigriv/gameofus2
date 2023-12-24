@@ -301,7 +301,6 @@ const onSelectSetCharacter = (character: WilCharacter) => {
 const onRemoveSetCharacter = () => {
   battle.value.player.removeDeployedCharacter();
   // 配置マス選択の表示に切り替え
-  battle.value.player.field.resetSelected();
   battle.value.changeTimming(WIL_BATTLE_TIMMING.SET_SELECT_CELL);
 };
 

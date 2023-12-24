@@ -3,7 +3,7 @@
     <div class="c-training__characters">
       <WilCardList
         :selected="selectedCharacter?.id"
-        :dataList="training.selectableCharacters"
+        :dataList="(training.selectableCharacters as Array<WilCharacter>)"
         @update:selected="onSelectCharacter"
       />
     </div>
@@ -21,7 +21,7 @@
           </div>
           <template v-if="plan.character">
             <div class="c-training__plan__cards__content__character">
-              <WilCharacterCard :character="plan.character" />
+              <WilCharacterCard :character="(plan.character as WilCharacter)" />
             </div>
             <div class="c-training__plan__cards__content__button">
               <GameButton
@@ -223,8 +223,8 @@ const onStartTraining = () => {
 };
 const onSelectCharacter = (id: string) => {
   selectedCharacter.value = training.value.selectableCharacters.find(
-    (character: WilCharacter) => character.id === id
-  );
+    (character) => character.id === id
+  ) as WilCharacter;
 };
 const onClickOk = () => {
   resultModal.isShow = false;

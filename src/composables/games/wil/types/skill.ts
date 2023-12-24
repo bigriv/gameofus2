@@ -10,6 +10,11 @@ import { WilBattleMoveResult } from "./battle";
 import { WilCharacter } from "./character";
 import { WilConditionUtil } from "./condition";
 import { WilFieldCell } from "./field";
+import { GOUAudio } from "@/composables/types/audio/GOUAudio";
+import { WIL_IMAGE_ID } from "../enums/image";
+import { WIL_SOUND_ID } from "../enums/sound";
+import GOUVisual from "@/composables/types/visuals/GOUVisual";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 
 export class WilSkill {
   static readonly LOW_CONDITION_RATE = 20; // 状態異常にかかる確率（低）
@@ -18,8 +23,8 @@ export class WilSkill {
   readonly id: WIL_SKILL_ID;
   readonly name: string;
   readonly description: string;
-  // readonly animation: GOULottie;
-  // readonly sound: GOUAudio;
+  readonly animation?: GOUVisual;
+  readonly sound?: GOUAudio;
   readonly type: WIL_SKILL_TYPE;
   readonly cost: number;
   readonly power?: number;
@@ -32,29 +37,33 @@ export class WilSkill {
   readonly element: WIL_ELEMENT;
   readonly learnRate: number;
 
-  constructor(define: {
-    id: WIL_SKILL_ID;
-    name: string;
-    description: string;
-    // animation: GOULottie;
-    // sound: GOUAudio;
-    type: WIL_SKILL_TYPE;
-    cost: number;
-    power?: number;
-    effect?: (
-      __activest: WilCharacter,
-      __target: WilFieldCell
-    ) => Array<WilBattleMoveResult>;
-    target: WIL_SKILL_TARGET;
-    range: WIL_SKILL_RANGE;
-    element: WIL_ELEMENT;
-    learnRate: number;
-  }) {
+  constructor(
+    define: {
+      id: WIL_SKILL_ID;
+      name: string;
+      description: string;
+      animation?: WIL_IMAGE_ID;
+      sound?: WIL_SOUND_ID;
+      type: WIL_SKILL_TYPE;
+      cost: number;
+      power?: number;
+      effect?: (
+        __activest: WilCharacter,
+        __target: WilFieldCell
+      ) => Array<WilBattleMoveResult>;
+      target: WIL_SKILL_TARGET;
+      range: WIL_SKILL_RANGE;
+      element: WIL_ELEMENT;
+      learnRate: number;
+    },
+    images: { [key: string]: GOUVisual },
+    sounds: { [key: string]: GOUReadAudio }
+  ) {
     this.id = define.id;
     this.name = define.name;
     this.description = define.description;
-    // this.animation = define.animation;
-    // this.sound = define.sound;
+    this.animation = define.animation ? images[define.animation] : undefined;
+    this.sound = define.sound ? sounds[define.sound] : undefined;
     this.type = define.type;
     this.cost = define.cost;
     this.power = define.power;
@@ -155,7 +164,7 @@ export class WilSkill {
     }
 
     // ダメージの最大10%を加算
-    damage += damage * Math.random() * 10;
+    damage += damage * Math.random() * 0.1;
 
     // ダメージ0が続くのを避けるために50%で1を足す
     damage += Math.random() < 0.5 ? 1 : 0;

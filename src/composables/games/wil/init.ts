@@ -12,19 +12,31 @@ import { SequenceId } from "@/composables/utils/id";
 import { WIL_SOUND_DEFINES } from "./defines/sound";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import GOUImage from "@/composables/types/visuals/GOUImage";
+import { GOULottie } from "@/composables/types/visuals/GOULottie";
 
 export const useWilInit = () => {
   const initImages = (): { [key: string]: GOUVisual } => {
     let images: { [key: string]: GOUVisual } = {};
 
     for (const key of Object.keys(WIL_IMAGE_DEFINES)) {
-      images[key] = ConstructGOUVisual({
-        type: GOUVisualType.IMAGE_SVG,
-        path: WIL_IMAGE_DEFINES[key],
-        width: 100,
-        height: 100,
-      });
+      if (/.*\.[png|svg]/.test(WIL_IMAGE_DEFINES[key])) {
+        images[key] = ConstructGOUVisual({
+          type: GOUVisualType.IMAGE_SVG,
+          path: WIL_IMAGE_DEFINES[key],
+          width: 100,
+          height: 100,
+        });
+      } else if (/.*\.json/.test(WIL_IMAGE_DEFINES[key])) {
+        images[key] = ConstructGOUVisual({
+          type: GOUVisualType.ANIMATION_LOTTIE,
+          path: WIL_IMAGE_DEFINES[key],
+          width: 100,
+          height: 100,
+        });
+      }
     }
+    console.log("images", images);
+
     return images;
   };
   const WIL_IMAGES: { [key: string]: GOUVisual } = initImages();
@@ -42,7 +54,7 @@ export const useWilInit = () => {
   const initSkills = (): { [key: string]: WilSkill } => {
     let skills: { [key: string]: WilSkill } = {};
     for (const define of WIL_SKILL_DEFINES) {
-      skills[define.id] = new WilSkill(define);
+      skills[define.id] = new WilSkill(define, WIL_IMAGES, WIL_SOUNDS);
     }
     return skills;
   };
@@ -51,7 +63,11 @@ export const useWilInit = () => {
   const isLoadedFiles: Ref<boolean> = ref(false);
   const loadFiles = () => {
     for (const key of Object.keys(WIL_IMAGES)) {
-      (WIL_IMAGES[key] as GOUImage).load();
+      if (WIL_IMAGES[key] instanceof GOUImage) {
+        (WIL_IMAGES[key] as GOUImage).load();
+      } else if (WIL_IMAGES[key] instanceof GOULottie) {
+        (WIL_IMAGES[key] as GOULottie).load();
+      }
     }
     for (const key of Object.keys(WIL_SOUNDS)) {
       WIL_SOUNDS[key].load();
@@ -60,8 +76,14 @@ export const useWilInit = () => {
     // ロードが完了したかを判定する
     let intervalId = setInterval(() => {
       for (const key of Object.keys(WIL_IMAGES)) {
-        if (!(WIL_IMAGES[key] as GOUImage).isLoaded()) {
-          return;
+        if (WIL_IMAGES[key] instanceof GOUImage) {
+          if (!(WIL_IMAGES[key] as GOUImage).isLoaded()) {
+            return;
+          }
+        } else if (WIL_IMAGES[key] instanceof GOULottie) {
+          if (!(WIL_IMAGES[key] as GOULottie).isLoaded()) {
+            return;
+          }
         }
       }
 

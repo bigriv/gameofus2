@@ -1,6 +1,5 @@
-import { WilFieldCell } from "./field";
+import { WilField, WilFieldCell } from "./field";
 import { GOUAudio } from "@/composables/types/audio/GOUAudio";
-import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import {
   ANIMATION_EASING_TYPE,
   ANIMATION_TYPE,
@@ -15,7 +14,15 @@ import { WrongImplementationError } from "@/composables/types/errors/WrongImplem
 import { WilCharacter } from "./character";
 import { WilOperator } from "./operator";
 import { WilSkill } from "./skill";
-import { WIL_SKILL_RANGE } from "../enums/skill";
+import {
+  WIL_SKILL_RANGE,
+  WIL_SKILL_TARGET,
+  WIL_SKILL_TYPE,
+} from "../enums/skill";
+import { WIL_CELL_COLOR } from "../enums/cell";
+import GOUVisual from "@/composables/types/visuals/GOUVisual";
+import GOUImage from "@/composables/types/visuals/GOUImage";
+import { GOULottie } from "@/composables/types/visuals/GOULottie";
 
 /**
  * 戦闘管理クラス
@@ -40,6 +47,7 @@ export class WilBattle {
 
     this.turnOperator = this.player; // 便宜上デフォルトのターンプレイヤーはプレイヤーとする
     this.timming = WIL_BATTLE_TIMMING.SET_SELECT_CELL;
+    this.updateFieldSelectable();
     this.changeFieldColor();
   }
 
@@ -49,6 +57,7 @@ export class WilBattle {
    */
   changeTimming(newTimming: WIL_BATTLE_TIMMING) {
     this.timming = newTimming;
+    this.updateFieldSelectable();
     this.changeFieldColor();
   }
 
@@ -89,7 +98,7 @@ export class WilBattle {
    */
   startTurn() {
     // 各種値をリセット
-    this.resetFieldSelected();
+    this.resetFieldSelectable();
     this.player.resetMove();
     this.computer.resetMove();
     this.moveResults = [];
@@ -216,76 +225,76 @@ export class WilBattle {
     const isNeedCalcDamage =
       this.turnOperator.selectSkill.power !== undefined &&
       this.turnOperator.selectSkill.power > 0;
-    if (isNeedCalcDamage) {
-      let damage = WilSkill.calcDamage(
-        this.turnOperator.moveCharacter,
-        this.turnOperator.targetCell.character,
-        this.turnOperator.selectSkill
-      );
+    this.getTargets().forEach((targetCell) => {
+      if (!this.turnOperator.moveCharacter) {
+        // 行動キャラクターがいない場合は実装ミスとする
+        throw new WrongImplementationError("The move character is not exist.");
+      }
+      if (!this.turnOperator.selectSkill) {
+        // 発動するスキルがない場合は実装ミスとする
+        throw new WrongImplementationError("The use skill is empty.");
+      }
+      if (!targetCell.character || targetCell.character.status.life <= 0) {
+        // 対象となるマスに生存しているキャラクターがいなければ何もしない
+        return;
+      }
+      // ダメージが発生する場合はダメージの計算を行う
+      if (isNeedCalcDamage) {
+        let damage = WilSkill.calcDamage(
+          this.turnOperator.moveCharacter,
+          targetCell.character,
+          this.turnOperator.selectSkill
+        );
 
-      // ダメージとして最大10%を加算
-      damage += Math.round(Math.random() * damage * 0.1);
+        // ダメージとして最大10%を加算
+        damage += Math.round(Math.random() * damage * 0.1);
 
-      damageResults.push(
-        new WilBattleDamegeResult({
-          cell: this.turnOperator.targetCell,
-          damage,
-        })
-      );
-      moveResults.push(
-        new WilBattleMoveResult({
-          message: [
-            `${this.turnOperator.targetCell.character.name}に${damage}のダメージ！`,
-          ],
-          damage: damageResults,
-        })
-      );
-
-      this.turnOperator.targetCell.character.status.life -= damage;
-      if (this.turnOperator.targetCell.character.status.life <= 0) {
-        this.turnOperator.targetCell.character.status.life = 0;
-        moveResults.push(
-          new WilBattleMoveResult({
-            message: [
-              `${this.turnOperator.targetCell.character.name}は力尽きた。`,
-            ],
-            animation: new GOUAnimation(
-              ANIMATION_TYPE.FADEOUT,
-              ANIMATION_EASING_TYPE.EASE,
-              1
-            ),
-            cell: this.turnOperator.targetCell,
+        damageResults.push(
+          new WilBattleDamegeResult({
+            cell: targetCell,
+            damage,
           })
         );
-      }
-    }
-    // スキル効果の適用
-    if (this.turnOperator.selectSkill.effect) {
-      if (this.turnOperator.targetCell.character) {
+        console.log(this.turnOperator.selectSkill.animation);
         moveResults.push(
-          ...this.turnOperator.selectSkill.effect(
-            this.turnOperator.moveCharacter,
-            this.turnOperator.targetCell
-          )
+          new WilBattleMoveResult({
+            message: [`${targetCell.character.name}に${damage}のダメージ！`],
+            cell: targetCell,
+            cellAnimation: this.turnOperator.selectSkill.animation,
+            sound: this.turnOperator.selectSkill.sound,
+            damage: damageResults,
+          })
         );
+
+        targetCell.character.status.life -= damage;
+        if (targetCell.character.status.life <= 0) {
+          targetCell.character.status.life = 0;
+          moveResults.push(
+            new WilBattleMoveResult({
+              message: [`${targetCell.character.name}は力尽きた。`],
+              characterAnimation: new GOUAnimation(
+                ANIMATION_TYPE.FADEOUT,
+                ANIMATION_EASING_TYPE.EASE,
+                1
+              ),
+              character: targetCell.character,
+            })
+          );
+        }
+
+        // スキル効果の適用
+        if (this.turnOperator.selectSkill.effect) {
+          if (targetCell.character) {
+            moveResults.push(
+              ...this.turnOperator.selectSkill.effect(
+                this.turnOperator.moveCharacter,
+                targetCell
+              )
+            );
+          }
+        }
       }
-    }
-    const targetCells = [];
-    switch (this.turnOperator.selectSkill.range) {
-      case WIL_SKILL_RANGE.SOLO:
-        targetCells.push(this.turnOperator.targetCell);
-        break;
-      case WIL_SKILL_RANGE.AROUND:
-        break;
-      case WIL_SKILL_RANGE.CROSS:
-        break;
-      case WIL_SKILL_RANGE.ROW:
-        break;
-      case WIL_SKILL_RANGE.COLUMN:
-        break;
-      case WIL_SKILL_RANGE.ALL:
-        break;
-    }
+    });
 
     this.moveResults = moveResults;
     // TODO: ログを記録
@@ -296,6 +305,7 @@ export class WilBattle {
    */
   endTurn() {
     this.moveResults = this.turnOperator.endTurn();
+    console.log(this.moveResults);
     // TODO: ログを記録
 
     // 勝者判定
@@ -326,9 +336,74 @@ export class WilBattle {
   /**
    * フィールドの選択状態をすべて解除する
    */
-  resetFieldSelected() {
-    this.player.field.resetSelected();
-    this.computer.field.resetSelected();
+  resetFieldSelectable() {
+    this.player.field.resetSelectable();
+    this.computer.field.resetSelectable();
+  }
+
+  /**
+   * 移動先またはスキルの影響範囲となるマスをすべて取得する
+   * @param target 基準とする対象マス
+   * @returns 移動先またはスキルの影響範囲となるマスのリスト
+   */
+  getTargets(target?: WilFieldCell): Array<WilFieldCell> {
+    const targetCell = target ?? this.turnOperator.targetCell;
+    if (!targetCell) {
+      return [];
+    }
+    if (!this.turnOperator.selectSkill) {
+      return [targetCell];
+    }
+    const targets = new Array<WilFieldCell>();
+    const targetField =
+      targetCell.team === WIL_BATTLE_TEAM.PLAYER
+        ? this.player.field
+        : this.computer.field;
+    switch (this.turnOperator.selectSkill.range) {
+      case WIL_SKILL_RANGE.SOLO:
+        return [targetCell];
+      case WIL_SKILL_RANGE.AROUND:
+        // 周り8マスを対象とする
+        targetField.cells.forEach((cell) => {
+          if (cell.x < targetCell.x - 1 || cell.x > targetCell.x + 1) {
+            return;
+          }
+          if (cell.y < targetCell.y - 1 || cell.y > targetCell.y + 1) {
+            return;
+          }
+          targets.push(cell);
+        });
+        return targets;
+      case WIL_SKILL_RANGE.CROSS:
+        // 上下左右のマスを対象とする
+        targetField.cells.forEach((cell) => {
+          if (cell.x !== targetCell.x && cell.y !== targetCell.y) {
+            return;
+          }
+          if (cell.x < targetCell.x - 1 || cell.x > targetCell.x + 1) {
+            return;
+          }
+          if (cell.y < targetCell.y - 1 || cell.y > targetCell.y + 1) {
+            return;
+          }
+          targets.push(cell);
+        });
+        return targets;
+      case WIL_SKILL_RANGE.ROW:
+        // 同じ列のマスを対象とする
+        for (let i = 0; i < WilField.HEIGHT; i++) {
+          targets.push(targetField.getCell(targetCell.x, i));
+        }
+        return targets;
+      case WIL_SKILL_RANGE.COLUMN:
+        // 同じ行のマスを対象とする
+        for (let j = 0; j < WilField.WIDTH; j++) {
+          targets.push(targetField.getCell(j, targetCell.y));
+        }
+        return targets;
+      case WIL_SKILL_RANGE.ALL:
+        return [...targetField.cells];
+    }
   }
 
   /**
@@ -336,20 +411,226 @@ export class WilBattle {
    * @param target 選択されているマス
    */
   changeFieldColor(target?: WilFieldCell) {
-    this.player.field.changeColor(
-      this.turnOperator.team,
-      this.timming,
-      this.turnOperator.moveCharacter,
-      this.turnOperator.selectSkill,
-      target ?? this.turnOperator.targetCell
-    );
-    this.computer.field.changeColor(
-      this.turnOperator.team,
-      this.timming,
-      this.turnOperator.moveCharacter,
-      this.turnOperator.selectSkill,
-      target ?? this.turnOperator.targetCell
-    );
+    // キャラクター配置時
+    // すべてのマスの色を変える
+    // 相手フィールド⇒赤、自分フィールド⇒青
+    if (
+      this.timming === WIL_BATTLE_TIMMING.SET_SELECT_CELL ||
+      this.timming === WIL_BATTLE_TIMMING.SET_SELECT_CHARACTER
+    ) {
+      this.player.field.cells.forEach((cell) => {
+        cell.color = WIL_CELL_COLOR.BLUE;
+      });
+      this.computer.field.cells.forEach((cell) => {
+        cell.color = WIL_CELL_COLOR.RED;
+      });
+      return;
+    }
+
+    // 戦闘開始時
+    // すべてのマスを白にする
+    if (this.timming === WIL_BATTLE_TIMMING.BATTLE_START) {
+      this.player.field.cells.forEach((cell) => {
+        cell.color = WIL_CELL_COLOR.WHITE;
+      });
+      this.computer.field.cells.forEach((cell) => {
+        cell.color = WIL_CELL_COLOR.WHITE;
+      });
+      return;
+    }
+
+    const targetCell = target ?? this.turnOperator.targetCell;
+    const turnPlayerColor =
+      this.turnOperator.team === WIL_BATTLE_TEAM.PLAYER
+        ? WIL_CELL_COLOR.BLUE
+        : WIL_CELL_COLOR.RED;
+
+    // 移動先選択時
+    // 行動キャラクターのいるマスを黄、移動可能マスを青/赤に変える
+    if (this.timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_MIGRATE_PLACE) {
+      const changeColorFunction = (cell: WilFieldCell) => {
+        if (cell.selectable) {
+          cell.color = turnPlayerColor;
+          return;
+        }
+        if (
+          cell.character &&
+          cell.character.id === this.turnOperator.moveCharacter?.id
+        ) {
+          cell.color = WIL_CELL_COLOR.YELLOW;
+          return;
+        }
+        cell.color = WIL_CELL_COLOR.WHITE;
+      };
+      this.player.field.cells.forEach(changeColorFunction);
+      this.computer.field.cells.forEach(changeColorFunction);
+      return;
+    }
+
+    // 発動スキルが選択されていない場合
+    // 行動キャラクターのマスのみを黄にする
+    if (!this.turnOperator.selectSkill) {
+      const changeColorFunction = (cell: WilFieldCell) => {
+        if (
+          cell.character &&
+          cell.character.id === this.turnOperator.moveCharacter?.id
+        ) {
+          cell.color = WIL_CELL_COLOR.YELLOW;
+          return;
+        }
+        cell.color = WIL_CELL_COLOR.WHITE;
+      };
+      this.player.field.cells.forEach(changeColorFunction);
+      this.computer.field.cells.forEach(changeColorFunction);
+      return;
+    }
+    // スキル発動対象が選択されていない場合
+    // 選択可能マスをターンプレイヤーの色に変更し、選択不可で行動キャラクターのいるマスを黄にする
+    if (!targetCell) {
+      const changeColorFunction = (cell: WilFieldCell) => {
+        // 選択可能マスをターンプレイヤーの色に変更
+        if (cell.selectable) {
+          cell.color = turnPlayerColor;
+          return;
+        }
+        // 行動キャラクターのいるマスを黄にする
+        if (
+          cell.character &&
+          cell.character.id === this.turnOperator.moveCharacter?.id
+        ) {
+          cell.color = WIL_CELL_COLOR.YELLOW;
+          return;
+        }
+        cell.color = WIL_CELL_COLOR.WHITE;
+      };
+      this.player.field.cells.forEach(changeColorFunction);
+      this.computer.field.cells.forEach(changeColorFunction);
+      return;
+    }
+
+    // 発動スキル・発動対象が選択されている場合
+    // 選択不可で行動キャラクターのいるマスを黄にする
+    const changeColorFunction = (cell: WilFieldCell) => {
+      if (
+        cell.character &&
+        cell.character.id === this.turnOperator.moveCharacter?.id
+      ) {
+        cell.color = WIL_CELL_COLOR.YELLOW;
+      }
+      cell.color = WIL_CELL_COLOR.WHITE;
+    };
+    this.player.field.cells.forEach(changeColorFunction);
+    this.computer.field.cells.forEach(changeColorFunction);
+
+    // 対象マスをターンプレイヤーの色に変更する
+    if (targetCell.selectable) {
+      this.getTargets(targetCell).forEach(
+        (cell) => (cell.color = turnPlayerColor)
+      );
+    }
+  }
+
+  /**
+   * フィールドの選択可否フラグを更新する
+   */
+  updateFieldSelectable() {
+    let updateFunction = (__cell: WilFieldCell): void => {};
+    // 移動先選択時
+    if (this.timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_MIGRATE_PLACE) {
+      updateFunction = (cell: WilFieldCell) => {
+        cell.selectable =
+          this.turnOperator.team === cell.team && !cell.character;
+      };
+      this.player.field.cells.forEach(updateFunction);
+      this.computer.field.cells.forEach(updateFunction);
+      return;
+    }
+
+    // 移動先選択時以外でスキルが選択されていない場合
+    // すべてのマスを選択不可にする
+    if (!this.turnOperator.selectSkill) {
+      this.resetFieldSelectable();
+      return;
+    }
+
+    // スキルが選択されている場合
+    // スキル対象が味方の場合
+    if (this.turnOperator.selectSkill.target === WIL_SKILL_TARGET.ALLY) {
+      updateFunction = (cell) => {
+        if (this.turnOperator.team !== cell.team) {
+          cell.selectable = false;
+          return;
+        }
+        if (cell.character) {
+          cell.selectable = true;
+          return;
+        }
+        cell.selectable = false;
+      };
+      this.player.field.cells.forEach(updateFunction);
+      this.computer.field.cells.forEach(updateFunction);
+      return;
+    }
+
+    // スキル対象が自身のみの場合
+    if (this.turnOperator.selectSkill.target === WIL_SKILL_TARGET.SELF) {
+      // キャラクターIDが一致するマスのみを選択可能にする
+      updateFunction = (cell) =>
+        (cell.selectable =
+          !!cell.character &&
+          cell.character.id === this.turnOperator.moveCharacter?.id);
+      this.player.field.cells.forEach(updateFunction);
+      this.computer.field.cells.forEach(updateFunction);
+      return;
+    }
+    // スキル対象が相手の場合
+    if (this.turnOperator.selectSkill.target === WIL_SKILL_TARGET.ENEMY) {
+      // スキル種別が近接物理の場合
+      if (this.turnOperator.selectSkill.type === WIL_SKILL_TYPE.CLOSE_PHISIC) {
+        if (!this.turnOperator.moveCharacter) {
+          throw new WrongImplementationError("The move character is emtpy.");
+        }
+        // 発動キャラクターが自分フィールド内で先頭にいない場合はすべてのマスを選択不可にする
+        if (!this.turnOperator.field.isFront(this.turnOperator.moveCharacter)) {
+          updateFunction = (cell) => (cell.selectable = false);
+          this.player.field.cells.forEach(updateFunction);
+          this.computer.field.cells.forEach(updateFunction);
+          return;
+        }
+
+        // ターンプレイヤーと違うフィールド内で、キャラクターがいるマスで、そのキャラクターが先頭にいる場合は選択可能
+        this.player.field.cells.forEach((cell) => {
+          cell.selectable =
+            this.turnOperator.team !== cell.team &&
+            !!cell.character &&
+            this.player.field.isFront(cell);
+        });
+        this.computer.field.cells.forEach((cell) => {
+          cell.selectable =
+            this.turnOperator.team !== cell.team &&
+            !!cell.character &&
+            this.computer.field.isFront(cell);
+        });
+        return;
+      }
+
+      // スキル種別が近接以外の場合
+      // ターンプレイヤーと違うフィールド内で、キャラクターがいるマスの場合は選択可能
+      updateFunction = (cell) =>
+        (cell.selectable =
+          this.turnOperator.team !== cell.team && !!cell.character);
+      this.player.field.cells.forEach(updateFunction);
+      this.computer.field.cells.forEach(updateFunction);
+      return;
+    }
+
+    // スキル対象が全ての場合
+    // キャラクターがいるマスすべてを選択可能にする
+    if (this.turnOperator.selectSkill.target === WIL_SKILL_TARGET.ALL) {
+      updateFunction = (cell) => (cell.selectable = !!cell.character);
+      this.player.field.cells.forEach(updateFunction);
+      this.computer.field.cells.forEach(updateFunction);
+    }
   }
 }
 
@@ -359,21 +640,27 @@ export class WilBattle {
 export class WilBattleMoveResult {
   message?: Array<string>;
   sound?: GOUAudio;
-  animation?: GOULottie | GOUAnimation;
   cell?: WilFieldCell;
+  cellAnimation?: GOUVisual;
+  character?: WilCharacter;
+  characterAnimation?: GOUVisual | GOUAnimation;
   damage?: Array<WilBattleDamegeResult>;
 
   constructor(define: {
     message?: Array<string>;
     sound?: GOUAudio;
-    animation?: GOULottie | GOUAnimation;
     cell?: WilFieldCell;
+    cellAnimation?: GOUVisual;
+    character?: WilCharacter;
+    characterAnimation?: GOUVisual | GOUAnimation;
     damage?: Array<WilBattleDamegeResult>;
   }) {
     this.message = define.message;
     this.sound = define.sound;
-    this.animation = define.animation;
     this.cell = define.cell;
+    this.cellAnimation = define.cellAnimation;
+    this.character = define.character;
+    this.characterAnimation = define.characterAnimation;
     this.damage = define.damage;
   }
 
@@ -384,19 +671,35 @@ export class WilBattleMoveResult {
     if (this.sound) {
       this.sound.play();
     }
-    if (this.cell?.character) {
-      if (this.animation instanceof GOULottie) {
-        const character = this.cell.character;
-        const temp = this.cell.character.visual;
-        this.cell.character.visual.current = this.animation;
-        // FIXME: 何秒で戻すかは要調整
+    // マスに対するエフェクト
+    if (this.cell && this.cellAnimation) {
+      if (this.cellAnimation instanceof GOUImage) {
+        this.cell.animation = this.cellAnimation as GOUImage;
+        setTimeout(() => (this.cell!.animation = undefined), 1000);
+      } else if (this.cellAnimation instanceof GOULottie) {
+        this.cell.animation = this.cellAnimation as GOULottie;
+        setTimeout(() => (this.cell!.animation = undefined), 1000);
+      }
+    }
+
+    // キャラクターに対するエフェクト
+    if (this.character && this.characterAnimation) {
+      if (this.characterAnimation instanceof GOUImage) {
+        const character = this.character;
+        const temp = this.character.visual;
+        this.characterAnimation = this.characterAnimation as GOUImage;
         setTimeout(() => (character.visual.current = temp.standing), 1000);
-      } else if (this.animation instanceof GOUAnimation) {
-        const character = this.cell.character;
-        this.cell.character.visual.current.animation = this.animation;
+      } else if (this.characterAnimation instanceof GOULottie) {
+        const character = this.character;
+        const temp = this.character.visual;
+        this.character.visual.current = this.characterAnimation as GOULottie;
+        setTimeout(() => (character.visual.current = temp.standing), 1000);
+      } else if (this.characterAnimation instanceof GOUAnimation) {
+        const character = this.character;
+        this.character.visual.current.animation = this.characterAnimation;
         setTimeout(
           () => (character.visual.current.animation = undefined),
-          this.animation.duration * 1000
+          this.characterAnimation.duration * 2000
         );
       }
     }
@@ -409,35 +712,31 @@ export class WilBattleMoveResult {
 export class WilBattleDamegeResult {
   cell: WilFieldCell;
   damage: number;
-  sound?: GOUAudio;
-  animation?: GOUAnimation;
 
-  constructor(define: {
-    cell: WilFieldCell;
-    damage: number;
-    sound?: GOUAudio;
-    animation?: GOUAnimation;
-  }) {
+  constructor(define: { cell: WilFieldCell; damage: number }) {
     this.cell = define.cell;
     this.damage = define.damage;
-    this.sound = define.sound;
-    this.animation = define.animation;
   }
 
   /**
    * 結果の処理（SEの発生、アニメーションの適用）を行う
    */
   process() {
-    if (this.sound) {
-      this.sound.play();
-    }
-    if (this.animation && this.cell.character) {
+    if (this.cell.character) {
       const character = this.cell.character;
-      character.visual.current.animation = this.animation;
-      setTimeout(
-        () => (character.visual.current.animation = undefined),
-        this.animation.duration * 1000
+      const animation = new GOUAnimation(
+        ANIMATION_TYPE.FLASH,
+        ANIMATION_EASING_TYPE.EASE_IN_OUT,
+        0.5,
+        1
       );
+      character.visual.current.animation = animation;
+      setTimeout(() => {
+        character.visual.current.animation = undefined;
+        if (character.status.life <= 0) {
+          this.cell.character = undefined;
+        }
+      }, animation.duration * 1000);
     }
   }
 }

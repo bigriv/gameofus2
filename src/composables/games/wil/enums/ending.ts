@@ -1,0 +1,4 @@
+export enum WIL_ENDING_ID {
+  GAME_OVER = "GAME_OVER",
+  TO_BE_CONTINUED = "TO_BE_CONTINUED",
+}

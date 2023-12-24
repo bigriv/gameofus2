@@ -24,6 +24,9 @@ export const WIL_IMAGE_DEFINES: { [key: string]: string } = {
     WIL_IMAGE_ROOT_PATH + "characters/dots/dark_monster_shadow.png",
   CHARACTER_OTHER: "/commons/icons/human_blue.svg",
 
+  // スキル
+  SKILL_SLASH: WIL_IMAGE_ROOT_PATH + "skills/slash.json",
+
   // 訓練
   TRAINING_ATTACK: WIL_IMAGE_ROOT_PATH + "trainings/swords.svg",
   TRAINING_DEFENSE: WIL_IMAGE_ROOT_PATH + "trainings/shield.svg",

@@ -95,7 +95,7 @@ export class WilConditionUtil {
   static calcDamage(defaultLife: number, rate: number): number {
     let damage = defaultLife * rate * 0.01;
     // ダメージの最大10%を加算
-    damage += damage * Math.random() * 10;
+    damage += damage * Math.random() * 0.1;
     return Math.round(damage);
   }
 

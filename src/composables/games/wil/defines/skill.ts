@@ -16,11 +16,15 @@ import { WilCharacter } from "../types/character";
 import { WilFieldCell } from "../types/field";
 import { WilSkill } from "../types/skill";
 import { WilStatus } from "../types/status";
+import { WIL_IMAGE_ID } from "../enums/image";
+import { WIL_SOUND_ID } from "../enums/sound";
 
 export const WIL_SKILL_DEFINES: Array<{
   id: WIL_SKILL_ID;
   name: string;
   description: string; // 30文字まで
+  animation?: WIL_IMAGE_ID;
+  sound?: WIL_SOUND_ID;
   type: WIL_SKILL_TYPE;
   cost: number;
   power?: number;
@@ -37,6 +41,8 @@ export const WIL_SKILL_DEFINES: Array<{
     id: WIL_SKILL_ID.SLASH,
     name: "スラッシュ",
     description: "通常の近接攻撃。",
+    animation: WIL_IMAGE_ID.SKILL_SLASH,
+    sound: WIL_SOUND_ID.SE_SLASH,
     cost: 100,
     power: 100,
     type: WIL_SKILL_TYPE.CLOSE_PHISIC,
@@ -391,12 +397,12 @@ export const WIL_SKILL_DEFINES: Array<{
         return [
           new WilBattleMoveResult({
             message: [`${target.character!.name}は死へと引きずり込まれた。`],
-            animation: new GOUAnimation(
+            characterAnimation: new GOUAnimation(
               ANIMATION_TYPE.FADEOUT,
               ANIMATION_EASING_TYPE.EASE,
               1
             ),
-            cell: target,
+            character: target.character,
           }),
         ];
       }

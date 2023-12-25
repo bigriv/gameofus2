@@ -6,7 +6,6 @@ export const useWilDisplay = () => {
   const onNextMessage: Ref<Function> = ref(() => {});
 
   const chainMessage = (messages: string[], afterFunction: Function) => {
-    console.log("chainMessage");
     const message = messages.shift();
     if (!message) {
       displayMessage.value = undefined;

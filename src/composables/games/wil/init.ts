@@ -35,7 +35,6 @@ export const useWilInit = () => {
         });
       }
     }
-    console.log("images", images);
 
     return images;
   };

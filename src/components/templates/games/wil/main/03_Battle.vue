@@ -51,12 +51,12 @@
       {{ guideMessage }}
     </div>
     <UnderFrame
+      ref="underFrame"
       :battle="(battle as WilBattle)"
       :skills="props.skills"
       :hoverCell="hoverCell"
       @error="error"
       @endSet="endSet"
-      @endTurn="endTurn"
     />
   </div>
   <div class="c-battle__confirm_dialog">
@@ -87,9 +87,13 @@ import { WilSkill } from "@/composables/games/wil/types/skill";
 import { WilPlayer } from "@/composables/games/wil/types/player";
 import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
 import { WilBattleEvent } from "@/composables/games/wil/types/event";
-import { WilBattle } from "@/composables/games/wil/types/battle";
-import { WilFieldCell } from "@/composables/games/wil/types/field";
+import {
+  WilBattle,
+  WilBattleMoveResult,
+} from "@/composables/games/wil/types/battle";
+import { WilField, WilFieldCell } from "@/composables/games/wil/types/field";
 import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
+import { WilComputer } from "@/composables/games/wil/types/computer";
 
 const props = defineProps({
   skills: {
@@ -112,6 +116,7 @@ const battle = ref(new WilBattle(props.player, props.event));
 const hoverCell: Ref<WilFieldCell | undefined> = ref();
 const infomationMessage = ref("");
 const guideMessage = ref("キャラクターを配置するマスを選択してください。");
+const underFrame: Ref<InstanceType<typeof UnderFrame> | null> = ref(null);
 
 // 確認モーダル
 const confirmModal: {
@@ -131,7 +136,6 @@ onUnmounted(() => {
   props.event.processEnd();
 });
 const onClickComputerField = (cell: WilFieldCell) => {
-  console.log("click", cell, battle.value.timming);
   // スキル発動対象選択時
   if (battle.value.timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
     battle.value.setMoveTarget(cell);
@@ -139,6 +143,10 @@ const onClickComputerField = (cell: WilFieldCell) => {
     battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
     // 戦闘処理を実行
     battle.value.processMove();
+    underFrame.value?.showBattleMoveResult(
+      battle.value.moveResults as Array<WilBattleMoveResult>,
+      endTurn
+    );
     return;
   }
 };
@@ -163,6 +171,10 @@ const onClickPlayerField = (cell: WilFieldCell) => {
     battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
     // 行動処理を実行
     battle.value.processMove();
+    underFrame.value?.showBattleMoveResult(
+      battle.value.moveResults as Array<WilBattleMoveResult>,
+      endTurn
+    );
     return;
   }
 };
@@ -188,19 +200,40 @@ const startTurn = () => {
 
   infomationMessage.value = `${battle.value.turnOperator.moveCharacter?.name}のターン`;
 
-  setTimeout(() => {
-    battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE);
-  }, 1000);
+  if (battle.value.turnOperator instanceof WilComputer) {
+    // コンピュータのターンなら行動の決定まで行い、行動処理に遷移
+    battle.value.turnOperator.decideBattleMove(
+      battle.value.player.field as WilField
+    );
+    setTimeout(() => {
+      battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
+      battle.value.processMove();
+      underFrame.value?.showBattleMoveResult(
+        battle.value.moveResults as Array<WilBattleMoveResult>,
+        endTurn
+      );
+    }, 1000);
+  } else if (battle.value.turnOperator instanceof WilPlayer) {
+    // プレイヤーのターンなら先頭タイミングを行動選択に切り替える
+    setTimeout(() => {
+      battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE);
+    }, 1000);
+  }
 };
 const endTurn = () => {
   console.log("turn end");
   battle.value.endTurn();
-  // 戦闘終了判定を実施
-  if (battle.value.winner) {
-    endBattle();
-    return;
-  }
-  startTurn();
+  underFrame.value?.showBattleMoveResult(
+    battle.value.moveResults as Array<WilBattleMoveResult>,
+    () => {
+      // 戦闘終了判定を実施
+      if (battle.value.winner) {
+        endBattle();
+        return;
+      }
+      startTurn();
+    }
+  );
 };
 const endBattle = () => {
   props.event.processEnd();

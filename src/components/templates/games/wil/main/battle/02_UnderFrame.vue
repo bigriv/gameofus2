@@ -175,7 +175,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, Ref, computed, ref, watch } from "vue";
+import { PropType, Ref, computed, ref } from "vue";
 import WilCharacterCard from "@/components/molecules/games/wil/WilCharacterCard.vue";
 import WilSkillList from "@/components/molecules/games/wil/WilSkillList.vue";
 import NameValueTable from "@/components/atoms/tables/NameValueTable.vue";
@@ -216,8 +216,7 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["error", "endSet", "endTurn"]);
-
+const emits = defineEmits(["error", "endSet"]);
 const { messageComplete, onNextMessage } = useWilDisplay();
 
 const battle = computed(() => props.battle);
@@ -338,38 +337,42 @@ const onSkipTurn = () => {
     throw new WrongImplementationError("Couldn't get a next move character.");
   }
   battle.value.player.moveCharacter.skip(nextMoveCharacter.stack);
-  emits("endTurn");
 };
-
 const battleResult: Ref<WilBattleMoveResult | undefined> = ref();
-const chainBattleMoveResult = (results: Array<WilBattleMoveResult>) => {
+const showBattleMoveResult = (
+  results: Array<WilBattleMoveResult>,
+  afterFunction: Function
+) => {
+  if (results.length <= 0) {
+    afterFunction();
+    return;
+  }
+  messageComplete.value = false;
+  chainBattleMoveResult([...results], afterFunction);
+};
+const chainBattleMoveResult = (
+  results: Array<WilBattleMoveResult>,
+  afterFunction: Function
+) => {
   const result = results.shift();
-  console.log(result);
   if (!result) {
     battleResult.value = undefined;
     messageComplete.value = true;
     onNextMessage.value = () => {};
-    emits("endTurn");
+    afterFunction();
     return;
   }
   battleResult.value = result;
   if (result.damage && result.damage.length > 0) {
     battle.value.damageResults = result.damage;
   }
-  onNextMessage.value = () => chainBattleMoveResult(results);
+  onNextMessage.value = () => chainBattleMoveResult(results, afterFunction);
   battleResult.value.process();
 };
 
-watch(
-  () => battle.value.moveResults,
-  () => {
-    if (battle.value.moveResults.length <= 0) {
-      return;
-    }
-    messageComplete.value = false;
-    chainBattleMoveResult(battle.value.moveResults);
-  }
-);
+defineExpose({
+  showBattleMoveResult,
+});
 </script>
 
 <style scoped lang="scss">

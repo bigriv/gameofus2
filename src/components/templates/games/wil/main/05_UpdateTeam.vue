@@ -51,7 +51,6 @@ const onSubmit = () => {
   }, 200);
 };
 const chainMessage = (messages: string[], afterFunction: Function) => {
-  console.log("chainMessage");
   const message = messages.shift();
   if (!message) {
     displayMessage.value = undefined;
@@ -66,7 +65,6 @@ const chainMessage = (messages: string[], afterFunction: Function) => {
   };
 };
 onMounted(() => {
-  console.log("watch", props.event);
   const messages = new Array<string>();
   for (const inCharacter of props.event.in) {
     const character = new WilCharacter(

@@ -127,15 +127,6 @@ export class WilBattle {
     // 生存しているキャラクターのスタックターン数を一律消費
     this.player.consumeStack(consumeStack);
     this.computer.consumeStack(consumeStack);
-
-    // コンピュータのターンなら行動の決定まで行い、行動処理に遷移
-    if (this.turnOperator instanceof WilComputer) {
-      this.turnOperator.decideBattleMove(this.player.field);
-      setTimeout(() => {
-        this.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
-        this.processMove();
-      }, 2000);
-    }
   }
 
   /**
@@ -255,7 +246,6 @@ export class WilBattle {
             damage,
           })
         );
-        console.log(this.turnOperator.selectSkill.animation);
         moveResults.push(
           new WilBattleMoveResult({
             message: [`${targetCell.character.name}に${damage}のダメージ！`],
@@ -516,6 +506,7 @@ export class WilBattle {
         cell.character.id === this.turnOperator.moveCharacter?.id
       ) {
         cell.color = WIL_CELL_COLOR.YELLOW;
+        return;
       }
       cell.color = WIL_CELL_COLOR.WHITE;
     };

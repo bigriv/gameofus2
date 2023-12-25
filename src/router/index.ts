@@ -49,6 +49,12 @@ const routes = [
             component: () => import("@/components/views/games/tbh.vue"),
             meta: { title: "ヒーローになろう" },
           },
+          {
+            path: "mp",
+            name: "Mp",
+            component: () => import("@/components/views/games/mp.vue"),
+            meta: { title: "守銭奴の壺" },
+          },
         ],
       },
       {

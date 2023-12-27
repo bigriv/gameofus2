@@ -4,6 +4,15 @@
 .u-d_flex {
   display: flex;
 }
+.u-d_flex--v_center {
+  display: flex;
+  align-items: center;
+}
+.u-d_flex--h_between {
+  display: flex;
+  justify-content: space-between;
+}
+
 @for $i from 1 through 20 {
   .u-margin_top--#{$i * 5} {
     margin-top: #{$i * 5}px;

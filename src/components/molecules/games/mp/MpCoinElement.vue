@@ -25,7 +25,7 @@ const props = defineProps({
 span {
   width: 100%;
   aspect-ratio: 1;
-  background-color: var(--color);
+  background-color: v-bind(color);
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -34,7 +34,7 @@ span {
   font-weight: bold;
 }
 i {
-  color: var(--color);
+  color: v-bind(color);
   filter: invert(100%) grayscale(100%) contrast(100);
 }
 </style>

@@ -83,6 +83,26 @@
         </div>
       </div>
     </template>
+    <template #left_controller>
+      <div class="c-game_left_button">
+        <TriangleButton
+          :color="new GOUColor(COLOR.LIGHT_GRAY)"
+          :rotate="-90"
+          @mousedown="moveLeft"
+          @mouseup="moveStop"
+        />
+      </div>
+    </template>
+    <template #right_controller>
+      <div class="c-game_right_button">
+        <TriangleButton
+          :color="new GOUColor(COLOR.LIGHT_GRAY)"
+          :rotate="90"
+          @mousedown="moveRight"
+          @mouseup="moveStop"
+        />
+      </div>
+    </template>
     <template #description> </template>
   </GameFrame>
 </template>
@@ -91,12 +111,13 @@
 import { onMounted, onUnmounted, ref } from "vue";
 import GameFrame from "@/components/atoms/frames/GameFrame.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
-import { COLOR } from "@/composables/types/GOUColor";
+import { COLOR, GOUColor } from "@/composables/types/GOUColor";
 import { MpManager } from "@/composables/games/mp/types/mp";
 import { MP_DIRECTION } from "@/composables/games/mp/enums/direction";
 import { MP_COIN_DEFINES } from "@/composables/games/mp/defines/coin";
 import MpCoinElement from "@/components/molecules/games/mp/MpCoinElement.vue";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import TriangleButton from "@/components/atoms/interfaces/TriangleButton.vue";
 
 const initSounds = (): { [key: string]: GOUReadAudio } => {
   return {
@@ -106,6 +127,14 @@ const initSounds = (): { [key: string]: GOUReadAudio } => {
 
 const MP_SOUNDS = initSounds();
 const gameManager = ref(new MpManager(MP_SOUNDS));
+const intervalId: {
+  moveLeft: NodeJS.Timeout | undefined;
+  moveRight: NodeJS.Timeout | undefined;
+} = {
+  moveLeft: undefined,
+  moveRight: undefined,
+};
+
 const onStart = () => {
   gameManager.value.start();
 };
@@ -121,6 +150,23 @@ const keyboardControl = (e: KeyboardEvent) => {
     }
   }
 };
+
+const moveLeft = () => {
+  intervalId.moveLeft = setInterval(
+    () => gameManager.value.field.movePot(MP_DIRECTION.LEFT),
+    1000 / 30
+  );
+};
+const moveRight = () => {
+  intervalId.moveRight = setInterval(
+    () => gameManager.value.field.movePot(MP_DIRECTION.RIGHT),
+    1000 / 30
+  );
+};
+const moveStop = () => {
+  clearInterval(intervalId.moveLeft);
+  clearInterval(intervalId.moveRight);
+};
 onMounted(() => {
   const bestscore = Number(localStorage.getItem("games.mp.bestscore"));
   if (!Number.isNaN(bestscore)) {
@@ -135,6 +181,8 @@ onMounted(() => {
 });
 onUnmounted(() => {
   window.removeEventListener("keydown", keyboardControl);
+  clearInterval(intervalId.moveLeft);
+  clearInterval(intervalId.moveRight);
 });
 </script>
 
@@ -228,12 +276,20 @@ onUnmounted(() => {
     }
   }
 }
+.c-game_left_button,
+.c-game_right_button {
+  width: 50px;
+  height: 50px;
+}
 @media screen and (max-width: 400px) {
   .c-mp__frame {
     font-size: 10px;
   }
   .c-mp__field__coin {
     font-size: 4px;
+  }
+  .c-mp__description__coin {
+    font-size: 6px;
   }
 }
 @media screen and (max-width: 600px) and (min-width: 400px) {
@@ -243,6 +299,9 @@ onUnmounted(() => {
   .c-mp__field__coin {
     font-size: 6px;
   }
+  .c-mp__description__coin {
+    font-size: 10px;
+  }
 }
 @media screen and (min-width: 600px) {
   .c-mp__frame {
@@ -250,6 +309,9 @@ onUnmounted(() => {
   }
   .c-mp__field__coin {
     font-size: 8px;
+  }
+  .c-mp__description__coin {
+    font-size: 12px;
   }
 }
 </style>

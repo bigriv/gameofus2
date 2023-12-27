@@ -5,7 +5,10 @@ export class MpPot {
   readonly speed: number = 1.5;
   readonly width: number = 12;
   readonly height: number = 10;
-  position: GOUPosition = new GOUPosition(45, 90); // フィールドの一番下の真ん中になるように座標を調整
+  position: GOUPosition = new GOUPosition(
+    50 - this.width / 2,
+    95 - this.height
+  ); // フィールドの一番下の真ん中になるように座標を調整
 
   /**
    * 壺とコインが衝突しているかを判定する
@@ -20,7 +23,7 @@ export class MpPot {
     }
     if (
       coin.position.py + coin.radius / 2 < this.position.py ||
-      coin.position.py + coin.radius / 2 > this.position.py + this.height
+      coin.position.py + coin.radius / 2 > this.position.py + this.height / 4
     ) {
       return false;
     }

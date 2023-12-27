@@ -13,24 +13,36 @@
                 '--x': gameManager.field.pot.position.px + '%',
               }"
             />
-            <i
+            <div
               v-if="gameManager.isStart && gameManager.field.coin"
               class="c-mp__field__coin"
               :style="{
                 width: gameManager.field.coin.radius + '%',
                 '--x': gameManager.field.coin.position.px + '%',
                 '--y': gameManager.field.coin.position.py + '%',
-                '--color': gameManager.field.coin.color,
               }"
-            />
+            >
+              <MpCoinElement
+                :color="gameManager.field.coin.color"
+                :label="gameManager.field.coin.score"
+              />
+            </div>
           </div>
         </div>
 
         <div class="c-mp__right_panel">
           <div class="c-mp__description c-mp__frame">
             <dl v-for="coin in MP_COIN_DEFINES">
-              <dt class="c-mp__description__coin">
-                <i :style="{ '--color': coin.color }" />
+              <dt>
+                <div
+                  class="c-mp__description__coin"
+                  :style="{
+                    '--length':
+                      coin.score >= 100 ? 3 : coin.score >= 10 ? 2 : 1,
+                  }"
+                >
+                  <MpCoinElement :color="coin.color" :label="coin.score" />
+                </div>
               </dt>
               <dd>+{{ coin.score }}</dd>
             </dl>
@@ -83,8 +95,17 @@ import { COLOR } from "@/composables/types/GOUColor";
 import { MpManager } from "@/composables/games/mp/types/mp";
 import { MP_DIRECTION } from "@/composables/games/mp/enums/direction";
 import { MP_COIN_DEFINES } from "@/composables/games/mp/defines/coin";
+import MpCoinElement from "@/components/molecules/games/mp/MpCoinElement.vue";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 
-const gameManager = ref(new MpManager());
+const initSounds = (): { [key: string]: GOUReadAudio } => {
+  return {
+    charin: new GOUReadAudio("/games/tbh/sounds/money.mp3"),
+  };
+};
+
+const MP_SOUNDS = initSounds();
+const gameManager = ref(new MpManager(MP_SOUNDS));
 const onStart = () => {
   gameManager.value.start();
 };
@@ -106,6 +127,11 @@ onMounted(() => {
     gameManager.value.bestScore = bestscore;
   }
   window.addEventListener("keydown", keyboardControl);
+
+  for (const key of Object.keys(MP_SOUNDS)) {
+    MP_SOUNDS[key].load();
+    console.log(MP_SOUNDS[key]);
+  }
 });
 onUnmounted(() => {
   window.removeEventListener("keydown", keyboardControl);
@@ -161,21 +187,22 @@ onUnmounted(() => {
       aspect-ratio: 1;
       top: var(--y);
       left: var(--x);
-      background: var(--color);
-      border-radius: 50%;
     }
   }
   &__description {
-    &__coin {
-      width: 20%;
+    dl {
+      align-items: center;
+    }
+    dl + dl {
+      margin-top: 2%;
+    }
+    dt {
+      width: 50%;
       align-self: center;
-      i {
-        display: block;
-        width: 80%;
-        aspect-ratio: 1;
-        background-color: var(--color);
-        border-radius: 50%;
-      }
+    }
+    &__coin {
+      width: calc(var(--length) * 1.5em);
+      margin: auto;
     }
   }
   &__dialog {
@@ -205,15 +232,24 @@ onUnmounted(() => {
   .c-mp__frame {
     font-size: 10px;
   }
+  .c-mp__field__coin {
+    font-size: 4px;
+  }
 }
 @media screen and (max-width: 600px) and (min-width: 400px) {
   .c-mp__frame {
     font-size: 12px;
   }
+  .c-mp__field__coin {
+    font-size: 6px;
+  }
 }
 @media screen and (min-width: 600px) {
   .c-mp__frame {
     font-size: 14px;
+  }
+  .c-mp__field__coin {
+    font-size: 8px;
   }
 }
 </style>

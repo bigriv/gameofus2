@@ -2,6 +2,7 @@ import { MpCoin } from "./coin";
 import { MpField } from "./field";
 import { MP_COIN_DEFINES } from "../defines/coin";
 import GOUPosition from "@/composables/types/GOUPosition";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 
 export class MpManager {
   level: number = 1;
@@ -10,6 +11,11 @@ export class MpManager {
   field: MpField = new MpField();
   isStart: boolean = false;
   isGameover: boolean = false;
+  readonly SOUNDS: { [key: string]: GOUReadAudio };
+
+  constructor(sounds: { [key: string]: GOUReadAudio }) {
+    this.SOUNDS = sounds;
+  }
 
   /**
    * ゲームを開始する
@@ -37,6 +43,7 @@ export class MpManager {
 
       // 壺とコインが衝突したかを判定する
       if (this.field.coin && this.field.pot.isConflictCoin(this.field.coin)) {
+        this.SOUNDS.charin.play()
         this.score += this.field.coin.score;
         this.field.removeCoin();
       }

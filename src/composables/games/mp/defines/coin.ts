@@ -2,39 +2,33 @@ import { COLOR } from "@/composables/types/GOUColor";
 
 export const MP_COIN_DEFINES = [
   {
-    color: COLOR.RED,
+    color: COLOR.LIGHT_GRAY,
     score: 1,
-    label: "1",
     radius: 2,
   },
   {
-    color: COLOR.BLUE,
+    color: COLOR.GOLD,
     score: 5,
-    label: "5",
     radius: 4,
   },
   {
-    color: COLOR.GREEN,
+    color: COLOR.BROWN,
     score: 10,
-    label: "10",
     radius: 5,
   },
   {
-    color: COLOR.YELLOW,
+    color: COLOR.GRAY,
     score: 50,
-    label: "50",
     radius: 6,
   },
   {
-    color: COLOR.WHITE,
+    color: COLOR.GRAY,
     score: 100,
-    label: "100",
     radius: 7,
   },
   {
     color: COLOR.GOLD,
     score: 500,
-    label: "500",
     radius: 8,
   },
 ];

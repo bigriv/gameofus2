@@ -10,7 +10,6 @@ export class MpCoin {
   constructor(define: {
     score: number;
     color: COLOR;
-    label: string;
     radius: number;
   }) {
     this.score = define.score;

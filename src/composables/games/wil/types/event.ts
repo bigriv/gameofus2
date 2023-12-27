@@ -58,6 +58,7 @@ export class WilTalkEvent {
 export class WilBattleEvent {
   playerTeamName: string;
   computerTeamName: string;
+  computerLevel: number;
   background?: GOUVisual;
   battleBgm?: GOUReadAudio;
   deployBgm?: GOUReadAudio;
@@ -66,6 +67,7 @@ export class WilBattleEvent {
   constructor(define: {
     playerTeamName: string;
     computerTeamName: string;
+    computerLevel: number;
     background?: GOUVisual;
     battleBgm?: GOUReadAudio;
     deployBgm?: GOUReadAudio;
@@ -73,6 +75,7 @@ export class WilBattleEvent {
   }) {
     this.playerTeamName = define.playerTeamName;
     this.computerTeamName = define.computerTeamName;
+    this.computerLevel = define.computerLevel;
     this.background = define.background;
     this.deployBgm = define.deployBgm;
     this.battleBgm = define.battleBgm;

@@ -91,7 +91,7 @@ import {
   WilBattle,
   WilBattleMoveResult,
 } from "@/composables/games/wil/types/battle";
-import { WilField, WilFieldCell } from "@/composables/games/wil/types/field";
+import { WilFieldCell } from "@/composables/games/wil/types/field";
 import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
 import { WilComputer } from "@/composables/games/wil/types/computer";
 
@@ -202,9 +202,7 @@ const startTurn = () => {
 
   if (battle.value.turnOperator instanceof WilComputer) {
     // コンピュータのターンなら行動の決定まで行い、行動処理に遷移
-    battle.value.turnOperator.decideBattleMove(
-      battle.value.player.field as WilField
-    );
+    battle.value.turnOperator.decideBattleMove(battle.value as WilBattle);
     setTimeout(() => {
       battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
       battle.value.processMove();

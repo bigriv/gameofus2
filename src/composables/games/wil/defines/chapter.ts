@@ -9,6 +9,7 @@ export type WilChapterDefine = {
   battles: Array<{
     playerTeamName: string;
     computerTeamName: string;
+    computerLevel: number,
     background: WIL_IMAGE_ID;
     deployBgm?: WIL_SOUND_ID;
     battleBgm?: WIL_SOUND_ID;
@@ -56,6 +57,7 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
     {
       playerTeamName: "ヒカル&ザーグ",
       computerTeamName: "魔物の群れ",
+      computerLevel: 1,
       background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
       deployBgm: WIL_SOUND_ID.BGM_DEPLOY_1,
       battleBgm: WIL_SOUND_ID.BGM_BATTLE_1,
@@ -80,6 +82,7 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
     {
       playerTeamName: "ヒカル&騎士団員",
       computerTeamName: "聖騎士団",
+      computerLevel: 1,
       background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
       deployBgm: WIL_SOUND_ID.BGM_DEPLOY_1,
       battleBgm: WIL_SOUND_ID.BGM_BATTLE_1,

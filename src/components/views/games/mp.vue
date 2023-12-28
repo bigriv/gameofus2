@@ -86,7 +86,7 @@
     <template #left_controller>
       <div class="c-game_left_button">
         <TriangleButton
-          :color="new GOUColor(COLOR.LIGHT_GRAY)"
+          :color="TRIANGLE_BUTTON_COLOR"
           :rotate="-90"
           @mousedown="moveLeft"
           @mouseup="moveStop"
@@ -96,7 +96,7 @@
     <template #right_controller>
       <div class="c-game_right_button">
         <TriangleButton
-          :color="new GOUColor(COLOR.LIGHT_GRAY)"
+          :color="TRIANGLE_BUTTON_COLOR"
           :rotate="90"
           @mousedown="moveRight"
           @mouseup="moveStop"
@@ -138,6 +138,7 @@ import MpCoinElement from "@/components/molecules/games/mp/MpCoinElement.vue";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import TriangleButton from "@/components/atoms/interfaces/TriangleButton.vue";
 
+const TRIANGLE_BUTTON_COLOR = new GOUColor(COLOR.LIGHT_GRAY);
 const initSounds = (): { [key: string]: GOUReadAudio } => {
   return {
     charin: new GOUReadAudio("/games/tbh/sounds/money.mp3"),

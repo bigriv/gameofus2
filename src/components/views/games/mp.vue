@@ -103,7 +103,26 @@
         />
       </div>
     </template>
-    <template #description> </template>
+    <template #description>
+      <div class="c-game__description__block">
+        <h2>説明</h2>
+        <p>壺を動かしてできるだけお金を集めましょう。</p>
+        <p>お金を逃すとゲームオーバーです。</p>
+        <p>操作は画面横にある三角形のボタンまたはキーボードの←→キーです。</p>
+        <p>スマホの場合は画面を横にしてください。</p>
+        <p>ゲーム性の変わるレベルの大幅アップデートを予定しています。</p>
+      </div>
+
+      <div class="c-game__description__block">
+        <h2>推定プレイ時間</h2>
+        <p>1分</p>
+      </div>
+
+      <div class="c-game__description__block">
+        <h2>リリースノート</h2>
+        <p>2023/12/28 ver 0.90 リリース</p>
+      </div>
+    </template>
   </GameFrame>
 </template>
 
@@ -275,6 +294,9 @@ onUnmounted(() => {
       width: 40%;
     }
   }
+}
+.c-game__description__block {
+  margin-top: 20px;
 }
 .c-game_left_button,
 .c-game_right_button {

@@ -12,7 +12,13 @@ export default defineConfig({
     vue(),
     VitePluginFonts({
       google: {
-        families: ["Yusei Magic", "Reggae One", "DotGothic16", "Chakra Petch"],
+        families: [
+          "Yusei Magic",
+          "Reggae One",
+          "DotGothic16",
+          "Chakra Petch",
+          "Yuji Syuku",
+        ],
       },
     }),
   ],

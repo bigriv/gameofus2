@@ -67,6 +67,19 @@ const routes = [
             component: () => import("@/components/views/blessings/index.vue"),
           },
           {
+            path: "customes",
+            meta: { title: "作成" },
+            children: [
+              {
+                path: "newyear",
+                name: "CustomeNewyear",
+                component: () =>
+                  import("@/components/views/blessings/newyear/custome.vue"),
+                meta: { title: "賀正" },
+              },
+            ],
+          },
+          {
             path: "birthday",
             name: "BlessingBirthday",
             props: (route: RouteLocationNormalized) => ({
@@ -78,6 +91,22 @@ const routes = [
             component: () =>
               import("@/components/views/blessings/birthday.vue"),
             meta: { title: "バースデー" },
+          },
+          {
+            path: "newyear",
+            name: "ViewNewyear",
+            props: (route: RouteLocationNormalized) => ({
+              background: route.query.background,
+              year: route.query.year,
+              from: route.query.from,
+              greeting: route.query.greeting,
+              message: route.query.message,
+              showIllust: route.query.showIllust,
+              oneText: route.query.oneText,
+            }),
+            component: () =>
+              import("@/components/views/blessings/newyear/view.vue"),
+            meta: { title: "賀正" },
           },
         ],
       },

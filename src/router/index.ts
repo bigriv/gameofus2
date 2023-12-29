@@ -68,14 +68,13 @@ const routes = [
           },
           {
             path: "customes",
-            meta: { title: "作成" },
             children: [
               {
                 path: "newyear",
                 name: "CustomeNewyear",
                 component: () =>
                   import("@/components/views/blessings/newyear/custome.vue"),
-                meta: { title: "賀正" },
+                meta: { title: "年賀状" },
               },
             ],
           },
@@ -106,7 +105,7 @@ const routes = [
             }),
             component: () =>
               import("@/components/views/blessings/newyear/view.vue"),
-            meta: { title: "賀正" },
+            meta: { title: "年賀状" },
           },
         ],
       },

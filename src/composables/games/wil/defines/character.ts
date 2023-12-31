@@ -9,9 +9,18 @@ export const WIL_CHARACTER_DEFINES: {
     name: string;
     visual: {
       standing: WIL_IMAGE_ID;
-      closePhisic?: WIL_IMAGE_ID;
-      shootPhisic?: WIL_IMAGE_ID;
-      magic?: WIL_IMAGE_ID;
+      closePhisic?: Array<{
+        visual: WIL_IMAGE_ID;
+        duration: number;
+      }>;
+      shootPhisic?: Array<{
+        visual: WIL_IMAGE_ID;
+        duration: number;
+      }>;
+      magic?: Array<{
+        visual: WIL_IMAGE_ID;
+        duration: number;
+      }>;
     };
     status: {
       life: number;
@@ -29,7 +38,27 @@ export const WIL_CHARACTER_DEFINES: {
     id: WIL_CHARACTER_ID.HERO,
     name: "ヒカル",
     visual: {
-      standing: WIL_IMAGE_ID.MINI_CHARACTER_HERO,
+      standing: WIL_IMAGE_ID.DOT_CHARACTER_HERO1,
+      closePhisic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HERO2,
+          duration: 0.5,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HERO3,
+          duration: 0.5,
+        },
+      ],
+      magic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HERO4,
+          duration: 0.5,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HERO5,
+          duration: 0.5,
+        },
+      ],
     },
     status: {
       life: 100,
@@ -42,7 +71,6 @@ export const WIL_CHARACTER_DEFINES: {
     skills: [WIL_SKILL_ID.SLASH],
     skillType: [
       WIL_SKILL_TYPE.CLOSE_PHISIC,
-      WIL_SKILL_TYPE.SHOOT_PHISIC,
       WIL_SKILL_TYPE.ATTACK_MAGIC,
       WIL_SKILL_TYPE.SUPPORT_MAGIC,
     ],
@@ -51,13 +79,39 @@ export const WIL_CHARACTER_DEFINES: {
   HOLY_KNIGHTS_LEADER: {
     id: WIL_CHARACTER_ID.HOLY_KNIGHTS_LEADER,
     name: "ザーグ",
-    visual: { standing: WIL_IMAGE_ID.MINI_CHARACTER_HOLY_KNIGHTS_LEADER },
+    visual: {
+      standing: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_LEADER1,
+      closePhisic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_LEADER2,
+          duration: 0.5,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_LEADER3,
+          duration: 0.5,
+        },
+      ],
+      magic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_LEADER2,
+          duration: 0.25,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_LEADER4,
+          duration: 0.5,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_LEADER2,
+          duration: 0.25,
+        },
+      ],
+    },
     status: {
       life: 120,
       attack: 12,
-      defense: 12,
+      defense: 10,
       speed: 10,
-      magic: 12,
+      magic: 8,
     },
     element: WIL_ELEMENT.THUNDER,
     skills: [WIL_SKILL_ID.SLASH, WIL_SKILL_ID.THUNDER_SWORD],
@@ -65,8 +119,30 @@ export const WIL_CHARACTER_DEFINES: {
   },
   HOLY_KNIGHTS_SOLDIER: {
     id: WIL_CHARACTER_ID.HOLY_KNIGHTS_SOLDIER,
-    name: "聖騎士",
-    visual: { standing: WIL_IMAGE_ID.MINI_CHARACTER_HOLY_KNIGHTS_SOLDIER },
+    name: "騎士兵",
+    visual: {
+      standing: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_SOLDIER1,
+      closePhisic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_SOLDIER2,
+          duration: 0.5,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_SOLDIER3,
+          duration: 0.5,
+        },
+      ],
+      shootPhisic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_SOLDIER4,
+          duration: 0.5,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_SOLDIER5,
+          duration: 0.5,
+        },
+      ],
+    },
     status: {
       life: 100,
       attack: 8,
@@ -80,8 +156,24 @@ export const WIL_CHARACTER_DEFINES: {
   },
   HOLY_KNIGHTS_MAGICIAN: {
     id: WIL_CHARACTER_ID.HOLY_KNIGHTS_MAGICIAN,
-    name: "聖魔導士",
-    visual: { standing: WIL_IMAGE_ID.MINI_CHARACTER_HOLY_KNIGHTS_MAGICIAN },
+    name: "魔導兵",
+    visual: {
+      standing: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_MAGICIAN1,
+      magic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_MAGICIAN2,
+          duration: 0.25,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_MAGICIAN3,
+          duration: 0.5,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_MAGICIAN2,
+          duration: 0.25,
+        },
+      ],
+    },
     status: {
       life: 80,
       attack: 5,
@@ -98,19 +190,44 @@ export const WIL_CHARACTER_DEFINES: {
   DARK_MONSTER_SHADOW: {
     id: WIL_CHARACTER_ID.DARK_MONSTER_SHADOW,
     name: "シャドウ",
-    visual: { standing: WIL_IMAGE_ID.MINI_DARK_MONSTER_SHADOW },
+    visual: {
+      standing: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SHADOW1,
+      closePhisic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SHADOW2,
+          duration: 0.5,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SHADOW3,
+          duration: 0.5,
+        },
+      ],
+      magic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SHADOW4,
+          duration: 0.4,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SHADOW5,
+          duration: 0.3,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SHADOW3,
+          duration: 0.3,
+        },
+      ],
+    },
     status: {
-      life: 50,
-      attack: 5,
-      defense: 5,
+      life: 20,
+      attack: 6,
+      defense: 4,
       speed: 5,
-      magic: 5,
+      magic: 4,
     },
     element: WIL_ELEMENT.DARK,
     skills: [
       WIL_SKILL_ID.SLASH,
       WIL_SKILL_ID.POISON_NAIL,
-      WIL_SKILL_ID.SHADOW_SHOT,
       WIL_SKILL_ID.SHADOW_BALL,
     ],
     skillType: [WIL_SKILL_TYPE.CLOSE_PHISIC, WIL_SKILL_TYPE.ATTACK_MAGIC],

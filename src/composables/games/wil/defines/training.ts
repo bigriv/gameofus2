@@ -45,8 +45,8 @@ export const WIL_TRAINING_DEFINES: {
       speed: 3,
     },
     learnRate: {
-      phisic: 10,
-      magic: 10,
+      phisic: 1,
+      magic: 1,
     },
   },
   DEFENSE: {
@@ -68,8 +68,8 @@ export const WIL_TRAINING_DEFINES: {
       speed: 0,
     },
     learnRate: {
-      phisic: 10,
-      magic: 10,
+      phisic: 1,
+      magic: 1,
     },
   },
   MIGRATION: {
@@ -91,8 +91,8 @@ export const WIL_TRAINING_DEFINES: {
       speed: 4,
     },
     learnRate: {
-      phisic: 0,
-      magic: 0,
+      phisic: 1,
+      magic: 1,
     },
   },
   MAGIC: {

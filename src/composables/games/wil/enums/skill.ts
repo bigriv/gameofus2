@@ -2,7 +2,7 @@ export enum WIL_SKILL_ID {
   // 無属性
   // 近接物理
   SLASH = "SLASH",
-  CHARGE_ATTACK = "CHARGE_ATTACK",
+  POWER_ATTACK = "CHARGE_ATTACK",
   ONE_LINE = "ONE_LINE",
   // 投擲物理
   SHOT = "SHOT",

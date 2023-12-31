@@ -11,16 +11,17 @@ import { WilConditionUtil } from "./condition";
 import { WilFieldCell } from "./field";
 import { WIL_CHARACTER_ID } from "../enums/character";
 import GOUImage from "@/composables/types/visuals/GOUImage";
+import { GOUFluidVisual } from "@/composables/types/visuals/GOUFluidVisual";
 
 export class WilCharacter {
   readonly id: string;
   readonly name: string;
   visual: {
-    current: GOUVisual;
+    current: GOUVisual | GOUFluidVisual;
     standing: GOUVisual;
-    closePhisic: GOUVisual;
-    shootPhisic: GOUVisual;
-    magic: GOUVisual;
+    closePhisic: GOUFluidVisual;
+    shootPhisic: GOUFluidVisual;
+    magic: GOUFluidVisual;
   };
   skills: Array<WilSkill> = [];
   skillType: Array<WIL_SKILL_TYPE>;
@@ -38,9 +39,18 @@ export class WilCharacter {
       name: string;
       visual: {
         standing: WIL_IMAGE_ID;
-        closePhisic?: WIL_IMAGE_ID;
-        shootPhisic?: WIL_IMAGE_ID;
-        magic?: WIL_IMAGE_ID;
+        closePhisic?: Array<{
+          visual: WIL_IMAGE_ID;
+          duration: number;
+        }>;
+        shootPhisic?: Array<{
+          visual: WIL_IMAGE_ID;
+          duration: number;
+        }>;
+        magic?: Array<{
+          visual: WIL_IMAGE_ID;
+          duration: number;
+        }>;
       };
       status: {
         life: number;
@@ -58,18 +68,55 @@ export class WilCharacter {
   ) {
     this.id = `${define.id}_${sequence}`;
     this.name = define.name;
+
+    let closePhisicVisual = new GOUFluidVisual([
+      { visual: images[define.visual.standing], duration: 1 },
+    ]);
+    if (define.visual.closePhisic) {
+      closePhisicVisual = new GOUFluidVisual(
+        define.visual.closePhisic.map((v) => {
+          return {
+            visual: images[v.visual],
+            duration: v.duration,
+          };
+        })
+      );
+    }
+
+    let shootPhisicVisual = new GOUFluidVisual([
+      { visual: images[define.visual.standing], duration: 1 },
+    ]);
+
+    if (define.visual.shootPhisic) {
+      shootPhisicVisual = new GOUFluidVisual(
+        define.visual.shootPhisic.map((v) => {
+          return {
+            visual: images[v.visual],
+            duration: v.duration,
+          };
+        })
+      );
+    }
+    let magicVisual = new GOUFluidVisual([
+      { visual: images[define.visual.standing], duration: 1 },
+    ]);
+    if (define.visual.magic) {
+      magicVisual = new GOUFluidVisual(
+        define.visual.magic.map((v) => {
+          return {
+            visual: images[v.visual],
+            duration: v.duration,
+          };
+        })
+      );
+    }
+
     this.visual = {
       current: (images[define.visual.standing] as GOUImage).deepCopy(),
       standing: images[define.visual.standing],
-      closePhisic: define.visual.closePhisic
-        ? images[define.visual.closePhisic]
-        : images[define.visual.standing],
-      shootPhisic: define.visual.shootPhisic
-        ? images[define.visual.shootPhisic]
-        : images[define.visual.standing],
-      magic: define.visual.magic
-        ? images[define.visual.magic]
-        : images[define.visual.standing],
+      closePhisic: closePhisicVisual,
+      shootPhisic: shootPhisicVisual,
+      magic: magicVisual,
     };
     this.defaultStatus = new WilStatus(define.status);
     this.status = new WilStatus(define.status);
@@ -107,7 +154,11 @@ export class WilCharacter {
     menu: WilTrainingMenu,
     skills: { [key: string]: WilSkill }
   ): WilTrainingResult {
-    const result = new WilTrainingResult(menu, this.defaultStatus.deepCopy());
+    const result = new WilTrainingResult(
+      menu,
+      this,
+      this.defaultStatus.deepCopy()
+    );
     // ステータスの上昇
     this.defaultStatus = WilStatus.add(this.defaultStatus, menu.getRise());
     result.after = this.defaultStatus.deepCopy();
@@ -166,7 +217,6 @@ export class WilCharacter {
         learnRate *= menu.learnRate.magic * 0.01;
       }
       const rnd = Math.random();
-      console.log("learnRate", rnd, learnRate);
       // 乱数で習得可否を判定
       if (rnd >= learnRate) {
         continue;
@@ -391,18 +441,22 @@ export class WilCharacter {
    * @returns 回復結果
    */
   recoveryCondition(): WilBattleMoveResult | undefined {
+    if (this.condition === WIL_CONDITION_ID.HEALTH) {
+      return undefined;
+    }
     // 経過ターン数を加算
     this.conditionCount++;
     if (this.conditionCount < WilConditionUtil.SUSTAINED_TURN) {
       return undefined;
     }
     // 一定ターン以上経過していれば状態異常を健康にする
+    const temp = this.condition;
     this.condition = WIL_CONDITION_ID.HEALTH;
     this.conditionCount = 0;
     return new WilBattleMoveResult({
       message: [
         `${this.name}が受けていた${WilConditionUtil.getLabel(
-          this.condition
+          temp
         )}の影響が消えた。`,
       ],
     });

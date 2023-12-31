@@ -5,6 +5,14 @@
     </div>
     <div class="c-battle__infomation">
       <div class="c-battle__infomation__turn">{{ infomationMessage }}</div>
+      <div class="c-battle__infomation__log">
+        <GameButton
+          label="ログ"
+          :fontColor="WIL_BUTTON_FONT_COLOR"
+          :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
+          @click="isShowLog = true"
+        />
+      </div>
     </div>
     <div class="c-battle__field">
       <Field
@@ -24,28 +32,6 @@
         <div class="c-battle__start__text">開戦</div>
       </div>
     </transition>
-    <transition>
-      <div
-        v-show="battle.timming == WIL_BATTLE_TIMMING.BATTLE_TURN_START"
-        :class="{
-          'c-battle__player_turn_start':
-            battle.turnOperator.team === WIL_BATTLE_TEAM.PLAYER,
-          'c-battle__computer_turn_start':
-            battle.turnOperator.team === WIL_BATTLE_TEAM.COMPUTER,
-        }"
-      >
-        <div class="c-battle__start__text">
-          <template v-if="battle.turnOperator.team === WIL_BATTLE_TEAM.PLAYER">
-            {{ battle.player.moveCharacter?.name }}のターン
-          </template>
-          <template
-            v-else-if="battle.turnOperator.team === WIL_BATTLE_TEAM.COMPUTER"
-          >
-            {{ battle.computer.moveCharacter?.name }}のターン
-          </template>
-        </div>
-      </div>
-    </transition>
 
     <div class="c-battle__guide">
       {{ guideMessage }}
@@ -58,6 +44,9 @@
       @error="error"
       @endSet="endSet"
     />
+  </div>
+  <div class="c-battle__log_dialog">
+    <WilLogDialog v-model:isShow="isShowLog" :log="battle.log" />
   </div>
   <div class="c-battle__confirm_dialog">
     <WilConfirmDialog
@@ -94,10 +83,21 @@ import {
 import { WilFieldCell } from "@/composables/games/wil/types/field";
 import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
 import { WilComputer } from "@/composables/games/wil/types/computer";
+import GameButton from "@/components/atoms/interfaces/GameButton.vue";
+import {
+  WIL_BUTTON_FONT_COLOR,
+  WIL_BUTTON_BACKGROUND_COLOR,
+} from "@/composables/games/wil/const";
+import WilLogDialog from "@/components/molecules/games/wil/WilLogDialog.vue";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 
 const props = defineProps({
   skills: {
     type: Object as PropType<{ [key: string]: WilSkill }>,
+    required: true,
+  },
+  sounds: {
+    type: Object as PropType<{ [key: string]: GOUReadAudio }>,
     required: true,
   },
   event: {
@@ -117,6 +117,7 @@ const hoverCell: Ref<WilFieldCell | undefined> = ref();
 const infomationMessage = ref("");
 const guideMessage = ref("キャラクターを配置するマスを選択してください。");
 const underFrame: Ref<InstanceType<typeof UnderFrame> | null> = ref(null);
+const isShowLog = ref(false);
 
 // 確認モーダル
 const confirmModal: {
@@ -141,7 +142,7 @@ const onClickComputerField = (cell: WilFieldCell) => {
     battle.value.setMoveTarget(cell);
     // 戦闘タイミングを行動処理に変更
     battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
-    // 戦闘処理を実行
+    // 行動処理を実行
     battle.value.processMove();
     underFrame.value?.showBattleMoveResult(
       battle.value.moveResults as Array<WilBattleMoveResult>,
@@ -238,14 +239,18 @@ const endBattle = () => {
   battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_END);
   battle.value.endBattle();
   if (battle.value.winner === WIL_BATTLE_TEAM.PLAYER) {
+    props.sounds.BGM_BATTLE_WIN.play()
     confirmModal.message = `${battle.value.computer.teamName}との戦闘に勝利した！`;
     confirmModal.onClickOk = () => {
+      props.sounds.BGM_BATTLE_WIN.stop()
       emits("end", battle.value.winner);
     };
     confirmModal.isShow = true;
   } else if (battle.value.winner === WIL_BATTLE_TEAM.COMPUTER) {
+    props.sounds.BGM_BATTLE_LOSE.play()
     confirmModal.message = `${battle.value.computer.teamName}との戦闘に敗北した。`;
     confirmModal.onClickOk = () => {
+      props.sounds.BGM_BATTLE_LOSE.stop()
       emits("end", battle.value.winner);
     };
     confirmModal.isShow = true;
@@ -320,7 +325,7 @@ watch(
   &__infomation {
     position: absolute;
     width: 90%;
-    height: 5%;
+    height: 7%;
     top: 2%;
     left: 5%;
     background-color: rgba(0, 0, 0, 0.8);
@@ -328,7 +333,12 @@ watch(
     color: white;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 2px 5px;
+    &__log {
+      width: 20%;
+      height: 100%;
+    }
   }
   &__field {
     position: absolute;
@@ -337,9 +347,7 @@ watch(
     width: 90%;
     height: 50%;
   }
-  &__start,
-  &__player_turn_start,
-  &__computer_turn_start {
+  &__start {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -361,12 +369,6 @@ watch(
   }
   &__start {
     background: linear-gradient(135deg, red, #aa0000, #0000aa, blue);
-  }
-  &__player_turn_start {
-    background: linear-gradient(blue, #0000aa);
-  }
-  &__computer_turn_start {
-    background: linear-gradient(red, #aa0000);
   }
   &__guide {
     position: absolute;
@@ -396,36 +398,39 @@ watch(
   opacity: 0;
 }
 @media screen and (max-width: 400px) {
-  .c-battle__infomation {
+  .c-battle__infomation__turn {
     font-size: 10px;
   }
   .c-battle__start__text {
     font-size: 48px;
   }
-  .c-battle__guide {
+  .c-battle__guide,
+  .c-battle__infomation__log {
     font-size: 8px;
   }
 }
 
 @media screen and (max-width: 600px) and (min-width: 400px) {
-  .c-battle__infomation {
+  .c-battle__infomation__turn {
     font-size: 12px;
   }
   .c-battle__start__text {
     font-size: 54px;
   }
-  .c-battle__guide {
+  .c-battle__guide,
+  .c-battle__infomation__log {
     font-size: 10px;
   }
 }
 @media screen and (min-width: 600px) {
-  .c-battle__infomation {
+  .c-battle__infomation__turn {
     font-size: 14px;
   }
   .c-battle__start__text {
     font-size: 72px;
   }
-  .c-battle__guide {
+  .c-battle__guide,
+  .c-battle__infomation__log {
     font-size: 12px;
   }
 }

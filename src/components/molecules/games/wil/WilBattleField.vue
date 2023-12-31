@@ -125,7 +125,7 @@ watch(
     border-left: 2px solid black;
     border-radius: 4px;
     &--WHITE {
-      background-color: rgba(255, 255, 255, 0.5);
+      background-color: none;
       border-color: white;
     }
     &--RED {
@@ -150,7 +150,7 @@ watch(
     &__character {
       width: 100%;
       height: 100%;
-      transform: perspective(40px) translateY(-25%);
+      transform: perspective(40px) translate(-20%, -25%);
       transform-origin: 50% 50%;
     }
   }

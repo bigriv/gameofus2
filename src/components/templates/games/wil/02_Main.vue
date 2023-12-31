@@ -15,6 +15,7 @@
         v-if="battleEvent"
         :player="(player as WilPlayer)"
         :skills="WIL_SKILLS"
+        :sounds="WIL_SOUNDS"
         :event="battleEvent"
         @end="endBattle"
       />

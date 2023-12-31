@@ -98,6 +98,31 @@ export class WilTraining {
   }
 
   /**
+   * 訓練結果をセットし、ログに記録する
+   * @param results 訓練結果
+   */
+  setTrainingResults(results: Array<WilTrainingResult>) {
+    if (results.length <= 0) {
+      return;
+    }
+    this.results = results;
+    const log = new Array<string>();
+    log.push(`----${this.days}日目の訓練----`);
+
+    for (let result of results) {
+      log.push(`【${result.character.name}の${result.menu.name}結果】`);
+      log.push(`体力:${result.before.life}⇒${result.after.life}`);
+      log.push(`攻撃力:${result.before.attack}⇒${result.after.attack}`);
+      log.push(`防御力:${result.before.defense}⇒${result.after.defense}`);
+      log.push(`魔力:${result.before.magic}⇒${result.after.magic}`);
+      log.push(`敏捷力:${result.before.speed}⇒${result.after.speed}`);
+      if (result.learned) {
+        log.push(`${result.learned.name}を習得した。`);
+      }
+    }
+    this.log.push(...log);
+  }
+  /**
    * 訓練の1日を開始する
    */
   startDay() {
@@ -134,14 +159,24 @@ export class WilTraining {
       );
     }
 
-    this.results = result;
-    // TODO: ログに記録
+    this.setTrainingResults(result);
+
     return result;
   }
 
+  /**
+   * 訓練の終了判定を行う
+   * @returns 訓練の終了条件を満たしていればtrue、それ以外はfalse
+   */
   isEnd(): boolean {
     return this.days >= WilTraining.TRAINING_DAYS;
   }
+
+  /**
+   * 指定した訓練にキャラクターをセットする
+   * @param trainingId 実施する訓練のID
+   * @param character 訓練を行うキャラクター
+   */
   setCharacter(trainingId: WIL_TRAINING_ID, character: WilCharacter) {
     let temp = undefined;
     switch (trainingId) {
@@ -300,13 +335,18 @@ export class WilTrainingMenu {
  */
 export class WilTrainingResult {
   menu: WilTrainingMenu;
+  character: WilCharacter;
   before: WilStatus;
   after: WilStatus = new WilStatus();
-  character?: WilCharacter;
   learned?: WilSkill;
 
-  constructor(menu: WilTrainingMenu, before: WilStatus) {
+  constructor(
+    menu: WilTrainingMenu,
+    character: WilCharacter,
+    before: WilStatus
+  ) {
     this.menu = menu;
+    this.character = character;
     this.before = before;
   }
 }

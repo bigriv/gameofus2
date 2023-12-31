@@ -78,12 +78,12 @@ const onLeaveCell = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  overflow: visible;
   &__frame {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    transform: perspective(200px) rotateX(10deg);
+    transform: perspective(300px) rotateX(20deg);
     transform-origin: 50% 50%;
     padding: 0 5%;
     &__computer,

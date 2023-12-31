@@ -23,6 +23,7 @@ import { WIL_CELL_COLOR } from "../enums/cell";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import GOUImage from "@/composables/types/visuals/GOUImage";
 import { GOULottie } from "@/composables/types/visuals/GOULottie";
+import { GOUFluidVisual } from "@/composables/types/visuals/GOUFluidVisual";
 
 /**
  * 戦闘管理クラス
@@ -43,7 +44,10 @@ export class WilBattle {
     this.player.deployableCharacters = [...this.player.allCharacters];
     this.player.resetField();
 
-    this.computer = new WilComputer(event.computerTeamName);
+    this.computer = new WilComputer(
+      event.computerTeamName,
+      event.computerLevel
+    );
 
     this.turnOperator = this.player; // 便宜上デフォルトのターンプレイヤーはプレイヤーとする
     this.timming = WIL_BATTLE_TIMMING.SET_SELECT_CELL;
@@ -150,6 +154,26 @@ export class WilBattle {
   }
 
   /**
+   * 行動結果をセットし、ログに記録する
+   * @param results セットする行動結果
+   */
+  setMoveResults(results: Array<WilBattleMoveResult>) {
+    if (results.length <= 0) {
+      this.moveResults = [];
+      return;
+    }
+    this.moveResults = results;
+    const log = new Array<string>();
+    for (let result of results) {
+      if (!result.message || result.message.length <= 0) {
+        continue;
+      }
+      log.push(...result.message);
+    }
+    this.log.push(...log);
+  }
+
+  /**
    * ターンキャラクターの行動を処理する
    */
   processMove() {
@@ -171,11 +195,11 @@ export class WilBattle {
         this.turnOperator.targetCell
       );
       this.turnOperator.moveCharacter.migrate();
-      this.moveResults = [
+      this.setMoveResults([
         new WilBattleMoveResult({
           message: [`${this.turnOperator.moveCharacter.name}は移動した。`],
         }),
-      ];
+      ]);
       return;
     }
 
@@ -192,25 +216,39 @@ export class WilBattle {
       )
     ) {
       // 発動に失敗した場合の処理
-      this.moveResults = [
+      this.setMoveResults([
         new WilBattleMoveResult({
           message: [`${this.turnOperator.selectSkill.name}の発動に失敗した。`],
         }),
-      ];
+      ]);
       return;
     }
 
     let moveResults = new Array<WilBattleMoveResult>();
     this.turnOperator.moveCharacter.useSkill(this.turnOperator.selectSkill);
+    let animation = undefined;
+    switch (this.turnOperator.selectSkill.type) {
+      case WIL_SKILL_TYPE.CLOSE_PHISIC:
+        animation = this.turnOperator.moveCharacter.visual.closePhisic;
+        break;
+      case WIL_SKILL_TYPE.SHOOT_PHISIC:
+        animation = this.turnOperator.moveCharacter.visual.shootPhisic;
+        break;
+      case WIL_SKILL_TYPE.ATTACK_MAGIC:
+      case WIL_SKILL_TYPE.SUPPORT_MAGIC:
+        animation = this.turnOperator.moveCharacter.visual.magic;
+        break;
+    }
     moveResults.push(
       new WilBattleMoveResult({
         message: [
           `${this.turnOperator.moveCharacter.name}は${this.turnOperator.selectSkill.name}を発動した。`,
         ],
+        character: this.turnOperator.moveCharacter,
+        characterAnimation: animation,
       })
     );
 
-    // FIXME: 仮実装として範囲によらず対象のキャラクターにスキルを適用する
     let damageResults = new Array<WilBattleDamegeResult>();
     // ダメージ処理
     const isNeedCalcDamage =
@@ -286,17 +324,14 @@ export class WilBattle {
       }
     });
 
-    this.moveResults = moveResults;
-    // TODO: ログを記録
+    this.setMoveResults(moveResults);
   }
 
   /**
    * ターン終了時の処理を行う
    */
   endTurn() {
-    this.moveResults = this.turnOperator.endTurn();
-    console.log(this.moveResults);
-    // TODO: ログを記録
+    this.setMoveResults(this.turnOperator.endTurn());
 
     // 勝者判定
     this.winner = this.judgeWinner();
@@ -634,7 +669,7 @@ export class WilBattleMoveResult {
   cell?: WilFieldCell;
   cellAnimation?: GOUVisual;
   character?: WilCharacter;
-  characterAnimation?: GOUVisual | GOUAnimation;
+  characterAnimation?: GOUVisual | GOUAnimation | GOUFluidVisual;
   damage?: Array<WilBattleDamegeResult>;
 
   constructor(define: {
@@ -643,7 +678,7 @@ export class WilBattleMoveResult {
     cell?: WilFieldCell;
     cellAnimation?: GOUVisual;
     character?: WilCharacter;
-    characterAnimation?: GOUVisual | GOUAnimation;
+    characterAnimation?: GOUVisual | GOUAnimation | GOUFluidVisual;
     damage?: Array<WilBattleDamegeResult>;
   }) {
     this.message = define.message;
@@ -677,21 +712,28 @@ export class WilBattleMoveResult {
     if (this.character && this.characterAnimation) {
       if (this.characterAnimation instanceof GOUImage) {
         const character = this.character;
-        const temp = this.character.visual;
-        this.characterAnimation = this.characterAnimation as GOUImage;
-        setTimeout(() => (character.visual.current = temp.standing), 1000);
+        const temp = this.character.visual.current;
+        this.character.visual.current = this.characterAnimation as GOUImage;
+        setTimeout(() => (character.visual.current = temp), 1000);
       } else if (this.characterAnimation instanceof GOULottie) {
         const character = this.character;
-        const temp = this.character.visual;
+        const temp = this.character.visual.current;
         this.character.visual.current = this.characterAnimation as GOULottie;
-        setTimeout(() => (character.visual.current = temp.standing), 1000);
+        setTimeout(() => (character.visual.current = temp), 1000);
       } else if (this.characterAnimation instanceof GOUAnimation) {
+        if (this.character.visual.current instanceof GOUVisual) {
+          const currentVisual = this.character.visual.current;
+          currentVisual.animation = this.characterAnimation;
+          setTimeout(
+            () => (currentVisual.animation = undefined),
+            this.characterAnimation.duration * 2000
+          );
+        }
+      } else if (this.characterAnimation instanceof GOUFluidVisual) {
         const character = this.character;
-        this.character.visual.current.animation = this.characterAnimation;
-        setTimeout(
-          () => (character.visual.current.animation = undefined),
-          this.characterAnimation.duration * 2000
-        );
+        const currentVisual = this.character.visual.current;
+        character.visual.current = this.characterAnimation;
+        setTimeout(() => (character.visual.current = currentVisual), 1000);
       }
     }
   }
@@ -721,13 +763,16 @@ export class WilBattleDamegeResult {
         0.5,
         1
       );
-      character.visual.current.animation = animation;
-      setTimeout(() => {
-        character.visual.current.animation = undefined;
-        if (character.status.life <= 0) {
-          this.cell.character = undefined;
-        }
-      }, animation.duration * 1000);
+      if (character.visual.current instanceof GOUVisual) {
+        const currentVisual = character.visual.current;
+        currentVisual.animation = animation;
+        setTimeout(() => {
+          currentVisual.animation = undefined;
+          if (character.status.life <= 0) {
+            this.cell.character = undefined;
+          }
+        }, animation.duration * 1000);
+      }
     }
   }
 }

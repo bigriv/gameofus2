@@ -6,7 +6,9 @@
     ></div>
     <div class="c-card__name">{{ props.character.name }}</div>
     <div class="c-card__visual">
-      <GOUVisualCanvas :objects="{ character: props.character.visual.standing }" />
+      <GOUVisualCanvas
+        :objects="{ character: props.character.visual.standing }"
+      />
     </div>
   </WilCard>
 </template>
@@ -46,6 +48,7 @@ const onClick = () => {
     #ffa500 85%,
     #cc9900 100%
   );
+  overflow: hidden;
   &__type {
     position: absolute;
     top: 0%;
@@ -60,6 +63,48 @@ const onClick = () => {
       color: black;
       font-family: "Yuji Mai";
       line-height: 1;
+    }
+    &--NONE {
+      background-color: lightgray;
+      &::before {
+        content: "無";
+      }
+    }
+    &--SHINE {
+      background-color: gold;
+      &::before {
+        content: "光";
+      }
+    }
+    &--DARK {
+      background-color: plum;
+      &::before {
+        content: "闇";
+      }
+    }
+    &--THUNDER {
+      background-color: yellow;
+      &::before {
+        content: "雷";
+      }
+    }
+    &--WATER {
+      background-color: cyan;
+      &::before {
+        content: "水";
+      }
+    }
+    &--SOIL {
+      background-color: chocolate;
+      &::before {
+        content: "土";
+      }
+    }
+    &--WIND {
+      background-color: lightgreen;
+      &::before {
+        content: "風";
+      }
     }
     &--FIRE {
       background-color: red;
@@ -83,7 +128,7 @@ const onClick = () => {
   &__visual {
     position: absolute;
     top: 25%;
-    left: 5%;
+    left: -10%;
     width: 90%;
     height: 70%;
   }

@@ -37,22 +37,35 @@
     </div>
     <div class="c-training__infomation">
       <div>残り日数 {{ WilTraining.TRAINING_DAYS - training.days }}日</div>
-      <div class="c-training__infomation__button">
-        <GameButton
-          v-if="isStartableTraining"
-          label="訓練開始"
-          :fontColor="WIL_BUTTON_FONT_COLOR"
-          :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
-          @click="onStartTraining"
-        />
-        <GameButton
-          v-else
-          label="訓練終了"
-          :fontColor="WIL_BUTTON_FONT_COLOR"
-          :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
-          @click="onEndTraining"
-        />
+      <div class="c-training__infomation__buttons">
+        <div class="c-training__infomation__buttons__content">
+          <GameButton
+            label="ログ"
+            :fontColor="WIL_BUTTON_FONT_COLOR"
+            :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
+            @click="isShowLog = true"
+          />
+        </div>
+        <div class="c-training__infomation__buttons__content">
+          <GameButton
+            v-if="isStartableTraining"
+            label="訓練開始"
+            :fontColor="WIL_BUTTON_FONT_COLOR"
+            :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
+            @click="onStartTraining"
+          />
+          <GameButton
+            v-else
+            label="訓練終了"
+            :fontColor="WIL_BUTTON_FONT_COLOR"
+            :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
+            @click="onEndTraining"
+          />
+        </div>
       </div>
+    </div>
+    <div class="c-training__log_dialog">
+      <WilLogDialog v-model:isShow="isShowLog" :log="training.log" />
     </div>
     <div class="c-training__result_dialog">
       <WilTrainingResultDialog
@@ -104,6 +117,7 @@ import { WilSkill } from "@/composables/games/wil/types/skill";
 import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
 import WilTrainingResultDialog from "@/components/molecules/games/wil/WilTrainingResultDialog.vue";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import WilLogDialog from "@/components/molecules/games/wil/WilLogDialog.vue";
 
 const props = defineProps({
   images: {
@@ -125,9 +139,12 @@ const props = defineProps({
 });
 const emits = defineEmits(["end"]);
 
-// 選択中キャラクター
 const training = ref(new WilTraining(props.player.allCharacters, props.images));
+// 選択中キャラクター
 const selectedCharacter: Ref<WilCharacter | undefined> = ref();
+
+// ログ表示フラグ
+const isShowLog = ref(false);
 
 // 訓練開始可否フラグ
 const isStartableTraining = computed(() => {
@@ -323,9 +340,15 @@ onUnmounted(() => {
     color: white;
     padding: 0 2%;
     margin: auto;
-    &__button {
-      width: 20%;
+    &__buttons {
+      width: 50%;
       height: 80%;
+      display: flex;
+      justify-content: space-between;
+      margin-left: auto;
+      &__content {
+        width: 40%;
+      }
     }
   }
 }

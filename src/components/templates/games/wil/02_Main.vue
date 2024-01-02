@@ -24,6 +24,7 @@
       <Training
         :images="WIL_IMAGES"
         :skills="WIL_SKILLS"
+        :subevents="WIL_SUB_EVENTS"
         :bgm="WIL_SOUNDS.BGM_TRAINING_1"
         :player="(player as WilPlayer)"
         @end="proceed"
@@ -83,6 +84,7 @@ const {
   WIL_SKILLS,
   isLoadedFiles,
   loadFiles,
+  WIL_SUB_EVENTS,
   characterSequence,
   player,
 } = useWilInit();
@@ -134,7 +136,7 @@ onMounted(() => {
   currentCapter.value = new WilChapter(
     WIL_CHAPTER_1_DEFINE,
     characterSequence,
-    WIL_SKILLS.value,
+    WIL_SKILLS,
     WIL_IMAGES,
     WIL_SOUNDS
   );

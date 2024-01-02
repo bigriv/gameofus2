@@ -137,7 +137,7 @@ export const WIL_SKILL_DEFINES: Array<{
       __activest: WilCharacter,
       target: WilFieldCell
     ): WilBattleMoveResult[] => {
-      let heal = __activest.status.magic * 1.2;
+      let heal = __activest.status.magic * 3;
       // 最大値の10%を加算
       heal = Math.round(heal * 1.1);
       if (

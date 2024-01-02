@@ -3,6 +3,7 @@ import { WIL_BATTLE_TEAM } from "../enums/battle";
 import { WilCharacter } from "./character";
 import { WilField } from "./field";
 import { WilOperator } from "./operator";
+import { WIL_CHARACTER_ID } from "../enums/character";
 
 /**
  * Wil用のプレイヤークラス
@@ -88,5 +89,24 @@ export class WilPlayer extends WilOperator {
 
     // 行動選択をリセット
     this.resetMove();
+  }
+
+  /**
+   * キャラクターの離脱処理を行う
+   * @param id 離脱するキャラクターのID
+   * @returns 離脱したキャラクター
+   */
+  removeCharacter(id: WIL_CHARACTER_ID): WilCharacter | undefined {
+    const regexp = new RegExp(`^${id}_\\d+$`, "i");
+    const character = this.allCharacters.find((character) => {
+      console.log(character.id, regexp.test(character.id));
+      return regexp.test(character.id);
+    });
+
+    this.allCharacters = this.allCharacters.filter(
+      (character) => !regexp.test(character.id)
+    );
+
+    return character;
   }
 }

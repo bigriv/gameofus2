@@ -1,6 +1,9 @@
 <template>
   <div class="c-title">
-    <span class="c-title__text">聖騎士と五つの国</span>
+    <span class="c-title__text">
+      <p>何の変哲もない青年が</p>
+      <p>聖騎士になりますとさ</p>
+    </span>
     <div class="c-title__buttons">
       <GameButton
         label="さいしょから"
@@ -49,17 +52,13 @@ const onContinue = () => {
     transform: translate(-50%, -50%);
     width: 100%;
     text-align: center;
-    font-family: "Yusei Magic";
-    background: linear-gradient(0deg, #ff9900 0%, #faeb00 50%, #ff9900 100%);
-    background: -webkit-linear-gradient(
-      0deg,
-      #ff9900 0%,
-      #faeb00 50%,
-      #ff9900 100%
-    );
-    color: transparent;
-    -webkit-background-clip: text;
-    text-shadow: 0px 0px 20px white;
+    p {
+      font-family: "Yusei Magic";
+      background: linear-gradient(-20deg, #ff9900 0%, #faeb00 50%, #ff9900 100%);
+      color: transparent;
+      -webkit-background-clip: text;
+      text-shadow: 0px 0px 20px white;
+    }
   }
   &__buttons {
     position: absolute;
@@ -103,7 +102,7 @@ const onContinue = () => {
     width: 23%;
   }
   .c-title__text {
-    font-size: 40px;
+    font-size: 36px;
   }
 }
 @media screen and (min-width: 600px) {

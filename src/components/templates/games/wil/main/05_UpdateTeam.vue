@@ -1,12 +1,10 @@
 <template>
-  <div class="c-update_team">
-    <WilConfirmDialog
-      v-model:isShow="isShow"
-      :message="displayMessage"
-      :cancelable="false"
-      @submit="onSubmit"
-    />
-  </div>
+  <WilConfirmDialog
+    v-model:isShow="isShow"
+    :message="displayMessage"
+    :cancelable="false"
+    @submit="onSubmit"
+  />
 </template>
 
 <script setup lang="ts">
@@ -78,17 +76,13 @@ onMounted(() => {
   }
 
   for (const outCharacter of props.event.out) {
-    props.player.allCharacters = props.player.allCharacters.filter(
-      (character) => {
-        //   キャラクターIDに一致するキャラクターを排除
-        if (new RegExp(`${outCharacter}_\d`).test(character.id)) {
-          messages.push(`${character.name}が離脱した。`);
-          return false;
-        }
-        return true;
-      }
-    );
+    const character = props.player.removeCharacter(outCharacter);
+    if (!character) {
+      continue;
+    }
+    messages.push(`${character.name}が離脱した。`);
   }
+  console.log(props.player.allCharacters);
   chainMessage(messages, () => emits("end"));
 });
 </script>

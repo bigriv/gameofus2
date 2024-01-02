@@ -308,23 +308,65 @@ export class WilBattle {
               character: targetCell.character,
             })
           );
+          return;
         }
+      }
 
-        // スキル効果の適用
-        if (this.turnOperator.selectSkill.effect) {
-          if (targetCell.character) {
-            moveResults.push(
-              ...this.turnOperator.selectSkill.effect(
-                this.turnOperator.moveCharacter,
-                targetCell
-              )
-            );
-          }
+      // スキル効果の適用
+      if (this.turnOperator.selectSkill.effect) {
+        console.log("apply skill effect", targetCell);
+        if (targetCell.character) {
+          moveResults.push(
+            ...this.turnOperator.selectSkill.effect(
+              this.turnOperator.moveCharacter,
+              targetCell
+            )
+          );
         }
       }
     });
 
     this.setMoveResults(moveResults);
+  }
+
+  /**
+   * キャラクターの行動順を取得する
+   * @returns 行動順に並び替えたキャラクターのリスト
+   */
+  getMoveSequence(): Array<WilCharacter> {
+    // 配置時は空の配列を返す
+    if (
+      this.timming === WIL_BATTLE_TIMMING.SET_SELECT_CELL ||
+      this.timming === WIL_BATTLE_TIMMING.SET_SELECT_CHARACTER
+    ) {
+      return [];
+    }
+
+    return [
+      ...this.player.getFieldCharacters(),
+      ...this.computer.getFieldCharacters(),
+    ]
+      .filter((character) => {
+        // 生存しているキャラクターで絞込
+        return character.status.life > 0;
+      })
+      .sort((a, b) => (WilCharacter.compareMoveSequense(a, b) ? -1 : 1));
+  }
+
+  /**
+   * ターンのスキップ処理を行う
+   */
+  skipTurn() {
+    if (!this.turnOperator.moveCharacter) {
+      throw new WrongImplementationError("Move character is not set.");
+    }
+    const nextMoveCharacter = this.getMoveSequence()[1];
+
+    if (!nextMoveCharacter) {
+      throw new WrongImplementationError("Couldn't get a next move character.");
+    }
+
+    this.turnOperator.moveCharacter.skip(nextMoveCharacter.stack);
   }
 
   /**

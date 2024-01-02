@@ -126,6 +126,14 @@ export class WilCharacter {
   }
 
   /**
+   * 指定したidのキャラクターを元にしているかを判定する
+   * @param id キャラクターのモデルID
+   * @returns 指定したIDと同じモデルならtrue、それ以外はfalse
+   */
+  isModel(id: WIL_CHARACTER_ID): boolean {
+    return new RegExp(`^${id}_\\d+$`).test(this.id);
+  }
+  /**
    * キャラクターのステータス等をリセットする
    */
   reset() {

@@ -36,7 +36,7 @@
       </div>
     </div>
     <div class="c-training__infomation">
-      <div>残り日数 {{ WilTraining.TRAINING_DAYS - training.days }}日</div>
+      <div>残り日数 {{ WilTraining.TRAINING_DAYS - training.days + 1 }}日</div>
       <div class="c-training__infomation__buttons">
         <div class="c-training__infomation__buttons__content">
           <GameButton
@@ -83,6 +83,10 @@
         @cancel="confirmModal.onClickCancel"
       />
     </div>
+
+    <div v-if="subevent && isStartSubevent" class="c-training__subevent">
+      <WilTalk :events="subevent.talk" @end="endSubEvent" />
+    </div>
   </div>
 </template>
 
@@ -118,6 +122,8 @@ import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.
 import WilTrainingResultDialog from "@/components/molecules/games/wil/WilTrainingResultDialog.vue";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import WilLogDialog from "@/components/molecules/games/wil/WilLogDialog.vue";
+import WilTalk from "@/components/molecules/games/wil/WilTalk.vue";
+import { WilSubEvent } from "@/composables/games/wil/types/event";
 
 const props = defineProps({
   images: {
@@ -126,6 +132,10 @@ const props = defineProps({
   },
   skills: {
     type: Object as PropType<{ [key: string]: WilSkill }>,
+    required: true,
+  },
+  subevents: {
+    type: Object as PropType<{ [key: string]: WilSubEvent }>,
     required: true,
   },
   bgm: {
@@ -146,12 +156,12 @@ const selectedCharacter: Ref<WilCharacter | undefined> = ref();
 // ログ表示フラグ
 const isShowLog = ref(false);
 
+// サブイベント
+const subevent: Ref<WilSubEvent | undefined> = ref();
+const isStartSubevent = ref(false);
+
 // 訓練開始可否フラグ
 const isStartableTraining = computed(() => {
-  if (training.value.isEnd()) {
-    return false;
-  }
-
   // 一人でも訓練に設定されていれば訓練開始可能
   if (training.value.plan.attack.character) {
     return true;
@@ -203,6 +213,36 @@ const onSelectTraining = (trainingId: WIL_TRAINING_ID) => {
 const onRemoveCharacter = (trainingId: WIL_TRAINING_ID) => {
   training.value.removeCharacter(trainingId);
 };
+const endSubEvent = () => {
+  if (subevent.value) {
+    subevent.value.end = true;
+  }
+  isStartSubevent.value = false;
+  subevent.value = undefined;
+  props.bgm?.play();
+
+  endDay();
+};
+const endDay = () => {
+  // 最終日の場合は訓練自体を終わる
+  console.log("isEnd", training.value.days);
+  if (training.value.isEnd()) {
+    confirmModal.message = "訓練を終了します。";
+    confirmModal.onClickOk = () => {
+      confirmModal.isShow = false;
+      emits("end");
+    };
+    confirmModal.onClickCancel = undefined;
+    setTimeout(() => {
+      confirmModal.isShow = true;
+    }, 500);
+    return;
+  }
+
+  // 次の日の訓練を開始
+  selectedCharacter.value = undefined;
+  training.value.startDay();
+};
 const chainTrainingResult = () => {
   const result = training.value.results.shift();
   resultModal.result = result ? (result as WilTrainingResult) : undefined;
@@ -211,20 +251,13 @@ const chainTrainingResult = () => {
     // 次の訓練結果がない場合はその日の訓練を終わる
     confirmModal.message = `${training.value.days}日目の訓練が終了しました。`;
     confirmModal.onClickOk = () => {
-      // 最終日の場合は訓練自体を終わる
-      if (training.value.isEnd()) {
-        confirmModal.message = "訓練を終了します。";
-        confirmModal.onClickOk = () => {
-          confirmModal.isShow = false;
-          emits("end");
-        };
-        confirmModal.onClickCancel = undefined;
-        confirmModal.isShow = true;
+      if (subevent.value) {
+        props.bgm?.stop();
+        isStartSubevent.value = true;
+      } else {
+        endDay();
       }
 
-      // 次の日の訓練を開始
-      selectedCharacter.value = undefined;
-      training.value.startDay();
       confirmModal.isShow = false;
     };
     confirmModal.onClickCancel = undefined;
@@ -232,6 +265,19 @@ const chainTrainingResult = () => {
     return;
   }
 
+  // サブイベントの開始判定
+  for (const key of Object.keys(props.subevents)) {
+    if (props.subevents[key].end) {
+      continue;
+    }
+    if (props.subevents[key].isStartable(resultModal.result)) {
+      subevent.value = props.subevents[key];
+      subevent.value.end = true;
+      break;
+    }
+  }
+
+  // 結果モーダル表示
   resultModal.isShow = true;
 };
 const onStartTraining = () => {
@@ -350,6 +396,13 @@ onUnmounted(() => {
         width: 40%;
       }
     }
+  }
+  &__subevent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 }
 @media screen and (max-width: 400px) {

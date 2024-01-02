@@ -141,12 +141,11 @@ export class WilSkill {
     let damage = 0;
     // スキル種別によってダメージ計算を変える
     if (skill.type === WIL_SKILL_TYPE.CLOSE_PHISIC) {
-      damage = power * activist.status.attack - target.status.defense * 0.5;
+      damage = power * activist.status.attack * 3 - target.status.defense * 1;
     } else if (skill.type === WIL_SKILL_TYPE.SHOOT_PHISIC) {
-      damage =
-        power * activist.status.attack * 0.8 - target.status.defense * 0.5;
+      damage = power * activist.status.attack * 3 * 0.8 - target.status.defense;
     } else if (skill.type === WIL_SKILL_TYPE.ATTACK_MAGIC) {
-      damage = power * activist.status.magic - target.status.magic * 0.5;
+      damage = power * activist.status.magic * 3 - target.status.magic * 1;
     } else if (skill.type === WIL_SKILL_TYPE.SUPPORT_MAGIC) {
       damage = 0;
     }
@@ -181,12 +180,12 @@ export class WilSkill {
   static calcCost(condition: WIL_CONDITION_ID, skill: WilSkill): number {
     let cost = skill.cost;
     if (condition === WIL_CONDITION_ID.MUDDY) {
-      return WilConditionUtil.calcIncreaseStack(
+      cost += WilConditionUtil.calcIncreaseStack(
         cost,
         WilConditionUtil.MEDIUM_STACK_RATE
       );
     } else if (condition === WIL_CONDITION_ID.PARALYSIS) {
-      return WilConditionUtil.calcIncreaseStack(
+      cost += WilConditionUtil.calcIncreaseStack(
         cost,
         WilConditionUtil.LITTELE_DAMAGE_RATE
       );

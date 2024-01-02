@@ -2,6 +2,8 @@ import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WilFieldCell } from "./field";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import { WIL_CHARACTER_ID } from "../enums/character";
+import { WilSubEventDefine } from "../defines/subevent";
+import { WilTrainingResult } from "./training";
 
 /**
  * 会話イベント
@@ -133,5 +135,35 @@ export class WilTeamEvent {
   }) {
     this.in = define.in;
     this.out = define.out;
+  }
+}
+
+/**
+ * サブイベント
+ *
+ */
+export class WilSubEvent {
+  end: boolean;
+  talk: Array<WilTalkEvent>;
+  isStartable: (trainngResult: WilTrainingResult) => boolean;
+
+  constructor(
+    define: WilSubEventDefine,
+    images: { [key: string]: GOUVisual },
+    sounds: { [key: string]: GOUReadAudio }
+  ) {
+    this.end = false;
+    this.talk = define.talk.map((talk) => {
+      return new WilTalkEvent({
+        talker: talk.talker,
+        background: talk.background ? images[talk.background] : undefined,
+        message: talk.message,
+        left: talk.left ? images[talk.left] : undefined,
+        right: talk.right ? images[talk.right] : undefined,
+        sound: talk.sound ? sounds[talk.sound] : undefined,
+        bgm: talk.bgm ? sounds[talk.bgm] : undefined,
+      });
+    });
+    this.isStartable = define.isStartable;
   }
 }

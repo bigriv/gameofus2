@@ -35,6 +35,7 @@ export class WilChapter {
       return new WilBattleEvent({
         playerTeamName: battle.playerTeamName,
         computerTeamName: battle.computerTeamName,
+        computerLevel: battle.computerLevel,
         background: battle.background ? images[battle.background] : undefined,
         deployBgm: battle.deployBgm ? sounds[battle.deployBgm] : undefined,
         battleBgm: battle.battleBgm ? sounds[battle.battleBgm] : undefined,

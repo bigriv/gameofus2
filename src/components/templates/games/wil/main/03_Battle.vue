@@ -3,16 +3,21 @@
     <div class="c-battle__background">
       <GOUVisualCanvas :objects="{ background: background }" />
     </div>
-    <div class="c-battle__infomation">
-      <div class="c-battle__infomation__turn">{{ infomationMessage }}</div>
-      <div class="c-battle__infomation__log">
-        <GameButton
-          label="ログ"
-          :fontColor="WIL_BUTTON_FONT_COLOR"
-          :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
-          @click="isShowLog = true"
-        />
+    <div class="c-battle__sequence">
+      <div
+        v-for="character in moveSequence"
+        class="c-battle__sequence__character"
+      >
+        <GOUVisualCanvas :objects="{ character: character.visual.standing }" />
       </div>
+    </div>
+    <div class="c-battle__log">
+      <GameButton
+        label="ログ"
+        :fontColor="WIL_BUTTON_FONT_COLOR"
+        :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
+        @click="isShowLog = true"
+      />
     </div>
     <div class="c-battle__field">
       <Field
@@ -43,6 +48,7 @@
       :hoverCell="hoverCell"
       @error="error"
       @endSet="endSet"
+      @skipTurn="skipTurn"
     />
   </div>
   <div class="c-battle__log_dialog">
@@ -90,6 +96,7 @@ import {
 } from "@/composables/games/wil/const";
 import WilLogDialog from "@/components/molecules/games/wil/WilLogDialog.vue";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import { WilCharacter } from "@/composables/games/wil/types/character";
 
 const props = defineProps({
   skills: {
@@ -114,7 +121,7 @@ const emits = defineEmits(["end"]);
 const background = props.event.background;
 const battle = ref(new WilBattle(props.player, props.event));
 const hoverCell: Ref<WilFieldCell | undefined> = ref();
-const infomationMessage = ref("");
+const moveSequence: Ref<Array<WilCharacter>> = ref([]);
 const guideMessage = ref("キャラクターを配置するマスを選択してください。");
 const underFrame: Ref<InstanceType<typeof UnderFrame> | null> = ref(null);
 const isShowLog = ref(false);
@@ -191,6 +198,7 @@ const endSet = () => {
   // 戦闘タイミングを戦闘開始に変更
   battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_START);
   setTimeout(() => {
+    moveSequence.value = battle.value.getMoveSequence();
     startTurn();
   }, 1500);
 };
@@ -198,8 +206,6 @@ const startTurn = () => {
   console.log("turn start");
   battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_TURN_START);
   battle.value.startTurn();
-
-  infomationMessage.value = `${battle.value.turnOperator.moveCharacter?.name}のターン`;
 
   if (battle.value.turnOperator instanceof WilComputer) {
     // コンピュータのターンなら行動の決定まで行い、行動処理に遷移
@@ -219,9 +225,14 @@ const startTurn = () => {
     }, 1000);
   }
 };
+const skipTurn = () => {
+  battle.value.skipTurn();
+  endTurn();
+};
 const endTurn = () => {
   console.log("turn end");
   battle.value.endTurn();
+  moveSequence.value = battle.value.getMoveSequence();
   underFrame.value?.showBattleMoveResult(
     battle.value.moveResults as Array<WilBattleMoveResult>,
     () => {
@@ -239,18 +250,18 @@ const endBattle = () => {
   battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_END);
   battle.value.endBattle();
   if (battle.value.winner === WIL_BATTLE_TEAM.PLAYER) {
-    props.sounds.BGM_BATTLE_WIN.play()
+    props.sounds.BGM_BATTLE_WIN.play();
     confirmModal.message = `${battle.value.computer.teamName}との戦闘に勝利した！`;
     confirmModal.onClickOk = () => {
-      props.sounds.BGM_BATTLE_WIN.stop()
+      props.sounds.BGM_BATTLE_WIN.stop();
       emits("end", battle.value.winner);
     };
     confirmModal.isShow = true;
   } else if (battle.value.winner === WIL_BATTLE_TEAM.COMPUTER) {
-    props.sounds.BGM_BATTLE_LOSE.play()
+    props.sounds.BGM_BATTLE_LOSE.play();
     confirmModal.message = `${battle.value.computer.teamName}との戦闘に敗北した。`;
     confirmModal.onClickOk = () => {
-      props.sounds.BGM_BATTLE_LOSE.stop()
+      props.sounds.BGM_BATTLE_LOSE.stop();
       emits("end", battle.value.winner);
     };
     confirmModal.isShow = true;
@@ -322,23 +333,33 @@ watch(
     width: 100%;
     height: 100%;
   }
-  &__infomation {
+  &__sequence {
     position: absolute;
-    width: 90%;
-    height: 7%;
-    top: 2%;
+    top: 3%;
     left: 5%;
-    background-color: rgba(0, 0, 0, 0.8);
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    color: white;
+    width: 60%;
+    height: 5%;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 2px 5px;
-    &__log {
-      width: 20%;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    &__character {
+      position: relative;
+      width: 6%;
       height: 100%;
+      background-color: rgba(255, 255, 255, 0.5);
+      border: 1px solid white;
+      &:nth-child(1) {
+        background-color: rgba(255, 255, 0, 0.5);
+        border: 1px solid yellow;
+      }
     }
+  }
+  &__log {
+    position: absolute;
+    top: 2%;
+    right: 5%;
+    width: 18%;
+    height: 7%;
   }
   &__field {
     position: absolute;

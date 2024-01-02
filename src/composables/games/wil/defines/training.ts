@@ -31,14 +31,14 @@ export const WIL_TRAINING_DEFINES: {
     name: "侵攻訓練",
     image: WIL_IMAGE_ID.TRAINING_ATTACK,
     minRise: {
-      life: 0,
+      life: 1,
       attack: 1,
       defense: 0,
       magic: 1,
       speed: 0,
     },
     maxRise: {
-      life: 3,
+      life: 4,
       attack: 3,
       defense: 0,
       magic: 3,
@@ -54,7 +54,7 @@ export const WIL_TRAINING_DEFINES: {
     name: "防衛訓練",
     image: WIL_IMAGE_ID.TRAINING_DEFENSE,
     minRise: {
-      life: 0,
+      life: 1,
       attack: 0,
       defense: 1,
       magic: 1,
@@ -77,14 +77,14 @@ export const WIL_TRAINING_DEFINES: {
     name: "移動訓練",
     image: WIL_IMAGE_ID.TRAINING_MIGRATION,
     minRise: {
-      life: 1,
+      life: 2,
       attack: 0,
       defense: 0,
       magic: 0,
       speed: 2,
     },
     maxRise: {
-      life: 4,
+      life: 5,
       attack: 0,
       defense: 0,
       magic: 0,
@@ -120,17 +120,17 @@ export const WIL_TRAINING_DEFINES: {
   },
   PHISIC: {
     id: WIL_TRAINING_ID.PHISIC,
-    name: "肉体強化",
+    name: "打込稽古",
     image: WIL_IMAGE_ID.TRAINING_PHISIC,
     minRise: {
-      life: 2,
+      life: 0,
       attack: 1,
       defense: 0,
       magic: 0,
       speed: 0,
     },
     maxRise: {
-      life: 5,
+      life: 3,
       attack: 4,
       defense: 0,
       magic: 0,

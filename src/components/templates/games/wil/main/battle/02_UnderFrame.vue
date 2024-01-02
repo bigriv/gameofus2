@@ -1,6 +1,11 @@
 <template>
   <div class="c-under_frame">
-    <template v-if="hoverCell?.character">
+    <template
+      v-if="
+        hoverCell?.character &&
+        battle.timming !== WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE
+      "
+    >
       <div class="c-under_frame__card">
         <WilCharacterCard :character="hoverCell.character" />
       </div>
@@ -192,7 +197,6 @@ import {
   WIL_BUTTON_FONT_COLOR,
   WIL_BUTTON_BACKGROUND_COLOR,
 } from "@/composables/games/wil/const";
-import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import {
   WilBattle,
@@ -216,7 +220,7 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["error", "endSet"]);
+const emits = defineEmits(["error", "endSet", "skipTurn"]);
 const { messageComplete, onNextMessage } = useWilDisplay();
 
 const battle = computed(() => props.battle);
@@ -329,14 +333,7 @@ const onSelectSkill = (skill: WilSkill) => {
 };
 // ターンスキップ時のイベント処理
 const onSkipTurn = () => {
-  if (!battle.value.player.moveCharacter) {
-    throw new WrongImplementationError("Move character is not set.");
-  }
-  const nextMoveCharacter = battle.value.player.getMoveSequense()[1];
-  if (!nextMoveCharacter) {
-    throw new WrongImplementationError("Couldn't get a next move character.");
-  }
-  battle.value.player.moveCharacter.skip(nextMoveCharacter.stack);
+  emits("skipTurn");
 };
 const battleResult: Ref<WilBattleMoveResult | undefined> = ref();
 const showBattleMoveResult = (

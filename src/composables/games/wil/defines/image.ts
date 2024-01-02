@@ -5,7 +5,7 @@ export const WIL_IMAGE_DEFINES: { [key: string]: string } = {
   CHARACTER_HERO: WIL_IMAGE_ROOT_PATH + "characters/standings/hero.svg",
   CHARACTER_HOLY_KNIGHTS_LEADER:
     WIL_IMAGE_ROOT_PATH + "characters/standings/holy_knights_leader.svg",
-  CHARACTER_HOLY_KNIGHTS_SOLIDER:
+  CHARACTER_HOLY_KNIGHTS_SOLDIER:
     WIL_IMAGE_ROOT_PATH + "characters/standings/holy_knights_soldier.svg",
   CHARACTER_HOLY_KNIGHTS_MAGICIAN:
     WIL_IMAGE_ROOT_PATH + "characters/standings/holy_knights_magician.svg",
@@ -76,7 +76,8 @@ export const WIL_IMAGE_DEFINES: { [key: string]: string } = {
   SKILL_DARK_VERTICAL: WIL_IMAGE_ROOT_PATH + "skills/dark_vertical.json",
   SKILL_DARK_HORIZONTAL: WIL_IMAGE_ROOT_PATH + "skills/dark_horizontal.json",
   SKILL_THUNDER_CIRCLE: WIL_IMAGE_ROOT_PATH + "skills/thunder_circle.json",
-  SKILL_THUNDER_HORIZONTAL: WIL_IMAGE_ROOT_PATH + "skills/thunder_horizontal.json",
+  SKILL_THUNDER_HORIZONTAL:
+    WIL_IMAGE_ROOT_PATH + "skills/thunder_horizontal.json",
   SKILL_THUNDER_VERTICAL: WIL_IMAGE_ROOT_PATH + "skills/thunder_vertical.json",
   SKILL_POISON: WIL_IMAGE_ROOT_PATH + "skills/poison.json",
 
@@ -85,12 +86,15 @@ export const WIL_IMAGE_DEFINES: { [key: string]: string } = {
   TRAINING_DEFENSE: WIL_IMAGE_ROOT_PATH + "trainings/shield.svg",
   TRAINING_MIGRATION: WIL_IMAGE_ROOT_PATH + "trainings/shoes.svg",
   TRAINING_MAGIC: WIL_IMAGE_ROOT_PATH + "trainings/book.svg",
-  TRAINING_PHISIC: WIL_IMAGE_ROOT_PATH + "trainings/ironAllay.svg",
+  TRAINING_PHISIC: WIL_IMAGE_ROOT_PATH + "trainings/straw.svg",
 
   // 背景
   BACKGROUND_VILLAGE: WIL_IMAGE_ROOT_PATH + "backgrounds/village.png",
-  BACKGROUND_VILLAGE_EVENING: WIL_IMAGE_ROOT_PATH + "backgrounds/village_evening.png",
-  BACKGROUND_BATTLE_VILLAGE: WIL_IMAGE_ROOT_PATH + "backgrounds/battle_village.png",
+  BACKGROUND_VILLAGE_EVENING:
+    WIL_IMAGE_ROOT_PATH + "backgrounds/village_evening.png",
+  BACKGROUND_BATTLE_VILLAGE:
+    WIL_IMAGE_ROOT_PATH + "backgrounds/battle_village.png",
   BACKGROUND_KINGDOM: WIL_IMAGE_ROOT_PATH + "backgrounds/kingdom.png",
-  BACKGROUND_BATTLE_KINGDOM: WIL_IMAGE_ROOT_PATH + "backgrounds/battle_kingdom.png",
+  BACKGROUND_BATTLE_KINGDOM:
+    WIL_IMAGE_ROOT_PATH + "backgrounds/battle_kingdom.png",
 };

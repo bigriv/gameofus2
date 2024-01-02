@@ -110,7 +110,6 @@ watch(
   width: 100%;
   border-radius: 4px;
   box-sizing: content-box;
-  box-shadow: 0 0 40px inset white;
   &--reverse {
     transform: scaleX(-1);
     .c-battle_field__damage {
@@ -125,7 +124,7 @@ watch(
     border-left: 2px solid black;
     border-radius: 4px;
     &--WHITE {
-      background-color: none;
+      background-color: rgba(255, 255,255, 0.5);
       border-color: white;
     }
     &--RED {

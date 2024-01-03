@@ -1,6 +1,6 @@
 <template>
   <div class="c-battle">
-    <div class="c-battle__background">
+    <div class="c-battle__background" @click="onClickWindow">
       <GOUVisualCanvas :objects="{ background: background }" />
     </div>
     <div class="c-battle__sequence">
@@ -19,7 +19,7 @@
         @click="isShowLog = true"
       />
     </div>
-    <div class="c-battle__field">
+    <div class="c-battle__field" @click="onClickWindow">
       <Field
         :battle="(battle as WilBattle)"
         @selectComputerCell="onClickComputerField"
@@ -143,19 +143,29 @@ onMounted(() => {
 onUnmounted(() => {
   props.event.processEnd();
 });
+const onClickWindow = () => {
+  if (battle.value.timming === WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE) {
+    underFrame.value?.onNextMessage();
+  }
+};
 const onClickComputerField = (cell: WilFieldCell) => {
   // スキル発動対象選択時
   if (battle.value.timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
     battle.value.setMoveTarget(cell);
-    // 戦闘タイミングを行動処理に変更
-    battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
     // 行動処理を実行
     battle.value.processMove();
     underFrame.value?.showBattleMoveResult(
       battle.value.moveResults as Array<WilBattleMoveResult>,
       endTurn
     );
+    // 戦闘タイミングを行動処理に変更
+    battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
     return;
+  }
+
+  // 戦闘処理時の
+  if (battle.value.timming === WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE) {
+    underFrame.value?.onNextMessage();
   }
 };
 const onClickPlayerField = (cell: WilFieldCell) => {
@@ -175,15 +185,20 @@ const onClickPlayerField = (cell: WilFieldCell) => {
     battle.value.timming == WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET
   ) {
     battle.value.setMoveTarget(cell);
-    // 戦闘タイミングをプレイヤー行動処理に変更
-    battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
     // 行動処理を実行
     battle.value.processMove();
     underFrame.value?.showBattleMoveResult(
       battle.value.moveResults as Array<WilBattleMoveResult>,
       endTurn
     );
+    // 戦闘タイミングを行動処理に変更
+    battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
     return;
+  }
+
+  // 戦闘処理時の
+  if (battle.value.timming === WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE) {
+    underFrame.value?.onNextMessage();
   }
 };
 const error = (message: string) => {
@@ -211,23 +226,27 @@ const startTurn = () => {
     // コンピュータのターンなら行動の決定まで行い、行動処理に遷移
     battle.value.turnOperator.decideBattleMove(battle.value as WilBattle);
     setTimeout(() => {
-      battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
       battle.value.processMove();
       underFrame.value?.showBattleMoveResult(
         battle.value.moveResults as Array<WilBattleMoveResult>,
         endTurn
       );
+      battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
     }, 1000);
   } else if (battle.value.turnOperator instanceof WilPlayer) {
-    // プレイヤーのターンなら先頭タイミングを行動選択に切り替える
+    // プレイヤーのターンなら戦闘タイミングを行動選択に切り替える
     setTimeout(() => {
       battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE);
-    }, 1000);
+    }, 500);
   }
 };
 const skipTurn = () => {
   battle.value.skipTurn();
-  endTurn();
+  underFrame.value?.showBattleMoveResult(
+    battle.value.moveResults as Array<WilBattleMoveResult>,
+    endTurn
+  );
+  battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
 };
 const endTurn = () => {
   console.log("turn end");
@@ -290,20 +309,12 @@ const onLeaveFieldCell = () => {
 watch(
   () => battle.value.timming,
   () => {
-    if (!(battle.value.turnOperator instanceof WilPlayer)) {
-      guideMessage.value = "";
-      return;
-    }
-
     switch (battle.value.timming) {
       case WIL_BATTLE_TIMMING.SET_SELECT_CELL:
         guideMessage.value = "キャラクターを配置するマスを選択してください。";
         break;
       case WIL_BATTLE_TIMMING.SET_SELECT_CHARACTER:
         guideMessage.value = "配置するキャラクターを選択してください。";
-        break;
-      case WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE:
-        guideMessage.value = "行動を選択してください。";
         break;
       case WIL_BATTLE_TIMMING.BATTLE_SELECT_MIGRATE_PLACE:
         guideMessage.value = "移動するマスを選択してください。";
@@ -315,7 +326,11 @@ watch(
         guideMessage.value = "攻撃・魔法の対象を選択してください。";
         break;
       default:
-        guideMessage.value = "";
+        if (battle.value.turnOperator.moveCharacter) {
+          guideMessage.value = `${battle.value.turnOperator.teamName} ${battle.value.turnOperator.moveCharacter?.name}のターン`;
+        } else {
+          guideMessage.value = "";
+        }
     }
   }
 );

@@ -225,7 +225,6 @@ const endSubEvent = () => {
 };
 const endDay = () => {
   // 最終日の場合は訓練自体を終わる
-  console.log("isEnd", training.value.days);
   if (training.value.isEnd()) {
     confirmModal.message = "訓練を終了します。";
     confirmModal.onClickOk = () => {

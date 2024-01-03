@@ -77,7 +77,7 @@
             </div>
             <div class="c-under_frame__contents__button">
               <GameButton
-                label="攻撃・魔法"
+                label="技・魔法"
                 :fontColor="WIL_BUTTON_FONT_COLOR"
                 :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
                 @click="onShowSkillList"
@@ -369,6 +369,7 @@ const chainBattleMoveResult = (
 
 defineExpose({
   showBattleMoveResult,
+  onNextMessage,
 });
 </script>
 

@@ -124,13 +124,19 @@ export class WilBattle {
     if (this.turnOperator instanceof WilPlayer) {
       this.turnOperator.moveCharacter = playerCharacter;
     } else if (this.turnOperator instanceof WilComputer) {
-      this.computer.moveCharacter = computerCharacter;
+      this.turnOperator.moveCharacter = computerCharacter;
     }
     const consumeStack = this.turnOperator.moveCharacter?.stack ?? 0;
 
     // 生存しているキャラクターのスタックターン数を一律消費
     this.player.consumeStack(consumeStack);
     this.computer.consumeStack(consumeStack);
+
+    this.setMoveResults([
+      new WilBattleMoveResult({
+        message: [`${this.turnOperator.moveCharacter?.name}のターン`],
+      }),
+    ]);
   }
 
   /**
@@ -246,6 +252,9 @@ export class WilBattle {
         ],
         character: this.turnOperator.moveCharacter,
         characterAnimation: animation,
+        cells: this.getTargets(),
+        cellAnimation: this.turnOperator.selectSkill.animation,
+        sound: this.turnOperator.selectSkill.sound,
       })
     );
 
@@ -287,9 +296,6 @@ export class WilBattle {
         moveResults.push(
           new WilBattleMoveResult({
             message: [`${targetCell.character.name}に${damage}のダメージ！`],
-            cell: targetCell,
-            cellAnimation: this.turnOperator.selectSkill.animation,
-            sound: this.turnOperator.selectSkill.sound,
             damage: damageResults,
           })
         );
@@ -314,7 +320,6 @@ export class WilBattle {
 
       // スキル効果の適用
       if (this.turnOperator.selectSkill.effect) {
-        console.log("apply skill effect", targetCell);
         if (targetCell.character) {
           moveResults.push(
             ...this.turnOperator.selectSkill.effect(
@@ -367,6 +372,13 @@ export class WilBattle {
     }
 
     this.turnOperator.moveCharacter.skip(nextMoveCharacter.stack);
+    this.setMoveResults([
+      new WilBattleMoveResult({
+        message: [
+          `${this.turnOperator.moveCharacter.name}のターンをスキップした。`,
+        ],
+      }),
+    ]);
   }
 
   /**
@@ -708,7 +720,7 @@ export class WilBattle {
 export class WilBattleMoveResult {
   message?: Array<string>;
   sound?: GOUAudio;
-  cell?: WilFieldCell;
+  cells?: Array<WilFieldCell>;
   cellAnimation?: GOUVisual;
   character?: WilCharacter;
   characterAnimation?: GOUVisual | GOUAnimation | GOUFluidVisual;
@@ -717,7 +729,7 @@ export class WilBattleMoveResult {
   constructor(define: {
     message?: Array<string>;
     sound?: GOUAudio;
-    cell?: WilFieldCell;
+    cells?: Array<WilFieldCell>;
     cellAnimation?: GOUVisual;
     character?: WilCharacter;
     characterAnimation?: GOUVisual | GOUAnimation | GOUFluidVisual;
@@ -725,7 +737,7 @@ export class WilBattleMoveResult {
   }) {
     this.message = define.message;
     this.sound = define.sound;
-    this.cell = define.cell;
+    this.cells = define.cells;
     this.cellAnimation = define.cellAnimation;
     this.character = define.character;
     this.characterAnimation = define.characterAnimation;
@@ -740,14 +752,16 @@ export class WilBattleMoveResult {
       this.sound.play();
     }
     // マスに対するエフェクト
-    if (this.cell && this.cellAnimation) {
-      if (this.cellAnimation instanceof GOUImage) {
-        this.cell.animation = this.cellAnimation as GOUImage;
-        setTimeout(() => (this.cell!.animation = undefined), 1000);
-      } else if (this.cellAnimation instanceof GOULottie) {
-        this.cell.animation = this.cellAnimation as GOULottie;
-        setTimeout(() => (this.cell!.animation = undefined), 1000);
-      }
+    if (this.cells && this.cellAnimation) {
+      this.cells.forEach((cell) => {
+        if (this.cellAnimation instanceof GOUImage) {
+          cell.animation = this.cellAnimation as GOUImage;
+          setTimeout(() => (cell.animation = undefined), 1000);
+        } else if (this.cellAnimation instanceof GOULottie) {
+          cell.animation = this.cellAnimation as GOULottie;
+          setTimeout(() => (cell.animation = undefined), 1000);
+        }
+      });
     }
 
     // キャラクターに対するエフェクト

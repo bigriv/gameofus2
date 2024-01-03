@@ -1,7 +1,7 @@
 <template>
   <div class="c-field">
     <div class="c-field__frame">
-      <div class="c-field__frame__computer">
+      <div class="c-field__frame__computer" @click.prevent.stop>
         <WilBattleField
           :reverse="true"
           :field="props.battle.computer.field"
@@ -11,7 +11,7 @@
           @leave="onLeaveCell"
         />
       </div>
-      <div class="c-field__frame__player">
+      <div class="c-field__frame__player" @click.prevent.stop>
         <WilBattleField
           :field="props.battle.player.field"
           :damageResults="playerDamageEvents"

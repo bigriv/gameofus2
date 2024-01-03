@@ -31,8 +31,11 @@ export class WilComputer extends WilOperator {
    * 発動するスキルを決定する
    */
   private decideUseSkill() {
-    console.log(this.level);
-    this.selectSkill = this.decideUseSkill_level1();
+    switch (this.level) {
+      case 1:
+        this.selectSkill = this.decideUseSkill_level1();
+        break;
+    }
   }
 
   /**
@@ -57,8 +60,11 @@ export class WilComputer extends WilOperator {
    * @param enemyField 相手のフィールド
    */
   private decideTarget(enemyField: WilField) {
-    console.log(this.level);
-    this.targetCell = this.decideTarget_level1(enemyField);
+    switch (this.level) {
+      case 1:
+        this.targetCell = this.decideTarget_level1(enemyField);
+        break;
+    }
   }
 
   /**

@@ -12,7 +12,7 @@
               field.cells[(column - 1) * WilField.WIDTH + (row - 1)].color
             }`,
           ]"
-          @click="
+          @click.prevent="
             onClickCell(field.cells[(column - 1) * WilField.WIDTH + (row - 1)])
           "
           @mouseenter="

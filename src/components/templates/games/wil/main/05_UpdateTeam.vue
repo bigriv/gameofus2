@@ -82,7 +82,6 @@ onMounted(() => {
     }
     messages.push(`${character.name}が離脱した。`);
   }
-  console.log(props.player.allCharacters);
   chainMessage(messages, () => emits("end"));
 });
 </script>

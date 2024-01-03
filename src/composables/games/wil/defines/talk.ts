@@ -452,24 +452,21 @@ export const WIL_MAIN_TALK_DEFINES: {
     {
       talker: "聖騎士団隊長 ザーグ",
       background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
-      message: [
-        "何か失礼なことを考えてそうだけど、まあいいや。",
-        "彼らが君の味方、さあ部隊を編成して早速始めようか。",
-      ],
+      message: ["早速始めようか。", "彼らが君の味方だよ。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
     },
     {
       talker: "騎士兵",
       background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
-      message: ["よろしく"],
+      message: ["よろしく。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_SOLDIER,
     },
     {
       talker: "魔導兵",
       background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
-      message: ["よろしく"],
+      message: ["よろしく。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_MAGICIAN,
     },
@@ -486,6 +483,7 @@ export const WIL_MAIN_TALK_DEFINES: {
       talker: "ヒカル",
       background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
       message: ["はぁはぁ、なんとか勝てた...。"],
+      bgm: WIL_SOUND_ID.BGM_HOLY_CASLE_1,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
     },
     {

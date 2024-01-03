@@ -122,7 +122,7 @@ export const useWilInit = () => {
     ];
     return player;
   };
-  const player = ref(initPlayer());
+  const player: WilPlayer = initPlayer();
 
   return {
     WIL_IMAGES,

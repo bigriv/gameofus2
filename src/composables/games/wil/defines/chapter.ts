@@ -5,6 +5,7 @@ import { WIL_IMAGE_ID } from "../enums/image";
 import { WIL_MAIN_TALK_DEFINES, WilTalkDefine } from "./talk";
 
 export type WilChapterDefine = {
+  id: number;
   title: string;
   flow: Array<WIL_CHAPTER_TIMMING>;
   battles: Array<{
@@ -28,20 +29,25 @@ export type WilChapterDefine = {
 };
 
 export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
+  id: 1,
   title: "第１章 聖の国と騎士団",
   flow: [
     WIL_CHAPTER_TIMMING.OPENING,
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.TEAM,
     WIL_CHAPTER_TIMMING.BATTLE,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.TEAM,
     WIL_CHAPTER_TIMMING.TRAINING,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.TEAM,
     WIL_CHAPTER_TIMMING.BATTLE,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.TEAM,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.ENDING,
   ],
   battles: [
@@ -85,12 +91,12 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
         },
         {
           x: 1,
-          y: 2,
+          y: 3,
           character: WIL_CHARACTER_ID.HOLY_KNIGHTS_LEADER,
         },
         {
           x: 2,
-          y: 3,
+          y: 1,
           character: WIL_CHARACTER_ID.HOLY_KNIGHTS_MAGICIAN,
         },
       ],

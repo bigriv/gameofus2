@@ -14,6 +14,7 @@ import GOUImage from "@/composables/types/visuals/GOUImage";
 import { GOUFluidVisual } from "@/composables/types/visuals/GOUFluidVisual";
 
 export class WilCharacter {
+  readonly model: WIL_CHARACTER_ID;
   readonly id: string;
   readonly name: string;
   visual: {
@@ -66,6 +67,7 @@ export class WilCharacter {
     skills: { [key: string]: WilSkill },
     images: { [key: string]: GOUVisual }
   ) {
+    this.model = define.id;
     this.id = `${define.id}_${sequence}`;
     this.name = define.name;
 

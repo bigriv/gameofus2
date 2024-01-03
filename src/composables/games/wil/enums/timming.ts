@@ -11,6 +11,7 @@ export enum WIL_CHAPTER_TIMMING {
   BATTLE,
   TRAINING,
   TEAM,
+  SAVE,
   ENDING,
 }
 

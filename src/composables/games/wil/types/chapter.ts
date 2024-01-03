@@ -12,6 +12,7 @@ import { WilChapterDefine } from "../defines/chapter";
 import { WIL_CHARACTER_ID } from "../enums/character";
 
 export class WilChapter {
+  id: number;
   title: string;
   flow: Array<WIL_CHAPTER_TIMMING>;
   battleEvents: Array<WilBattleEvent>;
@@ -19,7 +20,7 @@ export class WilChapter {
   teamEvents: Array<WilTeamEvent>;
   private currentFlow: number = -1;
   private currentTalkEvent: number = -1;
-  private currentBatEventtle: number = -1;
+  private currentBattleEventtle: number = -1;
   private currentTeamEvent: number = -1;
 
   constructor(
@@ -29,6 +30,7 @@ export class WilChapter {
     images: { [key: string]: GOUVisual },
     sounds: { [key: string]: GOUReadAudio }
   ) {
+    this.id = define.id;
     this.title = define.title;
     this.flow = define.flow;
     this.battleEvents = define.battles.map((battle) => {
@@ -72,6 +74,14 @@ export class WilChapter {
       )
     );
     this.teamEvents = define.updateTeam;
+  }
+
+  /**
+   * 現在のイベントタイミングの位置を取得する
+   * @returns 現在のイベントタイミングの位置
+   */
+  getCurrentFlow(): number {
+    return this.currentFlow;
   }
 
   /**
@@ -130,13 +140,13 @@ export class WilChapter {
    * @returns 戦闘イベント
    */
   getCurrentBattleEvent(): WilBattleEvent | undefined {
-    if (this.currentBatEventtle < 0) {
+    if (this.currentBattleEventtle < 0) {
       return this.battleEvents[0];
     }
-    if (this.currentBatEventtle >= this.battleEvents.length) {
+    if (this.currentBattleEventtle >= this.battleEvents.length) {
       return undefined;
     }
-    return this.battleEvents[this.currentBatEventtle];
+    return this.battleEvents[this.currentBattleEventtle];
   }
 
   /**
@@ -144,10 +154,10 @@ export class WilChapter {
    * @returns 進めた後の戦闘イベント
    */
   proceedBattleEvent(): WilBattleEvent | undefined {
-    if (this.currentBatEventtle + 1 >= this.battleEvents.length) {
+    if (this.currentBattleEventtle + 1 >= this.battleEvents.length) {
       return undefined;
     }
-    return this.battleEvents[++this.currentBatEventtle];
+    return this.battleEvents[++this.currentBattleEventtle];
   }
 
   /**

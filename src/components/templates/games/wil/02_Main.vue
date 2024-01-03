@@ -13,7 +13,7 @@
     <template v-else-if="timming == WIL_CHAPTER_TIMMING.BATTLE">
       <Battle
         v-if="battleEvent"
-        :player="(player as WilPlayer)"
+        :player="player"
         :skills="WIL_SKILLS"
         :sounds="WIL_SOUNDS"
         :event="battleEvent"
@@ -26,7 +26,7 @@
         :skills="WIL_SKILLS"
         :subevents="WIL_SUB_EVENTS"
         :bgm="WIL_SOUNDS.BGM_TRAINING_1"
-        :player="(player as WilPlayer)"
+        :player="player"
         @end="proceed"
       />
     </template>
@@ -37,9 +37,12 @@
         :skills="WIL_SKILLS"
         :event="teamEvent"
         :sequence="characterSequence"
-        :player="(player as WilPlayer)"
+        :player="player"
         @end="proceed"
       />
+    </template>
+    <template v-else-if="timming == WIL_CHAPTER_TIMMING.SAVE">
+      <Save @save="onSave" @end="proceed" />
     </template>
   </div>
 </template>
@@ -51,6 +54,7 @@ import Talk from "@/components/templates/games/wil/main/02_Talk.vue";
 import Battle from "@/components/templates/games/wil/main/03_Battle.vue";
 import Training from "@/components/templates/games/wil/main/04_Training.vue";
 import UpdateTeam from "@/components/templates/games/wil/main/05_UpdateTeam.vue";
+import Save from "@/components/templates/games/wil/main/06_Save.vue";
 import { WIL_CHAPTER_TIMMING } from "@/composables/games/wil/enums/timming";
 import { useWilInit } from "@/composables/games/wil/init";
 import { WilChapter } from "@/composables/games/wil/types/chapter";
@@ -63,7 +67,10 @@ import {
 } from "@/composables/games/wil/types/event";
 import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
 import { WIL_ENDING_ID } from "@/composables/games/wil/enums/ending";
-import { WilPlayer } from "@/composables/games/wil/types/player";
+import { WilSaveUtil } from "@/composables/games/wil/types/save";
+import { WilCharacter } from "@/composables/games/wil/types/character";
+import { WIL_CHARACTER_DEFINES } from "@/composables/games/wil/defines/character";
+import { WilStatus } from "@/composables/games/wil/types/status";
 
 const props = defineProps({
   start: {
@@ -115,7 +122,7 @@ const proceed = () => {
       proceed();
       return;
     }
-    player.value.teamName = battleEvent.value.playerTeamName;
+    player.teamName = battleEvent.value.playerTeamName;
   } else if (timming.value === WIL_CHAPTER_TIMMING.TEAM) {
     teamEvent.value = currentCapter.value.proceedTeamEvent();
     if (!teamEvent.value) {
@@ -127,20 +134,80 @@ const proceed = () => {
   }
 };
 
+const onSave = () => {
+  if (!currentCapter.value) {
+    return;
+  }
+  WilSaveUtil.save(currentCapter.value, player, WIL_SUB_EVENTS);
+};
+
+const loadSaveData = () => {
+  const { chapter, flow, characters, subevents } = WilSaveUtil.load();
+  if (chapter) {
+    currentCapter.value = new WilChapter(
+      chapter,
+      characterSequence,
+      WIL_SKILLS,
+      WIL_IMAGES,
+      WIL_SOUNDS
+    );
+  }
+  if (flow) {
+    for (let i = -1; i < flow; i++) {
+      switch (currentCapter.value?.proceedEvent()) {
+        case WIL_CHAPTER_TIMMING.BATTLE:
+          currentCapter.value?.proceedBattleEvent();
+          break;
+        case WIL_CHAPTER_TIMMING.TALK:
+          currentCapter.value?.proceedTalkEvent();
+          break;
+        case WIL_CHAPTER_TIMMING.TEAM:
+          currentCapter.value?.proceedTeamEvent();
+          break
+      }
+    }
+  }
+  if (characters.length > 0) {
+    player.allCharacters = characters.map((character) => {
+      const c = new WilCharacter(
+        characterSequence.generateId(),
+        WIL_CHARACTER_DEFINES[character.model],
+        WIL_SKILLS,
+        WIL_IMAGES
+      );
+      c.defaultStatus = new WilStatus(character.defaultStatus);
+      c.skills = character.skills.map((skill) => WIL_SKILLS[skill]);
+      c.reset()
+      return c;
+    });
+  }
+
+  if (subevents) {
+    for (let event of subevents) {
+      if (WIL_SUB_EVENTS[event.id]) {
+        WIL_SUB_EVENTS[event.id].end = event.end;
+      }
+    }
+  }
+};
+
 onMounted(() => {
   loadFiles();
 
   if (props.loadData) {
-    // TODO: セーブデータのロード
+    loadSaveData();
   }
-  currentCapter.value = new WilChapter(
-    WIL_CHAPTER_1_DEFINE,
-    characterSequence,
-    WIL_SKILLS,
-    WIL_IMAGES,
-    WIL_SOUNDS
-  );
-  timming.value = currentCapter.value.proceedEvent();
+
+  if (!currentCapter.value) {
+    currentCapter.value = new WilChapter(
+      WIL_CHAPTER_1_DEFINE,
+      characterSequence,
+      WIL_SKILLS,
+      WIL_IMAGES,
+      WIL_SOUNDS
+    );
+  }
+  proceed()
 });
 watch(
   () => isLoadedFiles.value,

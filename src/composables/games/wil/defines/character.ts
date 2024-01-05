@@ -68,7 +68,7 @@ export const WIL_CHARACTER_DEFINES: {
       magic: 5,
     },
     element: WIL_ELEMENT.SHINE,
-    skills: [WIL_SKILL_ID.SLASH, WIL_SKILL_ID.HEAL],
+    skills: [WIL_SKILL_ID.SLASH],
     skillType: [
       WIL_SKILL_TYPE.CLOSE_PHISIC,
       WIL_SKILL_TYPE.ATTACK_MAGIC,

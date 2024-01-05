@@ -214,6 +214,61 @@ export const WIL_MAIN_TALK_DEFINES: {
   ],
   CHAPTER_1_2: [
     {
+      sound: WIL_SOUND_ID.SE_SYSTEM1,
+      message: ["ここからは戦闘システムの説明を行います。"],
+    },
+    {
+      message: [
+        "戦闘が始まる前に、まずキャラクター配置を行います。",
+        "位置によっては相手に技が届かないことがあるので注意してください。",
+      ],
+    },
+    {
+      message: [
+        "配置が完了したら戦闘開始です。",
+        "行動順はスタック数というものが少ない順に行われます。",
+      ],
+    },
+    {
+      message: [
+        "スタック数は次に行動できるまでのターン数のようなもので、何らかの行動を行うと溜まります。",
+        "キャラクターごとにスタック数を確認できますが、キャラクターの行動順のみを確認したい場合は画面左上に表示されますので、そちらをご確認ください。",
+      ],
+    },
+    {
+      message: [
+        "続いて、行動についての説明です。",
+        "ターンが来たキャラクターは「移動」、「技・魔法の発動」、「ターンスキップ」のいずれかの行動をとることができます。",
+      ],
+    },
+    {
+      message: [
+        "「移動」は自分フィールド内で任意の場所に移動できます。",
+        "移動のメリットについてはプレイしながらご確認ください。",
+      ],
+    },
+    {
+      message: [
+        "「技・魔法」の発動は攻撃や補助魔法を使用することができます。",
+        "技ごとに溜まるスタック数が決まっており、強い技ほどスタック数がたまりやすい、つまり行動する回数が少なくなる仕組みとなっています。",
+        "なお、本ゲームにおいて「通常攻撃」というコマンドはなく、すべて技・魔法として扱っております。",
+      ],
+    },
+    {
+      message: [
+        "「ターンスキップ」を行うと、次のキャラクターの行動後に行動処理を決め直すことができます。",
+        "こちらもメリットについてはプレイしながらご確認ください。",
+      ],
+    },
+    {
+      message: [
+        "戦闘画面での説明ではなく大変恐縮でございますが、以上が戦闘についての簡単な説明になります。",
+        "ご武運をお祈り申し上げます。",
+      ],
+    },
+  ],
+  CHAPTER_1_3: [
+    {
       talker: "聖騎士団隊長 ザーグ",
       background: WIL_IMAGE_ID.BACKGROUND_VILLAGE_EVENING,
       bgm: WIL_SOUND_ID.BGM_VILLAGE_1,
@@ -351,7 +406,31 @@ export const WIL_MAIN_TALK_DEFINES: {
       left: WIL_IMAGE_ID.CHARACTER_HERO,
     },
   ],
-  CHAPTER_1_3: [
+  CHAPTER_1_4: [
+    {
+      sound: WIL_SOUND_ID.SE_SYSTEM1,
+      message: ["ここからは訓練システムの説明を行います。"],
+    },
+    {
+      message: [
+        "訓練は７日間行います。",
+        "７日間経過する前に訓練を終了することもできますが、基本的にメリットはないのでお勧めはしません。",
+      ],
+    },
+    {
+      message: [
+        "訓練メニューは５つあり、それぞれ１キャラクターずつ実行予定を決めることができます。",
+        "１日の訓練において、複数のキャラクターで一つのメニューを実行することはできず、一人のキャラクターで複数のメニューを行うこともできませんのでご注意ください。",
+      ],
+    },
+    {
+      message: [
+        "訓練についての説明は以上になりますが、最後に一つ忠告です。",
+        "訓練したキャラクターが最後まで使用できるとは限りませんので、特定のキャラクターのみで訓練を行うといった進め方はしないほうがいいですよ...。",
+      ],
+    },
+  ],
+  CHAPTER_1_5: [
     {
       talker: "ヒカル",
       background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
@@ -478,7 +557,7 @@ export const WIL_MAIN_TALK_DEFINES: {
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_MAGICIAN,
     },
   ],
-  CHAPTER_1_4: [
+  CHAPTER_1_6: [
     {
       talker: "ヒカル",
       background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
@@ -502,6 +581,47 @@ export const WIL_MAIN_TALK_DEFINES: {
       background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
       message: ["なんか、疲れた...。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
+    },
+    {
+      talker: "魔導兵",
+      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      message: [
+        "君、隊長にそそのかされて来たんでしょ？",
+        "これから大変だよ...。",
+      ],
+      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_MAGICIAN,
+    },
+    {
+      talker: "ヒカル",
+      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      message: ["え？"],
+      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_MAGICIAN,
+    },
+    {
+      talker: "騎士兵",
+      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      message: [
+        "もう分かってると思うけど、あの人、勢いだけで動いてるところあるから...。",
+        "まあ、一緒に頑張ろう。",
+      ],
+      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_SOLDIER,
+    },
+    {
+      talker: "ヒカル",
+      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      message: ["えぇ...。"],
+      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_MAGICIAN,
+    },
+    {
+      talker: "聖騎士団隊長 ザーグ",
+      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      message: ["さあ、さっそく特訓だ！"],
+      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
     },
   ],
 };

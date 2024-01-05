@@ -145,7 +145,7 @@ export class WilTeamEvent {
 export class WilSubEvent {
   end: boolean;
   talk: Array<WilTalkEvent>;
-  isStartable: (trainngResult: WilTrainingResult) => boolean;
+  isStartable: (chapter: number, trainingResult: WilTrainingResult) => boolean;
 
   constructor(
     define: WilSubEventDefine,

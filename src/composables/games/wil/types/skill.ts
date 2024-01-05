@@ -35,7 +35,7 @@ export class WilSkill {
   readonly target: WIL_SKILL_TARGET;
   readonly range: WIL_SKILL_RANGE;
   readonly element: WIL_ELEMENT;
-  readonly learnRate: number;
+  readonly isLearnable: (__character: WilCharacter) => boolean;
 
   constructor(
     define: {
@@ -54,7 +54,7 @@ export class WilSkill {
       target: WIL_SKILL_TARGET;
       range: WIL_SKILL_RANGE;
       element: WIL_ELEMENT;
-      learnRate: number;
+      isLearnable: (__character: WilCharacter) => boolean
     },
     images: { [key: string]: GOUVisual },
     sounds: { [key: string]: GOUReadAudio }
@@ -71,7 +71,7 @@ export class WilSkill {
     this.target = define.target;
     this.range = define.range;
     this.element = define.element;
-    this.learnRate = define.learnRate;
+    this.isLearnable = define.isLearnable;
   }
 
   /**

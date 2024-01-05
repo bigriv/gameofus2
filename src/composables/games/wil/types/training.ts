@@ -35,7 +35,7 @@ export class WilTraining {
           image: images[WIL_TRAINING_DEFINES.ATTACK.image],
           minRise: new WilStatus(WIL_TRAINING_DEFINES.ATTACK.minRise),
           maxRise: new WilStatus(WIL_TRAINING_DEFINES.ATTACK.maxRise),
-          learnRate: WIL_TRAINING_DEFINES.ATTACK.learnRate,
+          learnable: WIL_TRAINING_DEFINES.ATTACK.learnable,
         }),
       },
       defense: {
@@ -45,7 +45,7 @@ export class WilTraining {
           image: images[WIL_TRAINING_DEFINES.DEFENSE.image],
           minRise: new WilStatus(WIL_TRAINING_DEFINES.DEFENSE.minRise),
           maxRise: new WilStatus(WIL_TRAINING_DEFINES.DEFENSE.maxRise),
-          learnRate: WIL_TRAINING_DEFINES.DEFENSE.learnRate,
+          learnable: WIL_TRAINING_DEFINES.DEFENSE.learnable,
         }),
       },
       migration: {
@@ -55,7 +55,7 @@ export class WilTraining {
           image: images[WIL_TRAINING_DEFINES.MIGRATION.image],
           minRise: new WilStatus(WIL_TRAINING_DEFINES.MIGRATION.minRise),
           maxRise: new WilStatus(WIL_TRAINING_DEFINES.MIGRATION.maxRise),
-          learnRate: WIL_TRAINING_DEFINES.MIGRATION.learnRate,
+          learnable: WIL_TRAINING_DEFINES.MIGRATION.learnable,
         }),
       },
       magic: {
@@ -65,7 +65,7 @@ export class WilTraining {
           image: images[WIL_TRAINING_DEFINES.MAGIC.image],
           minRise: new WilStatus(WIL_TRAINING_DEFINES.MAGIC.minRise),
           maxRise: new WilStatus(WIL_TRAINING_DEFINES.MAGIC.maxRise),
-          learnRate: WIL_TRAINING_DEFINES.MAGIC.learnRate,
+          learnable: WIL_TRAINING_DEFINES.MAGIC.learnable,
         }),
       },
       phisic: {
@@ -75,7 +75,7 @@ export class WilTraining {
           image: images[WIL_TRAINING_DEFINES.PHISIC.image],
           minRise: new WilStatus(WIL_TRAINING_DEFINES.PHISIC.minRise),
           maxRise: new WilStatus(WIL_TRAINING_DEFINES.PHISIC.maxRise),
-          learnRate: WIL_TRAINING_DEFINES.PHISIC.learnRate,
+          learnable: WIL_TRAINING_DEFINES.PHISIC.learnable,
         }),
       },
     };
@@ -272,9 +272,9 @@ export class WilTrainingMenu {
   readonly image: GOUVisual;
   readonly minRise: WilStatus;
   readonly maxRise: WilStatus;
-  readonly learnRate: {
-    phisic: number;
-    magic: number;
+  readonly learnable: {
+    phisic: boolean;
+    magic: boolean;
   };
 
   constructor(define: {
@@ -283,9 +283,9 @@ export class WilTrainingMenu {
     image: GOUVisual;
     minRise: WilStatus;
     maxRise: WilStatus;
-    learnRate: {
-      phisic: number;
-      magic: number;
+    learnable: {
+      phisic: boolean;
+      magic: boolean;
     };
   }) {
     this.id = define.id;
@@ -293,7 +293,7 @@ export class WilTrainingMenu {
     this.image = define.image;
     this.minRise = define.minRise;
     this.maxRise = define.maxRise;
-    this.learnRate = define.learnRate;
+    this.learnable = define.learnable;
   }
 
   /**

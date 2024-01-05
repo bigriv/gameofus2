@@ -20,9 +20,9 @@ export const WIL_TRAINING_DEFINES: {
       magic: number;
       speed: number;
     };
-    learnRate: {
-      phisic: number;
-      magic: number;
+    learnable: {
+      phisic: boolean;
+      magic: boolean;
     };
   };
 } = {
@@ -44,9 +44,9 @@ export const WIL_TRAINING_DEFINES: {
       magic: 3,
       speed: 3,
     },
-    learnRate: {
-      phisic: 1,
-      magic: 1,
+    learnable: {
+      phisic: false,
+      magic: false,
     },
   },
   DEFENSE: {
@@ -67,9 +67,9 @@ export const WIL_TRAINING_DEFINES: {
       magic: 3,
       speed: 0,
     },
-    learnRate: {
-      phisic: 1,
-      magic: 1,
+    learnable: {
+      phisic: false,
+      magic: false,
     },
   },
   MIGRATION: {
@@ -90,9 +90,9 @@ export const WIL_TRAINING_DEFINES: {
       magic: 0,
       speed: 4,
     },
-    learnRate: {
-      phisic: 1,
-      magic: 1,
+    learnable: {
+      phisic: false,
+      magic: false,
     },
   },
   MAGIC: {
@@ -113,9 +113,9 @@ export const WIL_TRAINING_DEFINES: {
       magic: 4,
       speed: 0,
     },
-    learnRate: {
-      phisic: 0,
-      magic: 30,
+    learnable: {
+      phisic: false,
+      magic: true,
     },
   },
   PHISIC: {
@@ -136,9 +136,9 @@ export const WIL_TRAINING_DEFINES: {
       magic: 0,
       speed: 0,
     },
-    learnRate: {
-      phisic: 30,
-      magic: 0,
+    learnable: {
+      phisic: true,
+      magic: false,
     },
   },
 };

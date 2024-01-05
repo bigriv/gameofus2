@@ -187,7 +187,7 @@ export class WilCharacter {
     skills: { [key: string]: WilSkill }
   ): WilSkill | undefined {
     const learnedSKillList = this.getSkillIdList();
-    let sortedSkilList = [];
+    let candidateSkillList = [];
     // 以下の条件で習得可能なスキルのリストを絞込む
     // - スキルの属性が無属性またはキャラクターの属性とスキルの属性が一致している
     // - キャラクターの持っているスキル種別に含まれている
@@ -205,32 +205,31 @@ export class WilCharacter {
       if (learnedSKillList.includes(skills[key].id)) {
         continue;
       }
-      sortedSkilList.push(skills[key]);
+      candidateSkillList.push(skills[key]);
     }
-    // 習得可能なスキルのリストを習得率の高い順に並び変える
-    sortedSkilList = sortedSkilList.sort((a, b) => b.learnRate - a.learnRate);
 
     // スキル習得判定
-    for (let skill of sortedSkilList) {
-      let learnRate = skill.learnRate * 0.01;
+    for (let skill of candidateSkillList) {
+      // 物理習得フラグがfalseの訓練メニューで物理系の技の場合はスキップ
       if (
-        [WIL_SKILL_TYPE.CLOSE_PHISIC, WIL_SKILL_TYPE.SHOOT_PHISIC].includes(
-          skill.type
-        )
+        (skill.type === WIL_SKILL_TYPE.CLOSE_PHISIC ||
+          skill.type === WIL_SKILL_TYPE.SHOOT_PHISIC) &&
+        !menu.learnable.phisic
       ) {
-        learnRate *= menu.learnRate.phisic * 0.01;
-      } else if (
-        [WIL_SKILL_TYPE.ATTACK_MAGIC, WIL_SKILL_TYPE.SUPPORT_MAGIC].includes(
-          skill.type
-        )
-      ) {
-        learnRate *= menu.learnRate.magic * 0.01;
-      }
-      const rnd = Math.random();
-      // 乱数で習得可否を判定
-      if (rnd >= learnRate) {
         continue;
       }
+      // 魔法習得フラグがfalseの訓練メニューで魔法系の技の場合はスキップ
+      if (
+        (skill.type === WIL_SKILL_TYPE.ATTACK_MAGIC ||
+          skill.type === WIL_SKILL_TYPE.SUPPORT_MAGIC) &&
+        !menu.learnable.magic
+      ) {
+        continue;
+      }
+      if (!skill.isLearnable(this)) {
+        continue;
+      }
+
       this.skills.push(skill);
       return skill;
     }

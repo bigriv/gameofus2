@@ -5,6 +5,7 @@ export const WIL_SOUND_DEFINES: { [key: string]: string } = {
   SE_FIGHTING: COMMON_SOUND_ROOT_PATH + "effects/double_slash1.mp3",
   SE_GARD: COMMON_SOUND_ROOT_PATH + "effects/gard1.mp3",
   SE_MONSTER: COMMON_SOUND_ROOT_PATH + "effects/monster1.mp3",
+  SE_SYSTEM1: COMMON_SOUND_ROOT_PATH + "effects/system1.mp3",
   SE_SLASH: COMMON_SOUND_ROOT_PATH + "effects/slash1.mp3",
   SE_CROSS_SLASH: COMMON_SOUND_ROOT_PATH + "effects/double_slash2.mp3",
   SE_BLOW1: COMMON_SOUND_ROOT_PATH + "effects/blow1.mp3",

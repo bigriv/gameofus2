@@ -35,7 +35,7 @@ export const WIL_SKILL_DEFINES: Array<{
   target: WIL_SKILL_TARGET;
   range: WIL_SKILL_RANGE;
   element: WIL_ELEMENT;
-  learnRate: number;
+  isLearnable: (__character: WilCharacter) => boolean;
 }> = [
   {
     id: WIL_SKILL_ID.SLASH,
@@ -49,7 +49,9 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.SOLO,
     element: WIL_ELEMENT.NONE,
-    learnRate: 90,
+    isLearnable: (__character: WilCharacter): boolean => {
+      return true;
+    },
   },
   {
     id: WIL_SKILL_ID.POWER_ATTACK,
@@ -63,7 +65,9 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.SOLO,
     element: WIL_ELEMENT.NONE,
-    learnRate: 70,
+    isLearnable: (character: WilCharacter): boolean => {
+      return character.defaultStatus.attack >= 17;
+    },
   },
   {
     id: WIL_SKILL_ID.ONE_LINE,
@@ -77,7 +81,12 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.ROW,
     element: WIL_ELEMENT.NONE,
-    learnRate: 30,
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.attack >= 18 &&
+        character.defaultStatus.speed > 12
+      );
+    },
   },
   {
     id: WIL_SKILL_ID.SHOT,
@@ -91,7 +100,9 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.SOLO,
     element: WIL_ELEMENT.NONE,
-    learnRate: 90,
+    isLearnable: (__character: WilCharacter): boolean => {
+      return true;
+    },
   },
   {
     id: WIL_SKILL_ID.PIERCING_SHOT,
@@ -105,7 +116,9 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.COLUMN,
     element: WIL_ELEMENT.NONE,
-    learnRate: 50,
+    isLearnable: (character: WilCharacter): boolean => {
+      return character.defaultStatus.attack >= 17;
+    },
   },
   {
     id: WIL_SKILL_ID.AROW_RAIN,
@@ -119,7 +132,12 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.ALL,
     element: WIL_ELEMENT.NONE,
-    learnRate: 30,
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.attack >= 15 &&
+        character.defaultStatus.speed >= 28
+      );
+    },
   },
   {
     id: WIL_SKILL_ID.HEAL,
@@ -132,7 +150,6 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ALLY,
     range: WIL_SKILL_RANGE.SOLO,
     element: WIL_ELEMENT.NONE,
-    learnRate: 50,
     effect: (
       __activest: WilCharacter,
       target: WilFieldCell
@@ -155,6 +172,9 @@ export const WIL_SKILL_DEFINES: Array<{
         }),
       ];
     },
+    isLearnable: (character: WilCharacter): boolean => {
+      return character.defaultStatus.magic >= 17;
+    },
   },
   {
     id: WIL_SKILL_ID.CLEAR,
@@ -167,12 +187,14 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ALLY,
     range: WIL_SKILL_RANGE.SOLO,
     element: WIL_ELEMENT.NONE,
-    learnRate: 30,
     effect: (
       __activest: WilCharacter,
       target: WilFieldCell
     ): WilBattleMoveResult[] => {
       return [target.character!.overwriteCondition(WIL_CONDITION_ID.HEALTH)];
+    },
+    isLearnable: (character: WilCharacter): boolean => {
+      return character.defaultStatus.magic >= 24;
     },
   },
   {
@@ -187,7 +209,12 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.SOLO,
     element: WIL_ELEMENT.SHINE,
-    learnRate: 70,
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.attack >= 14 &&
+        character.defaultStatus.magic >= 12
+      );
+    },
   },
   {
     id: WIL_SKILL_ID.SACRED_CROSS,
@@ -201,7 +228,13 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.CROSS,
     element: WIL_ELEMENT.SHINE,
-    learnRate: 40,
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.attack >= 24 &&
+        character.defaultStatus.speed >= 15 &&
+        character.defaultStatus.magic >= 18
+      );
+    },
   },
   {
     id: WIL_SKILL_ID.CREATE_SACRED_DANCING,
@@ -214,7 +247,12 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.ALL,
     element: WIL_ELEMENT.SHINE,
-    learnRate: 1,
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.attack >= 40 &&
+        character.defaultStatus.magic >= 35
+      );
+    },
   },
   {
     id: WIL_SKILL_ID.SHINE_BALL,
@@ -228,7 +266,9 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.SOLO,
     element: WIL_ELEMENT.SHINE,
-    learnRate: 80,
+    isLearnable: (character: WilCharacter): boolean => {
+      return character.defaultStatus.magic >= 12;
+    },
   },
   {
     id: WIL_SKILL_ID.SHINE_RAZER,
@@ -242,7 +282,12 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.COLUMN,
     element: WIL_ELEMENT.SHINE,
-    learnRate: 50,
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.life >= 130 &&
+        character.defaultStatus.magic >= 24
+      );
+    },
   },
   {
     id: WIL_SKILL_ID.SACRED_RAY,
@@ -256,7 +301,12 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.ALL,
     element: WIL_ELEMENT.SHINE,
-    learnRate: 20,
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.life >= 150 &&
+        character.defaultStatus.magic >= 30
+      );
+    },
   },
   {
     id: WIL_SKILL_ID.SANCTUARY,
@@ -268,12 +318,17 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ALLY,
     range: WIL_SKILL_RANGE.ALL,
     element: WIL_ELEMENT.SHINE,
-    learnRate: 5,
     effect: (
       __activest: WilCharacter,
       target: WilFieldCell
     ): WilBattleMoveResult[] => {
       return [target.character!.overwriteCondition(WIL_CONDITION_ID.HOLY)];
+    },
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.defense >= 25 &&
+        character.defaultStatus.magic >= 30
+      );
     },
   },
   {
@@ -286,7 +341,6 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.SELF,
     range: WIL_SKILL_RANGE.SOLO,
     element: WIL_ELEMENT.SHINE,
-    learnRate: 5,
     effect: (
       __activest: WilCharacter,
       target: WilFieldCell
@@ -309,6 +363,12 @@ export const WIL_SKILL_DEFINES: Array<{
       );
       return result;
     },
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.defense >= 25 &&
+        character.defaultStatus.magic >= 30
+      );
+    },
   },
   {
     id: WIL_SKILL_ID.POISON_NAIL,
@@ -322,7 +382,6 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.SOLO,
     element: WIL_ELEMENT.DARK,
-    learnRate: 70,
     effect: (
       __activest: WilCharacter,
       target: WilFieldCell
@@ -333,6 +392,12 @@ export const WIL_SKILL_DEFINES: Array<{
         return [target.character!.overwriteCondition(WIL_CONDITION_ID.POISON)];
       }
       return [];
+    },
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.attack >= 10 &&
+        character.defaultStatus.magic >= 7
+      );
     },
   },
   {
@@ -347,7 +412,12 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.SOLO,
     element: WIL_ELEMENT.DARK,
-    learnRate: 70,
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.attack >= 10 &&
+        character.defaultStatus.magic >= 7
+      );
+    },
   },
   {
     id: WIL_SKILL_ID.SHADOW_BALL,
@@ -361,7 +431,9 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.SOLO,
     element: WIL_ELEMENT.DARK,
-    learnRate: 80,
+    isLearnable: (character: WilCharacter): boolean => {
+      return character.defaultStatus.magic >= 12;
+    },
   },
   {
     id: WIL_SKILL_ID.BLACK_LINE,
@@ -375,7 +447,12 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.ROW,
     element: WIL_ELEMENT.DARK,
-    learnRate: 50,
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.attack >= 18 &&
+        character.defaultStatus.magic >= 15
+      );
+    },
   },
   {
     id: WIL_SKILL_ID.BLACK_METEOR,
@@ -388,7 +465,6 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.ALL,
     element: WIL_ELEMENT.DARK,
-    learnRate: 10,
     effect: (__activest: WilCharacter, target: WilFieldCell) => {
       if (
         WilSkill.isSuccessOverwriteCondition(WilSkill.MEDIUM_CONDITION_RATE)
@@ -396,6 +472,12 @@ export const WIL_SKILL_DEFINES: Array<{
         return [target.character!.overwriteCondition(WIL_CONDITION_ID.POISON)];
       }
       return [];
+    },
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.life >= 200 &&
+        character.defaultStatus.magic >= 40
+      );
     },
   },
   {
@@ -409,12 +491,17 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.AROUND,
     element: WIL_ELEMENT.DARK,
-    learnRate: 60,
     effect: (__activest: WilCharacter, target: WilFieldCell) => {
       if (WilSkill.isSuccessOverwriteCondition(WilSkill.HIGH_CONDITION_RATE)) {
         return [target.character!.overwriteCondition(WIL_CONDITION_ID.POISON)];
       }
       return [];
+    },
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.life >= 120 &&
+        character.defaultStatus.magic >= 15
+      );
     },
   },
   {
@@ -427,7 +514,6 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.SOLO,
     element: WIL_ELEMENT.DARK,
-    learnRate: 10,
     effect: (__activest: WilCharacter, target: WilFieldCell) => {
       if (
         WilSkill.isSuccessOverwriteCondition(WilSkill.MEDIUM_CONDITION_RATE)
@@ -447,6 +533,9 @@ export const WIL_SKILL_DEFINES: Array<{
       }
       return [];
     },
+    isLearnable: (character: WilCharacter): boolean => {
+      return character.defaultStatus.magic >= 35;
+    },
   },
   {
     id: WIL_SKILL_ID.THUNDER_SWORD,
@@ -460,7 +549,12 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.CROSS,
     element: WIL_ELEMENT.THUNDER,
-    learnRate: 60,
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.attack >= 14 &&
+        character.defaultStatus.magic >= 12
+      );
+    },
   },
   {
     id: WIL_SKILL_ID.THUNDER_NEEDLE,
@@ -474,7 +568,6 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.SOLO,
     element: WIL_ELEMENT.THUNDER,
-    learnRate: 60,
     effect: (__activest: WilCharacter, target: WilFieldCell) => {
       if (WilSkill.isSuccessOverwriteCondition(WilSkill.HIGH_CONDITION_RATE)) {
         return [
@@ -482,6 +575,13 @@ export const WIL_SKILL_DEFINES: Array<{
         ];
       }
       return [];
+    },
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.attack >= 15 &&
+        character.defaultStatus.speed >= 15 &&
+        character.defaultStatus.magic >= 15
+      );
     },
   },
   {
@@ -496,7 +596,33 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.SOLO,
     element: WIL_ELEMENT.THUNDER,
-    learnRate: 50,
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.attack >= 20 &&
+        character.defaultStatus.speed >= 20 &&
+        character.defaultStatus.magic >= 12
+      );
+    },
+  },
+  {
+    id: WIL_SKILL_ID.RAIZIN,
+    name: "雷刃",
+    description: "激しい雷を纏った刃で切り付ける。低確率で麻痺状態にする。",
+    animation: WIL_IMAGE_ID.SKILL_THUNDER_VERTICAL,
+    sound: WIL_SOUND_ID.SE_THUNDER2,
+    cost: 150,
+    power: 180,
+    type: WIL_SKILL_TYPE.CLOSE_PHISIC,
+    target: WIL_SKILL_TARGET.ENEMY,
+    range: WIL_SKILL_RANGE.CROSS,
+    element: WIL_ELEMENT.THUNDER,
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.attack >= 30 &&
+        character.defaultStatus.magic >= 25 &&
+        character.defaultStatus.magic >= 25
+      );
+    },
   },
   {
     id: WIL_SKILL_ID.RAILGUN,
@@ -510,7 +636,12 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.SOLO,
     element: WIL_ELEMENT.THUNDER,
-    learnRate: 60,
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.attack >= 14 &&
+        character.defaultStatus.magic >= 16
+      );
+    },
   },
   {
     id: WIL_SKILL_ID.THUNDER_SHOT,
@@ -524,7 +655,6 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.CROSS,
     element: WIL_ELEMENT.THUNDER,
-    learnRate: 40,
     effect: (__activest: WilCharacter, target: WilFieldCell) => {
       if (
         WilSkill.isSuccessOverwriteCondition(WilSkill.MEDIUM_CONDITION_RATE)
@@ -534,6 +664,13 @@ export const WIL_SKILL_DEFINES: Array<{
         ];
       }
       return [];
+    },
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.attack >= 20 &&
+        character.defaultStatus.defense >= 15 &&
+        character.defaultStatus.magic >= 15
+      );
     },
   },
   {
@@ -548,7 +685,6 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.SOLO,
     element: WIL_ELEMENT.THUNDER,
-    learnRate: 70,
     effect: (__activest: WilCharacter, target: WilFieldCell) => {
       if (WilSkill.isSuccessOverwriteCondition(WilSkill.LOW_CONDITION_RATE)) {
         return [
@@ -556,6 +692,9 @@ export const WIL_SKILL_DEFINES: Array<{
         ];
       }
       return [];
+    },
+    isLearnable: (character: WilCharacter): boolean => {
+      return character.defaultStatus.magic >= 12;
     },
   },
   {
@@ -570,7 +709,13 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.COLUMN,
     element: WIL_ELEMENT.THUNDER,
-    learnRate: 50,
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.life >= 100 &&
+        character.defaultStatus.attack >= 15 &&
+        character.defaultStatus.magic >= 24
+      );
+    },
   },
   {
     id: WIL_SKILL_ID.SPARK,
@@ -584,7 +729,12 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.AROUND,
     element: WIL_ELEMENT.THUNDER,
-    learnRate: 40,
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.life >= 110 &&
+        character.defaultStatus.magic >= 28
+      );
+    },
   },
   {
     id: WIL_SKILL_ID.THUNDER_VOLT,
@@ -598,7 +748,12 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.CROSS,
     element: WIL_ELEMENT.THUNDER,
-    learnRate: 20,
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.attack >= 130 &&
+        character.defaultStatus.magic >= 35
+      );
+    },
   },
   {
     id: WIL_SKILL_ID.ELECTROMAGNETIC_WAVE,
@@ -611,7 +766,6 @@ export const WIL_SKILL_DEFINES: Array<{
     target: WIL_SKILL_TARGET.ENEMY,
     range: WIL_SKILL_RANGE.CROSS,
     element: WIL_ELEMENT.THUNDER,
-    learnRate: 50,
     effect: (__activest: WilCharacter, target: WilFieldCell) => {
       if (WilSkill.isSuccessOverwriteCondition(WilSkill.HIGH_CONDITION_RATE)) {
         return [
@@ -619,6 +773,12 @@ export const WIL_SKILL_DEFINES: Array<{
         ];
       }
       return [];
+    },
+    isLearnable: (character: WilCharacter): boolean => {
+      return (
+        character.defaultStatus.life >= 90 &&
+        character.defaultStatus.magic >= 16
+      );
     },
   },
 ];

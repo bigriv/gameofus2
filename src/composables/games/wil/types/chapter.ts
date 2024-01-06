@@ -1,7 +1,12 @@
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WIL_CHAPTER_TIMMING } from "../enums/timming";
 import { WilCharacter } from "./character";
-import { WilBattleEvent, WilTalkEvent, WilTeamEvent } from "./event";
+import {
+  WilBattleEvent,
+  WilTalkEvent,
+  WilTeamEvent,
+  WilTrainingEvent,
+} from "./event";
 import { WilFieldCell } from "./field";
 import { SequenceId } from "@/composables/utils/id";
 import { WIL_CHARACTER_DEFINES } from "../defines/character";
@@ -15,12 +20,14 @@ export class WilChapter {
   id: number;
   title: string;
   flow: Array<WIL_CHAPTER_TIMMING>;
-  battleEvents: Array<WilBattleEvent>;
   talkEvents: Array<Array<WilTalkEvent>>;
+  battleEvents: Array<WilBattleEvent>;
+  trainingEvents: Array<WilTrainingEvent>;
   teamEvents: Array<WilTeamEvent>;
   private currentFlow: number = -1;
   private currentTalkEvent: number = -1;
   private currentBattleEventtle: number = -1;
+  private currentTrainingEvent: number = -1;
   private currentTeamEvent: number = -1;
 
   constructor(
@@ -33,30 +40,6 @@ export class WilChapter {
     this.id = define.id;
     this.title = define.title;
     this.flow = define.flow;
-    this.battleEvents = define.battles.map((battle) => {
-      return new WilBattleEvent({
-        playerTeamName: battle.playerTeamName,
-        computerTeamName: battle.computerTeamName,
-        computerLevel: battle.computerLevel,
-        background: battle.background ? images[battle.background] : undefined,
-        deployBgm: battle.deployBgm ? sounds[battle.deployBgm] : undefined,
-        battleBgm: battle.battleBgm ? sounds[battle.battleBgm] : undefined,
-        deploy: battle.deploy.map((cell) => {
-          const character = new WilCharacter(
-            sequence.generateId(),
-            WIL_CHARACTER_DEFINES[cell.character],
-            skills,
-            images
-          );
-          return new WilFieldCell(
-            WIL_BATTLE_TEAM.COMPUTER,
-            cell.x,
-            cell.y,
-            character
-          );
-        }),
-      });
-    });
     this.talkEvents = define.talks.map((talk) =>
       talk.map(
         (define) =>
@@ -73,6 +56,46 @@ export class WilChapter {
           })
       )
     );
+    this.battleEvents = define.battles.map((battle) => {
+      return new WilBattleEvent(
+        {
+          playerTeamName: battle.playerTeamName,
+          computerTeamName: battle.computerTeamName,
+          computerLevel: battle.computerLevel,
+          background: battle.background ? images[battle.background] : undefined,
+          deployBgm: battle.deployBgm ? sounds[battle.deployBgm] : undefined,
+          battleBgm: battle.battleBgm ? sounds[battle.battleBgm] : undefined,
+          deploy: battle.deploy.map((cell) => {
+            const character = new WilCharacter(
+              sequence.generateId(),
+              WIL_CHARACTER_DEFINES[cell.character],
+              skills,
+              images
+            );
+            return new WilFieldCell(
+              WIL_BATTLE_TEAM.COMPUTER,
+              cell.x,
+              cell.y,
+              character
+            );
+          }),
+          talks: battle.talks,
+        },
+        images,
+        sounds
+      );
+    });
+    this.trainingEvents =
+      define.trainings?.map((training) => {
+        return new WilTrainingEvent(
+          {
+            days: training.days,
+            talks: training.talks,
+          },
+          images,
+          sounds
+        );
+      }) ?? [];
     this.teamEvents = define.updateTeam;
   }
 
@@ -158,6 +181,31 @@ export class WilChapter {
       return undefined;
     }
     return this.battleEvents[++this.currentBattleEventtle];
+  }
+
+  /**
+   * 現在行うべき訓練イベントを取得する
+   * @returns 訓練イベント
+   */
+  getCurrentTrainingEvent(): WilTrainingEvent | undefined {
+    if (this.currentTrainingEvent < 0) {
+      return this.trainingEvents[0];
+    }
+    if (this.currentTrainingEvent >= this.trainingEvents.length) {
+      return undefined;
+    }
+    return this.trainingEvents[this.currentTrainingEvent];
+  }
+
+  /**
+   * 訓練イベントを次に進める
+   * @returns 進めた後の訓練イベント
+   */
+  proceedTrainingEvent(): WilTrainingEvent | undefined {
+    if (this.currentTrainingEvent + 1 >= this.trainingEvents.length) {
+      return undefined;
+    }
+    return this.trainingEvents[++this.currentTrainingEvent];
   }
 
   /**

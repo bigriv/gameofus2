@@ -9,7 +9,7 @@ import { WIL_TRAINING_DEFINES } from "../defines/training";
  * 訓練の管理クラス
  */
 export class WilTraining {
-  static readonly TRAINING_DAYS = 7;
+  readonly lastDay;
   days: number = 0;
   plan: {
     attack: WilTrainingPlan;
@@ -24,9 +24,11 @@ export class WilTraining {
   log: Array<string> = [];
 
   constructor(
+    days: number,
     characters: Array<WilCharacter>,
     images: { [key: string]: GOUVisual }
   ) {
+    this.lastDay = days;
     this.plan = {
       attack: {
         menu: new WilTrainingMenu({
@@ -169,7 +171,7 @@ export class WilTraining {
    * @returns 訓練の終了条件を満たしていればtrue、それ以外はfalse
    */
   isEnd(): boolean {
-    return this.days >= WilTraining.TRAINING_DAYS;
+    return this.days >= this.lastDay;
   }
 
   /**
@@ -308,8 +310,8 @@ export class WilTrainingMenu {
     const sum = ((range + 1) / 2) * range;
     for (let i = 0; i < range; i++) {
       // 1 / sum(0, max - min + 1) * sum(0, i)が乱数以下で判定
-      if ((1 / sum) * (((i + 2) / 2) * (i + 1)) <= rnd) {
-        return max - i - min;
+      if (rnd <= (1.0 / sum) * (((i + 2) / 2) * (i + 1))) {
+        return max - i;
       }
     }
     return min;

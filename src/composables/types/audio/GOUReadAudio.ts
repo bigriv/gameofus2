@@ -59,13 +59,13 @@ export class GOUReadAudio extends GOUAudio {
    * @returns
    */
   stop(): void {
-    if (!this.audio) {
+    if (!this.isLoaded()) {
       return;
     }
     if (!this.isPlaying()) {
       return;
     }
-    this.audio.pause();
+    this.audio!.pause();
     this.playing = false;
   }
 

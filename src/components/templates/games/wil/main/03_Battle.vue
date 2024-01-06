@@ -47,20 +47,25 @@
       :skills="props.skills"
       :hoverCell="hoverCell"
       @error="error"
+      @setCharacter="setCharacter"
       @endSet="endSet"
       @skipTurn="skipTurn"
     />
   </div>
-  <div class="c-battle__log_dialog">
+  <div class="c-log_dialog">
     <WilLogDialog v-model:isShow="isShowLog" :log="battle.log" />
   </div>
-  <div class="c-battle__confirm_dialog">
+  <div class="c-confirm_dialog">
     <WilConfirmDialog
       v-model:isShow="confirmModal.isShow"
       :cancelable="false"
       :message="confirmModal.message"
       @submit="confirmModal.onClickOk"
     />
+  </div>
+
+  <div v-if="talkEvent.isStart" class="c-talk">
+    <WilTalk :events="talkEvent.talk" @end="talkEvent.endTalk" />
   </div>
 </template>
 
@@ -81,7 +86,10 @@ import { WIL_BATTLE_TIMMING } from "@/composables/games/wil/enums/timming";
 import { WilSkill } from "@/composables/games/wil/types/skill";
 import { WilPlayer } from "@/composables/games/wil/types/player";
 import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
-import { WilBattleEvent } from "@/composables/games/wil/types/event";
+import {
+  WilBattleEvent,
+  WilTalkEvent,
+} from "@/composables/games/wil/types/event";
 import {
   WilBattle,
   WilBattleMoveResult,
@@ -97,6 +105,7 @@ import {
 import WilLogDialog from "@/components/molecules/games/wil/WilLogDialog.vue";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import { WilCharacter } from "@/composables/games/wil/types/character";
+import WilTalk from "@/components/molecules/games/wil/WilTalk.vue";
 
 const props = defineProps({
   skills: {
@@ -125,6 +134,15 @@ const moveSequence: Ref<Array<WilCharacter>> = ref([]);
 const guideMessage = ref("キャラクターを配置するマスを選択してください。");
 const underFrame: Ref<InstanceType<typeof UnderFrame> | null> = ref(null);
 const isShowLog = ref(false);
+const talkEvent: {
+  isStart: boolean;
+  talk: Array<WilTalkEvent> | undefined;
+  endTalk: Function;
+} = reactive({
+  isStart: false,
+  talk: undefined,
+  endTalk: () => {},
+});
 
 // 確認モーダル
 const confirmModal: {
@@ -139,15 +157,25 @@ const confirmModal: {
 
 onMounted(() => {
   props.event.processDeploy();
+  changeTimming(WIL_BATTLE_TIMMING.SET_SELECT_CELL, () => {}); // 会話イベントを取得するためにマウント時にもタイミングの変更を行う
 });
 onUnmounted(() => {
   props.event.processEnd();
 });
+
+/**
+ * 画面をクリックしたときのイベント処理
+ * 戦闘タイミングが戦闘処理時の場合に表示されているメッセージを次に進める
+ */
 const onClickWindow = () => {
   if (battle.value.timming === WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE) {
     underFrame.value?.onNextMessage();
   }
 };
+/**
+ * コンピュータフィールドクリック時の処理
+ * @param cell クリックされたマス
+ */
 const onClickComputerField = (cell: WilFieldCell) => {
   // スキル発動対象選択時
   if (battle.value.timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
@@ -159,7 +187,7 @@ const onClickComputerField = (cell: WilFieldCell) => {
       endTurn
     );
     // 戦闘タイミングを行動処理に変更
-    battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
+    changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE, () => {});
     return;
   }
 
@@ -168,6 +196,10 @@ const onClickComputerField = (cell: WilFieldCell) => {
     underFrame.value?.onNextMessage();
   }
 };
+/**
+ * プレイヤーフィールドクリック時の処理
+ * @param cell クリックされたマス
+ */
 const onClickPlayerField = (cell: WilFieldCell) => {
   // キャラクター配置場所選択時
   if (
@@ -175,7 +207,7 @@ const onClickPlayerField = (cell: WilFieldCell) => {
     battle.value.timming === WIL_BATTLE_TIMMING.SET_SELECT_CHARACTER
   ) {
     battle.value.setMoveTarget(cell);
-    battle.value.changeTimming(WIL_BATTLE_TIMMING.SET_SELECT_CHARACTER);
+    changeTimming(WIL_BATTLE_TIMMING.SET_SELECT_CHARACTER, () => {});
     return;
   }
 
@@ -192,7 +224,7 @@ const onClickPlayerField = (cell: WilFieldCell) => {
       endTurn
     );
     // 戦闘タイミングを行動処理に変更
-    battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
+    changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE, () => {});
     return;
   }
 
@@ -204,6 +236,40 @@ const onClickPlayerField = (cell: WilFieldCell) => {
 const error = (message: string) => {
   alert(message);
 };
+
+/**
+ * 戦闘タイミングを変更する
+ * 設定されている会話イベントに開始条件を満たすものがあればその会話イベントを開始する
+ * @param next 変更後の戦闘タイミング
+ * @param afterFunction 変更後に行う処理（間に会話イベントが挟まる場合は会話イベントが終わってから実行される）
+ */
+const changeTimming = (next: WIL_BATTLE_TIMMING, afterFunction: Function) => {
+  battle.value.changeTimming(next);
+  talkEvent.talk = props.event.getTalk(battle.value as WilBattle);
+  if (!talkEvent.talk) {
+    afterFunction();
+    return;
+  }
+  talkEvent.isStart = true;
+  talkEvent.endTalk = () => {
+    talkEvent.isStart = false;
+    talkEvent.talk = undefined;
+    afterFunction();
+  };
+};
+/**
+ * キャラクター配置時の処理
+ * @param character
+ */
+const setCharacter = (character: WilCharacter) => {
+  battle.value.player.moveCharacter = character;
+  battle.value.player.deployCharacter();
+
+  changeTimming(WIL_BATTLE_TIMMING.SET_SELECT_CELL, () => {});
+};
+/**
+ * 配置終了時の処理
+ */
 const endSet = () => {
   battle.value.computer.deployCharacters(props.event.deploy);
   props.event.processBattle();
@@ -211,43 +277,54 @@ const endSet = () => {
   battle.value.startBattle();
 
   // 戦闘タイミングを戦闘開始に変更
-  battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_START);
-  setTimeout(() => {
-    moveSequence.value = battle.value.getMoveSequence();
-    startTurn();
-  }, 1500);
+  changeTimming(WIL_BATTLE_TIMMING.BATTLE_START, () =>
+    setTimeout(() => {
+      moveSequence.value = battle.value.getMoveSequence();
+      startTurn();
+    }, 1500)
+  );
 };
+/**
+ * ターン開始時の処理
+ */
 const startTurn = () => {
   console.log("turn start");
-  battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_TURN_START);
-  battle.value.startTurn();
+  changeTimming(WIL_BATTLE_TIMMING.BATTLE_TURN_START, () => {
+    battle.value.startTurn();
 
-  if (battle.value.turnOperator instanceof WilComputer) {
-    // コンピュータのターンなら行動の決定まで行い、行動処理に遷移
-    battle.value.turnOperator.decideBattleMove(battle.value as WilBattle);
-    setTimeout(() => {
-      battle.value.processMove();
-      underFrame.value?.showBattleMoveResult(
-        battle.value.moveResults as Array<WilBattleMoveResult>,
-        endTurn
-      );
-      battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
-    }, 1000);
-  } else if (battle.value.turnOperator instanceof WilPlayer) {
-    // プレイヤーのターンなら戦闘タイミングを行動選択に切り替える
-    setTimeout(() => {
-      battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE);
-    }, 500);
-  }
+    if (battle.value.turnOperator instanceof WilComputer) {
+      // コンピュータのターンなら行動の決定まで行い、行動処理に遷移
+      battle.value.turnOperator.decideBattleMove(battle.value as WilBattle);
+      setTimeout(() => {
+        battle.value.processMove();
+        underFrame.value?.showBattleMoveResult(
+          battle.value.moveResults as Array<WilBattleMoveResult>,
+          endTurn
+        );
+        changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE, () => {});
+      }, 1000);
+    } else if (battle.value.turnOperator instanceof WilPlayer) {
+      // プレイヤーのターンなら戦闘タイミングを行動選択に切り替える
+      setTimeout(() => {
+        changeTimming(WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE, () => {});
+      }, 500);
+    }
+  });
 };
+/**
+ * ターンスキップ時の処理
+ */
 const skipTurn = () => {
   battle.value.skipTurn();
   underFrame.value?.showBattleMoveResult(
     battle.value.moveResults as Array<WilBattleMoveResult>,
     endTurn
   );
-  battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE);
+  changeTimming(WIL_BATTLE_TIMMING.BATTLE_PROCESS_MOVE, () => {});
 };
+/**
+ * ターン終了時の処理
+ */
 const endTurn = () => {
   console.log("turn end");
   battle.value.endTurn();
@@ -264,28 +341,36 @@ const endTurn = () => {
     }
   );
 };
+/**
+ * 戦闘終了時の処理
+ */
 const endBattle = () => {
   props.event.processEnd();
-  battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_END);
-  battle.value.endBattle();
-  if (battle.value.winner === WIL_BATTLE_TEAM.PLAYER) {
-    props.sounds.BGM_BATTLE_WIN.play();
-    confirmModal.message = `${battle.value.computer.teamName}との戦闘に勝利した！`;
-    confirmModal.onClickOk = () => {
-      props.sounds.BGM_BATTLE_WIN.stop();
-      emits("end", battle.value.winner);
-    };
-    confirmModal.isShow = true;
-  } else if (battle.value.winner === WIL_BATTLE_TEAM.COMPUTER) {
-    props.sounds.BGM_BATTLE_LOSE.play();
-    confirmModal.message = `${battle.value.computer.teamName}との戦闘に敗北した。`;
-    confirmModal.onClickOk = () => {
-      props.sounds.BGM_BATTLE_LOSE.stop();
-      emits("end", battle.value.winner);
-    };
-    confirmModal.isShow = true;
-  }
+  changeTimming(WIL_BATTLE_TIMMING.BATTLE_END, () => {
+    battle.value.endBattle();
+    if (battle.value.winner === WIL_BATTLE_TEAM.PLAYER) {
+      props.sounds.BGM_BATTLE_WIN.play();
+      confirmModal.message = `${battle.value.computer.teamName}との戦闘に勝利した！`;
+      confirmModal.onClickOk = () => {
+        props.sounds.BGM_BATTLE_WIN.stop();
+        emits("end", battle.value.winner);
+      };
+      confirmModal.isShow = true;
+    } else if (battle.value.winner === WIL_BATTLE_TEAM.COMPUTER) {
+      props.sounds.BGM_BATTLE_LOSE.play();
+      confirmModal.message = `${battle.value.computer.teamName}との戦闘に敗北した。`;
+      confirmModal.onClickOk = () => {
+        props.sounds.BGM_BATTLE_LOSE.stop();
+        emits("end", battle.value.winner);
+      };
+      confirmModal.isShow = true;
+    }
+  });
 };
+/**
+ * マスにホバーしたときのイベント処理
+ * @param cell ホバーされたマス
+ */
 const onHoverFieldCell = (cell: WilFieldCell) => {
   hoverCell.value = cell;
   if (!hoverCell.value.character) {
@@ -297,6 +382,9 @@ const onHoverFieldCell = (cell: WilFieldCell) => {
   battle.value.updateFieldSelectable();
   battle.value.changeFieldColor(hoverCell.value);
 };
+/**
+ * マスのホバーが外れた時の処理
+ */
 const onLeaveFieldCell = () => {
   hoverCell.value = undefined;
   if (battle.value.timming !== WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET) {
@@ -306,6 +394,10 @@ const onLeaveFieldCell = () => {
   battle.value.changeFieldColor(hoverCell.value);
 };
 
+/**
+ * 戦闘タイミングの監視
+ * ガイドメッセージの表示の切り替えを行う
+ */
 watch(
   () => battle.value.timming,
   () => {
@@ -419,6 +511,13 @@ watch(
     justify-content: space-between;
     padding: 2px 5px;
   }
+}
+.c-talk {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 .v-enter-active {
   transition: all 0.5s ease-out;

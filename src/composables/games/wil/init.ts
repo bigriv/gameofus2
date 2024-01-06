@@ -13,8 +13,6 @@ import { WIL_SOUND_DEFINES } from "./defines/sound";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import GOUImage from "@/composables/types/visuals/GOUImage";
 import { GOULottie } from "@/composables/types/visuals/GOULottie";
-import { WilSubEvent } from "./types/event";
-import { WIL_SUBEVENT_DEFINES } from "./defines/subevent";
 
 export const useWilInit = () => {
   const initImages = (): { [key: string]: GOUVisual } => {
@@ -93,21 +91,6 @@ export const useWilInit = () => {
     }, 100);
   };
 
-  const initSubEvents = (): { [key: string]: WilSubEvent } => {
-    let events: { [key: string]: WilSubEvent } = {};
-    for (let key of Object.keys(WIL_SUBEVENT_DEFINES)) {
-      events[key] = new WilSubEvent(
-        WIL_SUBEVENT_DEFINES[key],
-        WIL_IMAGES,
-        WIL_SOUNDS
-      );
-    }
-    return events;
-  };
-  const WIL_SUB_EVENTS: {
-    [key: string]: WilSubEvent;
-  } = initSubEvents();
-
   const characterSequence = new SequenceId();
   const initPlayer = (): WilPlayer => {
     const player = new WilPlayer();
@@ -131,7 +114,6 @@ export const useWilInit = () => {
     WIL_CHARACTER_DEFINES,
     isLoadedFiles,
     loadFiles,
-    WIL_SUB_EVENTS,
     characterSequence,
     player,
   };

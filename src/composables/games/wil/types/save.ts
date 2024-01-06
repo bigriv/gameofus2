@@ -2,7 +2,6 @@ import { WIL_CHAPTER_1_DEFINE, WilChapterDefine } from "../defines/chapter";
 import { WIL_CHARACTER_ID } from "../enums/character";
 import { WIL_SKILL_ID } from "../enums/skill";
 import { WilChapter } from "./chapter";
-import { WilSubEvent } from "./event";
 import { WilPlayer } from "./player";
 
 export class WilSaveUtil {
@@ -11,7 +10,6 @@ export class WilSaveUtil {
   static save(
     chapter: WilChapter,
     player: WilPlayer,
-    subevents: { [key: string]: WilSubEvent }
   ) {
     const data = {
       chapter: 1,
@@ -27,10 +25,6 @@ export class WilSaveUtil {
         };
         skills: Array<WIL_SKILL_ID>;
       }>(),
-      subevents: new Array<{
-        id: string;
-        end: Boolean;
-      }>(),
     };
 
     data.chapter = chapter.id;
@@ -43,13 +37,6 @@ export class WilSaveUtil {
         skills: character.skills.map((skill) => skill.id),
       };
     });
-
-    for (const key of Object.keys(subevents)) {
-      data.subevents.push({
-        id: key,
-        end: subevents[key].end,
-      });
-    }
 
     localStorage.setItem("gameofus.wil.save", JSON.stringify(data));
   }
@@ -68,7 +55,6 @@ export class WilSaveUtil {
       };
       skills: Array<WIL_SKILL_ID>;
     }>;
-    subevents?: Array<{ id: string; end: boolean }>;
   } {
     const stringJson = localStorage.getItem("gameofus.wil.save");
     if (!stringJson) {
@@ -76,7 +62,6 @@ export class WilSaveUtil {
         chapter: undefined,
         flow: -1,
         characters: [],
-        subevents: undefined,
       };
     }
     const json = JSON.parse(stringJson);
@@ -100,16 +85,10 @@ export class WilSaveUtil {
       characters = json.characters;
     }
 
-    let subevents = [];
-    if (json.subevents instanceof Array) {
-      subevents = json.subevents;
-    }
-
     return {
       chapter: chapter,
       flow: flow,
       characters: characters,
-      subevents: subevents,
     };
   }
 }

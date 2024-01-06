@@ -36,7 +36,7 @@
       </div>
     </div>
     <div class="c-training__infomation">
-      <div>残り日数 {{ WilTraining.TRAINING_DAYS - training.days + 1 }}日</div>
+      <div>残り日数 {{ training.lastDay - training.days + 1 }}日</div>
       <div class="c-training__infomation__buttons">
         <div class="c-training__infomation__buttons__content">
           <GameButton
@@ -53,13 +53,6 @@
             :fontColor="WIL_BUTTON_FONT_COLOR"
             :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
             @click="onStartTraining"
-          />
-          <GameButton
-            v-else
-            label="訓練終了"
-            :fontColor="WIL_BUTTON_FONT_COLOR"
-            :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
-            @click="onEndTraining"
           />
         </div>
       </div>
@@ -84,8 +77,8 @@
       />
     </div>
 
-    <div v-if="subevent && isStartSubevent" class="c-training__subevent">
-      <WilTalk :events="subevent.talk" @end="endSubEvent" />
+    <div v-if="talkEvent.isStart" class="c-training__subevent">
+      <WilTalk :events="talkEvent.talk" @end="talkEvent.endTalk" />
     </div>
   </div>
 </template>
@@ -123,7 +116,10 @@ import WilTrainingResultDialog from "@/components/molecules/games/wil/WilTrainin
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import WilLogDialog from "@/components/molecules/games/wil/WilLogDialog.vue";
 import WilTalk from "@/components/molecules/games/wil/WilTalk.vue";
-import { WilSubEvent } from "@/composables/games/wil/types/event";
+import {
+  WilTalkEvent,
+  WilTrainingEvent,
+} from "@/composables/games/wil/types/event";
 
 const props = defineProps({
   images: {
@@ -134,13 +130,13 @@ const props = defineProps({
     type: Object as PropType<{ [key: string]: WilSkill }>,
     required: true,
   },
-  subevents: {
-    type: Object as PropType<{ [key: string]: WilSubEvent }>,
-    required: true,
-  },
   bgm: {
     type: Object as PropType<GOUReadAudio>,
     default: undefined,
+  },
+  event: {
+    type: WilTrainingEvent,
+    required: true,
   },
   player: {
     type: Object as PropType<WilPlayer>,
@@ -149,16 +145,25 @@ const props = defineProps({
 });
 const emits = defineEmits(["end"]);
 
-const training = ref(new WilTraining(props.player.allCharacters, props.images));
+const training = ref(
+  new WilTraining(props.event.days, props.player.allCharacters, props.images)
+);
 // 選択中キャラクター
 const selectedCharacter: Ref<WilCharacter | undefined> = ref();
 
 // ログ表示フラグ
 const isShowLog = ref(false);
 
-// サブイベント
-const subevent: Ref<WilSubEvent | undefined> = ref();
-const isStartSubevent = ref(false);
+// 会話イベント
+const talkEvent: {
+  isStart: boolean;
+  talk: Array<WilTalkEvent> | undefined;
+  endTalk: Function;
+} = reactive({
+  isStart: false,
+  talk: undefined,
+  endTalk: () => {},
+});
 
 // 訓練開始可否フラグ
 const isStartableTraining = computed(() => {
@@ -208,33 +213,25 @@ const onSelectTraining = (trainingId: WIL_TRAINING_ID) => {
     return;
   }
   training.value.setCharacter(trainingId, selectedCharacter.value);
+  selectedCharacter.value = undefined;
 };
 
 const onRemoveCharacter = (trainingId: WIL_TRAINING_ID) => {
   training.value.removeCharacter(trainingId);
 };
-const endSubEvent = () => {
-  if (subevent.value) {
-    subevent.value.end = true;
-  }
-  isStartSubevent.value = false;
-  subevent.value = undefined;
-  props.bgm?.play();
-
-  endDay();
-};
 const endDay = () => {
   // 最終日の場合は訓練自体を終わる
   if (training.value.isEnd()) {
-    confirmModal.message = "訓練を終了します。";
-    confirmModal.onClickOk = () => {
-      confirmModal.isShow = false;
-      emits("end");
-    };
-    confirmModal.onClickCancel = undefined;
     setTimeout(() => {
+      confirmModal.message = "訓練を終了します。";
+      confirmModal.onClickOk = () => {
+        props.player.allCharacters.forEach((character) => character.reset());
+        confirmModal.isShow = false;
+        emits("end");
+      };
+      confirmModal.onClickCancel = undefined;
       confirmModal.isShow = true;
-    }, 500);
+    }, 50);
     return;
   }
 
@@ -244,15 +241,20 @@ const endDay = () => {
 };
 const chainTrainingResult = () => {
   const result = training.value.results.shift();
-  resultModal.result = result ? (result as WilTrainingResult) : undefined;
 
-  if (!resultModal.result) {
+  if (!result) {
     // 次の訓練結果がない場合はその日の訓練を終わる
     confirmModal.message = `${training.value.days}日目の訓練が終了しました。`;
     confirmModal.onClickOk = () => {
-      if (subevent.value) {
+      if (talkEvent.talk) {
         props.bgm?.stop();
-        isStartSubevent.value = true;
+        talkEvent.isStart = true;
+        talkEvent.endTalk = () => {
+          talkEvent.isStart = false;
+          talkEvent.talk = undefined;
+          props.bgm?.play();
+          endDay();
+        };
       } else {
         endDay();
       }
@@ -264,23 +266,13 @@ const chainTrainingResult = () => {
     return;
   }
 
-  // サブイベントの開始判定
-  for (const key of Object.keys(props.subevents)) {
-    if (props.subevents[key].end) {
-      continue;
-    }
-    if (props.subevents[key].isStartable(resultModal.result)) {
-      subevent.value = props.subevents[key];
-      subevent.value.end = true;
-      break;
-    }
-  }
-
   // 結果モーダル表示
+  resultModal.result = result as WilTrainingResult;
   resultModal.isShow = true;
 };
 const onStartTraining = () => {
   training.value.process(props.skills);
+  talkEvent.talk = props.event.getTalk(training.value as WilTraining);
   chainTrainingResult();
 };
 const onSelectCharacter = (id: string) => {
@@ -296,24 +288,21 @@ const onClickOk = () => {
   setTimeout(chainTrainingResult, 50);
 };
 
-const onEndTraining = () => {
-  confirmModal.message = "訓練を終了します。";
-  confirmModal.onClickOk = () => {
-    confirmModal.isShow = false;
-    emits("end");
-  };
-  confirmModal.onClickCancel = () => {
-    confirmModal.isShow = false;
-  };
-  confirmModal.isShow = true;
-};
-
 onMounted(() => {
   if (props.bgm) {
     props.bgm.loop = true;
     props.bgm.play();
   }
   training.value.startDay();
+  talkEvent.talk = props.event.getTalk(training.value as WilTraining);
+  if (talkEvent.talk) {
+    props.bgm?.stop();
+    talkEvent.isStart = true;
+    talkEvent.endTalk = () => {
+      talkEvent.isStart = false;
+      talkEvent.talk = undefined;
+    };
+  }
 });
 onUnmounted(() => {
   if (props.bgm) {

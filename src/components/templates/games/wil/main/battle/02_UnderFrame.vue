@@ -220,7 +220,7 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["error", "endSet", "skipTurn"]);
+const emits = defineEmits(["error", "setCharacter", "endSet", "skipTurn"]);
 const { messageComplete, onNextMessage } = useWilDisplay();
 
 const battle = computed(() => props.battle);
@@ -295,10 +295,7 @@ const onSelectSetCharacter = (character: WilCharacter) => {
     emits("error", "これ以上配置できません。");
     return;
   }
-
-  battle.value.player.moveCharacter = character;
-  battle.value.player.deployCharacter();
-  battle.value.changeTimming(WIL_BATTLE_TIMMING.SET_SELECT_CELL);
+  emits("setCharacter", character);
 };
 // 配置済みキャラクターの解除時のイベント処理
 const onRemoveSetCharacter = () => {

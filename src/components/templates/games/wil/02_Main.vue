@@ -22,10 +22,11 @@
     </template>
     <template v-else-if="timming == WIL_CHAPTER_TIMMING.TRAINING">
       <Training
+        v-if="trainingEvent"
         :images="WIL_IMAGES"
         :skills="WIL_SKILLS"
-        :subevents="WIL_SUB_EVENTS"
         :bgm="WIL_SOUNDS.BGM_TRAINING_1"
+        :event="trainingEvent"
         :player="player"
         @end="proceed"
       />
@@ -64,6 +65,7 @@ import {
   WilBattleEvent,
   WilTalkEvent,
   WilTeamEvent,
+  WilTrainingEvent,
 } from "@/composables/games/wil/types/event";
 import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
 import { WIL_ENDING_ID } from "@/composables/games/wil/enums/ending";
@@ -91,7 +93,6 @@ const {
   WIL_SKILLS,
   isLoadedFiles,
   loadFiles,
-  WIL_SUB_EVENTS,
   characterSequence,
   player,
 } = useWilInit();
@@ -99,6 +100,7 @@ const {
 const timming: Ref<WIL_CHAPTER_TIMMING> = ref(WIL_CHAPTER_TIMMING.OPENING);
 const talkEvents: Ref<Array<WilTalkEvent> | undefined> = ref();
 const battleEvent: Ref<WilBattleEvent | undefined> = ref();
+const trainingEvent: Ref<WilTrainingEvent | undefined> = ref();
 const teamEvent: Ref<WilTeamEvent | undefined> = ref();
 
 const currentCapter: Ref<WilChapter | undefined> = ref();
@@ -114,23 +116,45 @@ const proceed = () => {
     throw new WrongImplementationError("Current Chapter is not initialized.");
   }
   timming.value = currentCapter.value.proceedEvent();
+  switch (timming.value) {
+    case WIL_CHAPTER_TIMMING.OPENING:
+      break;
+    case WIL_CHAPTER_TIMMING.TALK:
+      talkEvents.value = currentCapter.value.proceedTalkEvent();
+      break;
+    case WIL_CHAPTER_TIMMING.BATTLE:
+      battleEvent.value = currentCapter.value.proceedBattleEvent();
+      if (!battleEvent.value) {
+        proceed();
+        return;
+      }
+      player.teamName = battleEvent.value.playerTeamName;
+      break;
+    case WIL_CHAPTER_TIMMING.TRAINING:
+      trainingEvent.value = currentCapter.value.proceedTrainingEvent();
+      if (!trainingEvent.value) {
+        proceed();
+        return;
+      }
+      break
+    case WIL_CHAPTER_TIMMING.TEAM:
+      teamEvent.value = currentCapter.value.proceedTeamEvent();
+      if (!teamEvent.value) {
+        proceed();
+        return;
+      }
+      break;
+    case WIL_CHAPTER_TIMMING.SAVE:
+      break;
+    case WIL_CHAPTER_TIMMING.ENDING:
+      emits("end", WIL_ENDING_ID.TO_BE_CONTINUED);
+
+      break;
+  }
   if (timming.value === WIL_CHAPTER_TIMMING.TALK) {
-    talkEvents.value = currentCapter.value.proceedTalkEvent();
   } else if (timming.value === WIL_CHAPTER_TIMMING.BATTLE) {
-    battleEvent.value = currentCapter.value.proceedBattleEvent();
-    if (!battleEvent.value) {
-      proceed();
-      return;
-    }
-    player.teamName = battleEvent.value.playerTeamName;
   } else if (timming.value === WIL_CHAPTER_TIMMING.TEAM) {
-    teamEvent.value = currentCapter.value.proceedTeamEvent();
-    if (!teamEvent.value) {
-      proceed();
-      return;
-    }
   } else if (timming.value === WIL_CHAPTER_TIMMING.ENDING) {
-    emits("end", WIL_ENDING_ID.TO_BE_CONTINUED);
   }
 };
 
@@ -138,11 +162,11 @@ const onSave = () => {
   if (!currentCapter.value) {
     return;
   }
-  WilSaveUtil.save(currentCapter.value, player, WIL_SUB_EVENTS);
+  WilSaveUtil.save(currentCapter.value, player);
 };
 
 const loadSaveData = () => {
-  const { chapter, flow, characters, subevents } = WilSaveUtil.load();
+  const { chapter, flow, characters } = WilSaveUtil.load();
   if (chapter) {
     currentCapter.value = new WilChapter(
       chapter,
@@ -163,7 +187,7 @@ const loadSaveData = () => {
           break;
         case WIL_CHAPTER_TIMMING.TEAM:
           currentCapter.value?.proceedTeamEvent();
-          break
+          break;
       }
     }
   }
@@ -177,17 +201,9 @@ const loadSaveData = () => {
       );
       c.defaultStatus = new WilStatus(character.defaultStatus);
       c.skills = character.skills.map((skill) => WIL_SKILLS[skill]);
-      c.reset()
+      c.reset();
       return c;
     });
-  }
-
-  if (subevents) {
-    for (let event of subevents) {
-      if (WIL_SUB_EVENTS[event.id]) {
-        WIL_SUB_EVENTS[event.id].end = event.end;
-      }
-    }
   }
 };
 
@@ -207,7 +223,7 @@ onMounted(() => {
       WIL_SOUNDS
     );
   }
-  proceed()
+  proceed();
 });
 watch(
   () => isLoadedFiles.value,

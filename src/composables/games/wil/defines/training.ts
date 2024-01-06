@@ -42,7 +42,7 @@ export const WIL_TRAINING_DEFINES: {
       attack: 3,
       defense: 0,
       magic: 3,
-      speed: 3,
+      speed: 0,
     },
     learnable: {
       phisic: false,

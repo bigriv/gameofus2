@@ -33,6 +33,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import {
@@ -42,7 +43,6 @@ import {
   WIL_BUTTON_FONT_COLOR,
   WIL_BUTTON_BACKGROUND_COLOR,
 } from "@/composables/games/wil/const";
-import { computed } from "vue";
 
 const props = defineProps({
   isShow: {

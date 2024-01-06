@@ -9,8 +9,8 @@
 </template>
 
 <script setup lang="ts">
-import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
 import { onMounted, reactive } from "vue";
+import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
 
 const emits = defineEmits(["save", "end"]);
 const dialog = reactive({

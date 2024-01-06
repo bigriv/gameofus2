@@ -1,18 +1,18 @@
 import { Ref, ref } from "vue";
-import { WIL_SKILL_DEFINES } from "./defines/skill";
-import { WilSkill } from "./types/skill";
-import { WilCharacter } from "./types/character";
-import { WIL_CHARACTER_DEFINES } from "./defines/character";
-import { WilPlayer } from "./types/player";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import { WIL_IMAGE_DEFINES } from "./defines/image";
+import GOUImage from "@/composables/types/visuals/GOUImage";
+import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import ConstructGOUVisual from "@/composables/types/visuals/ConstructGOUVisual";
 import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
 import { SequenceId } from "@/composables/utils/id";
-import { WIL_SOUND_DEFINES } from "./defines/sound";
-import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
-import GOUImage from "@/composables/types/visuals/GOUImage";
-import { GOULottie } from "@/composables/types/visuals/GOULottie";
+import { WIL_SKILL_DEFINES } from "@/composables/games/wil/defines/skill";
+import { WIL_CHARACTER_DEFINES } from "@/composables/games/wil/defines/character";
+import { WIL_IMAGE_DEFINES } from "@/composables/games/wil/defines/image";
+import { WIL_SOUND_DEFINES } from "@/composables/games/wil/defines/sound";
+import { WilSkill } from "@/composables/games/wil/types/skill";
+import { WilCharacter } from "@/composables/games/wil/types/character";
+import { WilPlayer } from "@/composables/games/wil/types/player";
 
 export const useWilInit = () => {
   const initImages = (): { [key: string]: GOUVisual } => {

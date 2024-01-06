@@ -39,15 +39,15 @@
 
 <script setup lang="ts">
 import { Ref, computed, onMounted, onUnmounted, ref } from "vue";
-import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
-import { WilTalkEvent } from "@/composables/games/wil/types/event";
+import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import {
   WIL_FRAME_FONT_COLOR,
   WIL_FRAME_BORDER_COLOR,
   WIL_FRAME_BACKGROUND_COLOR,
 } from "@/composables/games/wil/const";
-import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import { WilTalkEvent } from "@/composables/games/wil/types/event";
 
 const props = defineProps({
   events: {

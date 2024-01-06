@@ -56,22 +56,22 @@ import Battle from "@/components/templates/games/wil/main/03_Battle.vue";
 import Training from "@/components/templates/games/wil/main/04_Training.vue";
 import UpdateTeam from "@/components/templates/games/wil/main/05_UpdateTeam.vue";
 import Save from "@/components/templates/games/wil/main/06_Save.vue";
-import { WIL_CHAPTER_TIMMING } from "@/composables/games/wil/enums/timming";
-import { useWilInit } from "@/composables/games/wil/init";
-import { WilChapter } from "@/composables/games/wil/types/chapter";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
+import { useWilInit } from "@/composables/games/wil/init";
+import { WIL_CHAPTER_TIMMING } from "@/composables/games/wil/enums/timming";
+import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
+import { WIL_ENDING_ID } from "@/composables/games/wil/enums/ending";
 import { WIL_CHAPTER_1_DEFINE } from "@/composables/games/wil/defines/chapter";
+import { WIL_CHARACTER_DEFINES } from "@/composables/games/wil/defines/character";
+import { WilChapter } from "@/composables/games/wil/types/chapter";
 import {
   WilBattleEvent,
   WilTalkEvent,
   WilTeamEvent,
   WilTrainingEvent,
 } from "@/composables/games/wil/types/event";
-import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
-import { WIL_ENDING_ID } from "@/composables/games/wil/enums/ending";
 import { WilSaveUtil } from "@/composables/games/wil/types/save";
 import { WilCharacter } from "@/composables/games/wil/types/character";
-import { WIL_CHARACTER_DEFINES } from "@/composables/games/wil/defines/character";
 import { WilStatus } from "@/composables/games/wil/types/status";
 
 const props = defineProps({

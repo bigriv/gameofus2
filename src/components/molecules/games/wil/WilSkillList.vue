@@ -28,8 +28,8 @@
 
 <script setup lang="ts">
 import { PropType, ref } from "vue";
-import { WilSkill } from "@/composables/games/wil/types/skill";
 import { WIL_SKILL_ID } from "@/composables/games/wil/enums/skill";
+import { WilSkill } from "@/composables/games/wil/types/skill";
 
 const props = defineProps({
   selected: {

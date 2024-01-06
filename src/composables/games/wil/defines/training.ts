@@ -1,5 +1,5 @@
-import { WIL_IMAGE_ID } from "../enums/image";
-import { WIL_TRAINING_ID } from "../enums/training";
+import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
+import { WIL_TRAINING_ID } from "@/composables/games/wil/enums/training";
 
 export const WIL_TRAINING_DEFINES: {
   [key: string]: {

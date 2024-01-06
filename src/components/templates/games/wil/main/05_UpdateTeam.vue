@@ -8,16 +8,16 @@
 </template>
 
 <script setup lang="ts">
+import { PropType, onMounted, ref } from "vue";
 import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
-import { WIL_CHARACTER_DEFINES } from "@/composables/games/wil/defines/character";
+import GOUVisual from "@/composables/types/visuals/GOUVisual";
+import { SequenceId } from "@/composables/utils/id";
 import { useWilDisplay } from "@/composables/games/wil/display";
+import { WIL_CHARACTER_DEFINES } from "@/composables/games/wil/defines/character";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 import { WilTeamEvent } from "@/composables/games/wil/types/event";
 import { WilPlayer } from "@/composables/games/wil/types/player";
 import { WilSkill } from "@/composables/games/wil/types/skill";
-import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import { SequenceId } from "@/composables/utils/id";
-import { PropType, onMounted, ref } from "vue";
 
 const props = defineProps({
   event: {

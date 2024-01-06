@@ -1,7 +1,7 @@
-import { WIL_ELEMENT } from "../enums/element";
-import { WIL_SKILL_ID, WIL_SKILL_TYPE } from "../enums/skill";
-import { WIL_IMAGE_ID } from "../enums/image";
-import { WIL_CHARACTER_ID } from "../enums/character";
+import { WIL_ELEMENT } from "@/composables/games/wil/enums/element";
+import { WIL_SKILL_ID, WIL_SKILL_TYPE } from "@/composables/games/wil/enums/skill";
+import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
+import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
 
 export const WIL_CHARACTER_DEFINES: {
   [key: string]: {

@@ -1,4 +1,4 @@
-import { WIL_CONDITION_ID } from "../enums/condition";
+import { WIL_CONDITION_ID } from "@/composables/games/wil/enums/condition";
 
 export class WilConditionUtil {
   static readonly SUSTAINED_TURN = 3; // 状態異常継続ターン数

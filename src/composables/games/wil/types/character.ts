@@ -1,17 +1,17 @@
-import { WilStatus } from "@/composables/games/wil/types/status";
-import { WIL_ELEMENT } from "@/composables/games/wil/enums/element";
-import { WIL_SKILL_ID, WIL_SKILL_TYPE } from "../enums/skill";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import { WilSkill } from "./skill";
-import { WIL_IMAGE_ID } from "../enums/image";
-import { WIL_CONDITION_ID } from "../enums/condition";
-import { WilTrainingMenu, WilTrainingResult } from "./training";
-import { WilBattleDamegeResult, WilBattleMoveResult } from "./battle";
-import { WilConditionUtil } from "./condition";
-import { WilFieldCell } from "./field";
-import { WIL_CHARACTER_ID } from "../enums/character";
 import GOUImage from "@/composables/types/visuals/GOUImage";
 import { GOUFluidVisual } from "@/composables/types/visuals/GOUFluidVisual";
+import { WIL_SKILL_ID, WIL_SKILL_TYPE } from "@/composables/games/wil/enums/skill";
+import { WIL_ELEMENT } from "@/composables/games/wil/enums/element";
+import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
+import { WIL_CONDITION_ID } from "@/composables/games/wil/enums/condition";
+import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
+import { WilStatus } from "@/composables/games/wil/types/status";
+import { WilSkill } from "@/composables/games/wil/types/skill";
+import { WilTrainingMenu, WilTrainingResult } from "@/composables/games/wil/types/training";
+import { WilBattleDamegeResult, WilBattleMoveResult } from "@/composables/games/wil/types/battle";
+import { WilConditionUtil } from "@/composables/games/wil/types/condition";
+import { WilFieldCell } from "@/composables/games/wil/types/field";
 
 export class WilCharacter {
   readonly model: WIL_CHARACTER_ID;

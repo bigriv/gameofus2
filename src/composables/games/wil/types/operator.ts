@@ -1,14 +1,14 @@
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
-import { WilCharacter } from "./character";
-import { WilField, WilFieldCell } from "./field";
-import { WilSkill } from "./skill";
-import { WilBattleMoveResult } from "./battle";
-import { WIL_BATTLE_TEAM } from "../enums/battle";
 import {
   ANIMATION_EASING_TYPE,
   ANIMATION_TYPE,
   GOUAnimation,
 } from "@/composables/types/animations/GOUAnimation";
+import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
+import { WilCharacter } from "@/composables/games/wil/types/character";
+import { WilField, WilFieldCell } from "@/composables/games/wil/types/field";
+import { WilSkill } from "@/composables/games/wil/types/skill";
+import { WilBattleMoveResult } from "@/composables/games/wil/types/battle";
 
 /**
  * Wil用の指揮クラス

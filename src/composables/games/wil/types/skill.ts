@@ -1,20 +1,20 @@
-import { WIL_CONDITION_ID } from "../enums/condition";
-import { WIL_ELEMENT } from "../enums/element";
+import GOUVisual from "@/composables/types/visuals/GOUVisual";
+import { GOUAudio } from "@/composables/types/audio/GOUAudio";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import { WIL_CONDITION_ID } from "@/composables/games/wil/enums/condition";
 import {
   WIL_SKILL_RANGE,
   WIL_SKILL_TARGET,
   WIL_SKILL_TYPE,
-} from "../enums/skill";
-import { WIL_SKILL_ID } from "../enums/skill";
-import { WilBattleMoveResult } from "./battle";
-import { WilCharacter } from "./character";
-import { WilConditionUtil } from "./condition";
-import { WilFieldCell } from "./field";
-import { GOUAudio } from "@/composables/types/audio/GOUAudio";
-import { WIL_IMAGE_ID } from "../enums/image";
-import { WIL_SOUND_ID } from "../enums/sound";
-import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+} from "@/composables/games/wil/enums/skill";
+import { WIL_SKILL_ID } from "@/composables/games/wil/enums/skill";
+import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
+import { WIL_SOUND_ID } from "@/composables/games/wil/enums/sound";
+import { WIL_ELEMENT } from "@/composables/games/wil/enums/element";
+import { WilBattleMoveResult } from "@/composables/games/wil/types/battle";
+import { WilCharacter } from "@/composables/games/wil/types/character";
+import { WilConditionUtil } from "@/composables/games/wil/types/condition";
+import { WilFieldCell } from "@/composables/games/wil/types/field";
 
 export class WilSkill {
   static readonly LOW_CONDITION_RATE = 20; // 状態異常にかかる確率（低）

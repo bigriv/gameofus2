@@ -11,9 +11,9 @@
 
 <script setup lang="ts">
 import { PropType } from "vue";
+import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 import WilCard from "@/components/molecules/games/wil/WilCard.vue";
 import { WilTrainingMenu } from "@/composables/games/wil/types/training";
-import GOUVisualCanvas from "../../GOUVisualCanvas.vue";
 
 const props = defineProps({
   training: {

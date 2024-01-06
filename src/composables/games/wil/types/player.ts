@@ -1,9 +1,9 @@
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
-import { WIL_BATTLE_TEAM } from "../enums/battle";
-import { WilCharacter } from "./character";
-import { WilField } from "./field";
-import { WilOperator } from "./operator";
-import { WIL_CHARACTER_ID } from "../enums/character";
+import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
+import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
+import { WilCharacter } from "@/composables/games/wil/types/character";
+import { WilField } from "@/composables/games/wil/types/field";
+import { WilOperator } from "@/composables/games/wil/types/operator";
 
 /**
  * Wil用のプレイヤークラス

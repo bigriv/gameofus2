@@ -1,5 +1,5 @@
-import { WIL_IMAGE_ID } from "../enums/image";
-import { WIL_SOUND_ID } from "../enums/sound";
+import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
+import { WIL_SOUND_ID } from "@/composables/games/wil/enums/sound";
 
 export type WilTalkDefine = Array<{
   talker?: string;

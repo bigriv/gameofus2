@@ -1,15 +1,15 @@
-import { WIL_CHARACTER_ID } from "../enums/character";
-import { WIL_SOUND_ID } from "../enums/sound";
-import { WIL_BATTLE_TIMMING, WIL_CHAPTER_TIMMING } from "../enums/timming";
-import { WIL_IMAGE_ID } from "../enums/image";
+import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
+import { WIL_SOUND_ID } from "@/composables/games/wil/enums/sound";
+import { WIL_BATTLE_TIMMING, WIL_CHAPTER_TIMMING } from "@/composables/games/wil/enums/timming";
+import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
 import {
   WIL_MAIN_TALK_DEFINES,
   WIL_SUB_TALK_DEFINES,
   WIL_TUTORIAL_DEFINES,
   WilTalkDefine,
-} from "./talk";
-import { WilBattle } from "../types/battle";
-import { WilTraining } from "../types/training";
+} from "@/composables/games/wil/defines/talk";
+import { WilBattle } from "@/composables/games/wil/types/battle";
+import { WilTraining } from "@/composables/games/wil/types/training";
 
 export type WilChapterDefine = {
   id: number;

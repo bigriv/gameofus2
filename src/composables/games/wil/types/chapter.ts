@@ -1,20 +1,20 @@
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import { WIL_CHAPTER_TIMMING } from "../enums/timming";
-import { WilCharacter } from "./character";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import { SequenceId } from "@/composables/utils/id";
+import { WIL_CHAPTER_TIMMING } from "@/composables/games/wil/enums/timming";
+import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
+import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
+import { WIL_CHARACTER_DEFINES } from "@/composables/games/wil/defines/character";
+import { WilChapterDefine } from "@/composables/games/wil/defines/chapter";
+import { WilCharacter } from "@/composables/games/wil/types/character";
 import {
   WilBattleEvent,
   WilTalkEvent,
   WilTeamEvent,
   WilTrainingEvent,
-} from "./event";
-import { WilFieldCell } from "./field";
-import { SequenceId } from "@/composables/utils/id";
-import { WIL_CHARACTER_DEFINES } from "../defines/character";
-import { WIL_BATTLE_TEAM } from "../enums/battle";
-import { WilSkill } from "./skill";
-import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
-import { WilChapterDefine } from "../defines/chapter";
-import { WIL_CHARACTER_ID } from "../enums/character";
+} from "@/composables/games/wil/types/event";
+import { WilFieldCell } from "@/composables/games/wil/types/field";
+import { WilSkill } from "@/composables/games/wil/types/skill";
 
 export class WilChapter {
   id: number;
@@ -43,17 +43,19 @@ export class WilChapter {
     this.talkEvents = define.talks.map((talk) =>
       talk.map(
         (define) =>
-          new WilTalkEvent({
-            talker: define.talker,
-            background: define.background
-              ? images[define.background]
-              : undefined,
-            message: define.message,
-            left: define.left ? images[define.left] : undefined,
-            right: define.right ? images[define.right] : undefined,
-            sound: define.sound ? sounds[define.sound] : undefined,
-            bgm: define.bgm ? sounds[define.bgm] : undefined,
-          })
+          new WilTalkEvent(
+            {
+              talker: define.talker,
+              background: define.background,
+              message: define.message,
+              left: define.left,
+              right: define.right,
+              sound: define.sound,
+              bgm: define.bgm,
+            },
+            images,
+            sounds
+          )
       )
     );
     this.battleEvents = define.battles.map((battle) => {

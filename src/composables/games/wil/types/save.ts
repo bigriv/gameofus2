@@ -1,8 +1,8 @@
-import { WIL_CHAPTER_1_DEFINE, WilChapterDefine } from "../defines/chapter";
-import { WIL_CHARACTER_ID } from "../enums/character";
-import { WIL_SKILL_ID } from "../enums/skill";
-import { WilChapter } from "./chapter";
-import { WilPlayer } from "./player";
+import { WIL_CHAPTER_1_DEFINE, WilChapterDefine } from "@/composables/games/wil/defines/chapter";
+import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
+import { WIL_SKILL_ID } from "@/composables/games/wil/enums/skill";
+import { WilChapter } from "@/composables/games/wil/types/chapter";
+import { WilPlayer } from "@/composables/games/wil/types/player";
 
 export class WilSaveUtil {
   private constructor() {}

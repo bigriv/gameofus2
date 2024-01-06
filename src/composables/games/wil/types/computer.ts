@@ -1,10 +1,10 @@
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
-import { WilOperator } from "./operator";
-import { WilField, WilFieldCell } from "./field";
-import { WIL_BATTLE_TEAM } from "../enums/battle";
-import { WilBattle } from "./battle";
-import { WilSkill } from "./skill";
-import { WIL_SKILL_TARGET } from "../enums/skill";
+import { WIL_SKILL_TARGET } from "@/composables/games/wil/enums/skill";
+import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
+import { WilOperator } from "@/composables/games/wil/types/operator";
+import { WilField, WilFieldCell } from "@/composables/games/wil/types/field";
+import { WilBattle } from "@/composables/games/wil/types/battle";
+import { WilSkill } from "@/composables/games/wil/types/skill";
 
 export class WilComputer extends WilOperator {
   private readonly level: number;

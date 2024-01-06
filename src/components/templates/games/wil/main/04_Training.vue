@@ -93,29 +93,29 @@ import {
   reactive,
   ref,
 } from "vue";
+import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import WilCardList from "@/components/molecules/games/wil/WilCardList.vue";
+import WilCharacterCard from "@/components/molecules/games/wil/WilCharacterCard.vue";
+import WilTrainingCard from "@/components/molecules/games/wil/WilTrainingCard.vue";
+import WilTalk from "@/components/molecules/games/wil/WilTalk.vue";
+import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
+import WilTrainingResultDialog from "@/components/molecules/games/wil/WilTrainingResultDialog.vue";
+import WilLogDialog from "@/components/molecules/games/wil/WilLogDialog.vue";
+import GOUVisual from "@/composables/types/visuals/GOUVisual";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import {
+  WIL_BUTTON_FONT_COLOR,
+  WIL_BUTTON_BACKGROUND_COLOR,
+} from "@/composables/games/wil/const";
 import { WIL_TRAINING_ID } from "@/composables/games/wil/enums/training";
 import { WilCharacter } from "@/composables/games/wil/types/character";
-import WilCharacterCard from "@/components/molecules/games/wil/WilCharacterCard.vue";
-import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import {
   WilTraining,
   WilTrainingMenu,
   WilTrainingResult,
 } from "@/composables/games/wil/types/training";
-import WilTrainingCard from "@/components/molecules/games/wil/WilTrainingCard.vue";
 import { WilPlayer } from "@/composables/games/wil/types/player";
-import {
-  WIL_BUTTON_FONT_COLOR,
-  WIL_BUTTON_BACKGROUND_COLOR,
-} from "@/composables/games/wil/const";
-import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WilSkill } from "@/composables/games/wil/types/skill";
-import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
-import WilTrainingResultDialog from "@/components/molecules/games/wil/WilTrainingResultDialog.vue";
-import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
-import WilLogDialog from "@/components/molecules/games/wil/WilLogDialog.vue";
-import WilTalk from "@/components/molecules/games/wil/WilTalk.vue";
 import {
   WilTalkEvent,
   WilTrainingEvent,

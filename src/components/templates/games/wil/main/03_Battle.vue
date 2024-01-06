@@ -80,12 +80,21 @@ import {
   watch,
 } from "vue";
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
+import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import Field from "@/components/templates/games/wil/main/battle/01_Field.vue";
 import UnderFrame from "@/components/templates/games/wil/main/battle/02_UnderFrame.vue";
+import WilTalk from "@/components/molecules/games/wil/WilTalk.vue";
+import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
+import WilLogDialog from "@/components/molecules/games/wil/WilLogDialog.vue";
+import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import {
+  WIL_BUTTON_FONT_COLOR,
+  WIL_BUTTON_BACKGROUND_COLOR,
+} from "@/composables/games/wil/const";
+import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
 import { WIL_BATTLE_TIMMING } from "@/composables/games/wil/enums/timming";
 import { WilSkill } from "@/composables/games/wil/types/skill";
 import { WilPlayer } from "@/composables/games/wil/types/player";
-import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
 import {
   WilBattleEvent,
   WilTalkEvent,
@@ -95,17 +104,8 @@ import {
   WilBattleMoveResult,
 } from "@/composables/games/wil/types/battle";
 import { WilFieldCell } from "@/composables/games/wil/types/field";
-import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
 import { WilComputer } from "@/composables/games/wil/types/computer";
-import GameButton from "@/components/atoms/interfaces/GameButton.vue";
-import {
-  WIL_BUTTON_FONT_COLOR,
-  WIL_BUTTON_BACKGROUND_COLOR,
-} from "@/composables/games/wil/const";
-import WilLogDialog from "@/components/molecules/games/wil/WilLogDialog.vue";
-import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import { WilCharacter } from "@/composables/games/wil/types/character";
-import WilTalk from "@/components/molecules/games/wil/WilTalk.vue";
 
 const props = defineProps({
   skills: {

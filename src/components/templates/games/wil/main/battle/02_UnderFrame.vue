@@ -181,15 +181,12 @@
 
 <script setup lang="ts">
 import { PropType, Ref, computed, ref } from "vue";
-import WilCharacterCard from "@/components/molecules/games/wil/WilCharacterCard.vue";
-import WilSkillList from "@/components/molecules/games/wil/WilSkillList.vue";
-import NameValueTable from "@/components/atoms/tables/NameValueTable.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
-import { WIL_BATTLE_TIMMING } from "@/composables/games/wil/enums/timming";
-import { WilCharacter } from "@/composables/games/wil/types/character";
-import { WilSkill } from "@/composables/games/wil/types/skill";
-import { WilField, WilFieldCell } from "@/composables/games/wil/types/field";
+import NameValueTable from "@/components/atoms/tables/NameValueTable.vue";
+import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
+import WilCharacterCard from "@/components/molecules/games/wil/WilCharacterCard.vue";
 import WilCardList from "@/components/molecules/games/wil/WilCardList.vue";
+import WilSkillList from "@/components/molecules/games/wil/WilSkillList.vue";
 import {
   WIL_FRAME_FONT_COLOR,
   WIL_FRAME_BORDER_COLOR,
@@ -197,13 +194,16 @@ import {
   WIL_BUTTON_FONT_COLOR,
   WIL_BUTTON_BACKGROUND_COLOR,
 } from "@/composables/games/wil/const";
-import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
+import { useWilDisplay } from "@/composables/games/wil/display";
+import { WIL_BATTLE_TIMMING } from "@/composables/games/wil/enums/timming";
+import { WilCharacter } from "@/composables/games/wil/types/character";
+import { WilSkill } from "@/composables/games/wil/types/skill";
+import { WilField, WilFieldCell } from "@/composables/games/wil/types/field";
 import {
   WilBattle,
   WilBattleMoveResult,
 } from "@/composables/games/wil/types/battle";
 import { WilConditionUtil } from "@/composables/games/wil/types/condition";
-import { useWilDisplay } from "@/composables/games/wil/display";
 
 const props = defineProps({
   skills: {

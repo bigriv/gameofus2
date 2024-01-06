@@ -3,21 +3,21 @@ import {
   ANIMATION_TYPE,
   GOUAnimation,
 } from "@/composables/types/animations/GOUAnimation";
-import { WIL_CONDITION_ID } from "../enums/condition";
-import { WIL_ELEMENT } from "../enums/element";
+import { WIL_CONDITION_ID } from "@/composables/games/wil/enums/condition";
+import { WIL_ELEMENT } from "@/composables/games/wil/enums/element";
 import {
   WIL_SKILL_ID,
   WIL_SKILL_RANGE,
   WIL_SKILL_TARGET,
   WIL_SKILL_TYPE,
-} from "../enums/skill";
-import { WilBattleMoveResult } from "../types/battle";
-import { WilCharacter } from "../types/character";
-import { WilFieldCell } from "../types/field";
-import { WilSkill } from "../types/skill";
-import { WilStatus } from "../types/status";
-import { WIL_IMAGE_ID } from "../enums/image";
-import { WIL_SOUND_ID } from "../enums/sound";
+} from "@/composables/games/wil/enums/skill";
+import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
+import { WIL_SOUND_ID } from "@/composables/games/wil/enums/sound";
+import { WilBattleMoveResult } from "@/composables/games/wil/types/battle";
+import { WilCharacter } from "@/composables/games/wil/types/character";
+import { WilFieldCell } from "@/composables/games/wil/types/field";
+import { WilSkill } from "@/composables/games/wil/types/skill";
+import { WilStatus } from "@/composables/games/wil/types/status";
 
 export const WIL_SKILL_DEFINES: Array<{
   id: WIL_SKILL_ID;

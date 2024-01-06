@@ -1,8 +1,8 @@
-import { WilCharacter } from "@/composables/games/wil/types/character";
-import { WIL_CELL_COLOR } from "../enums/cell";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
-import { WIL_BATTLE_TEAM } from "../enums/battle";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
+import { WIL_CELL_COLOR } from "@/composables/games/wil/enums/cell";
+import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
+import { WilCharacter } from "@/composables/games/wil/types/character";
 
 /**
  * Wil用フィールドマスクラス

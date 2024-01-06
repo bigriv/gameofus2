@@ -13,13 +13,13 @@
 </template>
 
 <script setup lang="ts">
-import GameButton from "@/components/atoms/interfaces/GameButton.vue";
-import { WIL_ENDING_ID } from "@/composables/games/wil/enums/ending";
 import { PropType, computed } from "vue";
+import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import {
   WIL_BUTTON_FONT_COLOR,
   WIL_BUTTON_BACKGROUND_COLOR,
 } from "@/composables/games/wil/const";
+import { WIL_ENDING_ID } from "@/composables/games/wil/enums/ending";
 
 const props = defineProps({
   ending: {

@@ -1,23 +1,23 @@
 <template>
   <WilCard :selected="props.selected" @click="onClick">
-    <div
+      <div
       class="c-card__type"
       :class="`c-card__type--${props.character.element}`"
-    ></div>
+      ></div>
     <div class="c-card__name">{{ props.character.name }}</div>
     <div class="c-card__visual">
-      <GOUVisualCanvas
-        :objects="{ character: props.character.visual.standing }"
-      />
+        <GOUVisualCanvas
+          :objects="{ character: props.character.visual.standing }"
+        />
     </div>
   </WilCard>
 </template>
 
 <script setup lang="ts">
 import { PropType } from "vue";
+import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 import WilCard from "@/components/molecules/games/wil/WilCard.vue";
 import { WilCharacter } from "@/composables/games/wil/types/character";
-import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 
 const props = defineProps({
   selected: {

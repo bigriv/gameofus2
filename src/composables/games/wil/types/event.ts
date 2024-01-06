@@ -1,10 +1,12 @@
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import { WilFieldCell } from "./field";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
-import { WIL_CHARACTER_ID } from "../enums/character";
-import { WilTraining } from "./training";
-import { WilBattle } from "./battle";
-import { WilTalkDefine } from "../defines/talk";
+import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
+import { WIL_SOUND_ID } from "@/composables/games/wil/enums/sound";
+import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
+import { WilTalkDefine } from "@/composables/games/wil/defines/talk";
+import { WilFieldCell } from "@/composables/games/wil/types/field";
+import { WilTraining } from "@/composables/games/wil/types/training";
+import { WilBattle } from "@/composables/games/wil/types/battle";
 
 /**
  * 会話イベント
@@ -18,22 +20,26 @@ export class WilTalkEvent {
   left?: GOUVisual;
   right?: GOUVisual;
 
-  constructor(define: {
-    message?: Array<string>;
-    sound?: GOUReadAudio;
-    bgm?: GOUReadAudio;
-    talker?: string;
-    background?: GOUVisual;
-    left?: GOUVisual;
-    right?: GOUVisual;
-  }) {
+  constructor(
+    define: {
+      message?: Array<string>;
+      sound?: WIL_SOUND_ID;
+      bgm?: WIL_SOUND_ID;
+      talker?: string;
+      background?: WIL_IMAGE_ID;
+      left?: WIL_IMAGE_ID;
+      right?: WIL_IMAGE_ID;
+    },
+    images: { [key: string]: GOUVisual },
+    sounds: { [key: string]: GOUReadAudio }
+  ) {
     this.message = define.message;
-    this.sound = define.sound;
-    this.bgm = define.bgm;
+    this.sound = define.sound ? sounds[define.sound] : undefined;
+    this.bgm = define.bgm ? sounds[define.bgm] : undefined;
     this.talker = define.talker;
-    this.background = define.background;
-    this.left = define.left;
-    this.right = define.right;
+    this.background = define.background ? images[define.background] : undefined;
+    this.left = define.left ? images[define.left] : undefined;
+    this.right = define.right ? images[define.right] : undefined;
   }
 
   /**
@@ -99,18 +105,7 @@ export class WilBattleEvent {
     this.talks =
       define.talks?.map((talk) => {
         return {
-          event: talk.event.map(
-            (e) =>
-              new WilTalkEvent({
-                talker: e.talker,
-                background: e.background ? images[e.background] : undefined,
-                message: e.message,
-                left: e.left ? images[e.left] : undefined,
-                right: e.right ? images[e.right] : undefined,
-                sound: e.sound ? sounds[e.sound] : undefined,
-                bgm: e.bgm ? sounds[e.bgm] : undefined,
-              })
-          ),
+          event: talk.event.map((e) => new WilTalkEvent(e, images, sounds)),
           isStart: talk.isStart,
           end: false,
         };
@@ -199,18 +194,7 @@ export class WilTrainingEvent {
     this.talks =
       define.talks?.map((talk) => {
         return {
-          event: talk.event.map(
-            (e) =>
-              new WilTalkEvent({
-                talker: e.talker,
-                background: e.background ? images[e.background] : undefined,
-                message: e.message,
-                left: e.left ? images[e.left] : undefined,
-                right: e.right ? images[e.right] : undefined,
-                sound: e.sound ? sounds[e.sound] : undefined,
-                bgm: e.bgm ? sounds[e.bgm] : undefined,
-              })
-          ),
+          event: talk.event.map((e) => new WilTalkEvent(e, images, sounds)),
           isStart: talk.isStart,
           end: false,
         };
@@ -224,8 +208,6 @@ export class WilTrainingEvent {
    */
   getTalk(training: WilTraining): Array<WilTalkEvent> | undefined {
     for (let talk of this.talks) {
-      console.log(talk);
-
       if (talk.end) {
         continue;
       }

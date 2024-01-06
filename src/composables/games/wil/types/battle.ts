@@ -1,29 +1,29 @@
-import { WilField, WilFieldCell } from "./field";
 import { GOUAudio } from "@/composables/types/audio/GOUAudio";
 import {
   ANIMATION_EASING_TYPE,
   ANIMATION_TYPE,
   GOUAnimation,
 } from "@/composables/types/animations/GOUAnimation";
-import { WilPlayer } from "./player";
-import { WilComputer } from "./computer";
-import { WIL_BATTLE_TEAM } from "../enums/battle";
-import { WIL_BATTLE_TIMMING } from "../enums/timming";
-import { WilBattleEvent } from "./event";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
-import { WilCharacter } from "./character";
-import { WilOperator } from "./operator";
-import { WilSkill } from "./skill";
-import {
-  WIL_SKILL_RANGE,
-  WIL_SKILL_TARGET,
-  WIL_SKILL_TYPE,
-} from "../enums/skill";
-import { WIL_CELL_COLOR } from "../enums/cell";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import GOUImage from "@/composables/types/visuals/GOUImage";
 import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import { GOUFluidVisual } from "@/composables/types/visuals/GOUFluidVisual";
+import {
+  WIL_SKILL_RANGE,
+  WIL_SKILL_TARGET,
+  WIL_SKILL_TYPE,
+} from "@/composables/games/wil/enums/skill";
+import { WIL_CELL_COLOR } from "@/composables/games/wil/enums/cell";
+import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
+import { WIL_BATTLE_TIMMING } from "@/composables/games/wil/enums/timming";
+import { WilField, WilFieldCell } from "@/composables/games/wil/types/field";
+import { WilPlayer } from "@/composables/games/wil/types/player";
+import { WilComputer } from "@/composables/games/wil/types/computer";
+import { WilBattleEvent } from "@/composables/games/wil/types/event";
+import { WilCharacter } from "@/composables/games/wil/types/character";
+import { WilOperator } from "@/composables/games/wil/types/operator";
+import { WilSkill } from "@/composables/games/wil/types/skill";
 
 /**
  * 戦闘管理クラス

@@ -27,11 +27,11 @@
 import { PropType, onMounted, computed, ref } from "vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
-import { WilChapter } from "@/composables/games/wil/types/chapter";
 import {
   WIL_FRAME_FONT_COLOR,
   WIL_BUTTON_FONT_COLOR,
 } from "@/composables/games/wil/const";
+import { WilChapter } from "@/composables/games/wil/types/chapter";
 
 const props = defineProps({
   chapter: {

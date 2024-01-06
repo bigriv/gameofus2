@@ -1,9 +1,9 @@
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import { WIL_TRAINING_ID } from "../enums/training";
-import { WilStatus } from "./status";
-import { WilSkill } from "./skill";
-import { WilCharacter } from "./character";
-import { WIL_TRAINING_DEFINES } from "../defines/training";
+import { WIL_TRAINING_ID } from "@/composables/games/wil/enums/training";
+import { WIL_TRAINING_DEFINES } from "@/composables/games/wil/defines/training";
+import { WilStatus } from "@/composables/games/wil/types/status";
+import { WilSkill } from "@/composables/games/wil/types/skill";
+import { WilCharacter } from "@/composables/games/wil/types/character";
 
 /**
  * 訓練の管理クラス

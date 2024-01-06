@@ -3,8 +3,8 @@
 </template>
 
 <script setup lang="ts">
-import { WilTalkEvent } from "@/composables/games/wil/types/event";
 import WilTalk from "@/components/molecules/games/wil/WilTalk.vue";
+import { WilTalkEvent } from "@/composables/games/wil/types/event";
 
 const props = defineProps({
   events: {

@@ -105,6 +105,7 @@
 </template>
 
 <script setup lang="ts">
+import { PropType, computed } from "vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import WilCharacterCard from "@/components/molecules/games/wil/WilCharacterCard.vue";
@@ -117,7 +118,6 @@ import {
   WIL_BUTTON_BACKGROUND_COLOR,
 } from "@/composables/games/wil/const";
 import { WilTrainingResult } from "@/composables/games/wil/types/training";
-import { PropType, computed } from "vue";
 
 const props = defineProps({
   isShow: {

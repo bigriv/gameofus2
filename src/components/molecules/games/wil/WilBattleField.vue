@@ -56,11 +56,11 @@
 </template>
 
 <script setup lang="ts">
+import { PropType, computed, watch } from "vue";
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 import { WIL_CELL_COLOR } from "@/composables/games/wil/enums/cell";
 import { WilBattleDamegeResult } from "@/composables/games/wil/types/battle";
 import { WilField, WilFieldCell } from "@/composables/games/wil/types/field";
-import { PropType, computed, watch } from "vue";
 
 const props = defineProps({
   reverse: {

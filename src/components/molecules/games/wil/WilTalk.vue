@@ -103,6 +103,7 @@ onUnmounted(() => {
   position: relative;
   width: 100%;
   height: 100%;
+  background: rgba(0, 0, 0, 0.5);
   &__background {
     position: absolute;
     top: 0;
@@ -148,13 +149,13 @@ onUnmounted(() => {
 @media screen and (max-width: 400px) {
   .c-talk__talker,
   .c-talk__message {
-    font-size: 10px;
+    font-size: 8px;
   }
 }
 @media screen and (max-width: 600px) and (min-width: 400px) {
   .c-talk__talker,
   .c-talk__message {
-    font-size: 12px;
+    font-size: 10px;
   }
 }
 @media screen and (min-width: 600px) {

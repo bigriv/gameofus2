@@ -1,14 +1,16 @@
 <template>
   <WilCard :selected="props.selected" @click="onClick">
+    <div class="c-charactercard">
       <div
-      class="c-card__type"
-      :class="`c-card__type--${props.character.element}`"
+        class="c-charactercard__type"
+        :class="`c-charactercard__type--${props.character.element}`"
       ></div>
-    <div class="c-card__name">{{ props.character.name }}</div>
-    <div class="c-card__visual">
+      <div class="c-charactercard__name">{{ props.character.name }}</div>
+      <div class="c-charactercard__visual">
         <GOUVisualCanvas
           :objects="{ character: props.character.visual.standing }"
         />
+      </div>
     </div>
   </WilCard>
 </template>
@@ -37,7 +39,7 @@ const onClick = () => {
 </script>
 
 <style scoped lang="scss">
-.c-card {
+.c-charactercard {
   position: relative;
   width: 100%;
   height: 100%;
@@ -48,7 +50,6 @@ const onClick = () => {
     #ffa500 85%,
     #cc9900 100%
   );
-  overflow: hidden;
   &__type {
     position: absolute;
     top: 0%;
@@ -135,27 +136,27 @@ const onClick = () => {
 }
 
 @media screen and (max-width: 400px) {
-  .c-card__name {
+  .c-charactercard__name {
     font-size: 6px;
   }
-  .c-card__type::before {
+  .c-charactercard__type::before {
     font-size: 30px;
   }
 }
 
 @media screen and (max-width: 600px) and (min-width: 400px) {
-  .c-card__name {
+  .c-charactercard__name {
     font-size: 8px;
   }
-  .c-card__type::before {
+  .c-charactercard__type::before {
     font-size: 40px;
   }
 }
 @media screen and (min-width: 600px) {
-  .c-card__name {
+  .c-charactercard__name {
     font-size: 10px;
   }
-  .c-card__type::before {
+  .c-charactercard__type::before {
     font-size: 50px;
   }
 }

@@ -143,8 +143,8 @@ const onSubmit = () => {
 
 <style scoped lang="scss">
 .c-result_dialog {
-  width: 60%;
-  height: 60%;
+  width: 65%;
+  height: 65%;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -157,7 +157,6 @@ const onSubmit = () => {
     width: 100%;
     color: black;
     padding: 0% 2%;
-    margin-top: 2%;
     &__character {
       width: 36%;
       height: 100%;
@@ -168,10 +167,9 @@ const onSubmit = () => {
     }
   }
   &__result {
-    width: 80%;
+    width: 85%;
     color: white;
     padding: 0% 2%;
-    margin-top: 4%;
     dl {
       display: flex;
       justify-content: space-between;
@@ -185,9 +183,9 @@ const onSubmit = () => {
     }
   }
   &__learned {
-    width: 80%;
+    width: 85%;
     padding: 0% 2%;
-    margin-top: 2%;
+    margin: 2% auto 0 auto;
   }
   &__button {
     width: 20%;
@@ -212,5 +210,36 @@ const onSubmit = () => {
 .v-enter-from,
 .v-leave-to {
   height: 0;
+}
+@media screen and (max-width: 400px) {
+  .c-result_dialog__result {
+    margin: 2% auto 0 auto;
+  }
+  .c-result_dialog__result,
+  .c-result_dialog__learned,
+  .c-result_dialog__button {
+    font-size: 10px;
+  }
+}
+
+@media screen and (max-width: 600px) and (min-width: 400px) {
+  .c-result_dialog__result {
+    margin: 2% auto 0 auto;
+  }
+  .c-result_dialog__result,
+  .c-result_dialog__learned,
+  .c-result_dialog__button {
+    font-size: 10px;
+  }
+}
+@media screen and (min-width: 600px) {
+  .c-result_dialog__result {
+    margin: 4% auto 0 auto;
+  }
+  .c-result_dialog__result,
+  .c-result_dialog__learned,
+  .c-result_dialog__button {
+    font-size: 16px;
+  }
 }
 </style>

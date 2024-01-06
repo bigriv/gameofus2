@@ -155,12 +155,27 @@ watch(
   }
   &__damage {
     position: absolute;
-    font-size: 20px;
     color: white;
     text-shadow: 2px 0 black, 0px 2px black, -2px 0 black, 0 -2px black;
     font-weight: bold;
     animation-delay: var(--delay);
     transform: translate(-50%, -50%);
+  }
+}
+@media screen and (max-width: 400px) {
+.c-battle_field__damage {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 600px) and (min-width: 400px) {
+.c-battle_field__damage {
+    font-size: 16px;
+  }
+}
+@media screen and (min-width: 600px) {
+.c-battle_field__damage {
+    font-size: 20px;
   }
 }
 </style>

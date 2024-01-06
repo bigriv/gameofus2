@@ -396,13 +396,13 @@ onUnmounted(() => {
 @media screen and (max-width: 400px) {
   .c-training__infomation,
   .c-training__plan__cards__content__button {
-    font-size: 10px;
+    font-size: 8px;
   }
 }
 @media screen and (max-width: 600px) and (min-width: 400px) {
   .c-training__infomation,
   .c-training__plan__cards__content__button {
-    font-size: 12px;
+    font-size: 10px;
   }
 }
 @media screen and (min-width: 600px) {

@@ -552,6 +552,7 @@ export const WIL_MAIN_TALK_DEFINES: {
       talker: "ヒカル",
       background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
       message: ["えぇ...。"],
+      left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_SOLDIER,
     },
     {

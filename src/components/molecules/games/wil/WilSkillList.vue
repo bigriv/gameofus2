@@ -62,7 +62,7 @@ const onSelectSkill = (skill: WilSkill) => {
     display: flex;
     flex-direction: column;
     &__content {
-      widows: 100%;
+      width: 100%;
       height: 25%;
       border-color: black;
       transform: translateX(calc(-105% * var(--start)));
@@ -108,6 +108,22 @@ const onSelectSkill = (skill: WilSkill) => {
     &:disabled {
       background-color: gray;
     }
+  }
+}
+@media screen and (max-width: 400px) {
+  .c-skill_list__skill_buttons__content {
+    font-size: 8px;
+  }
+}
+
+@media screen and (max-width: 600px) and (min-width: 400px) {
+  .c-skill_list__skill_buttons__content {
+    font-size: 9px;
+  }
+}
+@media screen and (min-width: 600px) {
+  .c-skill_list__skill_buttons__content {
+    font-size: 14px;
   }
 }
 </style>

@@ -24,10 +24,13 @@ const onClick = () => {
 <style scoped lang="scss">
 .c-card {
   position: relative;
-  width: 100%;
-  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 0.75;
   border: 4px ridge;
   border-color: black;
+  overflow: hidden;
+  margin: auto;
   cursor: pointer;
   &--flash {
     animation: card_flash 1s infinite;

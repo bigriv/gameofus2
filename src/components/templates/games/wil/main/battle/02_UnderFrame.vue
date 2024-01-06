@@ -245,7 +245,7 @@ const characterStatusList = computed(() => {
       { name: "防御力", value: "???" },
       { name: "魔力", value: "???" },
       { name: "敏捷力", value: "???" },
-      { name: "次のターンまで", value: `${character.stack}` },
+      { name: "スタック数", value: `${character.stack}` },
     ];
   }
 
@@ -258,7 +258,7 @@ const characterStatusList = computed(() => {
     { name: "防御力", value: `${status.defense}` },
     { name: "魔力", value: `${status.magic}` },
     { name: "敏捷力", value: `${status.speed}` },
-    { name: "次のターンまで", value: `${character.stack}` },
+    { name: "スタック数", value: `${character.stack}` },
   ];
 });
 
@@ -309,7 +309,7 @@ const onMigrate = () => {
   // 移動先選択の表示に切り替え
   battle.value.changeTimming(WIL_BATTLE_TIMMING.BATTLE_SELECT_MIGRATE_PLACE);
 };
-// 攻撃・魔法コマンド選択時のイベント処理
+// 技・魔法コマンド選択時のイベント処理
 const onShowSkillList = () => {
   battle.value.player.selectSkill = undefined;
   // 発動スキル選択の表示に切り替え
@@ -452,8 +452,10 @@ defineExpose({
   }
 }
 @media screen and (max-width: 400px) {
-  .c-under_frame__skill_detail,
   .c-under_frame__status,
+  .c-under_frame__skill_detail {
+    font-size: 7px;
+  }
   .c-under_frame__contents__message,
   .c-under_frame__contents__button,
   .c-under_frame__deploy,
@@ -464,14 +466,17 @@ defineExpose({
 }
 
 @media screen and (max-width: 600px) and (min-width: 400px) {
-  .c-under_frame__skill_detail,
   .c-under_frame__status,
+  .c-under_frame__skill_detail {
+    font-size: 8px;
+  }
+  .c-under_frame__skill_detail,
   .c-under_frame__contents__message,
   .c-under_frame__contents__button,
   .c-under_frame__deploy,
   .c-under_frame__deploy__button,
   .c-under_frame__message_frame {
-    font-size: 10px;
+    font-size: 9px;
   }
 }
 @media screen and (min-width: 600px) {

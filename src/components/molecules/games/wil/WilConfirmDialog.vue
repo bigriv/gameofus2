@@ -118,4 +118,20 @@ const onCancel = () => {
 .v-leave-to {
   height: 0;
 }
+@media screen and (max-width: 400px) {
+  .c-confirm_dialog {
+    font-size: 10px;
+  }
+}
+
+@media screen and (max-width: 600px) and (min-width: 400px) {
+  .c-confirm_dialog {
+    font-size: 12px;
+  }
+}
+@media screen and (min-width: 600px) {
+  .c-confirm_dialog {
+    font-size: 14px;
+  }
+}
 </style>

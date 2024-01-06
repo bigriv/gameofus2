@@ -412,10 +412,10 @@ watch(
         guideMessage.value = "移動するマスを選択してください。";
         break;
       case WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL:
-        guideMessage.value = "攻撃・魔法を選択してください。";
+        guideMessage.value = "技・魔法を選択してください。";
         break;
       case WIL_BATTLE_TIMMING.BATTLE_SELECT_SKILL_TARGET:
-        guideMessage.value = "攻撃・魔法の対象を選択してください。";
+        guideMessage.value = "技・魔法の対象を選択してください。";
         break;
       default:
         if (battle.value.turnOperator.moveCharacter) {
@@ -533,6 +533,9 @@ watch(
   opacity: 0;
 }
 @media screen and (max-width: 400px) {
+  .c-battle__log {
+    font-size: 8px;
+  }
   .c-battle__infomation__turn {
     font-size: 10px;
   }
@@ -546,6 +549,9 @@ watch(
 }
 
 @media screen and (max-width: 600px) and (min-width: 400px) {
+  .c-battle__log {
+    font-size: 10px;
+  }
   .c-battle__infomation__turn {
     font-size: 12px;
   }
@@ -558,6 +564,9 @@ watch(
   }
 }
 @media screen and (min-width: 600px) {
+  .c-battle__log {
+    font-size: 14px;
+  }
   .c-battle__infomation__turn {
     font-size: 14px;
   }

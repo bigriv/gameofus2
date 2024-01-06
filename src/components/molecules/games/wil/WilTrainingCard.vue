@@ -1,8 +1,8 @@
 <template>
   <WilCard @click="onClick">
-    <div class="c-card">
+    <div class="c-trainingcard">
       <div>{{ props.training.name }}</div>
-      <div class="c-card__image">
+      <div class="c-trainingcard__image">
         <GOUVisualCanvas :objects="{ training: props.training.image }" />
       </div>
     </div>
@@ -28,7 +28,7 @@ const onClick = () => {
 };
 </script>
 <style scoped lang="scss">
-.c-card {
+.c-trainingcard {
   position: relative;
   width: 100%;
   height: 100%;
@@ -49,19 +49,19 @@ const onClick = () => {
 }
 
 @media screen and (max-width: 400px) {
-  .c-card {
-    font-size: 10px;
+  .c-trainingcard {
+    font-size: 9px;
   }
 }
 
 @media screen and (max-width: 600px) and (min-width: 400px) {
-  .c-card {
-    font-size: 12px;
+  .c-trainingcard {
+    font-size: 11px;
   }
 }
 @media screen and (min-width: 600px) {
-  .c-card {
-    font-size: 16px;
+  .c-trainingcard {
+    font-size: 14px;
   }
 }
 </style>

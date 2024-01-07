@@ -8,6 +8,14 @@
   display: flex;
   justify-content: space-between;
 }
+.u-d_flex--v_center {
+  display: flex;
+  align-items: center;
+}
+.u-d_flex--h_between {
+  display: flex;
+  justify-content: space-between;
+}
 
 // margin
 @for $i from 1 through 20 {
@@ -38,4 +46,8 @@
 // color
 .u-color--red {
   color: red;
+}
+// text-align
+.u-text_align--right {
+  text-align: right;
 }

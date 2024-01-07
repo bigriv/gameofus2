@@ -24,6 +24,7 @@ header {
     li {
       width: 140px;
       height: 100%;
+      text-align: center;
       a {
         position: relative;
         display: block;
@@ -60,11 +61,11 @@ header {
           &::before {
             content: "";
             border-bottom: 1px solid black;
-            width: 80px;
+            width: 90%;
             height: 100%;
             position: absolute;
             bottom: 0;
-            left: 8px;
+            left: 5%;
             transition: width 0.3s ease;
           }
         }
@@ -81,7 +82,9 @@ header {
       li {
         a {
           font-size: 20px;
+          transition: text-shadow 0.3s ease-in-out;
           &:hover {
+            text-shadow: 0 0 20px black;
             &::before {
               width: 120px;
             }

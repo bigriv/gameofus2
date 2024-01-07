@@ -50,6 +50,12 @@ const routes = [
             meta: { title: "ヒーローになろう" },
           },
           {
+            path: "mp",
+            name: "Mp",
+            component: () => import("@/components/views/games/mp.vue"),
+            meta: { title: "守銭奴の壺" },
+          },
+          {
             path: "wil",
             name: "Wil",
             component: () => import("@/components/views/games/wil.vue"),
@@ -67,6 +73,18 @@ const routes = [
             component: () => import("@/components/views/blessings/index.vue"),
           },
           {
+            path: "customes",
+            children: [
+              {
+                path: "newyear",
+                name: "CustomeNewyear",
+                component: () =>
+                  import("@/components/views/blessings/newyear/custome.vue"),
+                meta: { title: "年賀状" },
+              },
+            ],
+          },
+          {
             path: "birthday",
             name: "BlessingBirthday",
             props: (route: RouteLocationNormalized) => ({
@@ -79,12 +97,33 @@ const routes = [
               import("@/components/views/blessings/birthday.vue"),
             meta: { title: "バースデー" },
           },
+          {
+            path: "newyear",
+            name: "ViewNewyear",
+            props: (route: RouteLocationNormalized) => ({
+              background: route.query.background,
+              year: route.query.year,
+              from: route.query.from,
+              greeting: route.query.greeting,
+              message: route.query.message,
+              showIllust: route.query.showIllust,
+              oneText: route.query.oneText,
+            }),
+            component: () =>
+              import("@/components/views/blessings/newyear/view.vue"),
+            meta: { title: "年賀状" },
+          },
         ],
       },
       {
         path: "tools",
         meta: { title: "ツール" },
         children: [
+          {
+            path: "",
+            name: "Tool",
+            component: () => import("@/components/views/tools/index.vue"),
+          },
           {
             path: "stopwatch",
             name: "CustomeStopwatch",
@@ -104,6 +143,12 @@ const routes = [
         name: "ViewStopwatch",
         component: () => import("@/components/views/tools/stopwatch/view.vue"),
         meta: { title: "ストップウォッチ" },
+      },
+      {
+        path: "translate",
+        name: "ViewTranslate",
+        component: () => import("@/components/views/tools/translate.vue"),
+        meta: { title: "翻訳機" },
       },
     ],
   },

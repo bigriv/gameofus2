@@ -1,19 +1,19 @@
 <template>
-  <div class="c-blessings">
-    <div class="c-blessings__title">お祝い事の一覧！</div>
-    <LinkCardList :contents="blessings" class="u-margin_top--10">
+  <div class="c-tools">
+    <div class="c-tools__title">ツールの一覧！</div>
+    <LinkCardList :contents="tools" class="u-margin_top--10">
       <template v-slot:default="slotProps">
-        <div class="c-blessings__list">
-          <div class="c-blessings__list__title">
+        <div class="c-tools__list">
+          <div class="c-tools__list__title">
             {{ slotProps.content.title }}
           </div>
-          <div class="c-blessings__list__description">
+          <div class="c-tools__list__description">
             {{ slotProps.content.description }}
           </div>
-          <div class="c-blessings__list__tags">
+          <div class="c-tools__list__tags">
             <div
               v-for="tag in slotProps.content.tags"
-              class="c-blessings__list__tags__content"
+              class="c-tools__list__tags__content"
             >
               {{ tag }}
             </div>
@@ -27,19 +27,24 @@
 <script setup lang="ts">
 import LinkCardList from "@/components/atoms/lists/LinkCardList.vue";
 
-const blessings = [
+const tools = [
   {
-    path: "CustomeNewyear",
-    title: "年賀状",
+    path: "CustomeStopwatch",
+    title: "ストップウォッチ",
+    description: "時間を計れます。",
+    tags: ["OBS対応"],
+  },
+  {
+    path: "ViewTranslate",
+    title: "翻訳機",
+    description: "いくつかの言語の翻訳ができます。",
     tags: [],
-    description:
-      "カスタムした年賀状を高速、簡単に作成！新年の挨拶にご利用ください。",
   },
 ];
 </script>
 
 <style scoped lang="scss">
-.c-blessings {
+.c-tools {
   &__title {
     text-wrap: nowrap;
   }

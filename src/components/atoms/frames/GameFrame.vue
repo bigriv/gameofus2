@@ -1,7 +1,15 @@
 <template>
   <div class="c-game">
-    <div class="c-game__window">
-      <slot name="window" />
+    <div class="u-d_flex--v_center u-d_flex--h_between">
+      <div class="c-game__left_conroller">
+        <slot name="left_controller" />
+      </div>
+      <div class="c-game__window">
+        <slot name="window" />
+      </div>
+      <div class="c-game__right_conroller">
+        <slot name="right_controller" />
+      </div>
     </div>
     <div class="c-game__description">
       <slot name="description" />
@@ -52,8 +60,9 @@
 }
 @media screen and (max-width: 350px) {
   .c-game__window {
+    min-width: 350px;
     width: 350px;
-    height: 350px;
+    aspect-ratio: 1;
   }
   .c-game__description {
     width: 350px;
@@ -61,7 +70,10 @@
 }
 @media screen and (max-width: 600px) and (min-width: 350px) {
   .c-game__window {
+    min-width: 350px;
     width: 100%;
+    max-height: min(600px, 90vw);
+    max-width: min(100%, 90vh);
     aspect-ratio: 1;
   }
   .c-game__description {
@@ -70,8 +82,11 @@
 }
 @media screen and (min-width: 600px) {
   .c-game__window {
+    min-width: 350px;
     width: 600px;
-    height: 600px;
+    max-width: min(600px, 90vh);
+    max-height: 600px;
+    aspect-ratio: 1;
   }
   .c-game__description {
     width: 600px;

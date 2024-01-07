@@ -59,7 +59,7 @@ const routes = [
             path: "wil",
             name: "Wil",
             component: () => import("@/components/views/games/wil.vue"),
-            meta: { title: "聖騎士と五つの国" },
+            meta: { title: "世界平和はその聖騎士が導く" },
           },
         ],
       },

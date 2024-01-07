@@ -26,7 +26,48 @@
         />
       </template>
     </template>
-    <template #description> </template>
+    <template #description>
+      <div class="c-game__description__block">
+        <h2>説明</h2>
+        <p>ベータ版のため、プレイできるのは序盤のみとなります。</p>
+        <p>操作方法はクリックのみです。</p>
+        <p>セーブは戦闘終了後、訓練終了後に任意で行えます。</p>
+      </div>
+
+      <div class="c-game__description__block">
+        <h2>推定プレイ時間</h2>
+        <p>10分（ベータ版）</p>
+      </div>
+
+      <div class="c-game__description__block">
+        <h2>素材</h2>
+        <p>
+          SE:
+          <a
+            href="https://soundeffect-lab.info/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >効果音ラボ</a
+          >様
+        </p>
+        <p>
+          BGM:
+          <a
+            href="https://maou.audio/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >魔王魂</a
+          >様
+        </p>
+        <p>キャラクターイラスト: よしを</p>
+        <p>背景イラスト: よしを</p>
+      </div>
+
+      <div class="c-game__description__block">
+        <h2>リリースノート</h2>
+        <p>2024/01/07 ver 0.90 ベータ版リリース（一章のみ）</p>
+      </div>
+    </template>
   </GameFrame>
 </template>
 
@@ -58,14 +99,14 @@ const onShowEnding = (endingId: WIL_ENDING_ID) => {
 const onBackTitle = () => {
   ending.value = undefined;
   overallTimming.value = WIL_OVERALL_TIMMING.TITLE;
-}
+};
 const loaded = () => {
   overallTimming.value = WIL_OVERALL_TIMMING.MAIN;
 };
 </script>
 
 <style scoped lang="scss">
-:deep(*) {
+:deep(.c-game__window) {
   font-family: "DotGothic16";
 }
 .c-drawer {
@@ -75,5 +116,8 @@ const loaded = () => {
   &__loading {
     margin-inline: auto;
   }
+}
+.c-game__description__block {
+  margin-top: 20px;
 }
 </style>

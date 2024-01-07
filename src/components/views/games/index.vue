@@ -49,10 +49,11 @@ const games = [
   },
   {
     path: "Wil",
-    title: "聖騎士と五つの国",
+    title: "世界平和はその聖騎士が導く",
     tags: ["RPG", "スマホ対応"],
-    playtime: "1時間",
-    description: "",
+    playtime: "10分",
+    description:
+      "ベータ版。田舎育ちの青年が聖騎士団に入り、世界を救うゲーム。キャラクターの配置が戦闘の勝敗を分ける！？",
   },
 ];
 </script>

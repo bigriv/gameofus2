@@ -1,8 +1,8 @@
 <template>
   <div class="c-title">
     <span class="c-title__text">
-      <p>何の変哲もない青年が</p>
-      <p>聖騎士になりますとさ</p>
+      <p>世界平和は</p>
+      <p>その聖騎士が導く</p>
     </span>
     <div class="c-title__buttons">
       <GameButton

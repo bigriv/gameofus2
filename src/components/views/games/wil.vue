@@ -114,7 +114,12 @@ const loaded = () => {
   height: 100%;
   background-color: black;
   &__loading {
-    margin-inline: auto;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    color: white;
   }
 }
 .c-game__description__block {

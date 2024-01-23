@@ -31,7 +31,7 @@ export const WIL_TRAINING_DEFINES: {
     name: "侵攻訓練",
     image: WIL_IMAGE_ID.TRAINING_ATTACK,
     minRise: {
-      life: 1,
+      life: 2,
       attack: 1,
       defense: 0,
       magic: 1,
@@ -54,7 +54,7 @@ export const WIL_TRAINING_DEFINES: {
     name: "防衛訓練",
     image: WIL_IMAGE_ID.TRAINING_DEFENSE,
     minRise: {
-      life: 1,
+      life: 2,
       attack: 0,
       defense: 1,
       magic: 1,

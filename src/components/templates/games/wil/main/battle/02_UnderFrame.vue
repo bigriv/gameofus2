@@ -280,6 +280,7 @@ const skillCost = computed(() => {
     return 0;
   }
   return WilSkill.calcCost(
+    battle.value.turnOperator.moveCharacter.status.speed,
     battle.value.turnOperator.moveCharacter.condition,
     battle.value.turnOperator.selectSkill
   );
@@ -291,7 +292,10 @@ const onEndSet = () => {
 };
 // 配置キャラクターの選択時のイベント処理
 const onSelectSetCharacter = (character: WilCharacter) => {
-  if (WilField.MAX_CHARACTER <= playerCharacterNum.value) {
+  if (
+    WilField.MAX_CHARACTER <= playerCharacterNum.value &&
+    !battle.value.turnOperator.targetCell?.character
+  ) {
     emits("error", "これ以上配置できません。");
     return;
   }

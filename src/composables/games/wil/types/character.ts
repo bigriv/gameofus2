@@ -1,15 +1,24 @@
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import GOUImage from "@/composables/types/visuals/GOUImage";
 import { GOUFluidVisual } from "@/composables/types/visuals/GOUFluidVisual";
-import { WIL_SKILL_ID, WIL_SKILL_TYPE } from "@/composables/games/wil/enums/skill";
+import {
+  WIL_SKILL_ID,
+  WIL_SKILL_TYPE,
+} from "@/composables/games/wil/enums/skill";
 import { WIL_ELEMENT } from "@/composables/games/wil/enums/element";
 import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
 import { WIL_CONDITION_ID } from "@/composables/games/wil/enums/condition";
 import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
 import { WilStatus } from "@/composables/games/wil/types/status";
 import { WilSkill } from "@/composables/games/wil/types/skill";
-import { WilTrainingMenu, WilTrainingResult } from "@/composables/games/wil/types/training";
-import { WilBattleDamegeResult, WilBattleMoveResult } from "@/composables/games/wil/types/battle";
+import {
+  WilTrainingMenu,
+  WilTrainingResult,
+} from "@/composables/games/wil/types/training";
+import {
+  WilBattleDamegeResult,
+  WilBattleMoveResult,
+} from "@/composables/games/wil/types/battle";
 import { WilConditionUtil } from "@/composables/games/wil/types/condition";
 import { WilFieldCell } from "@/composables/games/wil/types/field";
 
@@ -268,7 +277,7 @@ export class WilCharacter {
    * @returns 発動に成功すればtrue、失敗した場合はfalse
    */
   useSkill(skill: WilSkill) {
-    const cost = WilSkill.calcCost(this.condition, skill);
+    const cost = WilSkill.calcCost(this.status.speed, this.condition, skill);
     this.stack += cost;
   }
 
@@ -292,7 +301,7 @@ export class WilCharacter {
   /**
    * 状態異常を上書きし、経過ターン数をリセットする
    * @param condition 上書き後の状態異常
-   * @returns 上書きに成功した場合はtrue、失敗した場合はfalse
+   * @returns 上書き結果
    */
   overwriteCondition(condition: WIL_CONDITION_ID): WilBattleMoveResult {
     if (
@@ -307,8 +316,37 @@ export class WilCharacter {
         ],
       });
     }
+    // 上書き前に現在の状態異常の効果を取り消す
+    this.processConditionPassiveEnd();
+
+    const preCondition = this.condition;
     this.condition = condition;
     this.conditionCount = 0;
+    this.processConditionPassiveStart();
+
+    if (this.condition === preCondition) {
+      if (this.condition === WIL_CONDITION_ID.HEALTH) {
+        // 健康⇒健康の場合はすでに健康である旨のメッセージを返す
+        return new WilBattleMoveResult({
+          message: [
+            `${this.name}はすでに${WilConditionUtil.getLabel(
+              this.condition
+            )}状態だ。`,
+          ],
+        });
+      } else {
+        // 健康以外で同じ状態異常の上書きが行われた場合は引き延ばされた胸のメッセージを返す
+        return new WilBattleMoveResult({
+          message: [
+            `${this.name}の${WilConditionUtil.getLabel(
+              this.condition
+            )}状態が引き延ばされた。`,
+          ],
+        });
+      }
+    }
+
+    // 状態異常が変更された場合は変更された旨と効果を返す
     return new WilBattleMoveResult({
       message: [
         `${this.name}は${WilConditionUtil.getLabel(
@@ -485,6 +523,7 @@ export class WilCharacter {
     const temp = this.condition;
     this.condition = WIL_CONDITION_ID.HEALTH;
     this.conditionCount = 0;
+    this.processConditionPassiveEnd();
     return new WilBattleMoveResult({
       message: [
         `${this.name}が受けていた${WilConditionUtil.getLabel(

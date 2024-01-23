@@ -234,7 +234,11 @@ const onClickPlayerField = (cell: WilFieldCell) => {
   }
 };
 const error = (message: string) => {
-  alert(message);
+  confirmModal.message = message;
+  confirmModal.onClickOk = () => {
+    confirmModal.isShow = false;
+  };
+  confirmModal.isShow = true;
 };
 
 /**
@@ -349,10 +353,10 @@ const endBattle = () => {
   changeTimming(WIL_BATTLE_TIMMING.BATTLE_END, () => {
     battle.value.endBattle();
     if (battle.value.winner === WIL_BATTLE_TEAM.PLAYER) {
-      props.sounds.BGM_BATTLE_WIN.play();
+      props.sounds.BGM_BATTLE_WIN1.play();
       confirmModal.message = `${battle.value.computer.teamName}との戦闘に勝利した！`;
       confirmModal.onClickOk = () => {
-        props.sounds.BGM_BATTLE_WIN.stop();
+        props.sounds.BGM_BATTLE_WIN1.stop();
         emits("end", battle.value.winner);
       };
       confirmModal.isShow = true;

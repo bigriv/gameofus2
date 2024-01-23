@@ -3,6 +3,7 @@ import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
 import { WIL_SOUND_ID } from "@/composables/games/wil/enums/sound";
 import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
+import { WIL_BATTLE_TACTICS } from "@/composables/games/wil/enums/battle";
 import { WilTalkDefine } from "@/composables/games/wil/defines/talk";
 import { WilFieldCell } from "@/composables/games/wil/types/field";
 import { WilTraining } from "@/composables/games/wil/types/training";
@@ -67,7 +68,7 @@ export class WilTalkEvent {
 export class WilBattleEvent {
   playerTeamName: string;
   computerTeamName: string;
-  computerLevel: number;
+  tactics: WIL_BATTLE_TACTICS;
   background?: GOUVisual;
   battleBgm?: GOUReadAudio;
   deployBgm?: GOUReadAudio;
@@ -82,7 +83,7 @@ export class WilBattleEvent {
     define: {
       playerTeamName: string;
       computerTeamName: string;
-      computerLevel: number;
+      tactics: WIL_BATTLE_TACTICS;
       background?: GOUVisual;
       battleBgm?: GOUReadAudio;
       deployBgm?: GOUReadAudio;
@@ -97,7 +98,7 @@ export class WilBattleEvent {
   ) {
     this.playerTeamName = define.playerTeamName;
     this.computerTeamName = define.computerTeamName;
-    this.computerLevel = define.computerLevel;
+    this.tactics = define.tactics;
     this.background = define.background;
     this.deployBgm = define.deployBgm;
     this.battleBgm = define.battleBgm;

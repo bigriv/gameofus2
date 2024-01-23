@@ -54,7 +54,7 @@ export class WilSkill {
       target: WIL_SKILL_TARGET;
       range: WIL_SKILL_RANGE;
       element: WIL_ELEMENT;
-      isLearnable: (__character: WilCharacter) => boolean
+      isLearnable: (__character: WilCharacter) => boolean;
     },
     images: { [key: string]: GOUVisual },
     sounds: { [key: string]: GOUReadAudio }
@@ -155,7 +155,7 @@ export class WilSkill {
     }
     // 弱点判定
     if (WilSkill.isWeekness(skill.element, target.element)) {
-      damage *= 2;
+      damage *= 1.5;
     }
     // 抵抗判定
     if (WilSkill.isResistance(skill.element, target.element)) {
@@ -172,14 +172,37 @@ export class WilSkill {
   }
 
   /**
+   * 回復量の計算を行う
+   * 回復量が体力のデフォルト値を超える場合はデフォルトの体力と現在の体力の差を返す
+   * @param standard 回復基準値
+   * @param target 回復対象
+   * @returns 算出した回復量
+   */
+  static calcHeal(standard: number, target: WilCharacter): number {
+    const heal = Math.round(standard * 1.1);
+    if (target.status.life + heal > target.defaultStatus.life) {
+      return target.defaultStatus.life - target.status.life;
+    }
+
+    return heal;
+  }
+
+  /**
    * コストの計算を行う
    * @param condition スキル使用者の状態異常
    * @param skill 発動するスキル
    * @returns 必要コスト
    */
-  static calcCost(condition: WIL_CONDITION_ID, skill: WilSkill): number {
-    let cost = skill.cost;
-    if (condition === WIL_CONDITION_ID.MUDDY) {
+  static calcCost(
+    speed: number,
+    condition: WIL_CONDITION_ID,
+    skill: WilSkill
+  ): number {
+    let cost = skill.cost - Math.floor(speed / 2);
+    if (cost <= 0) {
+      cost = 1;
+    }
+    if (condition === WIL_CONDITION_ID.SLOW) {
       cost += WilConditionUtil.calcIncreaseStack(
         cost,
         WilConditionUtil.MEDIUM_STACK_RATE
@@ -201,5 +224,35 @@ export class WilSkill {
    */
   static isSuccessOverwriteCondition(rate: number): boolean {
     return rate * 0.01 < Math.random();
+  }
+
+  /**
+   * 体力を回復するスキルかを判定する
+   * @param skill 判定するスキル
+   * @returns 体力を回復するスキルならtrue、それ以外ならfalse
+   */
+  static isHealSkill(skill: WIL_SKILL_ID): boolean {
+    return [
+      WIL_SKILL_ID.REGENERATION,
+      WIL_SKILL_ID.HEAL,
+      WIL_SKILL_ID.HEAL_WATER,
+      WIL_SKILL_ID.SUPER_WATER,
+    ].includes(skill);
+  }
+
+  /**
+   * 状態異常を回復するスキルかを判定する
+   * @param skill 判定するスキル
+   * @returns 状態異常を健康または神聖にするスキルの場合はtrue、それ以外はfalse
+   */
+  static isClearSkill(skill: WIL_SKILL_ID): boolean {
+    return [
+      WIL_SKILL_ID.REGENERATION,
+      WIL_SKILL_ID.CLEAR,
+      WIL_SKILL_ID.SANCTUARY,
+      WIL_SKILL_ID.CREATE_SACRED_SWORD,
+      WIL_SKILL_ID.HEAL_WATER,
+      WIL_SKILL_ID.CLEAR_WATER,
+    ].includes(skill);
   }
 }

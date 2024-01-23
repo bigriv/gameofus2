@@ -241,8 +241,8 @@ export class WilCharacter {
    */
   migrate() {
     this.stack += WilStatus.MAX_STATUS + 1 - this.status.speed;
-    if (this.condition === WIL_CONDITION_ID.MUDDY) {
-      // 泥々の場合はスタック数中上昇
+    if (this.condition === WIL_CONDITION_ID.SLOW) {
+      // 鈍足の場合はスタック数中上昇
       this.stack += WilConditionUtil.calcIncreaseStack(
         this.stack,
         WilConditionUtil.MEDIUM_STACK_RATE
@@ -251,7 +251,13 @@ export class WilCharacter {
       // 麻痺の場合はスタック数弱上昇
       this.stack += WilConditionUtil.calcIncreaseStack(
         this.stack,
-        WilConditionUtil.LITTELE_DAMAGE_RATE
+        WilConditionUtil.LITTELE_STACK_RATE
+      );
+    } else if (this.condition === WIL_CONDITION_ID.FAST) {
+      // 加速の場合はスタック数中減少
+      this.stack -= WilConditionUtil.calcIncreaseStack(
+        this.stack,
+        WilConditionUtil.MEDIUM_STACK_RATE
       );
     }
   }
@@ -439,6 +445,23 @@ export class WilCharacter {
             cell: cell,
             damage: damage,
           }),
+        ],
+      });
+    } else if (this.condition === WIL_CONDITION_ID.REGENERATION) {
+      const heal = WilConditionUtil.calcHeal(
+        this.defaultStatus.life,
+        WilConditionUtil.LITTELE_DAMAGE_RATE
+      );
+      this.status.life += heal;
+      if (this.status.life >= this.defaultStatus.life) {
+        this.status.life = this.defaultStatus.life;
+      }
+
+      return new WilBattleMoveResult({
+        message: [
+          `${this.name}は${WilConditionUtil.getLabel(
+            this.condition
+          )}によって${heal}回復した。`,
         ],
       });
     }

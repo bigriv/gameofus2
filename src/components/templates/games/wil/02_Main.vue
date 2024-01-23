@@ -136,7 +136,7 @@ const proceed = () => {
         proceed();
         return;
       }
-      break
+      break;
     case WIL_CHAPTER_TIMMING.TEAM:
       teamEvent.value = currentCapter.value.proceedTeamEvent();
       if (!teamEvent.value) {
@@ -147,14 +147,40 @@ const proceed = () => {
     case WIL_CHAPTER_TIMMING.SAVE:
       break;
     case WIL_CHAPTER_TIMMING.ENDING:
-      emits("end", WIL_ENDING_ID.TO_BE_CONTINUED);
+      if (currentCapter.value.id >= 5) {
+        emits("end", WIL_ENDING_ID.TRUE_END);
+        return;
+      }
+
+      nextChapter();
+      if (!currentCapter.value) {
+        emits("end", WIL_ENDING_ID.TO_BE_CONTINUED);
+        return;
+      }
+      proceed();
 
       break;
   }
-  if (timming.value === WIL_CHAPTER_TIMMING.TALK) {
-  } else if (timming.value === WIL_CHAPTER_TIMMING.BATTLE) {
-  } else if (timming.value === WIL_CHAPTER_TIMMING.TEAM) {
-  } else if (timming.value === WIL_CHAPTER_TIMMING.ENDING) {
+};
+const nextChapter = () => {
+  if (!currentCapter.value) {
+    return;
+  }
+  const nextChapter = WilChapter.getChapterDefine(currentCapter.value.id + 1);
+  if (!nextChapter) {
+    currentCapter.value = undefined;
+    return;
+  }
+
+  currentCapter.value = new WilChapter(
+    nextChapter,
+    characterSequence,
+    WIL_SKILLS,
+    WIL_IMAGES,
+    WIL_SOUNDS
+  );
+
+  switch (currentCapter.value?.id) {
   }
 };
 

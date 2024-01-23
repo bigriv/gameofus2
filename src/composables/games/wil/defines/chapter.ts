@@ -1,6 +1,9 @@
 import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
 import { WIL_SOUND_ID } from "@/composables/games/wil/enums/sound";
-import { WIL_BATTLE_TIMMING, WIL_CHAPTER_TIMMING } from "@/composables/games/wil/enums/timming";
+import {
+  WIL_BATTLE_TIMMING,
+  WIL_CHAPTER_TIMMING,
+} from "@/composables/games/wil/enums/timming";
 import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
 import {
   WIL_MAIN_TALK_DEFINES,
@@ -10,6 +13,8 @@ import {
 } from "@/composables/games/wil/defines/talk";
 import { WilBattle } from "@/composables/games/wil/types/battle";
 import { WilTraining } from "@/composables/games/wil/types/training";
+import { WIL_TRAINING_ID } from "../enums/training";
+import { WIL_BATTLE_TACTICS } from "../enums/battle";
 
 export type WilChapterDefine = {
   id: number;
@@ -19,7 +24,7 @@ export type WilChapterDefine = {
   battles: Array<{
     playerTeamName: string;
     computerTeamName: string;
-    computerLevel: number;
+    tactics: WIL_BATTLE_TACTICS;
     background: WIL_IMAGE_ID;
     deployBgm?: WIL_SOUND_ID;
     battleBgm?: WIL_SOUND_ID;
@@ -62,7 +67,6 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.TEAM,
     WIL_CHAPTER_TIMMING.BATTLE,
-    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.TEAM,
     WIL_CHAPTER_TIMMING.SAVE,
@@ -78,7 +82,7 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
     {
       playerTeamName: "ヒカル&ザーグ",
       computerTeamName: "魔物の群れ",
-      computerLevel: 1,
+      tactics: WIL_BATTLE_TACTICS.RANDOM,
       background: WIL_IMAGE_ID.BACKGROUND_BATTLE_VILLAGE,
       deployBgm: WIL_SOUND_ID.BGM_DEPLOY_1,
       battleBgm: WIL_SOUND_ID.BGM_BATTLE_1,
@@ -129,7 +133,7 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
     {
       playerTeamName: "ヒカル&騎士団員",
       computerTeamName: "聖騎士団",
-      computerLevel: 1,
+      tactics: WIL_BATTLE_TACTICS.RANDOM,
       background: WIL_IMAGE_ID.BACKGROUND_BATTLE_KINGDOM,
       deployBgm: WIL_SOUND_ID.BGM_DEPLOY_1,
       battleBgm: WIL_SOUND_ID.BGM_BATTLE_1,
@@ -211,6 +215,222 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
     },
     {
       in: [WIL_CHARACTER_ID.HOLY_KNIGHTS_LEADER],
+      out: [],
+    },
+  ],
+};
+
+export const WIL_CHAPTER_2_DEFINE: WilChapterDefine = {
+  id: 2,
+  title: "第２章 氷の王女と同盟",
+  flow: [
+    WIL_CHAPTER_TIMMING.OPENING,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.TRAINING,
+    WIL_CHAPTER_TIMMING.SAVE,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.BATTLE,
+    WIL_CHAPTER_TIMMING.SAVE,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.BATTLE,
+    WIL_CHAPTER_TIMMING.SAVE,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.TEAM,
+    WIL_CHAPTER_TIMMING.BATTLE,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.SAVE,
+    WIL_CHAPTER_TIMMING.ENDING,
+  ],
+  talks: [
+    WIL_MAIN_TALK_DEFINES.CHAPTER_2_1,
+    WIL_MAIN_TALK_DEFINES.CHAPTER_2_2,
+    WIL_MAIN_TALK_DEFINES.CHAPTER_2_3,
+    WIL_MAIN_TALK_DEFINES.CHAPTER_2_4,
+    WIL_MAIN_TALK_DEFINES.CHAPTER_2_5,
+  ],
+  battles: [
+    {
+      playerTeamName: "聖騎士団",
+      computerTeamName: "魔物の群れ",
+      tactics: WIL_BATTLE_TACTICS.RANDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_ICE_FIELD,
+      deployBgm: WIL_SOUND_ID.BGM_DEPLOY_1,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE_1,
+      deploy: [
+        {
+          x: 2,
+          y: 1,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_SHADOW,
+        },
+        {
+          x: 0,
+          y: 1,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_UNDEAD,
+        },
+        {
+          x: 1,
+          y: 2,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_RABBIT,
+        },
+        {
+          x: 0,
+          y: 3,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_UNDEAD,
+        },
+        {
+          x: 2,
+          y: 3,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_SHADOW,
+        },
+      ],
+      talks: [],
+    },
+    {
+      playerTeamName: "聖騎士団",
+      computerTeamName: "氷の守護者",
+      tactics: WIL_BATTLE_TACTICS.SUPPORT_PRIORITY,
+      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_ICE_LAND,
+      deployBgm: WIL_SOUND_ID.BGM_DEPLOY_1,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE_1,
+      deploy: [
+        {
+          x: 0,
+          y: 1,
+          character: WIL_CHARACTER_ID.ICICLE_GURDIANS_DEFENDER,
+        },
+        {
+          x: 2,
+          y: 1,
+          character: WIL_CHARACTER_ID.ICICLE_GURDIANS_QUEEN,
+        },
+        {
+          x: 0,
+          y: 3,
+          character: WIL_CHARACTER_ID.ICICLE_GURDIANS_DEFENDER,
+        },
+        {
+          x: 2,
+          y: 3,
+          character: WIL_CHARACTER_ID.ICICLE_GURDIANS_MAGICIAN,
+        },
+      ],
+    },
+    {
+      playerTeamName: "聖騎士団&氷の守護者",
+      computerTeamName: "氷の魔人",
+      tactics: WIL_BATTLE_TACTICS.CONTINUOUS_MOVE,
+      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_ICE_FIELD,
+      deployBgm: WIL_SOUND_ID.BGM_DEPLOY_2,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE_2,
+      deploy: [
+        {
+          x: 1,
+          y: 2,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_ICE_DEMON,
+        },
+      ],
+    },
+  ],
+  trainings: [
+    {
+      days: 7,
+      talks: [
+        {
+          event: WIL_SUB_TALK_DEFINES.HERO_3,
+          isStart: (training: WilTraining) => {
+            for (let result of training.results) {
+              if (result.menu.id !== WIL_TRAINING_ID.PHISIC) {
+                continue;
+              }
+              if (!result.character.isModel(WIL_CHARACTER_ID.HERO)) {
+                continue;
+              }
+              if (result.learned) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES.HERO_4,
+          isStart: (training: WilTraining) => {
+            for (let result of training.results) {
+              if (result.menu.id !== WIL_TRAINING_ID.MAGIC) {
+                continue;
+              }
+              if (!result.character.isModel(WIL_CHARACTER_ID.HERO)) {
+                continue;
+              }
+              if (result.learned) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES.HERO_5,
+          isStart: (training: WilTraining) => {
+            for (let result of training.results) {
+              if (!result.character.isModel(WIL_CHARACTER_ID.HERO)) {
+                continue;
+              }
+              if (
+                result.character.defaultStatus.attack >= 15 &&
+                result.character.defaultStatus.defense >= 12
+              ) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES.HOLY_KNIGHTS_LEADER_1,
+          isStart: (training: WilTraining) => {
+            for (let result of training.results) {
+              if (
+                !result.character.isModel(WIL_CHARACTER_ID.HOLY_KNIGHTS_LEADER)
+              ) {
+                continue;
+              }
+              if (training.days >= 5) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES.HOLY_KNIGHTS_LEADER_2,
+          isStart: (training: WilTraining) => {
+            for (let result of training.results) {
+              if (result.menu.id !== WIL_TRAINING_ID.PHISIC) {
+                continue;
+              }
+              if (
+                !result.character.isModel(WIL_CHARACTER_ID.HOLY_KNIGHTS_LEADER)
+              ) {
+                continue;
+              }
+              if (result.learned) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+      ],
+    },
+  ],
+  updateTeam: [
+    {
+      in: [
+        WIL_CHARACTER_ID.ICICLE_GURDIANS_QUEEN,
+        WIL_CHARACTER_ID.ICICLE_GURDIANS_DEFENDER,
+        WIL_CHARACTER_ID.ICICLE_GURDIANS_MAGICIAN,
+      ],
       out: [],
     },
   ],

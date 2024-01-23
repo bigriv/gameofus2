@@ -5,7 +5,11 @@ import { WIL_CHAPTER_TIMMING } from "@/composables/games/wil/enums/timming";
 import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
 import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
 import { WIL_CHARACTER_DEFINES } from "@/composables/games/wil/defines/character";
-import { WilChapterDefine } from "@/composables/games/wil/defines/chapter";
+import {
+  WIL_CHAPTER_1_DEFINE,
+  WIL_CHAPTER_2_DEFINE,
+  WilChapterDefine,
+} from "@/composables/games/wil/defines/chapter";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 import {
   WilBattleEvent,
@@ -63,7 +67,7 @@ export class WilChapter {
         {
           playerTeamName: battle.playerTeamName,
           computerTeamName: battle.computerTeamName,
-          computerLevel: battle.computerLevel,
+          tactics: battle.tactics,
           background: battle.background ? images[battle.background] : undefined,
           deployBgm: battle.deployBgm ? sounds[battle.deployBgm] : undefined,
           battleBgm: battle.battleBgm ? sounds[battle.battleBgm] : undefined,
@@ -237,5 +241,21 @@ export class WilChapter {
       return undefined;
     }
     return this.teamEvents[++this.currentTeamEvent];
+  }
+
+  /**
+   * idからチャプター定義を取得する
+   * @param id 取得するチャプターのid
+   * @returns チャプター定義（対応する定義がない場合はundefined）
+   */
+  static getChapterDefine(id: number): WilChapterDefine | undefined {
+    switch (id) {
+      case 1:
+        return WIL_CHAPTER_1_DEFINE;
+      case 2:
+        return WIL_CHAPTER_2_DEFINE;
+      default:
+        undefined;
+    }
   }
 }

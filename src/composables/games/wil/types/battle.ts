@@ -44,10 +44,7 @@ export class WilBattle {
     this.player.deployableCharacters = [...this.player.allCharacters];
     this.player.resetField();
 
-    this.computer = new WilComputer(
-      event.computerTeamName,
-      event.computerLevel
-    );
+    this.computer = new WilComputer(event.computerTeamName, event.tactics);
 
     this.turnOperator = this.player; // 便宜上デフォルトのターンプレイヤーはプレイヤーとする
     this.timming = WIL_BATTLE_TIMMING.SET_SELECT_CELL;

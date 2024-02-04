@@ -5,16 +5,15 @@ import {
   WIL_CHAPTER_TIMMING,
 } from "@/composables/games/wil/enums/timming";
 import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
-import {
-  WIL_MAIN_TALK_DEFINES,
-  WIL_SUB_TALK_DEFINES,
-  WIL_TUTORIAL_DEFINES,
-  WilTalkDefine,
-} from "@/composables/games/wil/defines/talk";
 import { WilBattle } from "@/composables/games/wil/types/battle";
 import { WilTraining } from "@/composables/games/wil/types/training";
-import { WIL_TRAINING_ID } from "../enums/training";
-import { WIL_BATTLE_TACTICS } from "../enums/battle";
+import { WIL_TRAINING_ID } from "@/composables/games/wil/enums/training";
+import { WIL_BATTLE_TACTICS } from "@/composables/games/wil/enums/battle";
+import { WIL_TALK_DEFINES_CHPATER1 } from "@/composables/games/wil/defines/talks/chapter1";
+import { WIL_TALK_DEFINES_CHPATER2 } from "@/composables/games/wil/defines/talks/chapter2";
+import { WilTalkDefine } from "@/composables/games/wil/defines/talks";
+import { WIL_TALK_DEFINES_TUTORIAL } from "@/composables/games/wil/defines/talks/tutorial";
+import { WIL_SUB_TALK_DEFINES } from "@/composables/games/wil/defines/talks/sub";
 
 export type WilChapterDefine = {
   id: number;
@@ -72,12 +71,7 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
     WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.ENDING,
   ],
-  talks: [
-    WIL_MAIN_TALK_DEFINES.CHAPTER_1_1,
-    WIL_MAIN_TALK_DEFINES.CHAPTER_1_2,
-    WIL_MAIN_TALK_DEFINES.CHAPTER_1_3,
-    WIL_MAIN_TALK_DEFINES.CHAPTER_1_4,
-  ],
+  talks: [...WIL_TALK_DEFINES_CHPATER1],
   battles: [
     {
       playerTeamName: "ヒカル&ザーグ",
@@ -105,25 +99,25 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
       ],
       talks: [
         {
-          event: WIL_TUTORIAL_DEFINES.BATTLE_SET_CHARACTER_1,
+          event: WIL_TALK_DEFINES_TUTORIAL.BATTLE_SET_CHARACTER_1,
           isStart: (battle: WilBattle) => {
             return battle.timming === WIL_BATTLE_TIMMING.SET_SELECT_CELL;
           },
         },
         {
-          event: WIL_TUTORIAL_DEFINES.BATTLE_SET_CHARACTER_2,
+          event: WIL_TALK_DEFINES_TUTORIAL.BATTLE_SET_CHARACTER_2,
           isStart: (battle: WilBattle) => {
             return battle.timming === WIL_BATTLE_TIMMING.SET_SELECT_CELL;
           },
         },
         {
-          event: WIL_TUTORIAL_DEFINES.BATTLE_START,
+          event: WIL_TALK_DEFINES_TUTORIAL.BATTLE_START,
           isStart: (battle: WilBattle) => {
             return battle.timming === WIL_BATTLE_TIMMING.BATTLE_TURN_START;
           },
         },
         {
-          event: WIL_TUTORIAL_DEFINES.BATTLE_SELECT_MOVE,
+          event: WIL_TALK_DEFINES_TUTORIAL.BATTLE_SELECT_MOVE,
           isStart: (battle: WilBattle) => {
             return battle.timming === WIL_BATTLE_TIMMING.BATTLE_SELECT_MOVE;
           },
@@ -161,7 +155,7 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
       days: 7,
       talks: [
         {
-          event: WIL_TUTORIAL_DEFINES.TRAINING,
+          event: WIL_TALK_DEFINES_TUTORIAL.TRAINING,
           isStart: (__training: WilTraining) => {
             return true;
           },
@@ -241,13 +235,7 @@ export const WIL_CHAPTER_2_DEFINE: WilChapterDefine = {
     WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.ENDING,
   ],
-  talks: [
-    WIL_MAIN_TALK_DEFINES.CHAPTER_2_1,
-    WIL_MAIN_TALK_DEFINES.CHAPTER_2_2,
-    WIL_MAIN_TALK_DEFINES.CHAPTER_2_3,
-    WIL_MAIN_TALK_DEFINES.CHAPTER_2_4,
-    WIL_MAIN_TALK_DEFINES.CHAPTER_2_5,
-  ],
+  talks: [...WIL_TALK_DEFINES_CHPATER2],
   battles: [
     {
       playerTeamName: "聖騎士団",

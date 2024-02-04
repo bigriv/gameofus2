@@ -4,7 +4,7 @@ import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
 import { WIL_SOUND_ID } from "@/composables/games/wil/enums/sound";
 import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
 import { WIL_BATTLE_TACTICS } from "@/composables/games/wil/enums/battle";
-import { WilTalkDefine } from "@/composables/games/wil/defines/talk";
+import { WilTalkDefine } from "@/composables/games/wil/defines/talks/index";
 import { WilFieldCell } from "@/composables/games/wil/types/field";
 import { WilTraining } from "@/composables/games/wil/types/training";
 import { WilBattle } from "@/composables/games/wil/types/battle";

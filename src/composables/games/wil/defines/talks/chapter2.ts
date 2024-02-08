@@ -10,7 +10,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
-      bgm: WIL_SOUND_ID.BGM_VILLAGE_1,
+      bgm: WIL_SOUND_ID.BGM_VILLAGE1,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_SOLDIER,
       talker: "騎士兵",
@@ -113,7 +113,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
-      bgm: WIL_SOUND_ID.BGM_PINCH_1,
+      bgm: WIL_SOUND_ID.BGM_PINCH1,
       left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_SOLDIER,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       talker: "ザーグ",
@@ -178,20 +178,20 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
   ],
   [
     {
-      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       talker: "ザーグ",
       message: ["そろそろ出発だ。準備はいいか？"],
     },
     {
-      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       talker: "ヒカル",
       message: ["はい！"],
     },
     {
-      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_LAND_EMPEROR,
       talker: "皇帝",
       message: ["長時間の移動になるけど、みんなよろしく頼むよ。"],
@@ -204,7 +204,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       message: ["（あれが皇帝陛下か...。優しそうな人だな。）"],
     },
     {
-      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_LAND_EMPEROR,
       talker: "皇帝",
@@ -221,7 +221,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       ],
     },
     {
-      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_LAND_EMPEROR,
       talker: "皇帝",
@@ -433,7 +433,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     { message: [""] },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_LAND,
-      bgm: WIL_SOUND_ID.BGM_ICE_LAND_1,
+      bgm: WIL_SOUND_ID.BGM_ICE_LAND1,
       left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       talker: "ザーグ",
       message: [
@@ -699,7 +699,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
   [
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_LAND,
-      bgm: WIL_SOUND_ID.BGM_ICE_LAND_1,
+      bgm: WIL_SOUND_ID.BGM_ICE_LAND1,
       right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "レイナ",
       message: ["...っく！この私が負けるなんて...。"],
@@ -823,7 +823,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      bgm: WIL_SOUND_ID.BGM_PINCH_1,
+      bgm: WIL_SOUND_ID.BGM_PINCH1,
       sound: WIL_SOUND_ID.SE_MONSTER,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_ICE_DEMON,
       message: [""],

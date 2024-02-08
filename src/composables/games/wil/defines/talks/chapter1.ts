@@ -37,7 +37,7 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
     {
       talker: "村長",
       background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
-      bgm: WIL_SOUND_ID.BGM_VILLAGE_1,
+      bgm: WIL_SOUND_ID.BGM_VILLAGE1,
       message: [
         "ヒカル、今年の収穫もよろしく頼むよ。",
         "若い男はヒカル一人だからね。頼りにしてるよ。",
@@ -85,7 +85,7 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
     {
       talker: "村の子供",
       sound: WIL_SOUND_ID.SE_MONSTER,
-      bgm: WIL_SOUND_ID.BGM_PINCH_1,
+      bgm: WIL_SOUND_ID.BGM_PINCH1,
       background: WIL_IMAGE_ID.BACKGROUND_VILLAGE_EVENING,
       message: ["きゃー！"],
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_SHADOW,
@@ -230,7 +230,7 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
     {
       talker: "聖騎士団隊長 ザーグ",
       background: WIL_IMAGE_ID.BACKGROUND_VILLAGE_EVENING,
-      bgm: WIL_SOUND_ID.BGM_VILLAGE_1,
+      bgm: WIL_SOUND_ID.BGM_VILLAGE1,
       message: ["ふう、なんとか凌いだかな...。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
@@ -386,28 +386,28 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
   [
     {
       talker: "ヒカル",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
-      bgm: WIL_SOUND_ID.BGM_HOLY_CASLE_1,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
+      bgm: WIL_SOUND_ID.BGM_HOLY_CASLE1,
       message: ["はあ、帝都は広いなあ。えーと、聖騎士団に会うには...。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
     },
     {
       talker: "聖騎士団隊長 ザーグ",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: ["おや、そこにいるのは、この間の少年じゃないか。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
     },
     {
       talker: "ヒカル",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: ["あなたはあの時の...。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
     },
     {
       talker: "聖騎士団隊長 ザーグ",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: [
         "俺は聖騎士団隊長、ザーグ！...って前にも自己紹介したっけか？",
         "えーと、君は...",
@@ -417,28 +417,28 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
     },
     {
       talker: "ヒカル",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: ["ヒカルです。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
     },
     {
       talker: "聖騎士団隊長 ザーグ",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: ["ヒカル君、待っていたよ。", "じゃあ早速入団試験を始めようか。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
     },
     {
       talker: "ヒカル",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: ["え、入団試験？", "そんなの聞いてないんですが...。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
     },
     {
       talker: "聖騎士団隊長 ザーグ",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: [
         "スカウトしたとはいえ、改めて力を確認しておきたいからね。",
         "なに、難しい試験じゃないさ。",
@@ -449,7 +449,7 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
     },
     {
       talker: "聖騎士団隊長 ザーグ",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: [
         "もちろん聖騎士団側は手加減するさ。",
         "君の味方二人は聖騎士団の中から見繕うから、好きに使ってくれ。",
@@ -459,14 +459,14 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
     },
     {
       talker: "ヒカル",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: ["試験って、人格とか知能の確認とかは？"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
     },
     {
       talker: "聖騎士団隊長 ザーグ",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: [
         "筆記試験とか倫理試験とかも考えたけど、面倒くさくてね。",
         "剣を交えれば大体わかるだろう。",
@@ -476,35 +476,35 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
     },
     {
       talker: "ヒカル",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: ["（この人、こんなに脳筋だったのか...。）"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
     },
     {
       talker: "聖騎士団隊長 ザーグ",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: ["早速始めようか。", "彼らが君の味方だよ。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
     },
     {
       talker: "騎士兵",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: ["よろしく。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_SOLDIER,
     },
     {
       talker: "魔導兵",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: ["よろしく。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_MAGICIAN,
     },
     {
       talker: "ヒカル",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: ["よろしくお願いします。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_MAGICIAN,
@@ -513,14 +513,14 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
   [
     {
       talker: "ヒカル",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: ["はぁはぁ、なんとか勝てた...。"],
-      bgm: WIL_SOUND_ID.BGM_HOLY_CASLE_1,
+      bgm: WIL_SOUND_ID.BGM_HOLY_CASLE1,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
     },
     {
       talker: "聖騎士団隊長 ザーグ",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: [
         "まさか、本当に勝てるとは思ってなかったよ。",
         "やはり君は俺の期待に応えてくれそうだね。",
@@ -531,13 +531,13 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
     },
     {
       talker: "ヒカル",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: ["なんか、疲れた...。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
     },
     {
       talker: "魔導兵",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: [
         "君、隊長にそそのかされて来たんでしょ？",
         "これから大変だよ...。",
@@ -547,14 +547,14 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
     },
     {
       talker: "ヒカル",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: ["え？"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_MAGICIAN,
     },
     {
       talker: "騎士兵",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: [
         "もう分かってると思うけど、あの人勢いだけで動いてるところあるから...。",
         "まあ、一緒に頑張ろう。",
@@ -564,14 +564,14 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
     },
     {
       talker: "ヒカル",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: ["えぇ...。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_SOLDIER,
     },
     {
       talker: "聖騎士団隊長 ザーグ",
-      background: WIL_IMAGE_ID.BACKGROUND_KINGDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       message: ["さあ、さっそく特訓だ！"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,

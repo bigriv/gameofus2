@@ -18,7 +18,7 @@ export const WIL_SUB_TALK_DEFINES: {
       talker: "ヒカル",
       message: ["なるほど、聖騎士団の特訓は大きく分けて5種類あるのか。"],
       background: WIL_IMAGE_ID.BACKGROUND_BATTLE_VILLAGE,
-      bgm: WIL_SOUND_ID.BGM_VILLAGE_1,
+      bgm: WIL_SOUND_ID.BGM_VILLAGE1,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
     },
     {
@@ -67,7 +67,7 @@ export const WIL_SUB_TALK_DEFINES: {
       talker: "ヒカル",
       message: ["前にザーグさんと戦ったとき、魔物が陣形をとっていたな。"],
       background: WIL_IMAGE_ID.BACKGROUND_BATTLE_VILLAGE,
-      bgm: WIL_SOUND_ID.BGM_VILLAGE_1,
+      bgm: WIL_SOUND_ID.BGM_VILLAGE1,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
     },
     {
@@ -109,7 +109,7 @@ export const WIL_SUB_TALK_DEFINES: {
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
-      bgm: WIL_SOUND_ID.BGM_VILLAGE_1,
+      bgm: WIL_SOUND_ID.BGM_VILLAGE1,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       talker: "ヒカル",
       message: ["はぁ！"],
@@ -198,7 +198,7 @@ export const WIL_SUB_TALK_DEFINES: {
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
-      bgm: WIL_SOUND_ID.BGM_VILLAGE_1,
+      bgm: WIL_SOUND_ID.BGM_VILLAGE1,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       talker: "ヒカル",
       message: [
@@ -289,7 +289,7 @@ export const WIL_SUB_TALK_DEFINES: {
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
-      bgm: WIL_SOUND_ID.BGM_VILLAGE_1,
+      bgm: WIL_SOUND_ID.BGM_VILLAGE1,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       talker: "ザーグ",
@@ -441,7 +441,7 @@ export const WIL_SUB_TALK_DEFINES: {
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
-      bgm: WIL_SOUND_ID.BGM_VILLAGE_1,
+      bgm: WIL_SOUND_ID.BGM_VILLAGE1,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       talker: "ザーグ",
       message: [
@@ -510,7 +510,7 @@ export const WIL_SUB_TALK_DEFINES: {
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_BLACK,
-      bgm: WIL_SOUND_ID.BGM_HOLY_CASLE_1,
+      bgm: WIL_SOUND_ID.BGM_HOLY_CASLE1,
       left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       talker: "ザーグ",
       message: [
@@ -571,7 +571,7 @@ export const WIL_SUB_TALK_DEFINES: {
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
-      bgm: WIL_SOUND_ID.BGM_VILLAGE_1,
+      bgm: WIL_SOUND_ID.BGM_VILLAGE1,
       left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_SOLDIER,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       talker: "ザーグ",

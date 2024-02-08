@@ -78,8 +78,8 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
       computerTeamName: "魔物の群れ",
       tactics: WIL_BATTLE_TACTICS.RANDOM,
       background: WIL_IMAGE_ID.BACKGROUND_BATTLE_VILLAGE,
-      deployBgm: WIL_SOUND_ID.BGM_DEPLOY_1,
-      battleBgm: WIL_SOUND_ID.BGM_BATTLE_1,
+      deployBgm: WIL_SOUND_ID.BGM_DEPLOY1,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE1,
       deploy: [
         {
           x: 0,
@@ -128,9 +128,9 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
       playerTeamName: "ヒカル&騎士団員",
       computerTeamName: "聖騎士団",
       tactics: WIL_BATTLE_TACTICS.RANDOM,
-      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_KINGDOM,
-      deployBgm: WIL_SOUND_ID.BGM_DEPLOY_1,
-      battleBgm: WIL_SOUND_ID.BGM_BATTLE_1,
+      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_HOLY_LAND_CASTLE,
+      deployBgm: WIL_SOUND_ID.BGM_DEPLOY1,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE1,
       deploy: [
         {
           x: 0,
@@ -242,8 +242,8 @@ export const WIL_CHAPTER_2_DEFINE: WilChapterDefine = {
       computerTeamName: "魔物の群れ",
       tactics: WIL_BATTLE_TACTICS.RANDOM,
       background: WIL_IMAGE_ID.BACKGROUND_BATTLE_ICE_FIELD,
-      deployBgm: WIL_SOUND_ID.BGM_DEPLOY_1,
-      battleBgm: WIL_SOUND_ID.BGM_BATTLE_1,
+      deployBgm: WIL_SOUND_ID.BGM_DEPLOY1,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE1,
       deploy: [
         {
           x: 2,
@@ -278,8 +278,8 @@ export const WIL_CHAPTER_2_DEFINE: WilChapterDefine = {
       computerTeamName: "氷の守護者",
       tactics: WIL_BATTLE_TACTICS.SUPPORT_PRIORITY,
       background: WIL_IMAGE_ID.BACKGROUND_BATTLE_ICE_LAND,
-      deployBgm: WIL_SOUND_ID.BGM_DEPLOY_1,
-      battleBgm: WIL_SOUND_ID.BGM_BATTLE_1,
+      deployBgm: WIL_SOUND_ID.BGM_DEPLOY1,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE1,
       deploy: [
         {
           x: 0,
@@ -308,8 +308,8 @@ export const WIL_CHAPTER_2_DEFINE: WilChapterDefine = {
       computerTeamName: "氷の魔人",
       tactics: WIL_BATTLE_TACTICS.CONTINUOUS_MOVE,
       background: WIL_IMAGE_ID.BACKGROUND_BATTLE_ICE_FIELD,
-      deployBgm: WIL_SOUND_ID.BGM_DEPLOY_2,
-      battleBgm: WIL_SOUND_ID.BGM_BATTLE_2,
+      deployBgm: WIL_SOUND_ID.BGM_DEPLOY2,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE2,
       deploy: [
         {
           x: 1,

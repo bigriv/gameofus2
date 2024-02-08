@@ -1,6 +1,7 @@
 export enum WIL_OVERALL_TIMMING {
+  FILE_LOADING,
   TITLE,
-  LOADING,
+  SAVE_LOADING,
   MAIN,
   ENDING,
 }

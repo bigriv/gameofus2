@@ -38,13 +38,21 @@ export class WilBattle {
   damageResults: Array<WilBattleDamegeResult> = [];
   log: Array<string> = [];
 
-  constructor(player: WilPlayer, event: WilBattleEvent) {
+  constructor(
+    player: WilPlayer,
+    event: WilBattleEvent,
+    skillDefines: { [key: string]: WilSkill }
+  ) {
     this.player = player;
     this.player.teamName = event.playerTeamName;
     this.player.deployableCharacters = [...this.player.allCharacters];
     this.player.resetField();
 
-    this.computer = new WilComputer(event.computerTeamName, event.tactics);
+    this.computer = new WilComputer(
+      event.computerTeamName,
+      event.tactics,
+      skillDefines
+    );
 
     this.turnOperator = this.player; // 便宜上デフォルトのターンプレイヤーはプレイヤーとする
     this.timming = WIL_BATTLE_TIMMING.SET_SELECT_CELL;

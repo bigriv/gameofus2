@@ -8,14 +8,13 @@
       />
     </template>
     <template v-else-if="timming == WIL_CHAPTER_TIMMING.TALK">
-      <Talk :images="WIL_IMAGES" :events="talkEvents" @end="proceed" />
+      <Talk :events="talkEvents" @end="proceed" />
     </template>
     <template v-else-if="timming == WIL_CHAPTER_TIMMING.BATTLE">
       <Battle
         v-if="battleEvent"
         :player="player"
         :skills="WIL_SKILLS"
-        :sounds="WIL_SOUNDS"
         :event="battleEvent"
         @end="endBattle"
       />
@@ -23,9 +22,7 @@
     <template v-else-if="timming == WIL_CHAPTER_TIMMING.TRAINING">
       <Training
         v-if="trainingEvent"
-        :images="WIL_IMAGES"
         :skills="WIL_SKILLS"
-        :bgm="WIL_SOUNDS.BGM_TRAINING_1"
         :event="trainingEvent"
         :player="player"
         @end="proceed"
@@ -34,8 +31,6 @@
     <template v-else-if="timming == WIL_CHAPTER_TIMMING.TEAM">
       <UpdateTeam
         v-if="teamEvent"
-        :images="WIL_IMAGES"
-        :skills="WIL_SKILLS"
         :event="teamEvent"
         :sequence="characterSequence"
         :player="player"
@@ -49,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, onMounted, ref, watch } from "vue";
+import { Ref, onMounted, ref } from "vue";
 import ChapterStart from "@/components/templates/games/wil/main/01_ChapterStart.vue";
 import Talk from "@/components/templates/games/wil/main/02_Talk.vue";
 import Battle from "@/components/templates/games/wil/main/03_Battle.vue";
@@ -87,15 +82,7 @@ const props = defineProps({
 
 const emits = defineEmits(["loaded", "end"]);
 
-const {
-  WIL_IMAGES,
-  WIL_SOUNDS,
-  WIL_SKILLS,
-  isLoadedFiles,
-  loadFiles,
-  characterSequence,
-  player,
-} = useWilInit();
+const { WIL_SKILLS, characterSequence, player } = useWilInit();
 
 const timming: Ref<WIL_CHAPTER_TIMMING> = ref(WIL_CHAPTER_TIMMING.OPENING);
 const talkEvents: Ref<Array<WilTalkEvent> | undefined> = ref();
@@ -172,13 +159,7 @@ const nextChapter = () => {
     return;
   }
 
-  currentCapter.value = new WilChapter(
-    nextChapter,
-    characterSequence,
-    WIL_SKILLS,
-    WIL_IMAGES,
-    WIL_SOUNDS
-  );
+  currentCapter.value = new WilChapter(nextChapter, characterSequence);
 
   switch (currentCapter.value?.id) {
   }
@@ -194,13 +175,7 @@ const onSave = () => {
 const loadSaveData = () => {
   const { chapter, flow, characters } = WilSaveUtil.load();
   if (chapter) {
-    currentCapter.value = new WilChapter(
-      chapter,
-      characterSequence,
-      WIL_SKILLS,
-      WIL_IMAGES,
-      WIL_SOUNDS
-    );
+    currentCapter.value = new WilChapter(chapter, characterSequence);
   }
   if (flow) {
     for (let i = -1; i < flow; i++) {
@@ -221,12 +196,10 @@ const loadSaveData = () => {
     player.allCharacters = characters.map((character) => {
       const c = new WilCharacter(
         characterSequence.generateId(),
-        WIL_CHARACTER_DEFINES[character.model],
-        WIL_SKILLS,
-        WIL_IMAGES
+        WIL_CHARACTER_DEFINES[character.model]
       );
       c.defaultStatus = new WilStatus(character.defaultStatus);
-      c.skills = character.skills.map((skill) => WIL_SKILLS[skill]);
+      c.skills = character.skills;
       c.reset();
       return c;
     });
@@ -234,31 +207,19 @@ const loadSaveData = () => {
 };
 
 onMounted(() => {
-  loadFiles();
-
   if (props.loadData) {
     loadSaveData();
+    emits("loaded");
   }
 
   if (!currentCapter.value) {
     currentCapter.value = new WilChapter(
       WIL_CHAPTER_1_DEFINE,
-      characterSequence,
-      WIL_SKILLS,
-      WIL_IMAGES,
-      WIL_SOUNDS
+      characterSequence
     );
   }
   proceed();
 });
-watch(
-  () => isLoadedFiles.value,
-  () => {
-    if (isLoadedFiles.value) {
-      emits("loaded");
-    }
-  }
-);
 </script>
 
 <style scoped lang="scss">

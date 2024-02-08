@@ -1,3 +1,4 @@
+import { useGameStore } from "@/pinia/game";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import GOUImage from "@/composables/types/visuals/GOUImage";
 import { GOUFluidVisual } from "@/composables/types/visuals/GOUFluidVisual";
@@ -33,7 +34,7 @@ export class WilCharacter {
     shootPhisic: GOUFluidVisual;
     magic: GOUFluidVisual;
   };
-  skills: Array<WilSkill> = [];
+  skills: Array<WIL_SKILL_ID> = [];
   learnable: Array<WIL_SKILL_ID>;
   defaultStatus: WilStatus;
   status: WilStatus;
@@ -42,24 +43,20 @@ export class WilCharacter {
   element: WIL_ELEMENT;
   stack: number = 0;
 
-  constructor(
-    sequence: number,
-    define: WilCharacterDefine,
-    skills: { [key: string]: WilSkill },
-    images: { [key: string]: GOUVisual }
-  ) {
+  constructor(sequence: number, define: WilCharacterDefine) {
+    const gameStore = useGameStore();
     this.model = define.id;
     this.id = `${define.id}_${sequence}`;
     this.name = define.name;
 
     let closePhisicVisual = new GOUFluidVisual([
-      { visual: images[define.visual.standing], duration: 1 },
+      { visual: gameStore.getImages[define.visual.standing], duration: 1 },
     ]);
     if (define.visual.closePhisic) {
       closePhisicVisual = new GOUFluidVisual(
         define.visual.closePhisic.map((v) => {
           return {
-            visual: images[v.visual],
+            visual: gameStore.getImages[v.visual],
             duration: v.duration,
           };
         })
@@ -67,27 +64,27 @@ export class WilCharacter {
     }
 
     let shootPhisicVisual = new GOUFluidVisual([
-      { visual: images[define.visual.standing], duration: 1 },
+      { visual: gameStore.getImages[define.visual.standing], duration: 1 },
     ]);
 
     if (define.visual.shootPhisic) {
       shootPhisicVisual = new GOUFluidVisual(
         define.visual.shootPhisic.map((v) => {
           return {
-            visual: images[v.visual],
+            visual: gameStore.getImages[v.visual],
             duration: v.duration,
           };
         })
       );
     }
     let magicVisual = new GOUFluidVisual([
-      { visual: images[define.visual.standing], duration: 1 },
+      { visual: gameStore.getImages[define.visual.standing], duration: 1 },
     ]);
     if (define.visual.magic) {
       magicVisual = new GOUFluidVisual(
         define.visual.magic.map((v) => {
           return {
-            visual: images[v.visual],
+            visual: gameStore.getImages[v.visual],
             duration: v.duration,
           };
         })
@@ -95,8 +92,10 @@ export class WilCharacter {
     }
 
     this.visual = {
-      current: (images[define.visual.standing] as GOUImage).deepCopy(),
-      standing: images[define.visual.standing],
+      current: (
+        gameStore.getImages[define.visual.standing] as GOUImage
+      ).deepCopy(),
+      standing: gameStore.getImages[define.visual.standing],
       closePhisic: closePhisicVisual,
       shootPhisic: shootPhisicVisual,
       magic: magicVisual,
@@ -104,7 +103,7 @@ export class WilCharacter {
     this.defaultStatus = new WilStatus(define.status);
     this.status = new WilStatus(define.status);
     this.element = define.element ?? WIL_ELEMENT.NONE;
-    this.skills = define.skills?.map((id) => skills[id]) ?? [];
+    this.skills = define.skills;
     this.learnable = define.learnable;
   }
 
@@ -133,7 +132,7 @@ export class WilCharacter {
    * @returns 習得済みスキルのIDリスト
    */
   getSkillIdList(): Array<WIL_SKILL_ID> {
-    return this.skills.map((skill) => skill.id);
+    return this.skills;
   }
 
   /**
@@ -199,7 +198,7 @@ export class WilCharacter {
         continue;
       }
 
-      this.skills.push(skill);
+      this.skills.push(skill.id);
       return skill;
     }
     return undefined;

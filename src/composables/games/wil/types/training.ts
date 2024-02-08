@@ -1,3 +1,4 @@
+import { useGameStore } from "@/pinia/game";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WIL_TRAINING_ID } from "@/composables/games/wil/enums/training";
 import { WIL_TRAINING_DEFINES } from "@/composables/games/wil/defines/training";
@@ -23,18 +24,15 @@ export class WilTraining {
   results: Array<WilTrainingResult> = [];
   log: Array<string> = [];
 
-  constructor(
-    days: number,
-    characters: Array<WilCharacter>,
-    images: { [key: string]: GOUVisual }
-  ) {
+  constructor(days: number, characters: Array<WilCharacter>) {
+    const gameStore = useGameStore();
     this.lastDay = days;
     this.plan = {
       attack: {
         menu: new WilTrainingMenu({
           id: WIL_TRAINING_DEFINES.ATTACK.id,
           name: WIL_TRAINING_DEFINES.ATTACK.name,
-          image: images[WIL_TRAINING_DEFINES.ATTACK.image],
+          image: gameStore.getImages[WIL_TRAINING_DEFINES.ATTACK.image],
           minRise: new WilStatus(WIL_TRAINING_DEFINES.ATTACK.minRise),
           maxRise: new WilStatus(WIL_TRAINING_DEFINES.ATTACK.maxRise),
           learnable: WIL_TRAINING_DEFINES.ATTACK.learnable,
@@ -44,7 +42,7 @@ export class WilTraining {
         menu: new WilTrainingMenu({
           id: WIL_TRAINING_DEFINES.DEFENSE.id,
           name: WIL_TRAINING_DEFINES.DEFENSE.name,
-          image: images[WIL_TRAINING_DEFINES.DEFENSE.image],
+          image: gameStore.getImages[WIL_TRAINING_DEFINES.DEFENSE.image],
           minRise: new WilStatus(WIL_TRAINING_DEFINES.DEFENSE.minRise),
           maxRise: new WilStatus(WIL_TRAINING_DEFINES.DEFENSE.maxRise),
           learnable: WIL_TRAINING_DEFINES.DEFENSE.learnable,
@@ -54,7 +52,7 @@ export class WilTraining {
         menu: new WilTrainingMenu({
           id: WIL_TRAINING_DEFINES.MIGRATION.id,
           name: WIL_TRAINING_DEFINES.MIGRATION.name,
-          image: images[WIL_TRAINING_DEFINES.MIGRATION.image],
+          image: gameStore.getImages[WIL_TRAINING_DEFINES.MIGRATION.image],
           minRise: new WilStatus(WIL_TRAINING_DEFINES.MIGRATION.minRise),
           maxRise: new WilStatus(WIL_TRAINING_DEFINES.MIGRATION.maxRise),
           learnable: WIL_TRAINING_DEFINES.MIGRATION.learnable,
@@ -64,7 +62,7 @@ export class WilTraining {
         menu: new WilTrainingMenu({
           id: WIL_TRAINING_DEFINES.MAGIC.id,
           name: WIL_TRAINING_DEFINES.MAGIC.name,
-          image: images[WIL_TRAINING_DEFINES.MAGIC.image],
+          image: gameStore.getImages[WIL_TRAINING_DEFINES.MAGIC.image],
           minRise: new WilStatus(WIL_TRAINING_DEFINES.MAGIC.minRise),
           maxRise: new WilStatus(WIL_TRAINING_DEFINES.MAGIC.maxRise),
           learnable: WIL_TRAINING_DEFINES.MAGIC.learnable,
@@ -74,7 +72,7 @@ export class WilTraining {
         menu: new WilTrainingMenu({
           id: WIL_TRAINING_DEFINES.PHISIC.id,
           name: WIL_TRAINING_DEFINES.PHISIC.name,
-          image: images[WIL_TRAINING_DEFINES.PHISIC.image],
+          image: gameStore.getImages[WIL_TRAINING_DEFINES.PHISIC.image],
           minRise: new WilStatus(WIL_TRAINING_DEFINES.PHISIC.minRise),
           maxRise: new WilStatus(WIL_TRAINING_DEFINES.PHISIC.maxRise),
           learnable: WIL_TRAINING_DEFINES.PHISIC.learnable,

@@ -7,15 +7,20 @@
       <template v-else-if="overallTimming == WIL_OVERALL_TIMMING.ENDING">
         <Ending v-if="ending" :ending="ending" @end="onBackTitle" />
       </template>
-      <template v-else-if="overallTimming == WIL_OVERALL_TIMMING.LOADING">
-        <div class="c-drawer">
+      <template
+        v-else-if="
+          overallTimming == WIL_OVERALL_TIMMING.FILE_LOADING ||
+          overallTimming == WIL_OVERALL_TIMMING.SAVE_LOADING
+        "
+      >
+        <div class="c-drawer u-d_flex--v_center">
           <div class="c-drawer__loading">Now Loading...</div>
         </div>
       </template>
       <template
         v-if="
-          overallTimming == WIL_OVERALL_TIMMING.LOADING ||
-          overallTimming == WIL_OVERALL_TIMMING.MAIN
+          overallTimming == WIL_OVERALL_TIMMING.MAIN ||
+          overallTimming == WIL_OVERALL_TIMMING.SAVE_LOADING
         "
       >
         <Main
@@ -72,25 +77,31 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, ref } from "vue";
+import { Ref, onMounted, onUnmounted, ref, watch } from "vue";
+import { useGameStore } from "@/pinia/game";
 import GameFrame from "@/components/atoms/frames/GameFrame.vue";
 import Title from "@/components/templates/games/wil/01_Title.vue";
 import Main from "@/components/templates/games/wil/02_Main.vue";
 import Ending from "@/components/templates/games/wil/03_Ending.vue";
+import { useWilFile } from "@/composables/games/wil/file";
 import { WIL_OVERALL_TIMMING } from "@/composables/games/wil/enums/timming";
 import { WIL_ENDING_ID } from "@/composables/games/wil/enums/ending";
 
-const overallTimming = ref(WIL_OVERALL_TIMMING.TITLE);
+const gameStore = useGameStore();
+
+const { WIL_IMAGES, WIL_SOUNDS, isLoadedImages, loadImages } = useWilFile();
+
+const overallTimming = ref(WIL_OVERALL_TIMMING.FILE_LOADING);
 const needLoadingData = ref(false);
 const ending: Ref<WIL_ENDING_ID | undefined> = ref();
 
 const onStart = () => {
   needLoadingData.value = false;
-  overallTimming.value = WIL_OVERALL_TIMMING.LOADING;
+  overallTimming.value = WIL_OVERALL_TIMMING.MAIN;
 };
 const onContinue = () => {
   needLoadingData.value = true;
-  overallTimming.value = WIL_OVERALL_TIMMING.LOADING;
+  overallTimming.value = WIL_OVERALL_TIMMING.SAVE_LOADING;
 };
 const onShowEnding = (endingId: WIL_ENDING_ID) => {
   ending.value = endingId;
@@ -103,6 +114,22 @@ const onBackTitle = () => {
 const loaded = () => {
   overallTimming.value = WIL_OVERALL_TIMMING.MAIN;
 };
+
+onMounted(() => {
+  loadImages();
+  gameStore.setImages(WIL_IMAGES);
+  gameStore.setSounds(WIL_SOUNDS);
+});
+onUnmounted(() => {
+  gameStore.resetImages();
+  gameStore.resetSounds();
+});
+watch(
+  () => isLoadedImages.value,
+  () => {
+    overallTimming.value = WIL_OVERALL_TIMMING.TITLE;
+  }
+);
 </script>
 
 <style scoped lang="scss">
@@ -114,7 +141,9 @@ const loaded = () => {
   height: 100%;
   background-color: black;
   &__loading {
-    margin-inline: auto;
+    color: white;
+    width: 100%;
+    text-align: center;
   }
 }
 .c-game__description__block {

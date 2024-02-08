@@ -1,6 +1,6 @@
+import { useGameStore } from "@/pinia/game";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { GOUAudio } from "@/composables/types/audio/GOUAudio";
-import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import { WIL_CONDITION_ID } from "@/composables/games/wil/enums/condition";
 import {
   WIL_SKILL_RANGE,
@@ -38,16 +38,15 @@ export class WilSkill {
   readonly element: WIL_ELEMENT;
   readonly isLearnable: (__character: WilCharacter) => boolean;
 
-  constructor(
-    define: WilSkillDefine,
-    images: { [key: string]: GOUVisual },
-    sounds: { [key: string]: GOUReadAudio }
-  ) {
+  constructor(define: WilSkillDefine) {
+    const gameStore = useGameStore();
     this.id = define.id;
     this.name = define.name;
     this.description = define.description;
-    this.animation = define.animation ? images[define.animation] : undefined;
-    this.sound = define.sound ? sounds[define.sound] : undefined;
+    this.animation = define.animation
+      ? gameStore.getImages[define.animation]
+      : undefined;
+    this.sound = define.sound ? gameStore.getSounds[define.sound] : undefined;
     this.type = define.type;
     this.cost = define.cost;
     this.power = define.power;

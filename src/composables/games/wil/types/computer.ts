@@ -15,9 +15,15 @@ import { WilConditionUtil } from "@/composables/games/wil/types/condition";
 
 export class WilComputer extends WilOperator {
   private readonly tactics: WIL_BATTLE_TACTICS;
-  constructor(teamName: string, tactics: WIL_BATTLE_TACTICS) {
+  private readonly skillDefines: { [key: string]: WilSkill };
+  constructor(
+    teamName: string,
+    tactics: WIL_BATTLE_TACTICS,
+    skills: { [key: string]: WilSkill }
+  ) {
     super(WIL_BATTLE_TEAM.COMPUTER, teamName);
     this.tactics = tactics;
+    this.skillDefines = skills;
   }
 
   /**
@@ -64,7 +70,7 @@ export class WilComputer extends WilOperator {
       throw new WrongImplementationError("Move character is not set.");
     }
     // 相手が対象となるスキルのみを候補とする
-    let skillCandidates = this.moveCharacter.skills.filter(
+    let skillCandidates = this.moveCharacter.skills.map((skillId) => this.skillDefines[skillId]).filter(
       (skill) => skill.target === WIL_SKILL_TARGET.ENEMY
     );
     // 行動キャラクターが先頭にいない場合は近接物理を対象から外す
@@ -81,6 +87,7 @@ export class WilComputer extends WilOperator {
     // スキルをランダムに選択
     const skillRnd = Math.floor(Math.random() * skillCandidates.length);
     return skillCandidates[skillRnd];
+
   }
 
   /**
@@ -94,13 +101,13 @@ export class WilComputer extends WilOperator {
     }
     // 味方を対象にしたスキルを優先して選択する
     let skillCandidates = this.moveCharacter.skills.filter(
-      (skill) => skill.target === WIL_SKILL_TARGET.ALLY
+      (skillId) => this.skillDefines[skillId].target === WIL_SKILL_TARGET.ALLY
     );
     const allyCharacters = allyField.getCharacters();
 
     for (let skill of skillCandidates) {
       // 体力回復スキルなら体力が減っているキャラクターがいる場合に選定する
-      if (WilSkill.isHealSkill(skill.id)) {
+      if (WilSkill.isHealSkill(skill)) {
         if (
           !allyCharacters.find(
             (character) =>
@@ -108,20 +115,20 @@ export class WilComputer extends WilOperator {
           )
         ) {
           skillCandidates = skillCandidates.filter(
-            (candidate) => candidate.id !== skill.id
+            (candidate) => candidate !== skill
           );
         }
         continue;
       }
       // 状態異常上書きスキルなら悪影響状態の場合に選定する
-      if (WilSkill.isClearSkill(skill.id)) {
+      if (WilSkill.isClearSkill(skill)) {
         if (
           !allyCharacters.find(
             (character) => !WilConditionUtil.isBadCondition(character.condition)
           )
         ) {
           skillCandidates = skillCandidates.filter(
-            (candidate) => candidate.id !== skill.id
+            (candidate) => candidate !== skill
           );
         }
         continue;
@@ -130,12 +137,12 @@ export class WilComputer extends WilOperator {
     if (skillCandidates.length > 0) {
       // 味方を対象にしたスキルの中からランダムに選定
       const skillRnd = Math.floor(Math.random() * skillCandidates.length);
-      return skillCandidates[skillRnd];
+      return this.skillDefines[skillCandidates[skillRnd]];
     }
 
     // 味方を対象にするスキルの中から選定されなかった場合は相手を対象にするスキルからランダムに選定する
     skillCandidates = this.moveCharacter.skills.filter(
-      (skill) => skill.target === WIL_SKILL_TARGET.ENEMY
+      (skillId) => this.skillDefines[skillId].target === WIL_SKILL_TARGET.ENEMY
     );
 
     // 行動キャラクターが先頭にいない場合は近接物理を対象から外す
@@ -145,13 +152,14 @@ export class WilComputer extends WilOperator {
     }
     if (!allyField.isFront(moveCharacterCell)) {
       skillCandidates = skillCandidates.filter(
-        (skill) => skill.type !== WIL_SKILL_TYPE.CLOSE_PHISIC
+        (skillId) =>
+          this.skillDefines[skillId].type !== WIL_SKILL_TYPE.CLOSE_PHISIC
       );
     }
 
     // スキルをランダムに選択
     const skillRnd = Math.floor(Math.random() * skillCandidates.length);
-    return skillCandidates[skillRnd];
+    return this.skillDefines[skillCandidates[skillRnd]];
   }
 
   /**
@@ -167,7 +175,9 @@ export class WilComputer extends WilOperator {
     if (!this.moveCharacter) {
       throw new WrongImplementationError("Move character is not set.");
     }
-    let skillCandidates = this.moveCharacter.skills;
+    let skillCandidates = this.moveCharacter.skills.map(
+      (skillId) => this.skillDefines[skillId]
+    );
 
     const allyCharacters = allyField.getCharacters();
     for (let skill of skillCandidates) {

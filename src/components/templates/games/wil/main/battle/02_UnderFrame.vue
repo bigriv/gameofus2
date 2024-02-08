@@ -270,7 +270,7 @@ const skillList = computed(() => {
   if (!character?.skills) {
     return [];
   }
-  return character.skills;
+  return character.skills.map((skillId) => props.skills[skillId]);
 });
 const skillCost = computed(() => {
   if (!battle.value.turnOperator.moveCharacter) {

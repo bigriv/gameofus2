@@ -10,14 +10,12 @@
 <script setup lang="ts">
 import { PropType, onMounted, ref } from "vue";
 import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
-import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { SequenceId } from "@/composables/utils/id";
 import { useWilDisplay } from "@/composables/games/wil/display";
 import { WIL_CHARACTER_DEFINES } from "@/composables/games/wil/defines/character";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 import { WilTeamEvent } from "@/composables/games/wil/types/event";
 import { WilPlayer } from "@/composables/games/wil/types/player";
-import { WilSkill } from "@/composables/games/wil/types/skill";
 
 const props = defineProps({
   event: {
@@ -25,14 +23,6 @@ const props = defineProps({
     required: true,
   },
   sequence: { type: Object as PropType<SequenceId>, required: true },
-  images: {
-    type: Object as PropType<{ [key: string]: GOUVisual }>,
-    required: true,
-  },
-  skills: {
-    type: Object as PropType<{ [key: string]: WilSkill }>,
-    required: true,
-  },
   player: {
     type: Object as PropType<WilPlayer>,
     required: true,
@@ -67,9 +57,7 @@ onMounted(() => {
   for (const inCharacter of props.event.in) {
     const character = new WilCharacter(
       props.sequence.generateId(),
-      WIL_CHARACTER_DEFINES[inCharacter],
-      props.skills,
-      props.images
+      WIL_CHARACTER_DEFINES[inCharacter]
     );
     messages.push(`${character.name}が仲間になった！`);
     props.player.allCharacters.push(character);

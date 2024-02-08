@@ -31,7 +31,7 @@ export class WilSaveUtil {
       return {
         model: character.model,
         defaultStatus: character.defaultStatus.toJson(),
-        skills: character.skills.map((skill) => skill.id),
+        skills: character.skills,
       };
     });
 

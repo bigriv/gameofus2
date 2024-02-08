@@ -86,7 +86,7 @@ import UnderFrame from "@/components/templates/games/wil/main/battle/02_UnderFra
 import WilTalk from "@/components/molecules/games/wil/WilTalk.vue";
 import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
 import WilLogDialog from "@/components/molecules/games/wil/WilLogDialog.vue";
-import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import { useGameStore } from "@/pinia/game";
 import {
   WIL_BUTTON_FONT_COLOR,
   WIL_BUTTON_BACKGROUND_COLOR,
@@ -112,10 +112,6 @@ const props = defineProps({
     type: Object as PropType<{ [key: string]: WilSkill }>,
     required: true,
   },
-  sounds: {
-    type: Object as PropType<{ [key: string]: GOUReadAudio }>,
-    required: true,
-  },
   event: {
     type: Object as PropType<WilBattleEvent>,
     required: true,
@@ -127,8 +123,9 @@ const props = defineProps({
 });
 const emits = defineEmits(["end"]);
 
+const gameStore = useGameStore()
 const background = props.event.background;
-const battle = ref(new WilBattle(props.player, props.event));
+const battle = ref(new WilBattle(props.player, props.event, props.skills));
 const hoverCell: Ref<WilFieldCell | undefined> = ref();
 const moveSequence: Ref<Array<WilCharacter>> = ref([]);
 const guideMessage = ref("キャラクターを配置するマスを選択してください。");
@@ -353,18 +350,18 @@ const endBattle = () => {
   changeTimming(WIL_BATTLE_TIMMING.BATTLE_END, () => {
     battle.value.endBattle();
     if (battle.value.winner === WIL_BATTLE_TEAM.PLAYER) {
-      props.sounds.BGM_BATTLE_WIN1.play();
+      gameStore.getSounds.BGM_BATTLE_WIN1.play();
       confirmModal.message = `${battle.value.computer.teamName}との戦闘に勝利した！`;
       confirmModal.onClickOk = () => {
-        props.sounds.BGM_BATTLE_WIN1.stop();
+        gameStore.getSounds.BGM_BATTLE_WIN1.stop();
         emits("end", battle.value.winner);
       };
       confirmModal.isShow = true;
     } else if (battle.value.winner === WIL_BATTLE_TEAM.COMPUTER) {
-      props.sounds.BGM_BATTLE_LOSE.play();
+      gameStore.getSounds.BGM_BATTLE_LOSE.play();
       confirmModal.message = `${battle.value.computer.teamName}との戦闘に敗北した。`;
       confirmModal.onClickOk = () => {
-        props.sounds.BGM_BATTLE_LOSE.stop();
+        gameStore.getSounds.BGM_BATTLE_LOSE.stop();
         emits("end", battle.value.winner);
       };
       confirmModal.isShow = true;

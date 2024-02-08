@@ -84,9 +84,9 @@ export class WilBattleEvent {
       playerTeamName: string;
       computerTeamName: string;
       tactics: WIL_BATTLE_TACTICS;
-      background?: GOUVisual;
-      battleBgm?: GOUReadAudio;
-      deployBgm?: GOUReadAudio;
+      background?: WIL_IMAGE_ID;
+      battleBgm?: WIL_SOUND_ID;
+      deployBgm?: WIL_SOUND_ID;
       deploy: Array<WilFieldCell>;
       talks?: Array<{
         event: WilTalkDefine;
@@ -99,9 +99,9 @@ export class WilBattleEvent {
     this.playerTeamName = define.playerTeamName;
     this.computerTeamName = define.computerTeamName;
     this.tactics = define.tactics;
-    this.background = define.background;
-    this.deployBgm = define.deployBgm;
-    this.battleBgm = define.battleBgm;
+    this.background = define.background ? images[define.background] : undefined;
+    this.deployBgm = define.deployBgm ? sounds[define.deployBgm] : undefined;
+    this.battleBgm = define.battleBgm ? sounds[define.battleBgm] : undefined;
     this.deploy = define.deploy;
     this.talks =
       define.talks?.map((talk) => {

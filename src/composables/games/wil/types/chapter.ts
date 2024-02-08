@@ -1,4 +1,3 @@
-import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import { SequenceId } from "@/composables/utils/id";
 import { WIL_CHAPTER_TIMMING } from "@/composables/games/wil/enums/timming";
@@ -18,7 +17,7 @@ import {
   WilTrainingEvent,
 } from "@/composables/games/wil/types/event";
 import { WilFieldCell } from "@/composables/games/wil/types/field";
-import { WilSkill } from "@/composables/games/wil/types/skill";
+import { useGameStore } from "@/pinia/game";
 
 export class WilChapter {
   id: number;
@@ -34,13 +33,8 @@ export class WilChapter {
   private currentTrainingEvent: number = -1;
   private currentTeamEvent: number = -1;
 
-  constructor(
-    define: WilChapterDefine,
-    sequence: SequenceId,
-    skills: { [key: string]: WilSkill },
-    images: { [key: string]: GOUVisual },
-    sounds: { [key: string]: GOUReadAudio }
-  ) {
+  constructor(define: WilChapterDefine, sequence: SequenceId) {
+    const gameStore = useGameStore();
     this.id = define.id;
     this.title = define.title;
     this.flow = define.flow;
@@ -57,8 +51,8 @@ export class WilChapter {
               sound: define.sound,
               bgm: define.bgm,
             },
-            images,
-            sounds
+            gameStore.getImages,
+            gameStore.getSounds as { [key: string]: GOUReadAudio }
           )
       )
     );
@@ -68,15 +62,13 @@ export class WilChapter {
           playerTeamName: battle.playerTeamName,
           computerTeamName: battle.computerTeamName,
           tactics: battle.tactics,
-          background: battle.background ? images[battle.background] : undefined,
-          deployBgm: battle.deployBgm ? sounds[battle.deployBgm] : undefined,
-          battleBgm: battle.battleBgm ? sounds[battle.battleBgm] : undefined,
+          background: battle.background,
+          deployBgm: battle.deployBgm,
+          battleBgm: battle.battleBgm,
           deploy: battle.deploy.map((cell) => {
             const character = new WilCharacter(
               sequence.generateId(),
-              WIL_CHARACTER_DEFINES[cell.character],
-              skills,
-              images
+              WIL_CHARACTER_DEFINES[cell.character]
             );
             return new WilFieldCell(
               WIL_BATTLE_TEAM.COMPUTER,
@@ -87,8 +79,8 @@ export class WilChapter {
           }),
           talks: battle.talks,
         },
-        images,
-        sounds
+        gameStore.getImages,
+        gameStore.getSounds as { [key: string]: GOUReadAudio }
       );
     });
     this.trainingEvents =
@@ -98,8 +90,8 @@ export class WilChapter {
             days: training.days,
             talks: training.talks,
           },
-          images,
-          sounds
+          gameStore.getImages,
+          gameStore.getSounds as { [key: string]: GOUReadAudio }
         );
       }) ?? [];
     this.teamEvents = define.updateTeam;

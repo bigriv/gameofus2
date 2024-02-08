@@ -318,10 +318,17 @@ export class WilBattle {
       // スキル効果の適用
       if (this.turnOperator.selectSkill.effect) {
         if (targetCell.character) {
+          const enemyField =
+            this.turnOperator.team === WIL_BATTLE_TEAM.PLAYER
+              ? this.computer.field
+              : this.player.field;
+
           moveResults.push(
             ...this.turnOperator.selectSkill.effect(
               this.turnOperator.moveCharacter,
-              targetCell
+              targetCell,
+              this.turnOperator.field,
+              enemyField
             )
           );
         }

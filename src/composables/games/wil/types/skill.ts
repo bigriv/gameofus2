@@ -8,13 +8,12 @@ import {
   WIL_SKILL_TYPE,
 } from "@/composables/games/wil/enums/skill";
 import { WIL_SKILL_ID } from "@/composables/games/wil/enums/skill";
-import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
-import { WIL_SOUND_ID } from "@/composables/games/wil/enums/sound";
 import { WIL_ELEMENT } from "@/composables/games/wil/enums/element";
 import { WilBattleMoveResult } from "@/composables/games/wil/types/battle";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 import { WilConditionUtil } from "@/composables/games/wil/types/condition";
-import { WilFieldCell } from "@/composables/games/wil/types/field";
+import { WilField, WilFieldCell } from "@/composables/games/wil/types/field";
+import { WilSkillDefine } from "@/composables/games/wil/defines/skill";
 
 export class WilSkill {
   static readonly LOW_CONDITION_RATE = 20; // 状態異常にかかる確率（低）
@@ -30,7 +29,9 @@ export class WilSkill {
   readonly power?: number;
   readonly effect?: (
     __activest: WilCharacter,
-    __target: WilFieldCell
+    __target: WilFieldCell,
+    __allyField: WilField,
+    __enemyField: WilField
   ) => Array<WilBattleMoveResult>;
   readonly target: WIL_SKILL_TARGET;
   readonly range: WIL_SKILL_RANGE;
@@ -38,24 +39,7 @@ export class WilSkill {
   readonly isLearnable: (__character: WilCharacter) => boolean;
 
   constructor(
-    define: {
-      id: WIL_SKILL_ID;
-      name: string;
-      description: string;
-      animation?: WIL_IMAGE_ID;
-      sound?: WIL_SOUND_ID;
-      type: WIL_SKILL_TYPE;
-      cost: number;
-      power?: number;
-      effect?: (
-        __activest: WilCharacter,
-        __target: WilFieldCell
-      ) => Array<WilBattleMoveResult>;
-      target: WIL_SKILL_TARGET;
-      range: WIL_SKILL_RANGE;
-      element: WIL_ELEMENT;
-      isLearnable: (__character: WilCharacter) => boolean;
-    },
+    define: WilSkillDefine,
     images: { [key: string]: GOUVisual },
     sounds: { [key: string]: GOUReadAudio }
   ) {
@@ -234,25 +218,31 @@ export class WilSkill {
   static isHealSkill(skill: WIL_SKILL_ID): boolean {
     return [
       WIL_SKILL_ID.REGENERATION,
+      WIL_SKILL_ID.REPAIR,
       WIL_SKILL_ID.HEAL,
+      WIL_SKILL_ID.CREATE_SACRED_SWORD,
       WIL_SKILL_ID.HEAL_WATER,
       WIL_SKILL_ID.SUPER_WATER,
+      WIL_SKILL_ID.LIGHT_FIRE,
     ].includes(skill);
   }
 
   /**
    * 状態異常を回復するスキルかを判定する
    * @param skill 判定するスキル
-   * @returns 状態異常を健康または神聖にするスキルの場合はtrue、それ以外はfalse
+   * @returns 状態異常を悪影響以外にするスキルの場合はtrue、それ以外はfalse
    */
   static isClearSkill(skill: WIL_SKILL_ID): boolean {
     return [
       WIL_SKILL_ID.REGENERATION,
-      WIL_SKILL_ID.CLEAR,
+      WIL_SKILL_ID.REPAIR,
       WIL_SKILL_ID.SANCTUARY,
       WIL_SKILL_ID.CREATE_SACRED_SWORD,
+      WIL_SKILL_ID.LIGHTNING,
       WIL_SKILL_ID.HEAL_WATER,
       WIL_SKILL_ID.CLEAR_WATER,
+      WIL_SKILL_ID.TAILWIND,
+      WIL_SKILL_ID.LIGHT_FIRE,
     ].includes(skill);
   }
 }

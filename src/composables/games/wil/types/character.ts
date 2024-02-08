@@ -6,7 +6,6 @@ import {
   WIL_SKILL_TYPE,
 } from "@/composables/games/wil/enums/skill";
 import { WIL_ELEMENT } from "@/composables/games/wil/enums/element";
-import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
 import { WIL_CONDITION_ID } from "@/composables/games/wil/enums/condition";
 import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
 import { WilStatus } from "@/composables/games/wil/types/status";
@@ -21,6 +20,7 @@ import {
 } from "@/composables/games/wil/types/battle";
 import { WilConditionUtil } from "@/composables/games/wil/types/condition";
 import { WilFieldCell } from "@/composables/games/wil/types/field";
+import { WilCharacterDefine } from "@/composables/games/wil/defines/character";
 
 export class WilCharacter {
   readonly model: WIL_CHARACTER_ID;
@@ -34,7 +34,7 @@ export class WilCharacter {
     magic: GOUFluidVisual;
   };
   skills: Array<WilSkill> = [];
-  skillType: Array<WIL_SKILL_TYPE>;
+  learnable: Array<WIL_SKILL_ID>;
   defaultStatus: WilStatus;
   status: WilStatus;
   condition: WIL_CONDITION_ID = WIL_CONDITION_ID.HEALTH;
@@ -44,35 +44,7 @@ export class WilCharacter {
 
   constructor(
     sequence: number,
-    define: {
-      id: WIL_CHARACTER_ID;
-      name: string;
-      visual: {
-        standing: WIL_IMAGE_ID;
-        closePhisic?: Array<{
-          visual: WIL_IMAGE_ID;
-          duration: number;
-        }>;
-        shootPhisic?: Array<{
-          visual: WIL_IMAGE_ID;
-          duration: number;
-        }>;
-        magic?: Array<{
-          visual: WIL_IMAGE_ID;
-          duration: number;
-        }>;
-      };
-      status: {
-        life: number;
-        attack: number;
-        defense: number;
-        speed: number;
-        magic: number;
-      };
-      element: WIL_ELEMENT;
-      skills?: Array<WIL_SKILL_ID>;
-      skillType: Array<WIL_SKILL_TYPE>;
-    },
+    define: WilCharacterDefine,
     skills: { [key: string]: WilSkill },
     images: { [key: string]: GOUVisual }
   ) {
@@ -133,7 +105,7 @@ export class WilCharacter {
     this.status = new WilStatus(define.status);
     this.element = define.element ?? WIL_ELEMENT.NONE;
     this.skills = define.skills?.map((id) => skills[id]) ?? [];
-    this.skillType = define.skillType;
+    this.learnable = define.learnable;
   }
 
   /**
@@ -197,24 +169,12 @@ export class WilCharacter {
   ): WilSkill | undefined {
     const learnedSKillList = this.getSkillIdList();
     let candidateSkillList = [];
-    // 以下の条件で習得可能なスキルのリストを絞込む
-    // - スキルの属性が無属性またはキャラクターの属性とスキルの属性が一致している
-    // - キャラクターの持っているスキル種別に含まれている
-    // - 未習得
-    for (let key of Object.keys(skills)) {
-      if (
-        skills[key].element !== WIL_ELEMENT.NONE &&
-        skills[key].element !== this.element
-      ) {
+    // 未習得で習得可能なスキルリストを生成する
+    for (let candidate of this.learnable) {
+      if (learnedSKillList.includes(candidate)) {
         continue;
       }
-      if (!this.skillType.includes(skills[key].type)) {
-        continue;
-      }
-      if (learnedSKillList.includes(skills[key].id)) {
-        continue;
-      }
-      candidateSkillList.push(skills[key]);
+      candidateSkillList.push(skills[candidate]);
     }
 
     // スキル習得判定

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --host ",
     "build": "vue-tsc && vite build --mode production",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check": "vue-tsc"
   },
   "dependencies": {
     "@vue/cli-plugin-typescript": "^5.0.8",

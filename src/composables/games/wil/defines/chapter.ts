@@ -5,15 +5,18 @@ import {
   WIL_CHAPTER_TIMMING,
 } from "@/composables/games/wil/enums/timming";
 import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
-import { WilBattle } from "@/composables/games/wil/types/battle";
-import { WilTraining } from "@/composables/games/wil/types/training";
 import { WIL_TRAINING_ID } from "@/composables/games/wil/enums/training";
 import { WIL_BATTLE_TACTICS } from "@/composables/games/wil/enums/battle";
+import { WilTalkDefine } from "@/composables/games/wil/defines/talks";
 import { WIL_TALK_DEFINES_CHPATER1 } from "@/composables/games/wil/defines/talks/chapter1";
 import { WIL_TALK_DEFINES_CHPATER2 } from "@/composables/games/wil/defines/talks/chapter2";
-import { WilTalkDefine } from "@/composables/games/wil/defines/talks";
+import { WIL_TALK_DEFINES_CHPATER3 } from "@/composables/games/wil/defines/talks/chapter3";
+import { WIL_TALK_DEFINES_CHPATER4 } from "@/composables/games/wil/defines/talks/chapter4";
+import { WIL_TALK_DEFINES_CHPATER5 } from "@/composables/games/wil/defines/talks/chapter5";
 import { WIL_TALK_DEFINES_TUTORIAL } from "@/composables/games/wil/defines/talks/tutorial";
 import { WIL_SUB_TALK_DEFINES } from "@/composables/games/wil/defines/talks/sub";
+import { WilBattle } from "@/composables/games/wil/types/battle";
+import { WilTraining } from "@/composables/games/wil/types/training";
 
 export type WilChapterDefine = {
   id: number;
@@ -37,7 +40,7 @@ export type WilChapterDefine = {
       isStart: (battle: WilBattle) => boolean;
     }>;
   }>;
-  trainings?: Array<{
+  trainings: Array<{
     days: number;
     talks?: Array<{
       event: WilTalkDefine;
@@ -216,7 +219,7 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
 
 export const WIL_CHAPTER_2_DEFINE: WilChapterDefine = {
   id: 2,
-  title: "第２章 氷の王女と同盟",
+  title: "第２章 氷の守護者",
   flow: [
     WIL_CHAPTER_TIMMING.OPENING,
     WIL_CHAPTER_TIMMING.TALK,
@@ -419,6 +422,398 @@ export const WIL_CHAPTER_2_DEFINE: WilChapterDefine = {
         WIL_CHARACTER_ID.ICICLE_GURDIANS_DEFENDER,
         WIL_CHARACTER_ID.ICICLE_GURDIANS_MAGICIAN,
       ],
+      out: [],
+    },
+  ],
+};
+
+export const WIL_CHAPTER_3_DEFINE: WilChapterDefine = {
+  id: 3,
+  title: "第３章 嵐の中で",
+  flow: [
+    WIL_CHAPTER_TIMMING.OPENING,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.TRAINING,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.TEAM,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.BATTLE,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.TEAM,
+    WIL_CHAPTER_TIMMING.BATTLE,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.BATTLE,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.TRAINING,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.ENDING,
+  ],
+  talks: [...WIL_TALK_DEFINES_CHPATER3],
+  battles: [
+    {
+      playerTeamName: "連合軍",
+      computerTeamName: "魔物の群れ",
+      tactics: WIL_BATTLE_TACTICS.RANDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_STORM_LAND_OUTSIDE,
+      deployBgm: WIL_SOUND_ID.BGM_DEPLOY1,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE1,
+      deploy: [
+        {
+          x: 0,
+          y: 0,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_SCORPION,
+        },
+        {
+          x: 2,
+          y: 0,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_LIZARD,
+        },
+        {
+          x: 1,
+          y: 2,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_LIZARD,
+        },
+        {
+          x: 0,
+          y: 4,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_SCORPION,
+        },
+        {
+          x: 2,
+          y: 4,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_LIZARD,
+        },
+      ],
+    },
+    {
+      playerTeamName: "連合軍",
+      computerTeamName: "シノブ隊",
+      tactics: WIL_BATTLE_TACTICS.SUPPORT_PRIORITY,
+      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_STORM_LAND_INSIDE,
+      deployBgm: WIL_SOUND_ID.BGM_DEPLOY1,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE1,
+      deploy: [
+        {
+          x: 1,
+          y: 0,
+          character: WIL_CHARACTER_ID.SMOG_LABORATORY_ANDROID,
+        },
+        {
+          x: 0,
+          y: 1,
+          character: WIL_CHARACTER_ID.SMOG_LABORATORY_ANDROID,
+        },
+        {
+          x: 0,
+          y: 3,
+          character: WIL_CHARACTER_ID.SMOG_LABORATORY_ANDROID,
+        },
+        {
+          x: 1,
+          y: 4,
+          character: WIL_CHARACTER_ID.SMOG_LABORATORY_ANDROID,
+        },
+        {
+          x: 2,
+          y: 2,
+          character: WIL_CHARACTER_ID.INFERNITY_SAMURAIS_THUNDER_SPY,
+        },
+      ],
+    },
+    {
+      playerTeamName: "連合軍",
+      computerTeamName: "スイゲツ隊",
+      tactics: WIL_BATTLE_TACTICS.CONTINUOUS_MOVE,
+      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_STORM_LAND_INSIDE,
+      deployBgm: WIL_SOUND_ID.BGM_DEPLOY3,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE3,
+      deploy: [
+        {
+          x: 1,
+          y: 0,
+          character: WIL_CHARACTER_ID.SMOG_LABORATORY_ANDROID,
+        },
+        {
+          x: 0,
+          y: 2,
+          character: WIL_CHARACTER_ID.INFERNITY_SAMURAIS_WATER_SOLDIER,
+        },
+        {
+          x: 1,
+          y: 2,
+          character: WIL_CHARACTER_ID.SMOG_LABORATORY_ANDROID,
+        },
+        {
+          x: 2,
+          y: 2,
+          character: WIL_CHARACTER_ID.SMOG_LABORATORY_MEMBER,
+        },
+        {
+          x: 1,
+          y: 4,
+          character: WIL_CHARACTER_ID.SMOG_LABORATORY_ANDROID,
+        },
+      ],
+    },
+  ],
+  trainings: [
+    {
+      days: 3,
+      talks: [],
+    },
+    {
+      days: 5,
+      talks: [],
+    },
+  ],
+  updateTeam: [
+    {
+      in: [],
+      out: [WIL_CHARACTER_ID.HOLY_KNIGHTS_LEADER],
+    },
+    {
+      in: [
+        WIL_CHARACTER_ID.STORM_SHOOTERS_PRINCE,
+        WIL_CHARACTER_ID.STORM_SHOOTERS_ARCHER,
+      ],
+      out: [],
+    },
+  ],
+};
+
+export const WIL_CHAPTER_4_DEFINE: WilChapterDefine = {
+  id: 4,
+  title: "第４章 防衛 三国同盟",
+  flow: [
+    WIL_CHAPTER_TIMMING.OPENING,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.TEAM,
+    WIL_CHAPTER_TIMMING.TRAINING,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.BATTLE,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.BATTLE,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.BATTLE,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.ENDING,
+  ],
+  talks: [...WIL_TALK_DEFINES_CHPATER4],
+  battles: [
+    {
+      playerTeamName: "連合軍",
+      computerTeamName: "スイゲツ隊",
+      tactics: WIL_BATTLE_TACTICS.RANDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_ICE_FIELD,
+      deployBgm: WIL_SOUND_ID.BGM_DEPLOY1,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE1,
+      deploy: [
+        {
+          x: 0,
+          y: 0,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_UNDEAD,
+        },
+        {
+          x: 2,
+          y: 0,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_RABBIT,
+        },
+        {
+          x: 1,
+          y: 1,
+          character: WIL_CHARACTER_ID.SMOG_LABORATORY_ANDROID,
+        },
+        {
+          x: 1,
+          y: 2,
+          character: WIL_CHARACTER_ID.INFERNITY_SAMURAIS_WATER_SOLDIER,
+        },
+        {
+          x: 1,
+          y: 3,
+          character: WIL_CHARACTER_ID.SMOG_LABORATORY_ANDROID,
+        },
+        {
+          x: 0,
+          y: 4,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_UNDEAD,
+        },
+        {
+          x: 2,
+          y: 4,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_RABBIT,
+        },
+      ],
+    },
+    {
+      playerTeamName: "連合軍",
+      computerTeamName: "サジン",
+      tactics: WIL_BATTLE_TACTICS.RANDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_ICE_LAND,
+      deployBgm: WIL_SOUND_ID.BGM_DEPLOY1,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE1,
+      deploy: [
+        {
+          x: 0,
+          y: 0,
+          character: WIL_CHARACTER_ID.INFERNITY_SAMURAIS_SAND_SPY,
+        },
+      ],
+    },
+    {
+      playerTeamName: "連合軍",
+      computerTeamName: "魔人の群れ",
+      tactics: WIL_BATTLE_TACTICS.RANDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_ICE_LAND,
+      deployBgm: WIL_SOUND_ID.BGM_DEPLOY2,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE2,
+      deploy: [
+        {
+          x: 1,
+          y: 0,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_SOIL_DEMON,
+        },
+        {
+          x: 1,
+          y: 2,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_FIRE_DEMON,
+        },
+        {
+          x: 1,
+          y: 4,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_WIND_DEMON,
+        },
+      ],
+    },
+  ],
+  trainings: [
+    {
+      days: 7,
+      talks: [],
+    },
+  ],
+  updateTeam: [
+    {
+      in: [WIL_CHARACTER_ID.INFERNITY_SAMURAIS_THUNDER_SPY],
+      out: [],
+    },
+  ],
+};
+
+export const WIL_CHAPTER_5_DEFINE: WilChapterDefine = {
+  id: 5,
+  title: "第５章 終結",
+  flow: [
+    WIL_CHAPTER_TIMMING.OPENING,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.TRAINING,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.BATTLE,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.BATTLE,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.TEAM,
+    WIL_CHAPTER_TIMMING.BATTLE,
+    WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.ENDING,
+  ],
+  talks: [...WIL_TALK_DEFINES_CHPATER5],
+  battles: [
+    {
+      playerTeamName: "連合軍",
+      computerTeamName: "獄炎武士団",
+      tactics: WIL_BATTLE_TACTICS.RANDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_FIRE_LAND_CATSLE,
+      deployBgm: WIL_SOUND_ID.BGM_DEPLOY3,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE3,
+      deploy: [
+        {
+          x: 0,
+          y: 0,
+          character: WIL_CHARACTER_ID.INFERNITY_SAMURAIS_WIND_SOLDIER,
+        },
+        {
+          x: 1,
+          y: 2,
+          character: WIL_CHARACTER_ID.INFERNITY_SAMURAIS_KING,
+        },
+        {
+          x: 0,
+          y: 4,
+          character: WIL_CHARACTER_ID.INFERNITY_SAMURAIS_SAND_SPY,
+        },
+      ],
+    },
+    {
+      playerTeamName: "連合軍",
+      computerTeamName: "魔王",
+      tactics: WIL_BATTLE_TACTICS.RANDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_FIRE_LAND_CATSLE,
+      deployBgm: WIL_SOUND_ID.BGM_PINCH3,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE4,
+      deploy: [
+        {
+          x: 0,
+          y: 1,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_THUNDER_SOLDIER,
+        },
+        {
+          x: 0,
+          y: 3,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_WATER_SOLDIER,
+        },
+        {
+          x: 2,
+          y: 2,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_SATAN,
+        },
+      ],
+    },
+    {
+      playerTeamName: "連合軍",
+      computerTeamName: "覚醒魔王",
+      tactics: WIL_BATTLE_TACTICS.RANDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_FIRE_LAND_SHODDY_CATSLE,
+      deployBgm: WIL_SOUND_ID.BGM_PINCH3,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE5,
+      deploy: [
+        {
+          x: 2,
+          y: 1,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_SUPER_SATAN_HEAD,
+        },
+        {
+          x: 1,
+          y: 2,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_SUPER_SATAN_LEFT_HAND,
+        },
+        {
+          x: 2,
+          y: 2,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_SUPER_SATAN_RIGHT_HAND,
+        },
+        {
+          x: 1,
+          y: 3,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_SUPER_SATAN_LEFT_FOOT,
+        },
+        {
+          x: 2,
+          y: 3,
+          character: WIL_CHARACTER_ID.DARK_MONSTER_SUPER_SATAN_RIGHT_FOOT,
+        },
+      ],
+    },
+  ],
+  trainings: [
+    {
+      days: 7,
+      talks: [],
+    },
+  ],
+  updateTeam: [
+    {
+      in: [WIL_CHARACTER_ID.INFERNITY_SAMURAIS_KING],
       out: [],
     },
   ],

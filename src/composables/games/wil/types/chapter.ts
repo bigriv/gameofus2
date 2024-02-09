@@ -6,6 +6,9 @@ import { WIL_CHARACTER_DEFINES } from "@/composables/games/wil/defines/character
 import {
   WIL_CHAPTER_1_DEFINE,
   WIL_CHAPTER_2_DEFINE,
+  WIL_CHAPTER_3_DEFINE,
+  WIL_CHAPTER_4_DEFINE,
+  WIL_CHAPTER_5_DEFINE,
   WilChapterDefine,
 } from "@/composables/games/wil/defines/chapter";
 import { WilCharacter } from "@/composables/games/wil/types/character";
@@ -244,6 +247,12 @@ export class WilChapter {
         return WIL_CHAPTER_1_DEFINE;
       case 2:
         return WIL_CHAPTER_2_DEFINE;
+      case 3:
+        return WIL_CHAPTER_3_DEFINE;
+      case 4:
+        return WIL_CHAPTER_4_DEFINE;
+      case 5:
+        return WIL_CHAPTER_5_DEFINE;
       default:
         undefined;
     }

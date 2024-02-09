@@ -1,5 +1,4 @@
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
-import { SequenceId } from "@/composables/utils/id";
 import { WIL_CHAPTER_TIMMING } from "@/composables/games/wil/enums/timming";
 import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
 import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
@@ -33,7 +32,7 @@ export class WilChapter {
   private currentTrainingEvent: number = -1;
   private currentTeamEvent: number = -1;
 
-  constructor(define: WilChapterDefine, sequence: SequenceId) {
+  constructor(define: WilChapterDefine) {
     const gameStore = useGameStore();
     this.id = define.id;
     this.title = define.title;
@@ -67,7 +66,6 @@ export class WilChapter {
           battleBgm: battle.battleBgm,
           deploy: battle.deploy.map((cell) => {
             const character = new WilCharacter(
-              sequence.generateId(),
               WIL_CHARACTER_DEFINES[cell.character]
             );
             return new WilFieldCell(

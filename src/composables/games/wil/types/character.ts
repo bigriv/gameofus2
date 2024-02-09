@@ -1,4 +1,5 @@
 import { useGameStore } from "@/pinia/game";
+import { generateUuid, uuidFormat } from "@/composables/utils/id";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import GOUImage from "@/composables/types/visuals/GOUImage";
 import { GOUFluidVisual } from "@/composables/types/visuals/GOUFluidVisual";
@@ -43,10 +44,10 @@ export class WilCharacter {
   element: WIL_ELEMENT;
   stack: number = 0;
 
-  constructor(sequence: number, define: WilCharacterDefine) {
+  constructor(define: WilCharacterDefine) {
     const gameStore = useGameStore();
     this.model = define.id;
-    this.id = `${define.id}_${sequence}`;
+    this.id = `${define.id}_${generateUuid()}`;
     this.name = define.name;
 
     let closePhisicVisual = new GOUFluidVisual([
@@ -113,7 +114,7 @@ export class WilCharacter {
    * @returns 指定したIDと同じモデルならtrue、それ以外はfalse
    */
   isModel(id: WIL_CHARACTER_ID): boolean {
-    return new RegExp(`^${id}_\\d+$`).test(this.id);
+    return new RegExp(`^${id}_${uuidFormat}$`).test(this.id);
   }
   /**
    * キャラクターのステータス等をリセットする

@@ -32,7 +32,6 @@
       <UpdateTeam
         v-if="teamEvent"
         :event="teamEvent"
-        :sequence="characterSequence"
         :player="player"
         @end="proceed"
       />
@@ -82,7 +81,7 @@ const props = defineProps({
 
 const emits = defineEmits(["loaded", "end"]);
 
-const { WIL_SKILLS, characterSequence, player } = useWilInit();
+const { WIL_SKILLS, player } = useWilInit();
 
 const timming: Ref<WIL_CHAPTER_TIMMING> = ref(WIL_CHAPTER_TIMMING.OPENING);
 const talkEvents: Ref<Array<WilTalkEvent> | undefined> = ref();
@@ -159,7 +158,7 @@ const nextChapter = () => {
     return;
   }
 
-  currentCapter.value = new WilChapter(nextChapter, characterSequence);
+  currentCapter.value = new WilChapter(nextChapter);
 
   switch (currentCapter.value?.id) {
   }
@@ -175,7 +174,7 @@ const onSave = () => {
 const loadSaveData = () => {
   const { chapter, flow, characters } = WilSaveUtil.load();
   if (chapter) {
-    currentCapter.value = new WilChapter(chapter, characterSequence);
+    currentCapter.value = new WilChapter(chapter);
   }
   if (flow) {
     for (let i = -1; i < flow; i++) {
@@ -194,10 +193,7 @@ const loadSaveData = () => {
   }
   if (characters.length > 0) {
     player.allCharacters = characters.map((character) => {
-      const c = new WilCharacter(
-        characterSequence.generateId(),
-        WIL_CHARACTER_DEFINES[character.model]
-      );
+      const c = new WilCharacter(WIL_CHARACTER_DEFINES[character.model]);
       c.defaultStatus = new WilStatus(character.defaultStatus);
       c.skills = character.skills;
       c.reset();
@@ -213,10 +209,7 @@ onMounted(() => {
   }
 
   if (!currentCapter.value) {
-    currentCapter.value = new WilChapter(
-      WIL_CHAPTER_1_DEFINE,
-      characterSequence
-    );
+    currentCapter.value = new WilChapter(WIL_CHAPTER_1_DEFINE);
   }
   proceed();
 });

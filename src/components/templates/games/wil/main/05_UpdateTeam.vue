@@ -10,7 +10,6 @@
 <script setup lang="ts">
 import { PropType, onMounted, ref } from "vue";
 import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
-import { SequenceId } from "@/composables/utils/id";
 import { useWilDisplay } from "@/composables/games/wil/display";
 import { WIL_CHARACTER_DEFINES } from "@/composables/games/wil/defines/character";
 import { WilCharacter } from "@/composables/games/wil/types/character";
@@ -22,7 +21,6 @@ const props = defineProps({
     type: Object as PropType<WilTeamEvent>,
     required: true,
   },
-  sequence: { type: Object as PropType<SequenceId>, required: true },
   player: {
     type: Object as PropType<WilPlayer>,
     required: true,
@@ -55,10 +53,7 @@ const chainMessage = (messages: string[], afterFunction: Function) => {
 onMounted(() => {
   const messages = new Array<string>();
   for (const inCharacter of props.event.in) {
-    const character = new WilCharacter(
-      props.sequence.generateId(),
-      WIL_CHARACTER_DEFINES[inCharacter]
-    );
+    const character = new WilCharacter(WIL_CHARACTER_DEFINES[inCharacter]);
     messages.push(`${character.name}が仲間になった！`);
     props.player.allCharacters.push(character);
   }

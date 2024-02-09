@@ -1,4 +1,4 @@
-import { SequenceId } from "@/composables/utils/id";
+import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
 import { WIL_SKILL_DEFINES } from "@/composables/games/wil/defines/skill";
 import { WIL_CHARACTER_DEFINES } from "@/composables/games/wil/defines/character";
 import { WilSkill } from "@/composables/games/wil/types/skill";
@@ -15,15 +15,11 @@ export const useWilInit = () => {
   };
   const WIL_SKILLS = initSkills();
 
-  const characterSequence = new SequenceId();
   const initPlayer = (): WilPlayer => {
     const player = new WilPlayer();
 
     player.allCharacters = [
-      new WilCharacter(
-        characterSequence.generateId(),
-        WIL_CHARACTER_DEFINES.HERO,
-      ),
+      new WilCharacter(WIL_CHARACTER_DEFINES[WIL_CHARACTER_ID.HERO]),
     ];
     return player;
   };
@@ -32,7 +28,6 @@ export const useWilInit = () => {
   return {
     WIL_SKILLS,
     WIL_CHARACTER_DEFINES,
-    characterSequence,
     player,
   };
 };

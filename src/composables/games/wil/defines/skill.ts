@@ -8,6 +8,8 @@ import {
 } from "@/composables/games/wil/enums/skill";
 import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
 import { WIL_SOUND_ID } from "@/composables/games/wil/enums/sound";
+import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
+import { WIL_CHARACTER_DEFINES } from "@/composables/games/wil/defines/character";
 import { WilBattleMoveResult } from "@/composables/games/wil/types/battle";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 import { WilField, WilFieldCell } from "@/composables/games/wil/types/field";
@@ -167,13 +169,29 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     animation: WIL_IMAGE_ID.SKILL_SUMMON,
     sound: WIL_SOUND_ID.SE_WARP,
     effect: (
-      __activest: WilCharacter,
+      activest: WilCharacter,
       __target: WilFieldCell,
-      __allyField: WilField,
+      allyField: WilField,
       __enemyField: WilField
     ): Array<WilBattleMoveResult> => {
-      // TODO: 人工兵召喚処理
-      return [];
+      const activestCell = allyField.getCharacterCell(activest);
+      if (!activestCell || activestCell.x <= 0) {
+        return [];
+      }
+      const targetCell = allyField.getCell(activestCell.x - 1, activestCell.y);
+      if (targetCell.character) {
+        return [];
+      }
+
+      // 人工兵を召喚する
+      targetCell.character = new WilCharacter(
+        WIL_CHARACTER_DEFINES[WIL_CHARACTER_ID.SMOG_LABORATORY_ANDROID]
+      );
+      return [
+        new WilBattleMoveResult({
+          message: [`${targetCell.character.name}が製造された。`],
+        }),
+      ];
     },
     isLearnable: (__character: WilCharacter): boolean => {
       return false;
@@ -193,11 +211,36 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     effect: (
       __activest: WilCharacter,
       __target: WilFieldCell,
-      __allyField: WilField,
+      allyField: WilField,
       __enemyField: WilField
     ): Array<WilBattleMoveResult> => {
-      // TODO: 魔人召喚処理
-      return [];
+      const targetCell = allyField.getCell(0, 0);
+      if (targetCell.character) {
+        return [];
+      }
+      if (
+        allyField
+          .getCharacters()
+          .find((character) =>
+            character.isModel(WIL_CHARACTER_ID.DARK_MONSTER_FIRE_DEMON)
+          )
+      ) {
+        // すでに火の魔人が存在場合は召喚失敗
+        return [];
+      }
+
+      // 魔人を召喚し、体力半分にする
+      targetCell.character = new WilCharacter(
+        WIL_CHARACTER_DEFINES[WIL_CHARACTER_ID.DARK_MONSTER_FIRE_DEMON]
+      );
+      targetCell.character.defaultStatus.life /= 2;
+      targetCell.character.status.life =
+        targetCell.character.defaultStatus.life;
+      return [
+        new WilBattleMoveResult({
+          message: [`${targetCell.character.name}が召喚された。`],
+        }),
+      ];
     },
     isLearnable: (__character: WilCharacter): boolean => {
       return false;
@@ -217,11 +260,36 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     effect: (
       __activest: WilCharacter,
       __target: WilFieldCell,
-      __allyField: WilField,
+      allyField: WilField,
       __enemyField: WilField
     ): Array<WilBattleMoveResult> => {
-      // TODO: 魔人召喚処理
-      return [];
+      const targetCell = allyField.getCell(0, 1);
+      if (targetCell.character) {
+        return [];
+      }
+      if (
+        allyField
+          .getCharacters()
+          .find((character) =>
+            character.isModel(WIL_CHARACTER_ID.DARK_MONSTER_ICE_DEMON)
+          )
+      ) {
+        // すでに氷の魔人が存在場合は召喚失敗
+        return [];
+      }
+
+      // 魔人を召喚し、体力半分にする
+      targetCell.character = new WilCharacter(
+        WIL_CHARACTER_DEFINES[WIL_CHARACTER_ID.DARK_MONSTER_ICE_DEMON]
+      );
+      targetCell.character.defaultStatus.life /= 2;
+      targetCell.character.status.life =
+        targetCell.character.defaultStatus.life;
+      return [
+        new WilBattleMoveResult({
+          message: [`${targetCell.character.name}が召喚された。`],
+        }),
+      ];
     },
     isLearnable: (__character: WilCharacter): boolean => {
       return false;
@@ -241,11 +309,36 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     effect: (
       __activest: WilCharacter,
       __target: WilFieldCell,
-      __allyField: WilField,
+      allyField: WilField,
       __enemyField: WilField
     ): Array<WilBattleMoveResult> => {
-      // TODO: 魔人召喚処理
-      return [];
+      const targetCell = allyField.getCell(0, 3);
+      if (targetCell.character) {
+        return [];
+      }
+      if (
+        allyField
+          .getCharacters()
+          .find((character) =>
+            character.isModel(WIL_CHARACTER_ID.DARK_MONSTER_WIND_DEMON)
+          )
+      ) {
+        // すでに風の魔人が存在場合は召喚失敗
+        return [];
+      }
+
+      // 魔人を召喚し、体力半分にする
+      targetCell.character = new WilCharacter(
+        WIL_CHARACTER_DEFINES[WIL_CHARACTER_ID.DARK_MONSTER_WIND_DEMON]
+      );
+      targetCell.character.defaultStatus.life /= 2;
+      targetCell.character.status.life =
+        targetCell.character.defaultStatus.life;
+      return [
+        new WilBattleMoveResult({
+          message: [`${targetCell.character.name}が召喚された。`],
+        }),
+      ];
     },
     isLearnable: (__character: WilCharacter): boolean => {
       return false;
@@ -265,11 +358,36 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     effect: (
       __activest: WilCharacter,
       __target: WilFieldCell,
-      __allyField: WilField,
+      allyField: WilField,
       __enemyField: WilField
     ): Array<WilBattleMoveResult> => {
-      // TODO: 魔人召喚処理
-      return [];
+      const targetCell = allyField.getCell(0, 4);
+      if (targetCell.character) {
+        return [];
+      }
+      if (
+        allyField
+          .getCharacters()
+          .find((character) =>
+            character.isModel(WIL_CHARACTER_ID.DARK_MONSTER_SOIL_DEMON)
+          )
+      ) {
+        // すでにの土魔人が存在場合は召喚失敗
+        return [];
+      }
+
+      // 魔人を召喚し、体力半分にする
+      targetCell.character = new WilCharacter(
+        WIL_CHARACTER_DEFINES[WIL_CHARACTER_ID.DARK_MONSTER_SOIL_DEMON]
+      );
+      targetCell.character.defaultStatus.life /= 2;
+      targetCell.character.status.life =
+        targetCell.character.defaultStatus.life;
+      return [
+        new WilBattleMoveResult({
+          message: [`${targetCell.character.name}が召喚された。`],
+        }),
+      ];
     },
     isLearnable: (__character: WilCharacter): boolean => {
       return false;

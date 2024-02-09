@@ -1066,7 +1066,7 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     name: "電光石火",
     element: WIL_ELEMENT.THUNDER,
     type: WIL_SKILL_TYPE.SUPPORT_MAGIC,
-    target: WIL_SKILL_TARGET.ALLY,
+    target: WIL_SKILL_TARGET.SELF,
     range: WIL_SKILL_RANGE.SOLO,
     cost: 50,
     animation: WIL_IMAGE_ID.SKILL_THUNDER_CIRCLE,

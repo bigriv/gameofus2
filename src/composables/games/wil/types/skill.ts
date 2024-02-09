@@ -244,4 +244,19 @@ export class WilSkill {
       WIL_SKILL_ID.LIGHT_FIRE,
     ].includes(skill);
   }
+
+  /**
+   * 召喚を行うスキルかを判定する
+   * @param skill 判定するスキル
+   * @returns 召喚するスキルの場合はtrue、それ以外はfalse
+   */
+  static isSummonSkill(skill: WIL_SKILL_ID): boolean {
+    return [
+      WIL_SKILL_ID.PRODUCE,
+      WIL_SKILL_ID.SUMMON_FIRE_DEMON,
+      WIL_SKILL_ID.SUMMON_ICE_DEMON,
+      WIL_SKILL_ID.SUMMON_SOIL_DEMON,
+      WIL_SKILL_ID.SUMMON_WIND_DEMON,
+    ].includes(skill);
+  }
 }

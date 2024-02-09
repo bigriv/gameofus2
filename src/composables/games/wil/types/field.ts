@@ -2,6 +2,7 @@ import { WrongImplementationError } from "@/composables/types/errors/WrongImplem
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WIL_CELL_COLOR } from "@/composables/games/wil/enums/cell";
 import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
+import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 
 /**
@@ -114,6 +115,15 @@ export class WilField {
    */
   removeCharacter(x: number, y: number) {
     this.getCell(x, y).character = undefined;
+  }
+
+  /**
+   * 指定したモデルのキャラクターがフィールドに存在するか判定する
+   * @param model キャラクターのモデルID
+   * @returns 指定したモデルのキャラクターが存在する場合はtrue、それ以外はfalse
+   */
+  isExistCharacterModel(model: WIL_CHARACTER_ID): boolean {
+    return !!this.cells.find((cell) => cell.character?.isModel(model));
   }
 
   /**

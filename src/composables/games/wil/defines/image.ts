@@ -142,12 +142,6 @@ export const WIL_IMAGE_DEFINES: { [key: string]: string } = {
   DOT_CHARACTER_DARK_MONSTER_SUPER_SATAN_RIGHT_HAND2:
     WIL_IMAGE_ROOT_PATH +
     "characters/dots/dark_monster_super_satan_right_hand2.png",
-  DOT_CHARACTER_DARK_MONSTER_SUPER_SATAN_RIGHT_HAND3:
-    WIL_IMAGE_ROOT_PATH +
-    "characters/dots/dark_monster_super_satan_right_hand3.png",
-  DOT_CHARACTER_DARK_MONSTER_SUPER_SATAN_RIGHT_HAND4:
-    WIL_IMAGE_ROOT_PATH +
-    "characters/dots/dark_monster_super_satan_right_hand4.png",
   DOT_CHARACTER_DARK_MONSTER_SCORPION1:
     WIL_IMAGE_ROOT_PATH + "characters/dots/dark_monster_scorpion1.png",
   DOT_CHARACTER_DARK_MONSTER_SCORPION2:

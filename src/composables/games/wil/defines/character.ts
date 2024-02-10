@@ -987,19 +987,14 @@ export const WIL_CHARACTER_DEFINES: {
         {
           visual:
             WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SUPER_SATAN_RIGHT_HAND2,
-          duration: 0.5,
-        },
-        {
-          visual:
-            WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SUPER_SATAN_RIGHT_HAND3,
-          duration: 0.5,
+          duration: 1,
         },
       ],
       magic: [
         {
           visual:
-            WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SUPER_SATAN_RIGHT_HAND4,
-          duration: 0.5,
+            WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SUPER_SATAN_RIGHT_HAND2,
+          duration: 1,
         },
       ],
     },

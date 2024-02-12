@@ -148,7 +148,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
       ],
     },
     {
-      background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_CASTLE,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_CASTLE,
       left: WIL_IMAGE_ID.CHARACTER_STORM_SHOOTERS_PRINCE,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_LAND_EMPEROR,
       talker: "ジョット",
@@ -157,17 +157,17 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_CASTLE,
       left: WIL_IMAGE_ID.CHARACTER_STORM_SHOOTERS_PRINCE,
-      right: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "レイナ",
       message: ["ええ。任せなさい。"],
     },
     {
-      background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_CASTLE,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_CASTLE,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "ヒカル",
       message: [
-        "（レイナさん、まだ元気ないな...。お父さんが亡くなったんだし、無理もないか...。）",
+        "(レイナさん、まだ元気ないな...。お父さんが亡くなったんだし、無理もないか...。)",
       ],
     },
     {
@@ -197,7 +197,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
   [
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
-      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      bgm: WIL_SOUND_ID.BGM_HOLY_CASLE1,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_LAND_EMPEROR,
       talker: "皇帝",
       message: ["ヒカル君、約束の一週間がたったが、調子はどうだろうか？"],
@@ -207,7 +207,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
       left: WIL_IMAGE_ID.CHARACTER_STORM_SHOOTERS_PRINCE,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_LAND_EMPEROR,
       talker: "ジョット",
-      message: ["今必死にやってるところだから、邪魔しないでやってださい。"],
+      message: ["今必死にやってるところです。邪魔しないでやってださい。"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
@@ -248,7 +248,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       talker: "ヒカル",
       message: [
-        "（魔法で相手を包み込むには魔素の動きをできるだけ殺さないといけない。放出した魔素の動きを止めるなんてこと..。）",
+        "(魔法で相手を包み込むには魔素の動きをできるだけ殺さないといけない。放出した魔素の動きを止めるなんてこと...。)",
       ],
     },
     {
@@ -263,16 +263,18 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
       sound: WIL_SOUND_ID.SE_HOLY2,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      message: [""],
+      message: ["ヒカルは封魔聖域を発動した。"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
+      left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_LAND_EMPEROR,
       talker: "皇帝",
       message: ["おお！"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
+      left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_MAGICIAN,
       talker: "魔導兵",
       message: ["まじか。"],
@@ -296,7 +298,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "レイナ",
       message: ["さすがね。"],
     },
@@ -316,7 +318,6 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
       talker: "ヒカル",
       message: ["はい！"],
     },
-    { background: WIL_IMAGE_ID.BACKGROUND_BLACK, message: [""] },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_CASTLE,
       bgm: WIL_SOUND_ID.BGM_FIRE_LAND1,
@@ -530,7 +531,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
       left: WIL_IMAGE_ID.CHARACTER_SMOG_LABORATORY_DOCTOR,
       right: WIL_IMAGE_ID.CHARACTER_INFERUNITY_SAMURAIS_KING,
       sound: WIL_SOUND_ID.SE_SLASH,
-      message: [""],
+      message: ["グレンはホックスを斬りつけた。"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_CASTLE,
@@ -599,7 +600,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_CASTLE,
-      left: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      left: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_SATAN,
       talker: "レイナ",
       message: ["禍々しい力を感じるわ...。"],
@@ -634,7 +635,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_CASTLE,
-      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      left: WIL_IMAGE_ID.CHARACTER_HERO_SURPRISED,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_THUNDER_SOLDIER,
       talker: "ヒカル",
       message: ["ザ、ザーグさん！？"],
@@ -656,7 +657,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_CASTLE,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_HERO,
+      right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_SATAN,
       talker: "ホックス",
       message: [
         "あれぇ、知らなかったぁ？魔王の魔力には非生物を魔物化させる力があるんだよぉ？",
@@ -680,7 +681,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_CASTLE,
-      left: WIL_IMAGE_ID.CHARACTER_ICE_LAND_KING,
+      left: WIL_IMAGE_ID.CHARACTER_INFERUNITY_SAMURAIS_KING,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_WATER_SOLDIER,
       talker: "グレン",
       message: ["帰ってこないと思ったらくたばってやがったか。"],
@@ -700,6 +701,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
   [
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
+      bgm: WIL_SOUND_ID.BGM_FIRE,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       talker: "ヒカル",
       message: ["皆さん、あれを使います！少し時間稼ぎお願いします！"],
@@ -707,7 +709,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "レイナ",
       message: ["任せなさい！"],
     },
@@ -715,25 +717,27 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
       left: WIL_IMAGE_ID.CHARACTER_STORM_SHOOTERS_PRINCE,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_SATAN,
+      talker: "ジョット",
       message: ["こっちだ！"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
       left: WIL_IMAGE_ID.CHARACTER_STORM_SHOOTERS_PRINCE,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_SATAN,
+      talker: "ホックス",
       message: ["っはは！"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       talker: "ヒカル",
-      message: ["（...今だ！）"],
+      message: ["(...今だ！)"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
+      sound: WIL_SOUND_ID.SE_HOLY2,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      talker: "システム",
-      message: ["ヒカルは封印聖域を発動した。"],
+      message: ["ヒカルは封魔聖域を発動した。"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
@@ -755,7 +759,8 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_SATAN,
       talker: "ホックス",
       message: [
-        "なーんちゃって。かつて魔王がやられた魔法を対策してないわけないでしょぉ。",
+        "なーんちゃって。",
+        "かつて魔王がやられた魔法を対策してないわけないでしょぉ。",
       ],
     },
     {
@@ -794,15 +799,15 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
       message: ["これで終わりにしよう。"],
     },
     {
-      background: WIL_IMAGE_ID.BACKGROUND_ICE_LAND,
-      sound: WIL_SOUND_ID.SE_BLOW3,
+      background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
+      sound: WIL_SOUND_ID.SE_STONE1,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_SUPER_SATAN,
-      message: [""],
+      message: ["魔王はアースクエイクを発動した。"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
-      left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_MAGICIAN,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_SOLDIER,
+      left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_MAGICIAN_WOUNDED,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_SOLDIER_WOUNDED,
       talker: "騎士兵&魔導兵",
       message: ["ぐへぇ...。"],
     },
@@ -810,29 +815,29 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
       sound: WIL_SOUND_ID.SE_FIRE2,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_SUPER_SATAN,
-      message: [""],
+      message: ["魔王はクロスファイアを発動した。"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
-      left: WIL_IMAGE_ID.CHARACTER_STORM_SHOOTERS_PRINCE,
+      left: WIL_IMAGE_ID.CHARACTER_STORM_SHOOTERS_PRINCE_WOUNDED,
       message: ["くそっ！"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
       sound: WIL_SOUND_ID.SE_DARK1,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_SUPER_SATAN,
-      message: [""],
+      message: ["魔王はホープレスを発動した。"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
-      left: WIL_IMAGE_ID.CHARACTER_INFERNITY_SAMURAIS_THUNDER_SPY,
-      right: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      left: WIL_IMAGE_ID.CHARACTER_INFERNITY_SAMURAIS_THUNDER_SPY_WOUNDED,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN_WOUNDED,
       talker: "シノブ&レイナ",
       message: ["っう！"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
-      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      left: WIL_IMAGE_ID.CHARACTER_HERO_SURPRISED,
       talker: "ヒカル",
       message: ["みんな！"],
     },
@@ -908,10 +913,11 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_SUPER_SATAN,
       talker: "ヒカル",
-      message: ["（天使の力を...魔王を倒す力を...創造する！）"],
+      message: ["(天使の力を...魔王を倒す力を...創造する！)"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
+      bgm: WIL_SOUND_ID.BGM_HOPE,
       sound: WIL_SOUND_ID.SE_HOLY2,
       left: WIL_IMAGE_ID.CHARACTER_SUPER_HERO,
       message: [""],
@@ -926,7 +932,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
       left: WIL_IMAGE_ID.CHARACTER_SUPER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "レイナ",
       message: ["力が...みなぎってくるわ！"],
     },
@@ -973,7 +979,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
       right: WIL_IMAGE_ID.CHARACTER_INFERUNITY_SAMURAIS_KING,
 
       talker: "ヒカル",
-      message: ["（それは嫌だ...。）"],
+      message: ["(それは嫌だ...。)"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
@@ -986,6 +992,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
   [
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
+      bgm: WIL_SOUND_ID.BGM_FIRE,
       left: WIL_IMAGE_ID.CHARACTER_SUPER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_SUPER_SATAN,
       talker: "ホックス",
@@ -1005,7 +1012,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
-      left: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      left: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "レイナ",
       message: ["倒したの...？"],
     },
@@ -1021,8 +1028,8 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
       message: [""],
     },
     {
-      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_FIRE_LAND_SHODDY_CATSLE,
-      left: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      background: WIL_IMAGE_ID.BACKGROUND_FIRE_LAND_SHODDY_CATSLE,
+      left: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       right: WIL_IMAGE_ID.CHARACTER_STORM_SHOOTERS_PRINCE,
       message: ["ヒカル！"],
     },
@@ -1032,6 +1039,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
+      bgm: WIL_SOUND_ID.BGM_NONE,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       talker: "ヒカル",
       message: ["うぅ...ここは...？"],
@@ -1059,7 +1067,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
-      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      left: WIL_IMAGE_ID.CHARACTER_HERO_SURPRISED,
       right: WIL_IMAGE_ID.CHARACTER_INFERNITY_SAMURAIS_THUNDER_SPY,
       talker: "ヒカル",
       message: ["え！？大変ってまさか...！？"],
@@ -1067,7 +1075,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "レイナ",
       message: ["ヒカル！起きたのね！良かった...。"],
     },
@@ -1103,6 +1111,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
+      bgm: WIL_SOUND_ID.BGM_HOLY_CASLE2,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_LAND_EMPEROR,
       talker: "皇帝",
@@ -1114,7 +1123,8 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
       right: WIL_IMAGE_ID.CHARACTER_HOLY_LAND_EMPEROR,
       talker: "ヒカル",
       message: [
-        "良かった...。じゃあ大変なことになっているっていうのは嘘か...。",
+        "良かった...。",
+        "じゃあ大変なことになっているっていうのは嘘か...。",
       ],
     },
     {
@@ -1129,18 +1139,20 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "レイナ",
       message: [
-        "あなたが寝てる間に、私は王の座につかせてもらったわ。フロリア家に、お父様に恥じないように仕切っていくわ。だから、これからはちゃんと敬いなさいよね。",
+        "あなたが寝てる間に、私は王の座につかせてもらったわ。",
+        "フロリア家に、お父様に恥じないように仕切っていくわ。",
+        "だから、これからはちゃんと敬いなさいよね。",
       ],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "ヒカル",
-      message: ["ええ...。"],
+      message: ["は、はあ...。"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
@@ -1152,14 +1164,14 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "ヒカル",
-      message: ["二人とも、王様になったんですね...。あれ、グレンは？"],
+      message: ["二人とも、正式に王様になったんですね...。あれ、グレンは？"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "ジョット",
       message: [
         "あいつはあの後、すぐに姿を消したよ。こっちもボロボロだし、深追いはできなかったんだよな。",
@@ -1193,17 +1205,18 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "レイナ",
       message: ["ヒカル、あなたはこれからどうするの？"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "ヒカル",
       message: [
-        "俺は...俺は村に戻ろうかと思います。もとはと言えば村の平和のために聖騎士団に入ったので、平和になった今、俺が聖騎士団にいる意味はなくなったので。",
+        "俺は...俺は村に戻ろうかと思います。",
+        "もとはと言えば村の平和のために聖騎士団に入ったので、平和になった今、俺が聖騎士団にいる意味はなくなりましたし。",
       ],
     },
     {
@@ -1231,7 +1244,7 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
-      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      left: WIL_IMAGE_ID.CHARACTER_HERO_WORRIERED,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_LAND_EMPEROR,
       talker: "ヒカル",
       message: ["えーと...俺じゃないとだめですか？"],
@@ -1253,12 +1266,16 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_ICE_GARDIAN_QUEEN,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "レイナ",
-      message: [
-        "氷の国周りもお願いするわ。",
-        "つ、ついでに、顔を見せに来なさい！",
-      ],
+      message: ["氷の国周りもお願いするわ。"],
+    },
+    {
+      background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
+      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN_SHY,
+      talker: "レイナ",
+      message: ["つ、ついでに、顔を見せに来なさい！"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
@@ -1269,8 +1286,8 @@ export const WIL_TALK_DEFINES_CHPATER5: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
-      left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_HERO,
+      left: WIL_IMAGE_ID.CHARACTER_HERO_WORRIERED,
+      right: WIL_IMAGE_ID.CHARACTER_STORM_SHOOTERS_PRINCE,
       talker: "ヒカル",
       message: ["そんな...。", "俺の生活には平和は来ないんですか...？"],
     },

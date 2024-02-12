@@ -62,7 +62,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
-      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      left: WIL_IMAGE_ID.CHARACTER_HERO_SMILE,
       talker: "ヒカル",
       message: ["二人とも、ザーグさんを慕ってるんですね。"],
     },
@@ -197,11 +197,11 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       message: ["長時間の移動になるけど、みんなよろしく頼むよ。"],
     },
     {
-      background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_LAND_EMPEROR,
       talker: "ヒカル",
-      message: ["（あれが皇帝陛下か...。優しそうな人だな。）"],
+      message: ["(あれが皇帝陛下か...。優しそうな人だな。)"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
@@ -211,7 +211,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       message: ["あれ？君は初めて見る顔だね。"],
     },
     {
-      background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_LAND_EMPEROR,
       talker: "ヒカル",
@@ -228,14 +228,14 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       message: ["頼りにしているよ、ヒカル君。"],
     },
     {
-      background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_SOLDIER,
       talker: "騎士兵",
       message: ["ヒカル、陛下と話せるなんてラッキーだったな！"],
     },
     {
-      background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_SOLDIER,
       talker: "ヒカル",
@@ -245,7 +245,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       ],
     },
     {
-      background: WIL_IMAGE_ID.BACKGROUND_TRAINING_ROOM,
+      background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_SOLDIER,
       talker: "騎士兵",
@@ -281,7 +281,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       talker: "ザーグ",
       message: ["まさか。こんなところに人間がいるわけ..."],
     },
@@ -289,14 +289,14 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
       sound: WIL_SOUND_ID.SE_MONSTER,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       talker: "ザーグ",
       message: ["...あれは魔物だ！"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       talker: "ザーグ",
       message: [
         "全員、戦闘態勢に入れ！万が一にも皇帝陛下に危害がないようにしろ！",
@@ -307,28 +307,28 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
       bgm: WIL_SOUND_ID.BGM_SNOWSTORM,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       talker: "ザーグ",
       message: ["はぁはぁ、みんな、無事か！"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_MAGICIAN,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_MAGICIAN_WOUNDED,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       talker: "魔導兵",
       message: ["魔導兵の一部が毒に侵されて氷の国まで持つかどうか...。"],
     },
 
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_SOLDIER,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_SOLDIER_WOUNDED,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       talker: "騎士兵",
       message: ["騎士兵も大多数が負傷してます...。"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       talker: "ザーグ",
       message: [
         "くそっ、次に襲われたら厳しいな...。氷の国までもう少しだというのに！",
@@ -338,7 +338,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       talker: "ヒカル",
       message: [
         "この寒さだと動きが鈍ってしまいますからね...。しかも雪で視界も悪い...。",
@@ -347,7 +347,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       talker: "ザーグ",
       message: [
         "慣れない環境での戦闘は苦しかったか...。帰ったら鍛え直しだな。",
@@ -356,7 +356,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       talker: "ヒカル",
       message: [
         "これ、結構まずいんじゃないですか？引いたとしても安全に帰れる保証はないし...。",
@@ -365,7 +365,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       talker: "ザーグ",
       message: [
         "そうだな...。幸い氷の国は治癒魔法に長けている。多少強引にでも突っ切るしかないか。",
@@ -375,41 +375,35 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
       sound: WIL_SOUND_ID.SE_MONSTER,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       talker: "ヒカル",
       message: ["...ザーグさん！危ない！"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       sound: WIL_SOUND_ID.SE_FIGHTING,
-      message: [""],
-    },
-    {
-      background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      left: WIL_IMAGE_ID.CHARACTER_HERO_SURPRISED,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SURPRISED,
       talker: "ヒカル&ザーグ",
       message: ["！？"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       left: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_DEFENDER,
       talker: "守護兵",
       message: ["大丈夫、か？"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       left: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_DEFENDER,
       talker: "ザーグ",
       message: ["あなたは？"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       left: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_DEFENDER,
       talker: "守護兵",
       message: [
@@ -418,19 +412,18 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       left: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_MAGICIAN,
       talker: "補助兵",
       message: ["けが人が多いね。治してやろう。"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       left: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_MAGICIAN,
       message: ["補助兵は癒しの水を発動した。"],
       sound: WIL_SOUND_ID.SE_HEAL1,
     },
-    { message: [""] },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_LAND,
       bgm: WIL_SOUND_ID.BGM_ICE_LAND1,
@@ -462,7 +455,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       talker: "ザーグ",
       message: [
-        "ヒカル、俺は陛下に付き添ってフロリア王、フロリア様のところまで行ってくる。その間、みんなをよろしく。",
+        "ヒカル、俺は陛下に付き添って氷の国の王、フロリア様のところまで行ってくる。その間、みんなをよろしく。",
       ],
     },
     {
@@ -486,7 +479,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "？？？",
       message: [
-        "ふーん、これが聖の国の精鋭？あれくらいの魔物相手で壊滅状態なんて、随分危うい近衛兵ね。",
+        "ふーん、これが聖の国の精鋭？あれくらいの魔物相手で壊滅状態なんて、随分頼りない近衛兵ね。",
       ],
     },
     {
@@ -524,7 +517,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       talker: "ヒカル",
       message: [
         "身なりがとても綺麗だったので。",
-        "（あと、なんか偉そうだったし...。）",
+        "(あと、なんか偉そうだったし...。)",
       ],
     },
     {
@@ -584,7 +577,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_LAND,
-      left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       right: WIL_IMAGE_ID.CHARACTER_HERO,
       talker: "ザーグ",
       message: [
@@ -594,7 +587,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_LAND,
-      left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       right: WIL_IMAGE_ID.CHARACTER_HERO,
       talker: "ヒカル",
       message: ["それはわかってますが...。でも、それじゃあ同盟は...。"],
@@ -665,7 +658,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       background: WIL_IMAGE_ID.BACKGROUND_ICE_LAND,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       talker: "ヒカル",
-      message: ["（あの王女様も出るのか。絶対に負けられない！）"],
+      message: ["(あの王女様も出るのか。絶対に負けられない！)"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_LAND,
@@ -700,22 +693,22 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_LAND,
       bgm: WIL_SOUND_ID.BGM_ICE_LAND1,
-      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN_WOUNDED,
       talker: "レイナ",
       message: ["...っく！この私が負けるなんて...。"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_LAND,
       left: WIL_IMAGE_ID.CHARACTER_ICE_LAND_KING,
-      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN_WOUNDED,
       talker: "フロリア王",
       message: ["レイナ！大丈夫か！？貴様ら、よくも娘を！"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_LAND,
-      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      left: WIL_IMAGE_ID.CHARACTER_HERO_WORRIERED,
       talker: "ヒカル",
-      message: ["（じゃあどうすりゃ良かったんだよ...。）"],
+      message: ["(じゃあどうすれば良かったんだ...。)"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_LAND,
@@ -760,7 +753,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_LAND,
-      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      left: WIL_IMAGE_ID.CHARACTER_ICE_LAND_KING,
       right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "レイナ",
       message: [
@@ -774,7 +767,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       talker: "フロリア王",
       message: [
         "ムムム。しかし...。",
-        "（同盟を結んでしまえば、戦いが増える...。戦いが増えればレイナが危険な目にあってしまう...。）",
+        "(同盟を結んでしまえば、戦いが増える...。戦いが増えればレイナが危険な目にあってしまう...。)",
       ],
     },
     {
@@ -802,6 +795,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_LAND,
+      bgm: WIL_SOUND_ID.BGM_PINCH1,
       left: WIL_IMAGE_ID.CHARACTER_ICE_LAND_KING,
       right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
       talker: "フロリア王",
@@ -823,7 +817,6 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      bgm: WIL_SOUND_ID.BGM_PINCH1,
       sound: WIL_SOUND_ID.SE_MONSTER,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_ICE_DEMON,
       message: [""],
@@ -836,9 +829,9 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       message: ["何...あいつ...？", "尋常じゃない魔力を感じるわ...。"],
     },
     {
-      background: WIL_IMAGE_ID.BACKGROUND_ICE_LAND,
+      background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
       left: WIL_IMAGE_ID.CHARACTER_HOLY_LAND_EMPEROR,
-      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
+      right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_ICE_DEMON,
       talker: "皇帝",
       message: [
         "人型の強力な魔物...もしかして魔人というやつではないだろうか。昔、古文書で読んだことがある。",
@@ -907,10 +900,10 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_ICE_DEMON,
       talker: "ザーグ",
-      message: ["言われなくても、なんとかしなきゃ我々も危ないですから...。"],
+      message: ["言われずとも、なんとかしなきゃ我々も危ないですから...。"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
@@ -937,7 +930,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       talker: "ザーグ",
       message: ["くるぞ！総員、配置につけ！"],
     },
@@ -946,24 +939,24 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
       bgm: WIL_SOUND_ID.BGM_SNOWSTORM,
-      left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_ICE_DEMON,
       talker: "ザーグ",
       message: ["くそっ、どんだけタフなんだ、こいつは！？"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      left: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
+      left: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN_WOUNDED,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_ICE_DEMON,
       talker: "レイナ",
       message: ["まずいわ、もうみんなボロボロよ。"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      left: WIL_IMAGE_ID.CHARACTER_HERO_WOUNDED,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_ICE_DEMON,
       talker: "ヒカル",
-      message: ["（このまま戦っても状況は悪くなる一方...。一か八か...。）"],
+      message: ["(このまま戦っても状況は悪くなる一方...。一か八か...。)"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
@@ -988,7 +981,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       talker: "ヒカル",
       message: [
         "あいつの魔法は、すべてあの宝石から放出されているように見えます。",
-        "なので、あれさえ壊せば攻撃も回復もされなくなるんじゃないかと・",
+        "なので、あれさえ壊せば攻撃も回復もされなくなるんじゃないかと。",
       ],
     },
     {
@@ -1020,7 +1013,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       talker: "ザーグ",
       message: [
         "そんな危険な役割、新兵のお前にやらせられるか！",
@@ -1030,7 +1023,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       talker: "ヒカル",
       message: [
         "あいつの属性は水。大ダメージを与えるなら雷属性の技を使えるザーグさんの方が適任です。",
@@ -1040,16 +1033,16 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
-      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
+      right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS,
       talker: "ザーグ",
-      message: ["...信じるぞ。"],
+      message: ["分かった。俺はお前を信じる。"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       talker: "ヒカル",
-      message: ["任せてください。", "...行ってきます！"],
+      message: ["ありがとうございます。", "...行ってきます！"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
@@ -1077,6 +1070,26 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       sound: WIL_SOUND_ID.SE_ICE1,
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_ICE_DEMON,
+      message: ["氷の魔人はグレイシアを発動した。"],
+    },
+    {
+      background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
+      talker: "レイナ",
+      message: ["危ない！"],
+    },
+    {
+      background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
+      sound: WIL_SOUND_ID.SE_HOLY2,
+      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_ICE_DEMON,
+      message: ["ヒカルは魔法の盾を創り出した。"],
+    },
+    {
+      background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
+      sound: WIL_SOUND_ID.SE_GARD,
+      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_ICE_DEMON,
       message: [""],
     },
     {
@@ -1091,7 +1104,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       sound: WIL_SOUND_ID.SE_THUNDER2,
       left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_ICE_DEMON,
-      message: [""],
+      message: ["ザーグはサンダーソードを発動した。"],
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
@@ -1113,7 +1126,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
     },
     {
       background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
-      bgm: WIL_SOUND_ID.BGM_BATTLE_WIN2,
+      bgm: WIL_SOUND_ID.BGM_ICE_LAND1,
       left: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
       talker: "ザーグ",
       message: ["勝ったぞ！魔人を倒した！！", "ヒカル、お前のおかげだ！"],
@@ -1124,6 +1137,42 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       talker: "ヒカル",
       message: [
         "ははは...。ザーグさんの力あってこそです...。上手くいって良かった...。",
+      ],
+    },
+    {
+      background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
+      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
+      talker: "レイナ",
+      message: ["あなた、さっき攻撃を受けたとき、何をしたの？"],
+    },
+    {
+      background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
+      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
+      talker: "ヒカル",
+      message: [
+        "あー、あれですか。相手の攻撃が思いのほか激しかったので、盾が欲しいなーと思って。",
+      ],
+    },
+    {
+      background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
+      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
+      talker: "レイナ",
+      message: [
+        "あの土壇場でよく新しい魔法の創造なんてできたわね...。",
+        "普通、新しい魔法は長い年月をかけて研究されるものよ...。",
+      ],
+    },
+    {
+      background: WIL_IMAGE_ID.BACKGROUND_ICE_FIELD,
+      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      right: WIL_IMAGE_ID.CHARACTER_ICICLE_GURDIANS_QUEEN,
+      talker: "ヒカル",
+      message: [
+        "そうなんですね。",
+        "でも、さっきのはたまたま上手くいっただけなので、同じことはちょっとできそうにないですね...。",
       ],
     },
     {

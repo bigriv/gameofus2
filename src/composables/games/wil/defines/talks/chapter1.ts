@@ -52,7 +52,7 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
     {
       talker: "ヒカル",
       background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
-      message: ["（俺はヒカル。聖の国の端の田舎村に住む、ただの農民だ。）"],
+      message: ["(俺はヒカル。聖の国の端の田舎村に住む、ただの農民だ。)"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
     },
     {
@@ -95,6 +95,7 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
       background: WIL_IMAGE_ID.BACKGROUND_VILLAGE_EVENING,
       message: ["あれは、魔物...？", "少なくとも人間ではないな...。"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
+      right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_SHADOW,
     },
     {
       talker: "ヒカル",
@@ -105,8 +106,11 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_SHADOW,
     },
     {
+      background: WIL_IMAGE_ID.BACKGROUND_VILLAGE_EVENING,
       message: [""],
       sound: WIL_SOUND_ID.SE_FIGHTING,
+      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_SHADOW,
     },
     {
       talker: "ヒカル",
@@ -124,7 +128,7 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
       talker: "ヒカル",
       background: WIL_IMAGE_ID.BACKGROUND_VILLAGE_EVENING,
       message: [
-        "（子供の手前、ああ言ったけど、かなり厳しいな...。このままじゃ村が...。）",
+        "(子供の手前、ああ言ったけど、かなり厳しいな...。このままじゃ村が...。)",
       ],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
     },
@@ -133,7 +137,7 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
       background: WIL_IMAGE_ID.BACKGROUND_VILLAGE_EVENING,
       sound: WIL_SOUND_ID.SE_MONSTER,
       message: ["...！？", "しまった！"],
-      left: WIL_IMAGE_ID.CHARACTER_HERO,
+      left: WIL_IMAGE_ID.CHARACTER_HERO_SURPRISED,
       right: WIL_IMAGE_ID.CHARACTER_DARK_MONSTER_SHADOW,
     },
     {
@@ -178,7 +182,7 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
     {
       talker: "ヒカル",
       background: WIL_IMAGE_ID.BACKGROUND_VILLAGE_EVENING,
-      message: ["（逃げるか...？でも、この村は...。）"],
+      message: ["(逃げるか...？でも、この村は...。)"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
     },
@@ -350,7 +354,7 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
     {
       talker: "ヒカル",
       background: WIL_IMAGE_ID.BACKGROUND_VILLAGE_EVENING,
-      message: ["（ここまで言ってくれるんだ。あんまり気は乗らないけど...。）"],
+      message: ["(ここまで言ってくれるんだ。あんまり気は乗らないけど...。)"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
     },
@@ -477,7 +481,7 @@ export const WIL_TALK_DEFINES_CHPATER1: Array<WilTalkDefine> = [
     {
       talker: "ヒカル",
       background: WIL_IMAGE_ID.BACKGROUND_HOLY_LAND_OUTSIDE,
-      message: ["（この人、こんなに脳筋だったのか...。）"],
+      message: ["(この人、こんなに脳筋だったのか...。)"],
       left: WIL_IMAGE_ID.CHARACTER_HERO,
       right: WIL_IMAGE_ID.CHARACTER_HOLY_KNIGHTS_LEADER,
     },

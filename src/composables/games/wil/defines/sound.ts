@@ -42,6 +42,7 @@ export const WIL_SOUND_DEFINES: { [key: string]: string } = {
   BGM_PINCH2: COMMON_SOUND_ROOT_PATH + "bgm/dovasyndrome_12449.mp3",
   BGM_PINCH3: COMMON_SOUND_ROOT_PATH + "bgm/youfulca_face_the_fear.mp3",
   BGM_HOLY_CASLE1: COMMON_SOUND_ROOT_PATH + "bgm/maou_bgm_orchestra06.mp3",
+  BGM_HOLY_CASLE2: COMMON_SOUND_ROOT_PATH + "bgm/maou_game_castle02.mp3",
   BGM_DEPLOY1: COMMON_SOUND_ROOT_PATH + "bgm/maou_game_rock28.mp3",
   BGM_DEPLOY2: COMMON_SOUND_ROOT_PATH + "bgm/maou_game_boss03.mp3",
   BGM_DEPLOY3: COMMON_SOUND_ROOT_PATH + "bgm/dovasyndrome_11161.mp3",
@@ -52,8 +53,8 @@ export const WIL_SOUND_DEFINES: { [key: string]: string } = {
   BGM_BATTLE5:
     COMMON_SOUND_ROOT_PATH + "bgm/youfulca_battle_with_darklord_2013.mp3",
   BGM_BATTLE_WIN1: COMMON_SOUND_ROOT_PATH + "bgm/maou_game_jingle01.mp3",
-  BGM_BATTLE_WIN2: COMMON_SOUND_ROOT_PATH + "bgm/maou_game_castle03.mp3",
-  BGM_BATTLE_LOSE:
+  BGM_BATTLE_LOSE: COMMON_SOUND_ROOT_PATH + "bgm/maou_bgm_orchestra26.mp3",
+  BGM_BATTLE_LOSE_SHORT:
     COMMON_SOUND_ROOT_PATH + "bgm/maou_bgm_orchestra26_short.mp3",
   BGM_TRAINING1: COMMON_SOUND_ROOT_PATH + "bgm/maou_game_field11.mp3",
   BGM_SNOWSTORM: COMMON_SOUND_ROOT_PATH + "bgm/soundeffect_lab_snowstorm.mp3",
@@ -61,6 +62,8 @@ export const WIL_SOUND_DEFINES: { [key: string]: string } = {
   BGM_WINDBLOW: COMMON_SOUND_ROOT_PATH + "bgm/soundeffect_lab_windblow.mp3",
   BGM_STORM_LAND1: COMMON_SOUND_ROOT_PATH + "bgm/maou_game_dangeon04b.mp3",
   BGM_FIRE_LAND1: COMMON_SOUND_ROOT_PATH + "bgm/dovasyndrome_19413.mp3",
+  BGM_FIRE: COMMON_SOUND_ROOT_PATH + "bgm/soundeffect_lab_fire.mp3",
+  BGM_NIGHT: COMMON_SOUND_ROOT_PATH + "bgm/maou_bgm_healing10.mp3",
   BGM_HOPE: COMMON_SOUND_ROOT_PATH + "bgm/dovasyndrome_13024.mp3",
-  BGM_ENDING: COMMON_SOUND_ROOT_PATH + "bgm/youfulca_Prologue.mp3",
+  BGM_ENDING: COMMON_SOUND_ROOT_PATH + "bgm/dovasyndrome_18833.mp3",
 };

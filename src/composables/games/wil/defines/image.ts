@@ -21,32 +21,57 @@ export const WIL_IMAGE_DEFINES: { [key: string]: string } = {
     WIL_IMAGE_ROOT_PATH + "characters/standings/dark_monster_water_soldier.png",
   CHARACTER_DARK_MONSTER_WIND_DEMON:
     WIL_IMAGE_ROOT_PATH + "characters/standings/dark_monster_wind_demon.png",
+  CHARACTER_HERO_SMILE:
+    WIL_IMAGE_ROOT_PATH + "characters/standings/hero_smile.png",
+  CHARACTER_HERO_SURPRISED:
+    WIL_IMAGE_ROOT_PATH + "characters/standings/hero_surprised.png",
+  CHARACTER_HERO_WORRIERED:
+    WIL_IMAGE_ROOT_PATH + "characters/standings/hero_worriered.png",
+  CHARACTER_HERO_WOUNDED:
+    WIL_IMAGE_ROOT_PATH + "characters/standings/hero_wounded.png",
   CHARACTER_HERO: WIL_IMAGE_ROOT_PATH + "characters/standings/hero.png",
+  CHARACTER_HOLY_KNIGHTS_LEADER_SERIOUS:
+    WIL_IMAGE_ROOT_PATH +
+    "characters/standings/holy_knights_leader_serious.png",
+  CHARACTER_HOLY_KNIGHTS_LEADER_SURPRISED:
+    WIL_IMAGE_ROOT_PATH +
+    "characters/standings/holy_knights_leader_surprised.png",
   CHARACTER_HOLY_KNIGHTS_LEADER:
     WIL_IMAGE_ROOT_PATH + "characters/standings/holy_knights_leader.png",
+  CHARACTER_HOLY_KNIGHTS_MAGICIAN_WOUNDED:
+    WIL_IMAGE_ROOT_PATH +
+    "characters/standings/holy_knights_magician_wounded.png",
   CHARACTER_HOLY_KNIGHTS_MAGICIAN:
     WIL_IMAGE_ROOT_PATH + "characters/standings/holy_knights_magician.png",
+  CHARACTER_HOLY_KNIGHTS_SOLDIER_WOUNDED:
+    WIL_IMAGE_ROOT_PATH +
+    "characters/standings/holy_knights_soldier_wounded.png",
   CHARACTER_HOLY_KNIGHTS_SOLDIER:
     WIL_IMAGE_ROOT_PATH + "characters/standings/holy_knights_soldier.png",
   CHARACTER_HOLY_LAND_EMPEROR:
     WIL_IMAGE_ROOT_PATH + "characters/standings/holy_land_emperor.png",
-  CHARACTER_ICE_GARDIAN_DEFENDER:
-    WIL_IMAGE_ROOT_PATH + "characters/standings/ice_gardian_defender.png",
-  CHARACTER_ICE_GARDIAN_MAGICIAN:
-    WIL_IMAGE_ROOT_PATH + "characters/standings/ice_gardian_magician.png",
-  CHARACTER_ICE_GARDIAN_QUEEN:
-    WIL_IMAGE_ROOT_PATH + "characters/standings/ice_gardian_queen.png",
   CHARACTER_ICE_LAND_KING:
     WIL_IMAGE_ROOT_PATH + "characters/standings/ice_land_king.png",
   CHARACTER_ICICLE_GURDIANS_DEFENDER:
     WIL_IMAGE_ROOT_PATH + "characters/standings/icicle_gurdians_defender.png",
   CHARACTER_ICICLE_GURDIANS_MAGICIAN:
     WIL_IMAGE_ROOT_PATH + "characters/standings/icicle_gurdians_magician.png",
+  CHARACTER_ICICLE_GURDIANS_QUEEN_SHY:
+    WIL_IMAGE_ROOT_PATH + "characters/standings/icicle_gurdians_queen_shy.png",
+  CHARACTER_ICICLE_GURDIANS_QUEEN_SURPRISED:
+    WIL_IMAGE_ROOT_PATH +
+    "characters/standings/icicle_gurdians_queen_surprised.png",
+  CHARACTER_ICICLE_GURDIANS_QUEEN_WOUNDED:
+    WIL_IMAGE_ROOT_PATH +
+    "characters/standings/icicle_gurdians_queen_wounded.png",
   CHARACTER_ICICLE_GURDIANS_QUEEN:
     WIL_IMAGE_ROOT_PATH + "characters/standings/icicle_gurdians_queen.png",
   CHARACTER_INFERNITY_SAMURAIS_SAND_SPY:
     WIL_IMAGE_ROOT_PATH +
     "characters/standings/infernity_samurais_sand_spy.png",
+  CHARACTER_INFERNITY_SAMURAIS_THUNDER_SPY_WOUNDED:
+    WIL_IMAGE_ROOT_PATH +
+    "characters/standings/infernity_samurais_thunder_spy_wounded.png",
   CHARACTER_INFERNITY_SAMURAIS_THUNDER_SPY:
     WIL_IMAGE_ROOT_PATH +
     "characters/standings/infernity_samurais_thunder_spy.png",
@@ -64,8 +89,14 @@ export const WIL_IMAGE_DEFINES: { [key: string]: string } = {
     WIL_IMAGE_ROOT_PATH + "characters/standings/smog_laboratory_doctor.png",
   CHARACTER_SMOG_LABORATORY_MEMBER:
     WIL_IMAGE_ROOT_PATH + "characters/standings/smog_laboratory_member.png",
-  CHARACTER_STORM_SHOOTER_ARCHER:
-    WIL_IMAGE_ROOT_PATH + "characters/standings/storm_shooter_archer.png",
+  CHARACTER_STORM_SHOOTERS_ARCHER:
+    WIL_IMAGE_ROOT_PATH + "characters/standings/storm_shooters_archer.png",
+  CHARACTER_STORM_SHOOTERS_PRINCE_SURPIRSED:
+    WIL_IMAGE_ROOT_PATH +
+    "characters/standings/storm_shooters_prince_surprised.png",
+  CHARACTER_STORM_SHOOTERS_PRINCE_WOUNDED:
+    WIL_IMAGE_ROOT_PATH +
+    "characters/standings/storm_shooters_prince_wounded.png",
   CHARACTER_STORM_SHOOTERS_PRINCE:
     WIL_IMAGE_ROOT_PATH + "characters/standings/storm_shooters_prince.png",
   CHARACTER_SUPER_HERO:
@@ -400,7 +431,15 @@ export const WIL_IMAGE_DEFINES: { [key: string]: string } = {
     WIL_IMAGE_ROOT_PATH + "backgrounds/holy_land_castle.png",
   BACKGROUND_HOLY_LAND_OUTSIDE:
     WIL_IMAGE_ROOT_PATH + "backgrounds/holy_land_outside.png",
+  BACKGROUND_HOLY_LAND_SHODDY_OUTSIDE:
+    WIL_IMAGE_ROOT_PATH + "backgrounds/holy_land_shoddy_outside.png",
+  BACKGROUND_HOLY_LAND_SHODDY_OUTSIDE_NIGHT:
+    WIL_IMAGE_ROOT_PATH + "backgrounds/holy_land_shoddy_outside_night.png",
   BACKGROUND_ICE_FIELD: WIL_IMAGE_ROOT_PATH + "backgrounds/ice_field.png",
+  BACKGROUND_ICE_LAND_STORE:
+    WIL_IMAGE_ROOT_PATH + "backgrounds/ice_land_store.png",
+  BACKGROUND_ICE_LAND_STORE_EMPTY:
+    WIL_IMAGE_ROOT_PATH + "backgrounds/ice_land_store_empty.png",
   BACKGROUND_ICE_LAND: WIL_IMAGE_ROOT_PATH + "backgrounds/ice_land.png",
   BACKGROUND_STORM_LAND_CASTLE:
     WIL_IMAGE_ROOT_PATH + "backgrounds/storm_land_castle.png",

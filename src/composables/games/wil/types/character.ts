@@ -312,7 +312,7 @@ export class WilCharacter {
         `${this.name}は${WilConditionUtil.getLabel(
           this.condition
         )}状態になった。`,
-        `（${WilConditionUtil.getDescription(this.condition)}）`,
+        `(${WilConditionUtil.getDescription(this.condition)})`,
       ],
     });
   }

@@ -22,6 +22,7 @@
     <div class="c-battle__field" @click="onClickWindow">
       <Field
         :battle="(battle as WilBattle)"
+        :moveResult="moveResult"
         @selectComputerCell="onClickComputerField"
         @selectPlayerCell="onClickPlayerField"
         @hover="onHoverFieldCell"
@@ -46,6 +47,7 @@
       :battle="(battle as WilBattle)"
       :skills="props.skills"
       :hoverCell="hoverCell"
+      :moveResult="moveResult"
       @error="error"
       @setCharacter="setCharacter"
       @endSet="endSet"
@@ -79,6 +81,7 @@ import {
   ref,
   watch,
 } from "vue";
+import { useGameStore } from "@/pinia/game";
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import Field from "@/components/templates/games/wil/main/battle/01_Field.vue";
@@ -86,13 +89,13 @@ import UnderFrame from "@/components/templates/games/wil/main/battle/02_UnderFra
 import WilTalk from "@/components/molecules/games/wil/WilTalk.vue";
 import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
 import WilLogDialog from "@/components/molecules/games/wil/WilLogDialog.vue";
-import { useGameStore } from "@/pinia/game";
 import {
   WIL_BUTTON_FONT_COLOR,
   WIL_BUTTON_BACKGROUND_COLOR,
 } from "@/composables/games/wil/const";
 import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
 import { WIL_BATTLE_TIMMING } from "@/composables/games/wil/enums/timming";
+import { WIL_SOUND_ID } from "@/composables/games/wil/enums/sound";
 import { WilSkill } from "@/composables/games/wil/types/skill";
 import { WilPlayer } from "@/composables/games/wil/types/player";
 import {
@@ -106,6 +109,7 @@ import {
 import { WilFieldCell } from "@/composables/games/wil/types/field";
 import { WilComputer } from "@/composables/games/wil/types/computer";
 import { WilCharacter } from "@/composables/games/wil/types/character";
+import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 
 const props = defineProps({
   skills: {
@@ -123,7 +127,7 @@ const props = defineProps({
 });
 const emits = defineEmits(["end"]);
 
-const gameStore = useGameStore()
+const gameStore = useGameStore();
 const background = props.event.background;
 const battle = ref(new WilBattle(props.player, props.event, props.skills));
 const hoverCell: Ref<WilFieldCell | undefined> = ref();
@@ -160,6 +164,45 @@ onUnmounted(() => {
   props.event.processEnd();
 });
 
+// 戦闘の行動結果管理オブジェクト
+const moveResult: Ref<WilBattleMoveResult | undefined> = ref();
+/**
+ * 行動結果の表示処理
+ * @param results 行動結果
+ * @param afterFunction 表示処理完了後に行う処理
+ */
+const showBattleMoveResult = (
+  results: Array<WilBattleMoveResult>,
+  afterFunction: Function
+) => {
+  if (!underFrame.value) {
+    throw new WrongImplementationError("Under Frame is Not initialized.");
+  }
+  if (results.length <= 0) {
+    afterFunction();
+    return;
+  }
+  underFrame.value.messageComplete = false;
+  chainBattleMoveResult([...results], afterFunction);
+};
+const chainBattleMoveResult = (
+  results: Array<WilBattleMoveResult>,
+  afterFunction: Function
+) => {
+  const result = results.shift();
+  if (!result) {
+    moveResult.value = undefined;
+    underFrame.value!.messageComplete = true;
+    underFrame.value!.onNextMessage = () => {};
+    afterFunction();
+    return;
+  }
+  moveResult.value = result;
+  underFrame.value!.onNextMessage = () =>
+    chainBattleMoveResult(results, afterFunction);
+  moveResult.value.process();
+};
+
 /**
  * 画面をクリックしたときのイベント処理
  * 戦闘タイミングが戦闘処理時の場合に表示されているメッセージを次に進める
@@ -179,7 +222,7 @@ const onClickComputerField = (cell: WilFieldCell) => {
     battle.value.setMoveTarget(cell);
     // 行動処理を実行
     battle.value.processMove();
-    underFrame.value?.showBattleMoveResult(
+    showBattleMoveResult(
       battle.value.moveResults as Array<WilBattleMoveResult>,
       endTurn
     );
@@ -216,7 +259,7 @@ const onClickPlayerField = (cell: WilFieldCell) => {
     battle.value.setMoveTarget(cell);
     // 行動処理を実行
     battle.value.processMove();
-    underFrame.value?.showBattleMoveResult(
+    showBattleMoveResult(
       battle.value.moveResults as Array<WilBattleMoveResult>,
       endTurn
     );
@@ -298,7 +341,7 @@ const startTurn = () => {
       battle.value.turnOperator.decideBattleMove(battle.value as WilBattle);
       setTimeout(() => {
         battle.value.processMove();
-        underFrame.value?.showBattleMoveResult(
+        showBattleMoveResult(
           battle.value.moveResults as Array<WilBattleMoveResult>,
           endTurn
         );
@@ -317,7 +360,7 @@ const startTurn = () => {
  */
 const skipTurn = () => {
   battle.value.skipTurn();
-  underFrame.value?.showBattleMoveResult(
+  showBattleMoveResult(
     battle.value.moveResults as Array<WilBattleMoveResult>,
     endTurn
   );
@@ -330,7 +373,7 @@ const endTurn = () => {
   console.log("turn end");
   battle.value.endTurn();
   moveSequence.value = battle.value.getMoveSequence();
-  underFrame.value?.showBattleMoveResult(
+  showBattleMoveResult(
     battle.value.moveResults as Array<WilBattleMoveResult>,
     () => {
       // 戦闘終了判定を実施
@@ -350,18 +393,18 @@ const endBattle = () => {
   changeTimming(WIL_BATTLE_TIMMING.BATTLE_END, () => {
     battle.value.endBattle();
     if (battle.value.winner === WIL_BATTLE_TEAM.PLAYER) {
-      gameStore.getSounds.BGM_BATTLE_WIN1.play();
+      gameStore.getSounds[WIL_SOUND_ID.BGM_BATTLE_WIN1].play();
       confirmModal.message = `${battle.value.computer.teamName}との戦闘に勝利した！`;
       confirmModal.onClickOk = () => {
-        gameStore.getSounds.BGM_BATTLE_WIN1.stop();
+        gameStore.getSounds[WIL_SOUND_ID.BGM_BATTLE_WIN1].stop();
         emits("end", battle.value.winner);
       };
       confirmModal.isShow = true;
     } else if (battle.value.winner === WIL_BATTLE_TEAM.COMPUTER) {
-      gameStore.getSounds.BGM_BATTLE_LOSE.play();
+      gameStore.getSounds[WIL_SOUND_ID.BGM_BATTLE_LOSE_SHORT].play();
       confirmModal.message = `${battle.value.computer.teamName}との戦闘に敗北した。`;
       confirmModal.onClickOk = () => {
-        gameStore.getSounds.BGM_BATTLE_LOSE.stop();
+        gameStore.getSounds[WIL_SOUND_ID.BGM_BATTLE_LOSE_SHORT].stop();
         emits("end", battle.value.winner);
       };
       confirmModal.isShow = true;

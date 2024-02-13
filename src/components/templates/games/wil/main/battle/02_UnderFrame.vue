@@ -167,7 +167,7 @@
             v-model:complete="messageComplete"
             :clickable="true"
             :speed="3"
-            :messages="battleResult?.message"
+            :messages="props.moveResult?.message"
             :fontColor="WIL_FRAME_FONT_COLOR"
             vertical="start"
             horizontal="start"
@@ -180,7 +180,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, Ref, computed, ref } from "vue";
+import { PropType, computed } from "vue";
 import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import NameValueTable from "@/components/atoms/tables/NameValueTable.vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
@@ -216,6 +216,10 @@ const props = defineProps({
   },
   hoverCell: {
     type: Object as PropType<WilFieldCell>,
+    default: undefined,
+  },
+  moveResult: {
+    type: Object as PropType<WilBattleMoveResult>,
     default: undefined,
   },
 });
@@ -336,40 +340,9 @@ const onSelectSkill = (skill: WilSkill) => {
 const onSkipTurn = () => {
   emits("skipTurn");
 };
-const battleResult: Ref<WilBattleMoveResult | undefined> = ref();
-const showBattleMoveResult = (
-  results: Array<WilBattleMoveResult>,
-  afterFunction: Function
-) => {
-  if (results.length <= 0) {
-    afterFunction();
-    return;
-  }
-  messageComplete.value = false;
-  chainBattleMoveResult([...results], afterFunction);
-};
-const chainBattleMoveResult = (
-  results: Array<WilBattleMoveResult>,
-  afterFunction: Function
-) => {
-  const result = results.shift();
-  if (!result) {
-    battleResult.value = undefined;
-    messageComplete.value = true;
-    onNextMessage.value = () => {};
-    afterFunction();
-    return;
-  }
-  battleResult.value = result;
-  if (result.damage && result.damage.length > 0) {
-    battle.value.damageResults = result.damage;
-  }
-  onNextMessage.value = () => chainBattleMoveResult(results, afterFunction);
-  battleResult.value.process();
-};
 
 defineExpose({
-  showBattleMoveResult,
+  messageComplete,
   onNextMessage,
 });
 </script>

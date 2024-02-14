@@ -1,3 +1,4 @@
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import path from "path";
@@ -22,6 +23,10 @@ export default defineConfig({
         ],
       },
     }),
+    sentryVitePlugin({
+      org: "creatriver",
+      project: "javascript-vue",
+    }),
   ],
   resolve: {
     alias: {
@@ -31,5 +36,6 @@ export default defineConfig({
   build: {
     assetsDir: "assets/[hash]",
     outDir: "dist",
+    sourcemap: true,
   },
 });

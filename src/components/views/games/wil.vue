@@ -34,43 +34,24 @@
     <template #description>
       <div class="c-game__description__block">
         <h2>説明</h2>
-        <p>ベータ版のため、プレイできるのは序盤のみとなります。</p>
         <p>操作方法はクリックのみです。</p>
-        <p>セーブは戦闘終了後、訓練終了後に任意で行えます。</p>
+        <p>セーブは一部の戦闘終了後及び訓練前後に任意で行えます。</p>
+        <p>エンディングは一種類のみです。</p>
       </div>
 
       <div class="c-game__description__block">
         <h2>推定プレイ時間</h2>
-        <p>10分（ベータ版）</p>
+        <p>1~2時間</p>
       </div>
 
       <div class="c-game__description__block">
-        <h2>素材</h2>
-        <p>
-          SE:
-          <a
-            href="https://soundeffect-lab.info/"
-            target="_blank"
-            rel="noopener noreferrer"
-            >効果音ラボ</a
-          >様
-        </p>
-        <p>
-          BGM:
-          <a
-            href="https://maou.audio/"
-            target="_blank"
-            rel="noopener noreferrer"
-            >魔王魂</a
-          >様
-        </p>
-        <p>キャラクターイラスト: よしを</p>
-        <p>背景イラスト: よしを</p>
+        <h2>仕様素材一覧</h2>
+        <p>エンドクレジットに記載</p>
       </div>
 
       <div class="c-game__description__block">
         <h2>リリースノート</h2>
-        <p>2024/01/07 ver 0.90 ベータ版リリース（一章のみ）</p>
+        <p>2024/02/17 ver 1.00 リリース</p>
       </div>
     </template>
   </GameFrame>
@@ -134,7 +115,7 @@ watch(
 
 <style scoped lang="scss">
 :deep(.c-game__window) {
-  font-family: "DotGothic16";
+  font-family: "DotGothic16", sans-serif;
 }
 .c-drawer {
   width: 100%;

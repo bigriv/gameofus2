@@ -23,11 +23,19 @@
         <dt>mail</dt>
         <dd>pandemiccer@gmail.com</dd>
       </dl>
+      <dl>
+        <dt>Google Form</dt>
+        <dd>
+          <GameContactForm />
+        </dd>
+      </dl>
     </section>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import GameContactForm from "@/components/atoms/interfaces/GameContactForm.vue";
+</script>
 
 <style scoped lang="scss">
 dl + dl {

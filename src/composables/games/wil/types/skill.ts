@@ -132,7 +132,7 @@ export class WilSkill {
     } else if (skill.type === WIL_SKILL_TYPE.SUPPORT_MAGIC) {
       damage = 0;
     }
-
+    damage = damage * 0.6;
     if (damage < 0) {
       damage = 0;
     }
@@ -194,6 +194,12 @@ export class WilSkill {
       cost += WilConditionUtil.calcIncreaseStack(
         cost,
         WilConditionUtil.LITTELE_DAMAGE_RATE
+      );
+    } else if (condition === WIL_CONDITION_ID.FAST) {
+      // 加速の場合はスタック数中減少
+      cost -= WilConditionUtil.calcIncreaseStack(
+        cost,
+        WilConditionUtil.MEDIUM_STACK_RATE
       );
     }
     return cost;

@@ -30,6 +30,14 @@ export class WilFieldCell {
       this.character = character;
     }
   }
+
+  /**
+   * 生存しているキャラクターが存在するかを判定する
+   * @returns 生存しているキャラクターが存在する場合true、それ以外はfalse
+   */
+  isExsistCharacter(): boolean {
+    return !!this.character && this.character.isAlive();
+  }
 }
 
 /**
@@ -73,9 +81,7 @@ export class WilField {
    * @returns 生存しているフィールド上のキャラクターの数
    */
   countCharacterNum(): number {
-    return this.cells.filter(
-      (cell) => cell.character && cell.character.status.life > 0
-    ).length;
+    return this.cells.filter((cell) => cell.isExsistCharacter()).length;
   }
 
   /**
@@ -84,7 +90,7 @@ export class WilField {
    */
   getCharacters(): Array<WilCharacter> {
     return this.cells
-      .filter((cell) => cell.character && cell.character.status.life > 0)
+      .filter((cell) => cell.isExsistCharacter())
       .map((cell) => cell.character as WilCharacter)
       .sort((a: WilCharacter, b: WilCharacter) => a.id.localeCompare(b.id));
   }

@@ -88,6 +88,7 @@
             </dl>
           </div>
           <div v-if="props.result.learned" class="c-result_dialog__learned">
+            <span class="c-result_dialog__learned--caution">★</span>
             {{ props.result.learned.name }}を習得した！
           </div>
           <div class="c-result_dialog__button">
@@ -186,6 +187,9 @@ const onSubmit = () => {
     width: 85%;
     padding: 0% 2%;
     margin: 2% auto 0 auto;
+    &--caution {
+      color: yellow;
+    }
   }
   &__button {
     width: 20%;
@@ -217,6 +221,7 @@ const onSubmit = () => {
   }
   .c-result_dialog__result,
   .c-result_dialog__learned,
+  .c-result_dialog__learned--caution,
   .c-result_dialog__button {
     font-size: 10px;
   }
@@ -228,6 +233,7 @@ const onSubmit = () => {
   }
   .c-result_dialog__result,
   .c-result_dialog__learned,
+  .c-result_dialog__learned--caution,
   .c-result_dialog__button {
     font-size: 10px;
   }
@@ -238,6 +244,7 @@ const onSubmit = () => {
   }
   .c-result_dialog__result,
   .c-result_dialog__learned,
+  .c-result_dialog__learned--caution,
   .c-result_dialog__button {
     font-size: 16px;
   }

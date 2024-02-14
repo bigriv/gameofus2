@@ -242,12 +242,12 @@ const chainTrainingResult = () => {
     confirmModal.message = `${training.value.days}日目の訓練が終了しました。`;
     confirmModal.onClickOk = () => {
       if (talkEvent.talk) {
-        gameStore.getSounds.BGM_TRAINING_1?.stop();
+        bgm?.stop();
         talkEvent.isStart = true;
         talkEvent.endTalk = () => {
           talkEvent.isStart = false;
           talkEvent.talk = undefined;
-          gameStore.getSounds.BGM_TRAINING_1?.play();
+          bgm?.play();
           endDay();
         };
       } else {

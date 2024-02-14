@@ -1,18 +1,20 @@
+import { Ref, ref } from "vue";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import ConstructGOUVisual from "@/composables/types/visuals/ConstructGOUVisual";
 import GOUImage from "@/composables/types/visuals/GOUImage";
 import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import GOUVisualType from "@/composables/types/visuals/GOUVisualType";
-import { Ref, ref } from "vue";
-import { WIL_IMAGE_DEFINES } from "./defines/image";
-import { WIL_SOUND_DEFINES } from "./defines/sound";
+import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
+import { WIL_SOUND_ID } from "@/composables/games/wil/enums/sound";
+import { WIL_IMAGE_DEFINES } from "@/composables/games/wil/defines/image";
+import { WIL_SOUND_DEFINES } from "@/composables/games/wil/defines/sound";
 
 export const useWilFile = () => {
   const initImages = (): { [key: string]: GOUVisual } => {
     let images: { [key: string]: GOUVisual } = {};
 
-    for (const key of Object.keys(WIL_IMAGE_DEFINES)) {
+    for (const key of Object.keys(WIL_IMAGE_ID)) {
       if (/.*\.[png|svg]/.test(WIL_IMAGE_DEFINES[key])) {
         images[key] = ConstructGOUVisual({
           type: GOUVisualType.IMAGE_SVG,
@@ -36,7 +38,7 @@ export const useWilFile = () => {
   const initSounds = (): { [key: string]: GOUReadAudio } => {
     let sounds: { [key: string]: GOUReadAudio } = {};
 
-    for (const key of Object.keys(WIL_SOUND_DEFINES)) {
+    for (const key of Object.keys(WIL_SOUND_ID)) {
       sounds[key] = new GOUReadAudio(WIL_SOUND_DEFINES[key]);
     }
     return sounds;

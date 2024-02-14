@@ -9,6 +9,9 @@
     <div v-if="talk.right" class="c-talk__character--right">
       <GOUVisualCanvas :objects="{ character: talk.right }" />
     </div>
+    <div class="c-talk__skip" @click="isShowConfirmModal = true">
+      >>スキップ
+    </div>
     <div class="c-talk__talker">
       <MessageFrame
         :noAnimation="true"
@@ -35,12 +38,21 @@
       />
     </div>
   </div>
+  <div class="c-confirm_dialog">
+    <WilConfirmDialog
+      v-model:isShow="isShowConfirmModal"
+      :cancelable="true"
+      message="会話をスキップします。"
+      @submit="onClickConfirmOk"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
 import { Ref, computed, onMounted, onUnmounted, ref } from "vue";
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
+import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import {
   WIL_FRAME_FONT_COLOR,
@@ -67,6 +79,11 @@ const talker = computed(() => {
 let bgm: GOUReadAudio | undefined = undefined;
 const onClickMessageFrame: Ref<Function> = ref(() => {});
 const isEndMessage = ref(false);
+// 確認モーダル
+const isShowConfirmModal = ref(false);
+const onClickConfirmOk = () => {
+  emits("end");
+};
 
 const chainTalkEvent: Function = (
   events: Array<WilTalkEvent>,
@@ -126,7 +143,19 @@ onUnmounted(() => {
       right: 2%;
       width: 35%;
       height: 70%;
-      z-index: 2;
+    }
+  }
+  &__skip {
+    position: absolute;
+    bottom: 36%;
+    text-decoration: underline;
+    color: white;
+    right: 5%;
+    cursor: pointer;
+    font-size: 14px;
+    opacity: 0.6;
+    &:hover {
+      opacity: 1;
     }
   }
   &__talker {
@@ -135,7 +164,6 @@ onUnmounted(() => {
     left: 5%;
     width: 90%;
     height: 5%;
-    z-index: 3;
   }
   &__message {
     position: absolute;
@@ -143,7 +171,6 @@ onUnmounted(() => {
     left: 5%;
     width: 90%;
     height: 25%;
-    z-index: 3;
   }
 }
 @media screen and (max-width: 400px) {

@@ -516,4 +516,12 @@ export class WilCharacter {
 
     return a.id.localeCompare(b.id) < 0;
   }
+
+  /**
+   * 生存しているかを判定する
+   * @returns 生存している場合はtrue、それ以外はfalse
+   */
+  isAlive(): boolean {
+    return this.status.life > 0;
+  }
 }

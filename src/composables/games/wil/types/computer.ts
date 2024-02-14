@@ -46,46 +46,42 @@ export class WilComputer extends WilOperator {
   /**
    * 発動するスキルを決定する
    */
-  private decideUseSkill(allyField: WilField, enemyField: WilField) {
+  private decideUseSkill(allyField: WilField, enemyField: WilField): WilSkill {
     if (!this.moveCharacter) {
       throw new WrongImplementationError("Move character is not set.");
     }
 
-    const skillCandidates = this.moveCharacter
+    const skillCandidateList = this.moveCharacter
       .getSkillIdList()
       .map((skillId) => this.skillDefines[skillId]);
 
     switch (this.tactics) {
       case WIL_BATTLE_TACTICS.RANDOM:
-        this.selectSkill = WilAIUtil.randomTactics(
+        return WilAIUtil.randomTactics(
           this.moveCharacter,
           allyField,
-          skillCandidates
+          skillCandidateList
         );
-        break;
       case WIL_BATTLE_TACTICS.SUPPORT_PRIORITY:
-        this.selectSkill = WilAIUtil.supportPriorityTactics(
+        return WilAIUtil.supportPriorityTactics(
           this.moveCharacter,
           allyField,
-          skillCandidates
+          skillCandidateList
         );
-        break;
       case WIL_BATTLE_TACTICS.CONTINUOUS_MOVE:
-        this.selectSkill = WilAIUtil.continuousMoveTactics(
+        return WilAIUtil.continuousMoveTactics(
           this.moveCharacter,
           allyField,
           enemyField,
-          skillCandidates
+          skillCandidateList
         );
-        break;
       case WIL_BATTLE_TACTICS.SUMMON_PRIORITY:
-        this.selectSkill = WilAIUtil.summonPriorityTactics(
+        return WilAIUtil.summonPriorityTactics(
           this.moveCharacter,
           allyField,
           enemyField,
-          skillCandidates
+          skillCandidateList
         );
-        break;
     }
   }
 
@@ -105,7 +101,7 @@ export class WilComputer extends WilOperator {
     // サポートスキルならサポートが必要なキャラクターを選定する
     if (this.selectSkill.target === WIL_SKILL_TARGET.ALLY) {
       for (let cell of allyField.cells) {
-        if (!cell.character || cell.character.status.life <= 0) {
+        if (!cell.character || !cell.character.isAlive()) {
           continue;
         }
         // 体力回復スキルの場合
@@ -127,11 +123,11 @@ export class WilComputer extends WilOperator {
         }
       }
       // 回復系ではないスキルの場合
-      const targetCandidates = allyField.cells.filter(
+      const targetCandidateList = allyField.cells.filter(
         (cell) => cell.selectable && cell.character
       );
-      const cellRand = Math.floor(Math.random() * targetCandidates.length);
-      const target = targetCandidates[cellRand];
+      const cellRand = Math.floor(Math.random() * targetCandidateList.length);
+      const target = targetCandidateList[cellRand];
 
       return target;
     } else if (this.selectSkill.target === WIL_SKILL_TARGET.SELF) {
@@ -141,11 +137,12 @@ export class WilComputer extends WilOperator {
 
     // 対象が相手のスキルの場合
     // 選択可能なキャラクターから対象をランダムに選択
-    const targetCandidates = enemyField.cells.filter(
-      (cell) => cell.selectable && cell.character
+    const targetCandidateList = enemyField.cells.filter(
+      (cell) => cell.selectable && cell.isExsistCharacter()
     );
-    const cellRand = Math.floor(Math.random() * targetCandidates.length);
-    const target = targetCandidates[cellRand];
+    console.log("target candidate list", targetCandidateList);
+    const cellRand = Math.floor(Math.random() * targetCandidateList.length);
+    const target = targetCandidateList[cellRand];
 
     return target;
   }
@@ -156,6 +153,10 @@ export class WilComputer extends WilOperator {
    * @param skills スキル定義リスト
    */
   decideBattleMove(battle: WilBattle) {
+    this.selectSkill = this.decideUseSkill(
+      battle.computer.field,
+      battle.player.field
+    );
     this.decideUseSkill(battle.computer.field, battle.player.field);
     battle.updateFieldSelectable();
     this.targetCell = this.decideTarget(
@@ -173,92 +174,80 @@ class WilAIUtil {
    * 発動するスキルの無作為選出
    * @param moveCharacter 行動キャラクター
    * @param allyField 味方フィールド
-   * @param skillDefines スキル定義リスト
+   * @param candidateList スキル候補リスト
    * @returns 選出したスキル
    */
   static randomTactics(
     moveCharacter: WilCharacter,
     allyField: WilField,
-    candidates: Array<WilSkill>
+    candidateList: Array<WilSkill>
   ): WilSkill {
     // 相手が対象となるスキルのみを候補とする
-    let skillCandidates = candidates.filter(
+    let skillCandidateList = candidateList.filter(
       (skill) => skill.target === WIL_SKILL_TARGET.ENEMY
     );
     // 行動キャラクターが先頭にいない場合は近接物理を対象から外す
-    skillCandidates = this.candidatesRemoveClosePhisic(
+    skillCandidateList = this.getSkillCandidateListFilterClosePhisic(
       moveCharacter,
       allyField,
-      skillCandidates
+      skillCandidateList
     );
 
     // スキルをランダムに選択
-    return this.selectRandom(skillCandidates);
+    return this.selectRandom(skillCandidateList);
   }
 
   /**
    * 味方を対象とするもの優先してスキルを選出する
    * @param moveCharacter 行動キャラクター
    * @param allyField 味方フィールド
-   * @param skillDefines スキル定義リスト
+   * @param candidateList スキル候補リスト
    * @returns 選出したスキル
    */
   static supportPriorityTactics(
     moveCharacter: WilCharacter,
     allyField: WilField,
-    candidates: Array<WilSkill>
+    candidateList: Array<WilSkill>
   ) {
     // 味方を対象にしたスキルを優先して選択する
-    let skillCandidates = candidates.filter(
-      (skill) => skill.target === WIL_SKILL_TARGET.ALLY || WIL_SKILL_TARGET.SELF
-    );
     const allyCharacters = allyField.getCharacters();
-
-    for (let skill of skillCandidates) {
-      // 召喚スキルは無条件で除外する
-      if (WilSkill.isSummonSkill(skill.id)) {
-        skillCandidates = skillCandidates.filter(
-          (candidate) => candidate.id !== skill.id
-        );
-        continue;
-      }
-      // 体力回復スキルなら体力が減っているキャラクターがいる場合に選定する
-      if (WilSkill.isHealSkill(skill.id)) {
-        if (
-          !allyCharacters.find(
-            (character) =>
-              character.status.life < 0.7 * character.defaultStatus.life
-          )
-        ) {
-          skillCandidates = skillCandidates.filter(
-            (candidate) => candidate.id !== skill.id
-          );
-        }
-        continue;
-      }
-      // 状態異常上書きスキルなら悪影響状態の場合に選定する
-      if (WilSkill.isClearSkill(skill.id)) {
-        if (
-          !allyCharacters.find(
-            (character) => !WilConditionUtil.isBadCondition(character.condition)
-          )
-        ) {
-          skillCandidates = skillCandidates.filter(
-            (candidate) => candidate.id !== skill.id
-          );
-        }
-        continue;
-      }
-    }
-    if (skillCandidates.length > 0) {
-      // 味方を対象にしたスキルの中からランダムに選定
-      return this.selectRandom(skillCandidates);
+    let skillCandidateList = this.getSkillCandidateListFilterTarget(
+      candidateList,
+      WIL_SKILL_TARGET.ALLY
+    );
+    // 味方を対象にするスキルからサポート系のスキルで絞り込み
+    skillCandidateList = this.getSkillCandidateFilterSupportSkill(
+      skillCandidateList,
+      allyCharacters
+    );
+    if (skillCandidateList.length > 0) {
+      // 味方を対象にしたスキルの中からランダムに選定する
+      return this.selectRandom(skillCandidateList);
     }
 
+    // 自身を対象にするスキルを次点で優先して選択する
+    skillCandidateList = this.getSkillCandidateListFilterTarget(
+      candidateList,
+      WIL_SKILL_TARGET.SELF
+    );
+    // 自身を対象にするスキルからサポート系のスキルで絞り込み
+    skillCandidateList = this.getSkillCandidateFilterSupportSkill(
+      skillCandidateList,
+      [moveCharacter]
+    );
+    if (skillCandidateList.length > 0) {
+      // 自身を対象にしたスキルの中からランダムに選定する
+      return this.selectRandom(skillCandidateList);
+    }
+
+    // 味方および自身を対象にするスキルから選定されなかった場合は敵を対象とするスキルから無作為に選定する
     return this.randomTactics(
       moveCharacter,
       allyField,
-      candidates.filter((skill) => skill.target === WIL_SKILL_TARGET.ENEMY)
+      this.getSkillCandidateListFilterTarget(
+        candidateList,
+        WIL_SKILL_TARGET.ENEMY
+      )
     );
   }
 
@@ -267,56 +256,56 @@ class WilAIUtil {
    * @param moveCharacter 行動キャラクター
    * @param allyField 味方フィールド
    * @param enemyField 敵フィールド
-   * @param skillDefines スキル定義リスト
+   * @param candidateList スキル候補リスト
    * @returns 選出したスキル
    */
   static continuousMoveTactics(
     moveCharacter: WilCharacter,
     allyField: WilField,
     enemyField: WilField,
-    candidates: Array<WilSkill>
+    candidateList: Array<WilSkill>
   ) {
-    let newCandidates = candidates;
     const allyCharacters = allyField.getCharacters();
-    for (let skill of candidates) {
-      // 体力回復スキルで体力が減っているキャラクターがいない場合は候補から外す
-      if (WilSkill.isHealSkill(skill.id)) {
-        if (
-          !allyCharacters.find(
-            (character) =>
-              character.status.life < 0.7 * character.defaultStatus.life
-          )
-        ) {
-          newCandidates = newCandidates.filter(
-            (candidate) => candidate.id !== skill.id
-          );
-        }
-        continue;
-      }
-      // 状態異常上書きスキルなら悪影響状態の場合に選定する
-      if (WilSkill.isClearSkill(skill.id)) {
-        if (
-          !allyCharacters.find(
-            (character) => !WilConditionUtil.isBadCondition(character.condition)
-          )
-        ) {
-          newCandidates = newCandidates.filter(
-            (candidate) => candidate.id !== skill.id
-          );
-        }
-        continue;
-      }
-    }
-
-    // 行動キャラクターが先頭にいない場合は近接物理を対象から外す
-    newCandidates = this.candidatesRemoveClosePhisic(
-      moveCharacter,
-      allyField,
-      newCandidates
+    // 味方を対象にするスキルを取得
+    let allyTargetSkills = this.getSkillCandidateListFilterTarget(
+      candidateList,
+      WIL_SKILL_TARGET.ALLY
+    );
+    // 味方を対象にするスキルから発動条件を満たすサポート系のスキルで絞り込み
+    allyTargetSkills = this.getSkillCandidateFilterSupportSkill(
+      allyTargetSkills,
+      allyCharacters
     );
 
-    // スキル候補をコストの少ない順に並び替え
-    newCandidates = newCandidates.sort((a, b) => a.cost - b.cost);
+    // 自身を対象にするスキルを取得
+    let selfTargetSkills = this.getSkillCandidateListFilterTarget(
+      candidateList,
+      WIL_SKILL_TARGET.SELF
+    );
+    // 自身を対象にするスキルから発動条件を満たすサポート系のスキルで絞り込み
+    selfTargetSkills = this.getSkillCandidateFilterSupportSkill(
+      selfTargetSkills,
+      [moveCharacter]
+    );
+
+    // 敵を対象とするスキルを取得
+    let enemyTargetSkills = this.getSkillCandidateListFilterTarget(
+      candidateList,
+      WIL_SKILL_TARGET.ENEMY
+    );
+    // 行動キャラクターが先頭にいない場合は近接物理を対象から外す
+    enemyTargetSkills = this.getSkillCandidateListFilterClosePhisic(
+      moveCharacter,
+      allyField,
+      enemyTargetSkills
+    );
+
+    // スキル候補を結合し、コストの少ない順に並び替え
+    const newCandidateList = [
+      ...allyTargetSkills,
+      ...selfTargetSkills,
+      ...enemyTargetSkills,
+    ].sort((a, b) => a.cost - b.cost);
 
     // 最小コストのスキルが次の行動キャラクターのスタック数より少なければそれを選定
     const nextMoveCharacter = enemyField
@@ -326,14 +315,14 @@ class WilAIUtil {
       WilSkill.calcCost(
         moveCharacter.status.speed,
         moveCharacter.condition,
-        newCandidates[0]
+        newCandidateList[0]
       ) < nextMoveCharacter.stack
     ) {
-      return newCandidates[0];
+      return newCandidateList[0];
     }
 
     // スキルをランダムに選択
-    return this.selectRandom(newCandidates);
+    return this.selectRandom(newCandidateList);
   }
 
   /**
@@ -347,9 +336,9 @@ class WilAIUtil {
     moveCharacter: WilCharacter,
     allyField: WilField,
     enemyField: WilField,
-    candidates: Array<WilSkill>
+    candidateList: Array<WilSkill>
   ): WilSkill {
-    // 魔人の召喚可否を判定する関数
+    // 魔人の召喚可否を判定する関数を定義
     const isSummonableDemon = (id: WIL_CHARACTER_ID, x: number, y: number) => {
       const targetCell = allyField.getCell(x, y);
       if (targetCell.character) {
@@ -358,8 +347,12 @@ class WilAIUtil {
       return !allyField.isExistCharacterModel(id);
     };
 
-    // 候補の中に召喚する気が存在すれば発動できるかを判定する
-    for (const skill of candidates) {
+    // 候補の中に召喚スキルが存在すれば発動できるかを判定する
+    for (const skill of candidateList) {
+      if (!WilSkill.isSummonSkill(skill.id)) {
+        continue;
+      }
+
       if (skill.id === WIL_SKILL_ID.PRODUCE) {
         // スキル『製造』の場合は発動者の前方が空きマスの場合に発動する
         const activestCell = allyField.getCharacterCell(moveCharacter);
@@ -398,41 +391,103 @@ class WilAIUtil {
       moveCharacter,
       allyField,
       enemyField,
-      candidates
+      candidateList
     );
   }
 
   /**
    * スキル候補の中から一つを無作為に選出する
-   * @param candidates 候補のリスト
+   * @param candidateList 候補のリスト
    * @returns 選出したスキル
    */
-  private static selectRandom(candidates: Array<WilSkill>): WilSkill {
-    const skillRnd = Math.floor(Math.random() * candidates.length);
-    return candidates[skillRnd];
+  private static selectRandom(candidateList: Array<WilSkill>): WilSkill {
+    const skillRnd = Math.floor(Math.random() * candidateList.length);
+    return candidateList[skillRnd];
   }
 
   /**
    * 行動キャラクターが先頭にいない場合にスキル候補から近接物理を除外する
    * @param moveCharacter 行動キャラクター
    * @param allyField 味方フィールド
-   * @param skillCandidates スキル候補リスト
+   * @param skillCandidateList スキル候補リスト
    * @returns 行動キャラクターが先頭にいる場合はスキル候補から近接物理を除外した新しい候補リスト、それ以外は元々と同じリスト
    */
-  private static candidatesRemoveClosePhisic(
+  private static getSkillCandidateListFilterClosePhisic(
     moveCharacter: WilCharacter,
     allyField: WilField,
-    skillCandidates: Array<WilSkill>
+    skillCandidateList: Array<WilSkill>
   ) {
     const moveCharacterCell = allyField.getCharacterCell(moveCharacter);
     if (!moveCharacterCell) {
-      return skillCandidates;
+      return skillCandidateList;
     }
     if (!allyField.isFront(moveCharacterCell)) {
-      return skillCandidates.filter(
+      return skillCandidateList.filter(
         (skill) => skill.type !== WIL_SKILL_TYPE.CLOSE_PHISIC
       );
     }
-    return skillCandidates;
+    return skillCandidateList;
+  }
+
+  /**
+   * スキル対象によって絞り込んだスキル候補リストを取得する
+   * @param candidateList 元となるスキル候補リスト
+   * @param target 絞り込みを行うスキル対象
+   * @returns 絞り込み後のスキルリスト
+   */
+  private static getSkillCandidateListFilterTarget(
+    candidateList: Array<WilSkill>,
+    target: WIL_SKILL_TARGET
+  ): Array<WilSkill> {
+    return candidateList.filter((skill) => skill.target === target);
+  }
+
+  /**
+   * サポートスキルで絞り込んだスキル候補リストを取得する
+   * @param skillCandidateList 元となるスキル候補リスト
+   * @param targetCandidateList 対象となるキャラクターの候補リスト
+   * @returns サポートスキルで絞り込んだスキル候補リスト
+   */
+  private static getSkillCandidateFilterSupportSkill(
+    skillCandidateList: Array<WilSkill>,
+    targetCandidateList: Array<WilCharacter>
+  ) {
+    // 味方を対象にしたスキルを優先して選択する
+    return skillCandidateList.filter((skill) => {
+      if (WilSkill.isSummonSkill(skill.id)) {
+        // 召喚スキルは無条件で除外する
+        return false;
+      }
+
+      if (WilSkill.isHealSkill(skill.id)) {
+        // 体力回復スキルなら体力が一定以上が減っているキャラクターが存在する場合に候補とする
+        console.log(
+          "heal skill",
+          targetCandidateList.find(
+            (character) =>
+              character.status.life < 0.7 * character.defaultStatus.life
+          )
+        );
+        return targetCandidateList.find(
+          (character) =>
+            character.status.life < 0.7 * character.defaultStatus.life
+        );
+      }
+      if (WilSkill.isClearSkill(skill.id)) {
+        console.log(
+          "clear skill",
+          targetCandidateList.find((character) =>
+            WilConditionUtil.isBadCondition(character.condition)
+          )
+        );
+        // 状態異常回復スキルなら悪影響の状態異常のキャラクターが存在する場合に候補とする
+        return targetCandidateList.find((character) =>
+          WilConditionUtil.isBadCondition(character.condition)
+        );
+      }
+
+      // いずれの系統のスキルにも当てはまらない場合は候補から外す
+      return false;
+    });
   }
 }

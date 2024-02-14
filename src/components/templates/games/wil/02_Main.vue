@@ -185,6 +185,9 @@ const loadSaveData = () => {
         case WIL_CHAPTER_TIMMING.TALK:
           currentCapter.value?.proceedTalkEvent();
           break;
+        case WIL_CHAPTER_TIMMING.TRAINING:
+          currentCapter.value?.proceedTrainingEvent();
+          break;
         case WIL_CHAPTER_TIMMING.TEAM:
           currentCapter.value?.proceedTeamEvent();
           break;

@@ -122,9 +122,12 @@ watch(
   height: 100%;
   background-color: black;
   &__loading {
-    color: white;
+    display: flex;
     width: 100%;
-    text-align: center;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    color: white;
   }
 }
 .c-game__description__block {

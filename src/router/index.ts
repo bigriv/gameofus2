@@ -3,6 +3,7 @@ import {
   createRouter,
   createWebHistory,
 } from "vue-router";
+import { pageview } from "vue-gtag";
 import BasicLayout from "@/components/templates/layouts/BasicLayout.vue";
 
 const routes = [
@@ -167,6 +168,11 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, __from, next) => {
+  pageview({ page_path: to.path });
+  next();
 });
 
 export default router;

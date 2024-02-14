@@ -109,7 +109,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.THUNDER,
-    status: { life: 120, attack: 12, defense: 12, speed: 10, magic: 12 },
+    status: { life: 130, attack: 14, defense: 12, speed: 10, magic: 12 },
     learnable: [
       WIL_SKILL_ID.SLASH,
       WIL_SKILL_ID.POWER_ATTACK,
@@ -153,7 +153,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.THUNDER,
-    status: { life: 100, attack: 8, defense: 8, speed: 5, magic: 5 },
+    status: { life: 110, attack: 10, defense: 8, speed: 8, magic: 6 },
     learnable: [
       WIL_SKILL_ID.SLASH,
       WIL_SKILL_ID.POWER_ATTACK,
@@ -183,7 +183,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.THUNDER,
-    status: { life: 80, attack: 5, defense: 8, speed: 5, magic: 10 },
+    status: { life: 80, attack: 6, defense: 8, speed: 6, magic: 12 },
     learnable: [
       WIL_SKILL_ID.THUNDER_BALL,
       WIL_SKILL_ID.RAIKOU,
@@ -220,7 +220,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.WATER,
-    status: { life: 130, attack: 20, defense: 18, speed: 14, magic: 20 },
+    status: { life: 130, attack: 22, defense: 20, speed: 16, magic: 20 },
     learnable: [
       WIL_SKILL_ID.SNOW_BLADE,
       WIL_SKILL_ID.WATER_SLASH,
@@ -262,7 +262,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.SOIL,
-    status: { life: 120, attack: 12, defense: 20, speed: 8, magic: 8 },
+    status: { life: 120, attack: 12, defense: 22, speed: 10, magic: 10 },
     learnable: [
       WIL_SKILL_ID.SLASH,
       WIL_SKILL_ID.POWER_ATTACK,
@@ -288,7 +288,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.WATER,
-    status: { life: 110, attack: 8, defense: 16, speed: 16, magic: 20 },
+    status: { life: 110, attack: 8, defense: 16, speed: 14, magic: 20 },
     learnable: [
       WIL_SKILL_ID.BUBBLE_BALL,
       WIL_SKILL_ID.BLIZZARD,
@@ -447,7 +447,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.FIRE,
-    status: { life: 300, attack: 60, defense: 36, speed: 46, magic: 38 },
+    status: { life: 500, attack: 54, defense: 36, speed: 46, magic: 38 },
     learnable: [],
     skills: [
       WIL_SKILL_ID.GOKUEN,
@@ -479,7 +479,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.SOIL,
-    status: { life: 250, attack: 44, defense: 42, speed: 56, magic: 40 },
+    status: { life: 300, attack: 44, defense: 42, speed: 56, magic: 40 },
     learnable: [],
     skills: [WIL_SKILL_ID.SAND_SLASH, WIL_SKILL_ID.SAND_STORM],
   },
@@ -500,19 +500,19 @@ export const WIL_CHARACTER_DEFINES: {
       ],
       shootPhisic: [
         {
-          visual: WIL_IMAGE_ID.DOT_CHARACTER_INFERNITY_SAMURAIS_SAND_SPY4,
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_INFERNITY_SAMURAIS_THUNDER_SPY4,
           duration: 1,
         },
       ],
       magic: [
         {
-          visual: WIL_IMAGE_ID.DOT_CHARACTER_INFERNITY_SAMURAIS_SAND_SPY4,
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_INFERNITY_SAMURAIS_THUNDER_SPY4,
           duration: 1,
         },
       ],
     },
     element: WIL_ELEMENT.THUNDER,
-    status: { life: 140, attack: 30, defense: 26, speed: 40, magic: 26 },
+    status: { life: 150, attack: 30, defense: 26, speed: 40, magic: 26 },
     learnable: [
       WIL_SKILL_ID.THUNDER_SWORD,
       WIL_SKILL_ID.THUNDER_NEEDLE,
@@ -554,11 +554,11 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.WATER,
-    status: { life: 180, attack: 40, defense: 30, speed: 30, magic: 25 },
+    status: { life: 250, attack: 40, defense: 30, speed: 30, magic: 25 },
     learnable: [],
     skills: [WIL_SKILL_ID.WATER_SLASH, WIL_SKILL_ID.WARTER_CANNON],
   },
-  INFERNITY_SAMURAI_WIND_SOLDIER: {
+  INFERNITY_SAMURAIS_WIND_SOLDIER: {
     id: WIL_CHARACTER_ID.INFERNITY_SAMURAIS_WIND_SOLDIER,
     name: "センプウ",
     visual: {
@@ -575,7 +575,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.WIND,
-    status: { life: 200, attack: 52, defense: 38, speed: 52, magic: 36 },
+    status: { life: 300, attack: 48, defense: 38, speed: 52, magic: 36 },
     learnable: [],
     skills: [WIL_SKILL_ID.FAST_SLASH, WIL_SKILL_ID.WIND_SLASH],
   },
@@ -759,7 +759,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.WATER,
-    status: { life: 1, attack: 0, defense: 0, speed: 0, magic: 0 },
+    status: { life: 300, attack: 50, defense: 34, speed: 30, magic: 40 },
     learnable: [],
     skills: [WIL_SKILL_ID.WATER_SLASH, WIL_SKILL_ID.WARTER_CANNON],
   },
@@ -780,17 +780,17 @@ export const WIL_CHARACTER_DEFINES: {
       ],
       magic: [
         {
-          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_SOLDIER4,
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_THUNDER_SOLDIER4,
           duration: 0.5,
         },
         {
-          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_SOLDIER5,
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_THUNDER_SOLDIER5,
           duration: 0.5,
         },
       ],
     },
     element: WIL_ELEMENT.THUNDER,
-    status: { life: 1, attack: 0, defense: 0, speed: 0, magic: 0 },
+    status: { life: 300, attack: 45, defense: 38, speed: 35, magic: 45 },
     learnable: [],
     skills: [WIL_SKILL_ID.THUNDER_SWORD, WIL_SKILL_ID.THUNDER_VOLT],
   },
@@ -817,7 +817,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.WATER,
-    status: { life: 500, attack: 40, defense: 40, speed: 40, magic: 30 },
+    status: { life: 500, attack: 35, defense: 35, speed: 40, magic: 50 },
     learnable: [],
     skills: [
       WIL_SKILL_ID.REGENERATION,
@@ -844,11 +844,11 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.FIRE,
-    status: { life: 500, attack: 50, defense: 35, speed: 35, magic: 30 },
+    status: { life: 500, attack: 50, defense: 35, speed: 40, magic: 35 },
     learnable: [],
     skills: [
       WIL_SKILL_ID.REGENERATION,
-      WIL_SKILL_ID.CROSS_FIRE,
+      WIL_SKILL_ID.RED_LINE,
       WIL_SKILL_ID.DEMON_FIRE,
     ],
   },
@@ -865,7 +865,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.WIND,
-    status: { life: 500, attack: 30, defense: 40, speed: 50, magic: 30 },
+    status: { life: 500, attack: 35, defense: 35, speed: 50, magic: 40 },
     learnable: [],
     skills: [
       WIL_SKILL_ID.REGENERATION,
@@ -896,7 +896,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.SOIL,
-    status: { life: 500, attack: 40, defense: 50, speed: 30, magic: 30 },
+    status: { life: 500, attack: 40, defense: 50, speed: 35, magic: 35 },
     learnable: [],
     skills: [
       WIL_SKILL_ID.REGENERATION,
@@ -931,7 +931,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.DARK,
-    status: { life: 1, attack: 0, defense: 0, speed: 0, magic: 0 },
+    status: { life: 800, attack: 44, defense: 48, speed: 56, magic: 50 },
     learnable: [],
     skills: [WIL_SKILL_ID.BLACK_LINE, WIL_SKILL_ID.BLACK_METEOR],
   },
@@ -970,7 +970,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.DARK,
-    status: { life: 1, attack: 0, defense: 0, speed: 0, magic: 0 },
+    status: { life: 1000, attack: 40, defense: 40, speed: 40, magic: 40 },
     learnable: [],
     skills: [
       WIL_SKILL_ID.BLACK_METEOR,
@@ -999,12 +999,12 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.FIRE,
-    status: { life: 1, attack: 0, defense: 0, speed: 0, magic: 0 },
+    status: { life: 600, attack: 62, defense: 50, speed: 50, magic: 50 },
     learnable: [],
     skills: [
       WIL_SKILL_ID.SUMMON_FIRE_DEMON,
-      WIL_SKILL_ID.RED_LINE,
       WIL_SKILL_ID.SATAN_FRAME,
+      WIL_SKILL_ID.CROSS_FIRE,
     ],
   },
   DARK_MONSTER_SUPER_SATAN_LEFT_HAND: {
@@ -1021,7 +1021,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.WATER,
-    status: { life: 1, attack: 0, defense: 0, speed: 0, magic: 0 },
+    status: { life: 600, attack: 50, defense: 50, speed: 50, magic: 62 },
     learnable: [],
     skills: [
       WIL_SKILL_ID.SUMMON_ICE_DEMON,
@@ -1043,7 +1043,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.WIND,
-    status: { life: 1, attack: 0, defense: 0, speed: 0, magic: 0 },
+    status: { life: 600, attack: 50, defense: 50, speed: 62, magic: 50 },
     learnable: [],
     skills: [
       WIL_SKILL_ID.SUMMON_WIND_DEMON,
@@ -1065,8 +1065,304 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.SOIL,
-    status: { life: 1, attack: 0, defense: 0, speed: 0, magic: 0 },
+    status: { life: 600, attack: 50, defense: 62, speed: 50, magic: 50 },
     learnable: [],
     skills: [WIL_SKILL_ID.SUMMON_SOIL_DEMON, WIL_SKILL_ID.EARTHQUAKE],
+  },
+  DEBUG_MONSTER_NONE: {
+    id: WIL_CHARACTER_ID.DEBUG_MONSTER_NONE,
+    name: "デバッグモンスター(無)",
+    visual: {
+      standing: WIL_IMAGE_ID.DOT_CHARACTER_SMOG_LABORATORY_ANDROID1,
+      closePhisic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_SMOG_LABORATORY_ANDROID2,
+          duration: 1,
+        },
+      ],
+      magic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_SMOG_LABORATORY_ANDROID2,
+          duration: 1,
+        },
+      ],
+    },
+    element: WIL_ELEMENT.NONE,
+    status: { life: 10000000, attack: 1, defense: 1, speed: 80, magic: 1 },
+    learnable: [],
+    skills: [
+      WIL_SKILL_ID.SLASH,
+      WIL_SKILL_ID.POWER_ATTACK,
+      WIL_SKILL_ID.PIERCING_SHOT,
+      WIL_SKILL_ID.ARROW_RAIN,
+      WIL_SKILL_ID.REGENERATION,
+      WIL_SKILL_ID.REPAIR,
+      WIL_SKILL_ID.PRODUCE,
+      WIL_SKILL_ID.SUMMON_FIRE_DEMON,
+      WIL_SKILL_ID.SUMMON_ICE_DEMON,
+      WIL_SKILL_ID.SUMMON_WIND_DEMON,
+      WIL_SKILL_ID.SUMMON_SOIL_DEMON,
+    ],
+  },
+  DEBUG_MONSTER_SHINE: {
+    id: WIL_CHARACTER_ID.DEBUG_MONSTER_SHINE,
+    name: "デバッグモンスター(光)",
+    visual: {
+      standing: WIL_IMAGE_ID.DOT_CHARACTER_HERO1,
+      closePhisic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HERO2,
+          duration: 0.5,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HERO3,
+          duration: 0.5,
+        },
+      ],
+      magic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HERO4,
+          duration: 0.5,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HERO5,
+          duration: 0.5,
+        },
+      ],
+    },
+    element: WIL_ELEMENT.SHINE,
+    status: { life: 10000000, attack: 1, defense: 1, speed: 80, magic: 1 },
+    learnable: [],
+    skills: [
+      WIL_SKILL_ID.SHINE_SWORD,
+      WIL_SKILL_ID.SACRED_CROSS,
+      WIL_SKILL_ID.WHITE_LINE,
+      WIL_SKILL_ID.SHINE_BALL,
+      WIL_SKILL_ID.SHINE_RAZER,
+      WIL_SKILL_ID.SACRED_RAY,
+      WIL_SKILL_ID.HEAL,
+      WIL_SKILL_ID.SANCTUARY,
+      WIL_SKILL_ID.CREATE_SACRED_SWORD,
+    ],
+  },
+  DEBUG_MONSTER_DARK: {
+    id: WIL_CHARACTER_ID.DEBUG_MONSTER_DARK,
+    name: "デバッグモンスター(闇)",
+    visual: {
+      standing: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SATAN1,
+      closePhisic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SATAN2,
+          duration: 0.5,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SATAN3,
+          duration: 0.5,
+        },
+      ],
+      magic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SATAN4,
+          duration: 0.5,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SATAN5,
+          duration: 0.5,
+        },
+      ],
+    },
+    element: WIL_ELEMENT.DARK,
+    status: { life: 10000000, attack: 1, defense: 1, speed: 80, magic: 1 },
+    learnable: [],
+    skills: [
+      WIL_SKILL_ID.POISON_NAIL,
+      WIL_SKILL_ID.SHADOW_BALL,
+      WIL_SKILL_ID.BLACK_LINE,
+      WIL_SKILL_ID.BLACK_METEOR,
+      WIL_SKILL_ID.HOPELESS,
+      WIL_SKILL_ID.SMOG,
+      WIL_SKILL_ID.BLACK_HOLE,
+    ],
+  },
+  DEBUG_MONSTER_THUDNER: {
+    id: WIL_CHARACTER_ID.DEBUG_MONSTER_THUDNER,
+    name: "デバッグモンスター(雷)",
+    visual: {
+      standing: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_LEADER1,
+      closePhisic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_LEADER2,
+          duration: 0.5,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_LEADER3,
+          duration: 0.5,
+        },
+      ],
+      magic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_LEADER2,
+          duration: 0.25,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_LEADER4,
+          duration: 0.5,
+        },
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_HOLY_KNIGHTS_LEADER2,
+          duration: 0.25,
+        },
+      ],
+    },
+    element: WIL_ELEMENT.THUNDER,
+    status: { life: 10000000, attack: 1, defense: 1, speed: 80, magic: 1 },
+    learnable: [],
+    skills: [
+      WIL_SKILL_ID.THUNDER_SWORD,
+      WIL_SKILL_ID.THUNDER_NEEDLE,
+      WIL_SKILL_ID.RAIZIN,
+      WIL_SKILL_ID.THUNDER_SHOT,
+      WIL_SKILL_ID.RAILGUN,
+      WIL_SKILL_ID.THUNDER_BALL,
+      WIL_SKILL_ID.RAIKOU,
+      WIL_SKILL_ID.SPARK,
+      WIL_SKILL_ID.THUNDER_VOLT,
+      WIL_SKILL_ID.ELECTROMAGNETIC_WAVE,
+      WIL_SKILL_ID.LIGHTNING,
+    ],
+  },
+  DEBUG_MONSTER_WATER: {
+    id: WIL_CHARACTER_ID.DEBUG_MONSTER_WATER,
+    name: "デバッグモンスター(水)",
+    visual: {
+      standing: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_ICE_DEMON1,
+      closePhisic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_ICE_DEMON2,
+          duration: 1,
+        },
+      ],
+      magic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_ICE_DEMON2,
+          duration: 1,
+        },
+      ],
+    },
+    element: WIL_ELEMENT.WATER,
+    status: { life: 10000000, attack: 1, defense: 1, speed: 80, magic: 1 },
+    learnable: [],
+    skills: [
+      WIL_SKILL_ID.SNOW_BLADE,
+      WIL_SKILL_ID.WATER_SLASH,
+      WIL_SKILL_ID.GLACIER,
+      WIL_SKILL_ID.ICE_SHOT,
+      WIL_SKILL_ID.WARTER_CANNON,
+      WIL_SKILL_ID.BUBBLE_BALL,
+      WIL_SKILL_ID.BLIZZARD,
+      WIL_SKILL_ID.ICEBERG,
+      WIL_SKILL_ID.HEAL_WATER,
+      WIL_SKILL_ID.CLEAR_WATER,
+      WIL_SKILL_ID.SQUALL,
+      WIL_SKILL_ID.SUPER_WATER,
+    ],
+  },
+  DEBUG_MONSTER_SOIL: {
+    id: WIL_CHARACTER_ID.DEBUG_MONSTER_SOIL,
+    name: "デバッグモンスター(土)",
+    visual: {
+      standing: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SOIL_DEMON1,
+      closePhisic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SOIL_DEMON2,
+          duration: 1,
+        },
+      ],
+      magic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_SOIL_DEMON2,
+          duration: 1,
+        },
+      ],
+    },
+    element: WIL_ELEMENT.SOIL,
+    status: { life: 10000000, attack: 1, defense: 1, speed: 80, magic: 1 },
+    learnable: [],
+    skills: [
+      WIL_SKILL_ID.SWING,
+      WIL_SKILL_ID.HEAVY_ROCK,
+      WIL_SKILL_ID.SAND_SLASH,
+      WIL_SKILL_ID.SAND_STORM,
+      WIL_SKILL_ID.ROCK_BUSTER,
+      WIL_SKILL_ID.EARTHQUAKE,
+    ],
+  },
+  DEBUG_MONSTER_WIND: {
+    id: WIL_CHARACTER_ID.DEBUG_MONSTER_WIND,
+    name: "デバッグモンスター(風)",
+    visual: {
+      standing: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_WIND_DEMON1,
+      closePhisic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_WIND_DEMON2,
+          duration: 1,
+        },
+      ],
+      magic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_WIND_DEMON2,
+          duration: 1,
+        },
+      ],
+    },
+    element: WIL_ELEMENT.WIND,
+    status: { life: 10000000, attack: 1, defense: 1, speed: 80, magic: 1 },
+    learnable: [],
+    skills: [
+      WIL_SKILL_ID.FAST_SLASH,
+      WIL_SKILL_ID.WIND_SLASH,
+      WIL_SKILL_ID.WIND_ARROW,
+      WIL_SKILL_ID.ARROW_STORM,
+      WIL_SKILL_ID.JET_ARROW,
+      WIL_SKILL_ID.AIR_CUTTER,
+      WIL_SKILL_ID.CYCLONE,
+      WIL_SKILL_ID.TEMPEST,
+      WIL_SKILL_ID.HEADWIND,
+      WIL_SKILL_ID.TAILWIND,
+    ],
+  },
+  DEBUG_MONSTER_FIRE: {
+    id: WIL_CHARACTER_ID.DEBUG_MONSTER_FIRE,
+    name: "デバッグモンスター(火)",
+    visual: {
+      standing: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_FIRE_DEMON1,
+      closePhisic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_FIRE_DEMON2,
+          duration: 1,
+        },
+      ],
+      magic: [
+        {
+          visual: WIL_IMAGE_ID.DOT_CHARACTER_DARK_MONSTER_FIRE_DEMON2,
+          duration: 1,
+        },
+      ],
+    },
+    element: WIL_ELEMENT.FIRE,
+    status: { life: 10000000, attack: 1, defense: 1, speed: 80, magic: 1 },
+    learnable: [],
+    skills: [
+      WIL_SKILL_ID.RED_LINE,
+      WIL_SKILL_ID.BAKUEN,
+      WIL_SKILL_ID.GOKUEN,
+      WIL_SKILL_ID.SATAN_FRAME,
+      WIL_SKILL_ID.FIRE_SHOT,
+      WIL_SKILL_ID.BURST,
+      WIL_SKILL_ID.FIRE_BALL,
+      WIL_SKILL_ID.CROSS_FIRE,
+      WIL_SKILL_ID.DEMON_FIRE,
+      WIL_SKILL_ID.LIGHT_FIRE,
+    ],
   },
 };

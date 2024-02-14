@@ -140,7 +140,7 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     type: WIL_SKILL_TYPE.SUPPORT_MAGIC,
     target: WIL_SKILL_TARGET.ALLY,
     range: WIL_SKILL_RANGE.SOLO,
-    cost: 120,
+    cost: 100,
     animation: WIL_IMAGE_ID.SKILL_HEAL,
     sound: WIL_SOUND_ID.SE_HEAL1,
     effect: (
@@ -187,6 +187,8 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
       targetCell.character = new WilCharacter(
         WIL_CHARACTER_DEFINES[WIL_CHARACTER_ID.SMOG_LABORATORY_ANDROID]
       );
+      // スタック数をセット
+      targetCell.character.stack = 100;
       return [
         new WilBattleMoveResult({
           message: [`${targetCell.character.name}が製造された。`],
@@ -200,12 +202,12 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
   },
   {
     id: WIL_SKILL_ID.SUMMON_FIRE_DEMON,
-    name: "火の魔人召喚",
+    name: "炎の魔人召喚",
     element: WIL_ELEMENT.NONE,
     type: WIL_SKILL_TYPE.SUPPORT_MAGIC,
     target: WIL_SKILL_TARGET.SELF,
     range: WIL_SKILL_RANGE.SOLO,
-    cost: 50,
+    cost: 250,
     animation: WIL_IMAGE_ID.SKILL_SUMMON,
     sound: WIL_SOUND_ID.SE_WARP,
     effect: (
@@ -236,6 +238,9 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
       targetCell.character.defaultStatus.life /= 2;
       targetCell.character.status.life =
         targetCell.character.defaultStatus.life;
+
+      // スタック数をセット
+      targetCell.character.stack = 100;
       return [
         new WilBattleMoveResult({
           message: [`${targetCell.character.name}が召喚された。`],
@@ -245,7 +250,7 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     isLearnable: (__character: WilCharacter): boolean => {
       return false;
     },
-    description: "自分フィールドに火の魔人を配置する。配置場所は固定。",
+    description: "自分フィールドに炎の魔人を配置する。配置場所は固定。",
   },
   {
     id: WIL_SKILL_ID.SUMMON_ICE_DEMON,
@@ -254,7 +259,7 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     type: WIL_SKILL_TYPE.SUPPORT_MAGIC,
     target: WIL_SKILL_TARGET.SELF,
     range: WIL_SKILL_RANGE.SOLO,
-    cost: 50,
+    cost: 250,
     animation: WIL_IMAGE_ID.SKILL_SUMMON,
     sound: WIL_SOUND_ID.SE_WARP,
     effect: (
@@ -285,6 +290,8 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
       targetCell.character.defaultStatus.life /= 2;
       targetCell.character.status.life =
         targetCell.character.defaultStatus.life;
+      // スタック数をセット
+      targetCell.character.stack = 100;
       return [
         new WilBattleMoveResult({
           message: [`${targetCell.character.name}が召喚された。`],
@@ -303,7 +310,7 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     type: WIL_SKILL_TYPE.SUPPORT_MAGIC,
     target: WIL_SKILL_TARGET.SELF,
     range: WIL_SKILL_RANGE.SOLO,
-    cost: 50,
+    cost: 250,
     animation: WIL_IMAGE_ID.SKILL_SUMMON,
     sound: WIL_SOUND_ID.SE_WARP,
     effect: (
@@ -334,6 +341,8 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
       targetCell.character.defaultStatus.life /= 2;
       targetCell.character.status.life =
         targetCell.character.defaultStatus.life;
+      // スタック数をセット
+      targetCell.character.stack = 100;
       return [
         new WilBattleMoveResult({
           message: [`${targetCell.character.name}が召喚された。`],
@@ -352,7 +361,7 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     type: WIL_SKILL_TYPE.SUPPORT_MAGIC,
     target: WIL_SKILL_TARGET.SELF,
     range: WIL_SKILL_RANGE.SOLO,
-    cost: 50,
+    cost: 250,
     animation: WIL_IMAGE_ID.SKILL_SUMMON,
     sound: WIL_SOUND_ID.SE_WARP,
     effect: (
@@ -383,6 +392,8 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
       targetCell.character.defaultStatus.life /= 2;
       targetCell.character.status.life =
         targetCell.character.defaultStatus.life;
+      // スタック数をセット
+      targetCell.character.stack = 100;
       return [
         new WilBattleMoveResult({
           message: [`${targetCell.character.name}が召喚された。`],
@@ -512,7 +523,7 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     type: WIL_SKILL_TYPE.SUPPORT_MAGIC,
     target: WIL_SKILL_TARGET.ALLY,
     range: WIL_SKILL_RANGE.SOLO,
-    cost: 100,
+    cost: 80,
     animation: WIL_IMAGE_ID.SKILL_HEAL,
     sound: WIL_SOUND_ID.SE_HEAL1,
     effect: (
@@ -551,7 +562,7 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     type: WIL_SKILL_TYPE.SUPPORT_MAGIC,
     target: WIL_SKILL_TARGET.ALLY,
     range: WIL_SKILL_RANGE.ALL,
-    cost: 130,
+    cost: 110,
     animation: WIL_IMAGE_ID.SKILL_SANCTUARY,
     sound: WIL_SOUND_ID.SE_HOLY2,
     effect: (
@@ -657,6 +668,22 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     description: "闇属性の魔素を持った爪で近接攻撃。中確率で被毒状態にする。",
   },
   {
+    id: WIL_SKILL_ID.BLACK_LINE,
+    name: "黒閃",
+    element: WIL_ELEMENT.DARK,
+    type: WIL_SKILL_TYPE.CLOSE_PHISIC,
+    target: WIL_SKILL_TARGET.ENEMY,
+    range: WIL_SKILL_RANGE.ROW,
+    power: 100,
+    cost: 115,
+    animation: WIL_IMAGE_ID.SKILL_DARK_VERTICAL,
+    sound: WIL_SOUND_ID.SE_DARK1,
+    isLearnable: (__character: WilCharacter): boolean => {
+      return false;
+    },
+    description: "対象と同じ列の敵に闇属性の物理攻撃。",
+  },
+  {
     id: WIL_SKILL_ID.SHADOW_BALL,
     name: "シャドウボール",
     element: WIL_ELEMENT.DARK,
@@ -671,22 +698,6 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
       return false;
     },
     description: "闇属性の魔法攻撃。",
-  },
-  {
-    id: WIL_SKILL_ID.BLACK_LINE,
-    name: "黒閃",
-    element: WIL_ELEMENT.DARK,
-    type: WIL_SKILL_TYPE.ATTACK_MAGIC,
-    target: WIL_SKILL_TARGET.ENEMY,
-    range: WIL_SKILL_RANGE.ROW,
-    power: 100,
-    cost: 115,
-    animation: WIL_IMAGE_ID.SKILL_DARK_VERTICAL,
-    sound: WIL_SOUND_ID.SE_DARK1,
-    isLearnable: (__character: WilCharacter): boolean => {
-      return false;
-    },
-    description: "対象と同じ列の敵に闇属性の魔法攻撃。",
   },
   {
     id: WIL_SKILL_ID.BLACK_METEOR,
@@ -743,7 +754,7 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
       target.character.stack += 50;
       return [
         new WilBattleMoveResult({
-          message: [`${target.character.name}はひるんだ。（スタック数増加）`],
+          message: [`${target.character.name}はひるんだ。(スタック数増加)`],
         }),
       ];
     },
@@ -799,19 +810,20 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
       }
 
       // 最前列のキャラクターには何もしない
-      if (target.x > 0) {
+      if (target.x <= 0) {
         return [];
       }
 
+      const targetCharacter = target.character;
       for (let i = 0; i <= WilField.HEIGHT; i++) {
         // 上から順に最前列の空いているマスを探索
         const newCell = enemyField.getCell(0, i);
         if (!newCell.character) {
           // 空いているマスがあればそのマスに対象キャラクターを移動する
-          enemyField.migrateCharacter(target.character, newCell);
+          enemyField.migrateCharacter(targetCharacter, newCell);
           return [
             new WilBattleMoveResult({
-              message: [`${target.character.name}は最前線に引き寄せられた。`],
+              message: [`${targetCharacter.name}は最前線に引き寄せられた。`],
             }),
           ];
         }
@@ -1311,7 +1323,7 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     type: WIL_SKILL_TYPE.SUPPORT_MAGIC,
     target: WIL_SKILL_TARGET.ALLY,
     range: WIL_SKILL_RANGE.SOLO,
-    cost: 120,
+    cost: 100,
     animation: WIL_IMAGE_ID.SKILL_WATER_CIRCLE,
     sound: WIL_SOUND_ID.SE_HEAL1,
     effect: (
@@ -1351,7 +1363,7 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     type: WIL_SKILL_TYPE.SUPPORT_MAGIC,
     target: WIL_SKILL_TARGET.ALLY,
     range: WIL_SKILL_RANGE.SOLO,
-    cost: 100,
+    cost: 80,
     animation: WIL_IMAGE_ID.SKILL_WATER_CIRCLE,
     sound: WIL_SOUND_ID.SE_HEAL2,
     effect: (
@@ -1704,7 +1716,7 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     element: WIL_ELEMENT.WIND,
     type: WIL_SKILL_TYPE.SHOOT_PHISIC,
     target: WIL_SKILL_TARGET.ENEMY,
-    range: WIL_SKILL_RANGE.ROW,
+    range: WIL_SKILL_RANGE.COLUMN,
     power: 130,
     cost: 165,
     animation: WIL_IMAGE_ID.SKILL_TORNADO_HORIZONTAL,
@@ -2092,9 +2104,9 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     name: "灯火",
     element: WIL_ELEMENT.FIRE,
     type: WIL_SKILL_TYPE.SUPPORT_MAGIC,
-    target: WIL_SKILL_TARGET.ALLY,
+    target: WIL_SKILL_TARGET.SELF,
     range: WIL_SKILL_RANGE.SOLO,
-    cost: 90,
+    cost: 70,
     animation: WIL_IMAGE_ID.SKILL_FIRE_CIRCLE,
     sound: WIL_SOUND_ID.SE_FIRE1,
     effect: (
@@ -2110,6 +2122,6 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
     isLearnable: (__character: WilCharacter): boolean => {
       return false;
     },
-    description: "味方一人を活性状態にする。",
+    description: "自身を活性状態にする。",
   },
 ];

@@ -7,6 +7,7 @@ import {
 import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
 import { WIL_TRAINING_ID } from "@/composables/games/wil/enums/training";
 import { WIL_BATTLE_TACTICS } from "@/composables/games/wil/enums/battle";
+import { WIL_SKILL_ID } from "@/composables/games/wil/enums/skill";
 import { WilTalkDefine } from "@/composables/games/wil/defines/talks";
 import { WIL_TALK_DEFINES_CHPATER1 } from "@/composables/games/wil/defines/talks/chapter1";
 import { WIL_TALK_DEFINES_CHPATER2 } from "@/composables/games/wil/defines/talks/chapter2";
@@ -14,7 +15,11 @@ import { WIL_TALK_DEFINES_CHPATER3 } from "@/composables/games/wil/defines/talks
 import { WIL_TALK_DEFINES_CHPATER4 } from "@/composables/games/wil/defines/talks/chapter4";
 import { WIL_TALK_DEFINES_CHPATER5 } from "@/composables/games/wil/defines/talks/chapter5";
 import { WIL_TALK_DEFINES_TUTORIAL } from "@/composables/games/wil/defines/talks/tutorial";
-import { WIL_SUB_TALK_DEFINES } from "@/composables/games/wil/defines/talks/sub";
+import { WIL_SUB_TALK_DEFINES_HERO } from "@/composables/games/wil/defines/talks/sub/hero";
+import { WIL_SUB_TALK_DEFINES_HOLY_KNIGHTS_LEADER } from "@/composables/games/wil/defines/talks/sub/hoy_knights_leader";
+import { WIL_SUB_TALK_DEFINES_ICICLE_GURDIANS_QUEEN } from "@/composables/games/wil/defines/talks/sub/icicle_gurdians_queen";
+import { WIL_SUB_TALK_DEFINES_STORM_SHOOTERS_PRINCE } from "@/composables/games/wil/defines/talks/sub/storm_shooters_prince";
+import { WIL_SUB_TALK_DEFINES_INFERNITY_SAMURAIS_THUNDER_SPY } from "@/composables/games/wil/defines/talks/sub/infernity_samurais_thunder_spy";
 import { WilBattle } from "@/composables/games/wil/types/battle";
 import { WilTraining } from "@/composables/games/wil/types/training";
 
@@ -53,6 +58,26 @@ export type WilChapterDefine = {
   }>;
 };
 
+export const WIL_CHAPTER_DEBUG_DEFINE: WilChapterDefine = {
+  id: 0,
+  title: "デバッグ",
+  flow: [WIL_CHAPTER_TIMMING.BATTLE],
+  talks: [],
+  battles: [
+    {
+      playerTeamName: "デバッグチームA",
+      computerTeamName: "デバッグチームB",
+      tactics: WIL_BATTLE_TACTICS.RANDOM,
+      background: WIL_IMAGE_ID.BACKGROUND_BATTLE_FIRE_LAND_CATSLE,
+      battleBgm: WIL_SOUND_ID.BGM_BATTLE1,
+      deployBgm: WIL_SOUND_ID.BGM_DEPLOY1,
+      deploy: [],
+    },
+  ],
+  trainings: [],
+  updateTeam: [],
+};
+
 export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
   id: 1,
   title: "第１章 聖の国と騎士団",
@@ -61,9 +86,9 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.TEAM,
     WIL_CHAPTER_TIMMING.BATTLE,
-    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.TEAM,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TRAINING,
     WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TALK,
@@ -85,18 +110,13 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
       battleBgm: WIL_SOUND_ID.BGM_BATTLE1,
       deploy: [
         {
-          x: 0,
-          y: 2,
+          x: 1,
+          y: 1,
           character: WIL_CHARACTER_ID.DARK_MONSTER_SHADOW,
         },
         {
           x: 1,
-          y: 0,
-          character: WIL_CHARACTER_ID.DARK_MONSTER_SHADOW,
-        },
-        {
-          x: 1,
-          y: 4,
+          y: 3,
           character: WIL_CHARACTER_ID.DARK_MONSTER_SHADOW,
         },
       ],
@@ -164,7 +184,7 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
           },
         },
         {
-          event: WIL_SUB_TALK_DEFINES.HERO_1,
+          event: WIL_SUB_TALK_DEFINES_HERO[0],
           isStart: (training: WilTraining) => {
             if (training.days !== 2) {
               return false;
@@ -178,7 +198,7 @@ export const WIL_CHAPTER_1_DEFINE: WilChapterDefine = {
           },
         },
         {
-          event: WIL_SUB_TALK_DEFINES.HERO_2,
+          event: WIL_SUB_TALK_DEFINES_HERO[1],
           isStart: (training: WilTraining) => {
             if (training.days !== 5) {
               return false;
@@ -223,6 +243,7 @@ export const WIL_CHAPTER_2_DEFINE: WilChapterDefine = {
   flow: [
     WIL_CHAPTER_TIMMING.OPENING,
     WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TRAINING,
     WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TALK,
@@ -230,9 +251,9 @@ export const WIL_CHAPTER_2_DEFINE: WilChapterDefine = {
     WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.BATTLE,
-    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.TEAM,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.BATTLE,
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.SAVE,
@@ -327,7 +348,7 @@ export const WIL_CHAPTER_2_DEFINE: WilChapterDefine = {
       days: 7,
       talks: [
         {
-          event: WIL_SUB_TALK_DEFINES.HERO_3,
+          event: WIL_SUB_TALK_DEFINES_HERO[2],
           isStart: (training: WilTraining) => {
             for (let result of training.results) {
               if (result.menu.id !== WIL_TRAINING_ID.PHISIC) {
@@ -344,7 +365,7 @@ export const WIL_CHAPTER_2_DEFINE: WilChapterDefine = {
           },
         },
         {
-          event: WIL_SUB_TALK_DEFINES.HERO_4,
+          event: WIL_SUB_TALK_DEFINES_HERO[3],
           isStart: (training: WilTraining) => {
             for (let result of training.results) {
               if (result.menu.id !== WIL_TRAINING_ID.MAGIC) {
@@ -361,16 +382,13 @@ export const WIL_CHAPTER_2_DEFINE: WilChapterDefine = {
           },
         },
         {
-          event: WIL_SUB_TALK_DEFINES.HERO_5,
+          event: WIL_SUB_TALK_DEFINES_HERO[4],
           isStart: (training: WilTraining) => {
             for (let result of training.results) {
               if (!result.character.isModel(WIL_CHARACTER_ID.HERO)) {
                 continue;
               }
-              if (
-                result.character.defaultStatus.attack >= 15 &&
-                result.character.defaultStatus.defense >= 12
-              ) {
+              if (result.character.defaultStatus.life >= 125) {
                 return true;
               }
             }
@@ -378,15 +396,18 @@ export const WIL_CHAPTER_2_DEFINE: WilChapterDefine = {
           },
         },
         {
-          event: WIL_SUB_TALK_DEFINES.HOLY_KNIGHTS_LEADER_1,
+          event: WIL_SUB_TALK_DEFINES_HOLY_KNIGHTS_LEADER[0],
           isStart: (training: WilTraining) => {
+            if (training.days >= 5) {
+              return false;
+            }
             for (let result of training.results) {
               if (
                 !result.character.isModel(WIL_CHARACTER_ID.HOLY_KNIGHTS_LEADER)
               ) {
                 continue;
               }
-              if (training.days >= 5) {
+              if (result.character.defaultStatus.life >= 145) {
                 return true;
               }
             }
@@ -394,7 +415,7 @@ export const WIL_CHAPTER_2_DEFINE: WilChapterDefine = {
           },
         },
         {
-          event: WIL_SUB_TALK_DEFINES.HOLY_KNIGHTS_LEADER_2,
+          event: WIL_SUB_TALK_DEFINES_HOLY_KNIGHTS_LEADER[1],
           isStart: (training: WilTraining) => {
             for (let result of training.results) {
               if (result.menu.id !== WIL_TRAINING_ID.PHISIC) {
@@ -433,7 +454,9 @@ export const WIL_CHAPTER_3_DEFINE: WilChapterDefine = {
   flow: [
     WIL_CHAPTER_TIMMING.OPENING,
     WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TRAINING,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.TEAM,
     WIL_CHAPTER_TIMMING.TALK,
@@ -444,8 +467,10 @@ export const WIL_CHAPTER_3_DEFINE: WilChapterDefine = {
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.BATTLE,
     WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TRAINING,
     WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.ENDING,
   ],
   talks: [...WIL_TALK_DEFINES_CHPATER3],
@@ -523,7 +548,7 @@ export const WIL_CHAPTER_3_DEFINE: WilChapterDefine = {
     {
       playerTeamName: "連合軍",
       computerTeamName: "スイゲツ隊",
-      tactics: WIL_BATTLE_TACTICS.CONTINUOUS_MOVE,
+      tactics: WIL_BATTLE_TACTICS.SUMMON_PRIORITY,
       background: WIL_IMAGE_ID.BACKGROUND_BATTLE_STORM_LAND_INSIDE,
       deployBgm: WIL_SOUND_ID.BGM_DEPLOY3,
       battleBgm: WIL_SOUND_ID.BGM_BATTLE3,
@@ -559,11 +584,146 @@ export const WIL_CHAPTER_3_DEFINE: WilChapterDefine = {
   trainings: [
     {
       days: 3,
-      talks: [],
+      talks: [
+        {
+          event: WIL_SUB_TALK_DEFINES_HERO[5],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (!result.character.isModel(WIL_CHARACTER_ID.HERO)) {
+                continue;
+              }
+              if (result.character.defaultStatus.life >= 140) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES_HOLY_KNIGHTS_LEADER[2],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (
+                !result.character.isModel(WIL_CHARACTER_ID.HOLY_KNIGHTS_LEADER)
+              ) {
+                continue;
+              }
+              if (result.character.defaultStatus.life >= 155) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES_ICICLE_GURDIANS_QUEEN[0],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (
+                !result.character.isModel(
+                  WIL_CHARACTER_ID.ICICLE_GURDIANS_QUEEN
+                )
+              ) {
+                continue;
+              }
+              if (result.character.defaultStatus.life >= 140) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+      ],
     },
     {
       days: 5,
-      talks: [],
+      talks: [
+        {
+          event: WIL_SUB_TALK_DEFINES_HERO[6],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (!result.character.isModel(WIL_CHARACTER_ID.HERO)) {
+                continue;
+              }
+              if (result.character.defaultStatus.life >= 155) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES_HERO[7],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (!result.character.isModel(WIL_CHARACTER_ID.HERO)) {
+                continue;
+              }
+              if (training.days >= 3) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES_ICICLE_GURDIANS_QUEEN[1],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (
+                !result.character.isModel(
+                  WIL_CHARACTER_ID.ICICLE_GURDIANS_QUEEN
+                )
+              ) {
+                continue;
+              }
+              if (result.character.defaultStatus.life >= 155) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES_STORM_SHOOTERS_PRINCE[0],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (
+                !result.character.isModel(
+                  WIL_CHARACTER_ID.STORM_SHOOTERS_PRINCE
+                )
+              ) {
+                continue;
+              }
+              if (result.character.defaultStatus.life >= 165) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES_STORM_SHOOTERS_PRINCE[1],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (result.menu.id !== WIL_TRAINING_ID.PHISIC) {
+                continue;
+              }
+              if (
+                !result.character.isModel(
+                  WIL_CHARACTER_ID.STORM_SHOOTERS_PRINCE
+                )
+              ) {
+                continue;
+              }
+              if (result.learned) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+      ],
     },
   ],
   updateTeam: [
@@ -588,7 +748,9 @@ export const WIL_CHAPTER_4_DEFINE: WilChapterDefine = {
     WIL_CHAPTER_TIMMING.OPENING,
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.TEAM,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TRAINING,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.BATTLE,
     WIL_CHAPTER_TIMMING.TALK,
@@ -596,6 +758,7 @@ export const WIL_CHAPTER_4_DEFINE: WilChapterDefine = {
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.BATTLE,
     WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.ENDING,
   ],
   talks: [...WIL_TALK_DEFINES_CHPATER4],
@@ -654,8 +817,8 @@ export const WIL_CHAPTER_4_DEFINE: WilChapterDefine = {
       battleBgm: WIL_SOUND_ID.BGM_BATTLE1,
       deploy: [
         {
-          x: 0,
-          y: 0,
+          x: 1,
+          y: 2,
           character: WIL_CHARACTER_ID.INFERNITY_SAMURAIS_SAND_SPY,
         },
       ],
@@ -689,7 +852,99 @@ export const WIL_CHAPTER_4_DEFINE: WilChapterDefine = {
   trainings: [
     {
       days: 7,
-      talks: [],
+      talks: [
+        {
+          event: WIL_SUB_TALK_DEFINES_HERO[8],
+          isStart: (training) => {
+            if (training.days > 3) {
+              return false;
+            }
+            for (let result of training.results) {
+              if (!result.character.isModel(WIL_CHARACTER_ID.HERO)) {
+                continue;
+              }
+              if (result.character.defaultStatus.life >= 165) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES_HERO[9],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (result.menu.id !== WIL_TRAINING_ID.MAGIC) {
+                continue;
+              }
+              if (!result.character.isModel(WIL_CHARACTER_ID.HERO)) {
+                continue;
+              }
+              if (result.learned?.id === WIL_SKILL_ID.CREATE_SACRED_SWORD) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES_ICICLE_GURDIANS_QUEEN[2],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (result.menu.id !== WIL_TRAINING_ID.PHISIC) {
+                continue;
+              }
+              if (
+                !result.character.isModel(
+                  WIL_CHARACTER_ID.ICICLE_GURDIANS_QUEEN
+                )
+              ) {
+                continue;
+              }
+              if (result.learned) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES_STORM_SHOOTERS_PRINCE[2],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (
+                !result.character.isModel(
+                  WIL_CHARACTER_ID.STORM_SHOOTERS_PRINCE
+                )
+              ) {
+                continue;
+              }
+              if (result.character.defaultStatus.life >= 170) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES_INFERNITY_SAMURAIS_THUNDER_SPY[0],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (
+                !result.character.isModel(
+                  WIL_CHARACTER_ID.INFERNITY_SAMURAIS_THUNDER_SPY
+                )
+              ) {
+                continue;
+              }
+              if (result.character.defaultStatus.life >= 165) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+      ],
     },
   ],
   updateTeam: [
@@ -706,10 +961,13 @@ export const WIL_CHAPTER_5_DEFINE: WilChapterDefine = {
   flow: [
     WIL_CHAPTER_TIMMING.OPENING,
     WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TRAINING,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.BATTLE,
     WIL_CHAPTER_TIMMING.TALK,
+    WIL_CHAPTER_TIMMING.SAVE,
     WIL_CHAPTER_TIMMING.BATTLE,
     WIL_CHAPTER_TIMMING.TALK,
     WIL_CHAPTER_TIMMING.TEAM,
@@ -746,8 +1004,8 @@ export const WIL_CHAPTER_5_DEFINE: WilChapterDefine = {
     },
     {
       playerTeamName: "連合軍",
-      computerTeamName: "魔王",
-      tactics: WIL_BATTLE_TACTICS.RANDOM,
+      computerTeamName: "魔王軍",
+      tactics: WIL_BATTLE_TACTICS.CONTINUOUS_MOVE,
       background: WIL_IMAGE_ID.BACKGROUND_BATTLE_FIRE_LAND_CATSLE,
       deployBgm: WIL_SOUND_ID.BGM_PINCH3,
       battleBgm: WIL_SOUND_ID.BGM_BATTLE4,
@@ -771,8 +1029,8 @@ export const WIL_CHAPTER_5_DEFINE: WilChapterDefine = {
     },
     {
       playerTeamName: "連合軍",
-      computerTeamName: "覚醒魔王",
-      tactics: WIL_BATTLE_TACTICS.RANDOM,
+      computerTeamName: "真・魔王軍",
+      tactics: WIL_BATTLE_TACTICS.SUMMON_PRIORITY,
       background: WIL_IMAGE_ID.BACKGROUND_BATTLE_FIRE_LAND_SHODDY_CATSLE,
       deployBgm: WIL_SOUND_ID.BGM_PINCH3,
       battleBgm: WIL_SOUND_ID.BGM_BATTLE5,
@@ -808,7 +1066,93 @@ export const WIL_CHAPTER_5_DEFINE: WilChapterDefine = {
   trainings: [
     {
       days: 7,
-      talks: [],
+      talks: [
+        {
+          event: WIL_SUB_TALK_DEFINES_HERO[10],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (result.menu.id !== WIL_TRAINING_ID.MAGIC) {
+                continue;
+              }
+              if (!result.character.isModel(WIL_CHARACTER_ID.HERO)) {
+                continue;
+              }
+              if (result.learned?.id === WIL_SKILL_ID.CREATE_SACRED_SWORD) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES_HERO[11],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (!result.character.isModel(WIL_CHARACTER_ID.HERO)) {
+                continue;
+              }
+              if (result.character.defaultStatus.life >= 180) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES_ICICLE_GURDIANS_QUEEN[3],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (
+                !result.character.isModel(
+                  WIL_CHARACTER_ID.ICICLE_GURDIANS_QUEEN
+                )
+              ) {
+                continue;
+              }
+              if (result.character.defaultStatus.life >= 170) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES_STORM_SHOOTERS_PRINCE[3],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (
+                !result.character.isModel(
+                  WIL_CHARACTER_ID.STORM_SHOOTERS_PRINCE
+                )
+              ) {
+                continue;
+              }
+              if (result.character.defaultStatus.life >= 180) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+        {
+          event: WIL_SUB_TALK_DEFINES_INFERNITY_SAMURAIS_THUNDER_SPY[1],
+          isStart: (training) => {
+            for (let result of training.results) {
+              if (
+                !result.character.isModel(
+                  WIL_CHARACTER_ID.INFERNITY_SAMURAIS_THUNDER_SPY
+                )
+              ) {
+                continue;
+              }
+              if (result.character.defaultStatus.life >= 180) {
+                return true;
+              }
+            }
+            return false;
+          },
+        },
+      ],
     },
   ],
   updateTeam: [

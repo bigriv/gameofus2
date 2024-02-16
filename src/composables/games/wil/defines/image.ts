@@ -452,4 +452,7 @@ export const WIL_IMAGE_DEFINES: { [key: string]: string } = {
   BACKGROUND_VILLAGE_EVENING:
     WIL_IMAGE_ROOT_PATH + "backgrounds/village_evening.png",
   BACKGROUND_VILLAGE: WIL_IMAGE_ROOT_PATH + "backgrounds/village.png",
+
+  // その他
+  ELEMENT: WIL_IMAGE_ROOT_PATH + "others/element.png",
 };

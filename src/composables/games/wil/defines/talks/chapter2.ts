@@ -1180,7 +1180,7 @@ export const WIL_TALK_DEFINES_CHPATER2: Array<WilTalkDefine> = [
       right: WIL_IMAGE_ID.CHARACTER_ICE_LAND_KING,
       talker: "フロリア王",
       message: [
-        "しかし、既にあれほどまでの魔物が現れるまで事態進んでいるのか...。",
+        "しかし、既にあれほどまでの魔物が現れるまで事態が進んでいるのか...。",
         "これはもう、わしの我儘を通すわけにはいくまい。",
       ],
     },

@@ -228,8 +228,14 @@ export const WIL_CHARACTER_DEFINES: {
       WIL_SKILL_ID.BUBBLE_BALL,
       WIL_SKILL_ID.BLIZZARD,
       WIL_SKILL_ID.ICEBERG,
+      WIL_SKILL_ID.HEAL_WATER,
+      WIL_SKILL_ID.SUPER_WATER,
     ],
-    skills: [WIL_SKILL_ID.SNOW_BLADE, WIL_SKILL_ID.BUBBLE_BALL],
+    skills: [
+      WIL_SKILL_ID.SNOW_BLADE,
+      WIL_SKILL_ID.BUBBLE_BALL,
+      WIL_SKILL_ID.HEAL_WATER,
+    ],
   },
   ICICLE_GURDIANS_DEFENDER: {
     id: WIL_CHARACTER_ID.ICICLE_GURDIANS_DEFENDER,
@@ -817,7 +823,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.WATER,
-    status: { life: 500, attack: 35, defense: 35, speed: 40, magic: 50 },
+    status: { life: 300, attack: 35, defense: 35, speed: 40, magic: 50 },
     learnable: [],
     skills: [
       WIL_SKILL_ID.REGENERATION,
@@ -844,7 +850,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.FIRE,
-    status: { life: 500, attack: 50, defense: 35, speed: 40, magic: 35 },
+    status: { life: 400, attack: 50, defense: 35, speed: 40, magic: 35 },
     learnable: [],
     skills: [
       WIL_SKILL_ID.REGENERATION,
@@ -865,7 +871,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.WIND,
-    status: { life: 500, attack: 35, defense: 35, speed: 50, magic: 40 },
+    status: { life: 400, attack: 35, defense: 35, speed: 50, magic: 40 },
     learnable: [],
     skills: [
       WIL_SKILL_ID.REGENERATION,
@@ -896,7 +902,7 @@ export const WIL_CHARACTER_DEFINES: {
       ],
     },
     element: WIL_ELEMENT.SOIL,
-    status: { life: 500, attack: 40, defense: 50, speed: 35, magic: 35 },
+    status: { life: 400, attack: 40, defense: 50, speed: 35, magic: 35 },
     learnable: [],
     skills: [
       WIL_SKILL_ID.REGENERATION,

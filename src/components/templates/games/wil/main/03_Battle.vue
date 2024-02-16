@@ -11,13 +11,8 @@
         <GOUVisualCanvas :objects="{ character: character.visual.standing }" />
       </div>
     </div>
-    <div class="c-battle__log">
-      <GameButton
-        label="ログ"
-        :fontColor="WIL_BUTTON_FONT_COLOR"
-        :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
-        @click="isShowLog = true"
-      />
+    <div class="c-battle__element">
+      <GOUVisualCanvas :objects="{ element: element }" />
     </div>
     <div class="c-battle__field" @click="onClickWindow">
       <Field
@@ -39,6 +34,7 @@
       </div>
     </transition>
 
+    <div class="c-battle__log" @click="isShowLog = true">&lt;&lt;ログ</div>
     <div class="c-battle__guide">
       {{ guideMessage }}
     </div>
@@ -83,16 +79,11 @@ import {
 } from "vue";
 import { useGameStore } from "@/pinia/game";
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
-import GameButton from "@/components/atoms/interfaces/GameButton.vue";
 import Field from "@/components/templates/games/wil/main/battle/01_Field.vue";
 import UnderFrame from "@/components/templates/games/wil/main/battle/02_UnderFrame.vue";
 import WilTalk from "@/components/molecules/games/wil/WilTalk.vue";
 import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
 import WilLogDialog from "@/components/molecules/games/wil/WilLogDialog.vue";
-import {
-  WIL_BUTTON_FONT_COLOR,
-  WIL_BUTTON_BACKGROUND_COLOR,
-} from "@/composables/games/wil/const";
 import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
 import { WIL_BATTLE_TIMMING } from "@/composables/games/wil/enums/timming";
 import { WIL_SOUND_ID } from "@/composables/games/wil/enums/sound";
@@ -110,6 +101,7 @@ import { WilFieldCell } from "@/composables/games/wil/types/field";
 import { WilComputer } from "@/composables/games/wil/types/computer";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
+import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
 
 const props = defineProps({
   skills: {
@@ -128,6 +120,7 @@ const props = defineProps({
 const emits = defineEmits(["end"]);
 
 const gameStore = useGameStore();
+const element = gameStore.getImages[WIL_IMAGE_ID.ELEMENT];
 const background = props.event.background;
 const battle = ref(new WilBattle(props.player, props.event, props.skills));
 const hoverCell: Ref<WilFieldCell | undefined> = ref();
@@ -158,6 +151,7 @@ const confirmModal: {
 
 onMounted(() => {
   props.event.processDeploy();
+  battle.value.computer.deployCharacters(props.event.deploy);
   changeTimming(WIL_BATTLE_TIMMING.SET_SELECT_CELL, () => {}); // 会話イベントを取得するためにマウント時にもタイミングの変更を行う
 });
 onUnmounted(() => {
@@ -315,7 +309,6 @@ const setCharacter = (character: WilCharacter) => {
  * 配置終了時の処理
  */
 const endSet = () => {
-  battle.value.computer.deployCharacters(props.event.deploy);
   props.event.processBattle();
   // 戦闘開始の前処理を実行
   battle.value.startBattle();
@@ -505,16 +498,29 @@ watch(
       }
     }
   }
-  &__log {
+  &__element {
     position: absolute;
     top: 2%;
     right: 5%;
-    width: 18%;
-    height: 7%;
+    width: 14%;
+    height: 14%;
+  }
+  &__log {
+    position: absolute;
+    bottom: 36%;
+    right: 5%;
+    color: white;
+    text-decoration: underline;
+    text-align: center;
+    cursor: pointer;
+    opacity: 0.6;
+    &:hover {
+      opacity: 1;
+    }
   }
   &__field {
     position: absolute;
-    top: 15%;
+    top: 13%;
     left: 5%;
     width: 90%;
     height: 50%;

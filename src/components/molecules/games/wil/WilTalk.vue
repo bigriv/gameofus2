@@ -9,8 +9,13 @@
     <div v-if="talk.right" class="c-talk__character--right">
       <GOUVisualCanvas :objects="{ character: talk.right }" />
     </div>
-    <div class="c-talk__skip" @click="isShowConfirmModal = true">
-      >>スキップ
+    <div class="c-talk__operation">
+      <div class="c-talk__operation__log" @click="isShowLog = true">
+        &lt;&lt;ログ
+      </div>
+      <div class="c-talk__operation__skip" @click="isShowConfirmModal = true">
+        &gt;&gt;スキップ
+      </div>
     </div>
     <div class="c-talk__talker">
       <MessageFrame
@@ -38,6 +43,9 @@
       />
     </div>
   </div>
+  <div class="c-log_dialog">
+    <WilLogDialog v-model:isShow="isShowLog" :log="log" />
+  </div>
   <div class="c-confirm_dialog">
     <WilConfirmDialog
       v-model:isShow="isShowConfirmModal"
@@ -52,6 +60,7 @@
 import { Ref, computed, onMounted, onUnmounted, ref } from "vue";
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 import MessageFrame from "@/components/atoms/frames/MessageFrame.vue";
+import WilLogDialog from "@/components/molecules/games/wil/WilLogDialog.vue";
 import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import {
@@ -76,7 +85,10 @@ const talker = computed(() => {
   }
   return [talk.value.talker];
 });
+const log = ref([] as Array<string>);
 let bgm: GOUReadAudio | undefined = undefined;
+
+const isShowLog = ref(false);
 const onClickMessageFrame: Ref<Function> = ref(() => {});
 const isEndMessage = ref(false);
 // 確認モーダル
@@ -98,6 +110,11 @@ const chainTalkEvent: Function = (
   }
   talk.value = event;
   talk.value.process(bgm);
+  if (talk.value.talker) {
+    log.value.push(`${talk.value.talker}「${talk.value.message?.join("")}」`);
+  } else {
+    log.value.push(`システム「${talk.value.message?.join("")}」`);
+  }
   if (talk.value.bgm) {
     bgm = talk.value.bgm;
   }
@@ -145,17 +162,31 @@ onUnmounted(() => {
       height: 70%;
     }
   }
-  &__skip {
+  &__operation {
     position: absolute;
-    bottom: 36%;
-    text-decoration: underline;
-    color: white;
+    width: 90%;
     right: 5%;
-    cursor: pointer;
-    font-size: 14px;
-    opacity: 0.6;
-    &:hover {
-      opacity: 1;
+    bottom: 36%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0 4%;
+    &__log {
+      text-decoration: underline;
+      color: white;
+      cursor: pointer;
+      opacity: 0.6;
+      &:hover {
+        opacity: 1;
+      }
+    }
+    &__skip {
+      text-decoration: underline;
+      color: white;
+      cursor: pointer;
+      opacity: 0.6;
+      &:hover {
+        opacity: 1;
+      }
     }
   }
   &__talker {
@@ -174,18 +205,24 @@ onUnmounted(() => {
   }
 }
 @media screen and (max-width: 400px) {
+  .c-talk__operation__log,
+  .c-talk__operation__skip,
   .c-talk__talker,
   .c-talk__message {
     font-size: 8px;
   }
 }
 @media screen and (max-width: 600px) and (min-width: 400px) {
+  .c-talk__operation__log,
+  .c-talk__operation__skip,
   .c-talk__talker,
   .c-talk__message {
     font-size: 10px;
   }
 }
 @media screen and (min-width: 600px) {
+  .c-talk__operation__log,
+  .c-talk__operation__skip,
   .c-talk__talker,
   .c-talk__message {
     font-size: 14px;

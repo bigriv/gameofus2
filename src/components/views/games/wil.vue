@@ -53,6 +53,10 @@
         <h2>リリースノート</h2>
         <p>2024/02/17 ver 1.00 リリース</p>
       </div>
+
+      <div class="c-game__description__block">
+        <h2><GameContactForm /></h2>
+      </div>
     </template>
   </GameFrame>
 </template>
@@ -64,6 +68,7 @@ import GameFrame from "@/components/atoms/frames/GameFrame.vue";
 import Title from "@/components/templates/games/wil/01_Title.vue";
 import Main from "@/components/templates/games/wil/02_Main.vue";
 import Ending from "@/components/templates/games/wil/03_Ending.vue";
+import GameContactForm from "@/components/atoms/interfaces/GameContactForm.vue";
 import { useWilFile } from "@/composables/games/wil/file";
 import { WIL_OVERALL_TIMMING } from "@/composables/games/wil/enums/timming";
 import { WIL_ENDING_ID } from "@/composables/games/wil/enums/ending";
@@ -118,9 +123,6 @@ watch(
   font-family: "DotGothic16", sans-serif;
 }
 .c-drawer {
-  width: 100%;
-  height: 100%;
-  background-color: black;
   &__loading {
     display: flex;
     width: 100%;

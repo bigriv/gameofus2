@@ -80,8 +80,10 @@ export class WilTraining {
       },
     };
 
-    this.defaultSelectableCharacter = [...characters];
-    this.selectableCharacters = [...characters];
+    this.defaultSelectableCharacter = [...characters].sort(
+      (a: WilCharacter, b: WilCharacter) => a.id.localeCompare(b.id)
+    );
+    this.selectableCharacters = [...this.defaultSelectableCharacter];
   }
 
   /**
@@ -178,29 +180,12 @@ export class WilTraining {
    * @param character 訓練を行うキャラクター
    */
   setCharacter(trainingId: WIL_TRAINING_ID, character: WilCharacter) {
-    let temp = undefined;
-    switch (trainingId) {
-      case WIL_TRAINING_ID.ATTACK:
-        temp = this.plan.attack.character;
-        this.plan.attack.character = character;
-        break;
-      case WIL_TRAINING_ID.DEFENSE:
-        temp = this.plan.defense.character;
-        this.plan.defense.character = character;
-        break;
-      case WIL_TRAINING_ID.MIGRATION:
-        temp = this.plan.migration.character;
-        this.plan.migration.character = character;
-        break;
-      case WIL_TRAINING_ID.MAGIC:
-        temp = this.plan.magic.character;
-        this.plan.magic.character = character;
-        break;
-      case WIL_TRAINING_ID.PHISIC:
-        temp = this.plan.phisic.character;
-        this.plan.phisic.character = character;
-        break;
-    }
+    // 指定したキャラクターがすでに他の訓練予定に設定されている場合はその訓練予定から取り除く
+    this.removeCharacter(character);
+
+    const trainingPlan = this.getTrainingPlan(trainingId);
+    const temp = trainingPlan.character;
+    trainingPlan.character = character;
 
     // 選択可能リストに元々セットされていたキャラクターを追加する
     if (temp) {
@@ -220,30 +205,10 @@ export class WilTraining {
    * 訓練にセットされているキャラクターを排除し、選択可能リストに戻す
    * @param trainingId キャラクターを排除する訓練のID
    */
-  removeCharacter(trainingId: WIL_TRAINING_ID) {
-    let temp = undefined;
-    switch (trainingId) {
-      case WIL_TRAINING_ID.ATTACK:
-        temp = this.plan.attack.character;
-        this.plan.attack.character = undefined;
-        break;
-      case WIL_TRAINING_ID.DEFENSE:
-        temp = this.plan.defense.character;
-        this.plan.defense.character = undefined;
-        break;
-      case WIL_TRAINING_ID.MIGRATION:
-        temp = this.plan.migration.character;
-        this.plan.migration.character = undefined;
-        break;
-      case WIL_TRAINING_ID.MAGIC:
-        temp = this.plan.magic.character;
-        this.plan.magic.character = undefined;
-        break;
-      case WIL_TRAINING_ID.PHISIC:
-        temp = this.plan.phisic.character;
-        this.plan.phisic.character = undefined;
-        break;
-    }
+  resetTrainingPlan(trainingId: WIL_TRAINING_ID) {
+    const trainingPlan = this.getTrainingPlan(trainingId);
+    const temp = trainingPlan.character;
+    trainingPlan.character = undefined;
 
     // 選択可能リストに元々セットされていたキャラクターを追加する
     if (temp) {
@@ -252,6 +217,74 @@ export class WilTraining {
         a.id.localeCompare(b.id)
       );
     }
+  }
+
+  /**
+   * 訓練予定に設定済みのキャラクターを排除する
+   * @param character 排除するキャラクター
+   */
+  removeCharacter(character: WilCharacter) {
+    if (this.plan.attack.character?.id === character.id) {
+      this.resetTrainingPlan(WIL_TRAINING_ID.ATTACK);
+    }
+    if (this.plan.defense.character?.id === character.id) {
+      this.resetTrainingPlan(WIL_TRAINING_ID.DEFENSE);
+    }
+    if (this.plan.migration.character?.id === character.id) {
+      this.resetTrainingPlan(WIL_TRAINING_ID.MIGRATION);
+    }
+    if (this.plan.phisic.character?.id === character.id) {
+      this.resetTrainingPlan(WIL_TRAINING_ID.PHISIC);
+    }
+    if (this.plan.magic.character?.id === character.id) {
+      this.resetTrainingPlan(WIL_TRAINING_ID.MAGIC);
+    }
+  }
+
+  /**
+   * 訓練IDから訓練予定を取得する
+   * @param trainingId 訓練ID
+   * @returns 取得した訓練予定
+   */
+  getTrainingPlan(trainingId: WIL_TRAINING_ID): WilTrainingPlan {
+    switch (trainingId) {
+      case WIL_TRAINING_ID.ATTACK:
+        return this.plan.attack;
+      case WIL_TRAINING_ID.DEFENSE:
+        return this.plan.defense;
+      case WIL_TRAINING_ID.MIGRATION:
+        return this.plan.migration;
+      case WIL_TRAINING_ID.MAGIC:
+        return this.plan.magic;
+      case WIL_TRAINING_ID.PHISIC:
+        return this.plan.phisic;
+    }
+  }
+
+  /**
+   * 指定したキャラクターがセットされている訓練予定を取得する
+   * @param character キャラクター
+   * @returns 訓練予定(どの訓練予定にもセットされていない場合はundefined)
+   */
+  getTrainingPlanByCharacter(
+    character: WilCharacter
+  ): WilTrainingPlan | undefined {
+    if (this.plan.attack.character?.id === character.id) {
+      return this.plan.attack;
+    }
+    if (this.plan.defense.character?.id === character.id) {
+      return this.plan.defense;
+    }
+    if (this.plan.migration.character?.id === character.id) {
+      return this.plan.migration;
+    }
+    if (this.plan.magic.character?.id === character.id) {
+      return this.plan.magic;
+    }
+    if (this.plan.phisic.character?.id === character.id) {
+      return this.plan.phisic;
+    }
+    return undefined;
   }
 }
 

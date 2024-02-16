@@ -156,7 +156,7 @@ const credits = [
   {
     background: WIL_IMAGE_ID.BACKGROUND_VILLAGE,
     right: WIL_IMAGE_ID.CHARACTER_SUPER_HERO,
-    texts: ["スペシャルサンクス", "ヤナフォイ"],
+    texts: ["スペシャルサンクス", "友人Y氏"],
     duration: 15,
   },
   {

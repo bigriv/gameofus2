@@ -235,7 +235,7 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
       targetCell.character = new WilCharacter(
         WIL_CHARACTER_DEFINES[WIL_CHARACTER_ID.DARK_MONSTER_FIRE_DEMON]
       );
-      targetCell.character.defaultStatus.life /= 2;
+      targetCell.character.defaultStatus.life = 250;
       targetCell.character.status.life =
         targetCell.character.defaultStatus.life;
 
@@ -287,7 +287,7 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
       targetCell.character = new WilCharacter(
         WIL_CHARACTER_DEFINES[WIL_CHARACTER_ID.DARK_MONSTER_ICE_DEMON]
       );
-      targetCell.character.defaultStatus.life /= 2;
+      targetCell.character.defaultStatus.life = 250;
       targetCell.character.status.life =
         targetCell.character.defaultStatus.life;
       // スタック数をセット
@@ -338,7 +338,7 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
       targetCell.character = new WilCharacter(
         WIL_CHARACTER_DEFINES[WIL_CHARACTER_ID.DARK_MONSTER_WIND_DEMON]
       );
-      targetCell.character.defaultStatus.life /= 2;
+      targetCell.character.defaultStatus.life = 250;
       targetCell.character.status.life =
         targetCell.character.defaultStatus.life;
       // スタック数をセット
@@ -389,7 +389,7 @@ export const WIL_SKILL_DEFINES: Array<WilSkillDefine> = [
       targetCell.character = new WilCharacter(
         WIL_CHARACTER_DEFINES[WIL_CHARACTER_ID.DARK_MONSTER_SOIL_DEMON]
       );
-      targetCell.character.defaultStatus.life /= 2;
+      targetCell.character.defaultStatus.life = 250;
       targetCell.character.status.life =
         targetCell.character.defaultStatus.life;
       // スタック数をセット

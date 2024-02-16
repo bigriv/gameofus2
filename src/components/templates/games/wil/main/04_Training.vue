@@ -4,7 +4,7 @@
       <WilCardList
         :selected="selectedCharacter?.id"
         :dataList="(training.selectableCharacters as Array<WilCharacter>)"
-        @update:selected="onSelectCharacter"
+        @selectCharacter="onSelectCharacter"
       />
     </div>
     <div class="c-training__plan">
@@ -21,7 +21,11 @@
           </div>
           <template v-if="plan.character">
             <div class="c-training__plan__cards__content__character">
-              <WilCharacterCard :character="(plan.character as WilCharacter)" />
+              <WilCharacterCard
+                :selected="plan.character.id === selectedCharacter?.id"
+                :character="(plan.character as WilCharacter)"
+                @click="onSelectCharacter"
+              />
             </div>
             <div class="c-training__plan__cards__content__button">
               <GameButton
@@ -35,15 +39,17 @@
         </div>
       </div>
     </div>
+    <div class="c-training__log" @click="isShowLog = true">&gt;&gt;ログ</div>
     <div class="c-training__infomation">
       <div>残り日数 {{ training.lastDay - training.days + 1 }}日</div>
       <div class="c-training__infomation__buttons">
         <div class="c-training__infomation__buttons__content">
           <GameButton
-            label="ログ"
+            v-if="selectedCharacter"
+            label="ステータス"
             :fontColor="WIL_BUTTON_FONT_COLOR"
             :backgroundColor="WIL_BUTTON_BACKGROUND_COLOR"
-            @click="isShowLog = true"
+            @click="isShowStatusDialog = true"
           />
         </div>
         <div class="c-training__infomation__buttons__content">
@@ -57,17 +63,25 @@
         </div>
       </div>
     </div>
-    <div class="c-training__log_dialog">
+    <div class="c-training__dialog">
       <WilLogDialog v-model:isShow="isShowLog" :log="training.log" />
     </div>
-    <div class="c-training__result_dialog">
+    <div class="c-training__dialog">
       <WilTrainingResultDialog
         v-model:isShow="resultModal.isShow"
         :result="resultModal.result"
         @submit="onClickOk"
       />
     </div>
-    <div class="c-training__confirm_dialog">
+    <div v-if="selectedCharacter" class="c-training__dialog">
+      <WilTrainingStatusDialog
+        v-model:isShow="isShowStatusDialog"
+        :character="selectedCharacter"
+        :menu="selectedPlan"
+        @submit="isShowStatusDialog = false"
+      />
+    </div>
+    <div class="c-training__dialog">
       <WilConfirmDialog
         v-model:isShow="confirmModal.isShow"
         :cancelable="!!confirmModal.onClickCancel"
@@ -99,10 +113,11 @@ import WilCharacterCard from "@/components/molecules/games/wil/WilCharacterCard.
 import WilTrainingCard from "@/components/molecules/games/wil/WilTrainingCard.vue";
 import WilTalk from "@/components/molecules/games/wil/WilTalk.vue";
 import WilConfirmDialog from "@/components/molecules/games/wil/WilConfirmDialog.vue";
+import WilTrainingStatusDialog from "@/components/molecules/games/wil/WilTrainingStatusDialog.vue";
 import WilTrainingResultDialog from "@/components/molecules/games/wil/WilTrainingResultDialog.vue";
 import WilLogDialog from "@/components/molecules/games/wil/WilLogDialog.vue";
-import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
+import { useGameStore } from "@/pinia/game";
 import {
   WIL_BUTTON_FONT_COLOR,
   WIL_BUTTON_BACKGROUND_COLOR,
@@ -122,17 +137,9 @@ import {
 } from "@/composables/games/wil/types/event";
 
 const props = defineProps({
-  images: {
-    type: Object as PropType<{ [key: string]: GOUVisual }>,
-    required: true,
-  },
   skills: {
     type: Object as PropType<{ [key: string]: WilSkill }>,
     required: true,
-  },
-  bgm: {
-    type: Object as PropType<GOUReadAudio>,
-    default: undefined,
   },
   event: {
     type: WilTrainingEvent,
@@ -145,11 +152,20 @@ const props = defineProps({
 });
 const emits = defineEmits(["end"]);
 
+const gameStore = useGameStore();
+const bgm: GOUReadAudio = gameStore.getSounds.BGM_TRAINING1 as GOUReadAudio;
+
 const training = ref(
-  new WilTraining(props.event.days, props.player.allCharacters, props.images)
+  new WilTraining(props.event.days, props.player.allCharacters)
 );
 // 選択中キャラクター
 const selectedCharacter: Ref<WilCharacter | undefined> = ref();
+
+// 選択中トレーニング
+const selectedPlan: Ref<WilTrainingMenu | undefined> = ref();
+
+// ステータスダイアログ表示フラグ
+const isShowStatusDialog = ref(false);
 
 // ログ表示フラグ
 const isShowLog = ref(false);
@@ -208,16 +224,23 @@ const confirmModal: {
   onClickCancel: undefined,
 });
 
+const onSelectCharacter = (character: WilCharacter) => {
+  selectedCharacter.value = character;
+  selectedPlan.value =
+    training.value.getTrainingPlanByCharacter(character)?.menu;
+};
 const onSelectTraining = (trainingId: WIL_TRAINING_ID) => {
   if (!selectedCharacter.value) {
     return;
   }
+  if (training.value.getTrainingPlan(trainingId).character) {
+    return;
+  }
   training.value.setCharacter(trainingId, selectedCharacter.value);
-  selectedCharacter.value = undefined;
+  selectedPlan.value = training.value.getTrainingPlan(trainingId).menu;
 };
-
 const onRemoveCharacter = (trainingId: WIL_TRAINING_ID) => {
-  training.value.removeCharacter(trainingId);
+  training.value.resetTrainingPlan(trainingId);
 };
 const endDay = () => {
   // 最終日の場合は訓練自体を終わる
@@ -247,12 +270,12 @@ const chainTrainingResult = () => {
     confirmModal.message = `${training.value.days}日目の訓練が終了しました。`;
     confirmModal.onClickOk = () => {
       if (talkEvent.talk) {
-        props.bgm?.stop();
+        bgm?.stop();
         talkEvent.isStart = true;
         talkEvent.endTalk = () => {
           talkEvent.isStart = false;
           talkEvent.talk = undefined;
-          props.bgm?.play();
+          bgm?.play();
           endDay();
         };
       } else {
@@ -275,11 +298,6 @@ const onStartTraining = () => {
   talkEvent.talk = props.event.getTalk(training.value as WilTraining);
   chainTrainingResult();
 };
-const onSelectCharacter = (id: string) => {
-  selectedCharacter.value = training.value.selectableCharacters.find(
-    (character) => character.id === id
-  ) as WilCharacter;
-};
 const onClickOk = () => {
   resultModal.isShow = false;
 
@@ -289,14 +307,14 @@ const onClickOk = () => {
 };
 
 onMounted(() => {
-  if (props.bgm) {
-    props.bgm.loop = true;
-    props.bgm.play();
+  if (bgm) {
+    bgm.loop = true;
+    bgm.play();
   }
   training.value.startDay();
   talkEvent.talk = props.event.getTalk(training.value as WilTraining);
   if (talkEvent.talk) {
-    props.bgm?.stop();
+    bgm?.stop();
     talkEvent.isStart = true;
     talkEvent.endTalk = () => {
       talkEvent.isStart = false;
@@ -305,8 +323,8 @@ onMounted(() => {
   }
 });
 onUnmounted(() => {
-  if (props.bgm) {
-    props.bgm.stop();
+  if (bgm) {
+    bgm.stop();
   }
 });
 </script>
@@ -326,7 +344,7 @@ onUnmounted(() => {
 
   &__plan {
     position: absolute;
-    top: 40%;
+    top: 36%;
     width: 100%;
     height: 40%;
     &__cards {
@@ -359,6 +377,18 @@ onUnmounted(() => {
           height: 14%;
         }
       }
+    }
+  }
+  &__log {
+    position: absolute;
+    bottom: 16%;
+    right: 5%;
+    text-decoration: underline;
+    color: white;
+    cursor: pointer;
+    opacity: 0.6;
+    &:hover {
+      opacity: 1;
     }
   }
   &__infomation {

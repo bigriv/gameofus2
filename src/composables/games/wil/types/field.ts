@@ -2,6 +2,7 @@ import { WrongImplementationError } from "@/composables/types/errors/WrongImplem
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { WIL_CELL_COLOR } from "@/composables/games/wil/enums/cell";
 import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
+import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 
 /**
@@ -28,6 +29,14 @@ export class WilFieldCell {
     if (character) {
       this.character = character;
     }
+  }
+
+  /**
+   * 生存しているキャラクターが存在するかを判定する
+   * @returns 生存しているキャラクターが存在する場合true、それ以外はfalse
+   */
+  isExsistCharacter(): boolean {
+    return !!this.character && this.character.isAlive();
   }
 }
 
@@ -72,9 +81,7 @@ export class WilField {
    * @returns 生存しているフィールド上のキャラクターの数
    */
   countCharacterNum(): number {
-    return this.cells.filter(
-      (cell) => cell.character && cell.character.status.life > 0
-    ).length;
+    return this.cells.filter((cell) => cell.isExsistCharacter()).length;
   }
 
   /**
@@ -83,7 +90,7 @@ export class WilField {
    */
   getCharacters(): Array<WilCharacter> {
     return this.cells
-      .filter((cell) => cell.character && cell.character.status.life > 0)
+      .filter((cell) => cell.isExsistCharacter())
       .map((cell) => cell.character as WilCharacter)
       .sort((a: WilCharacter, b: WilCharacter) => a.id.localeCompare(b.id));
   }
@@ -114,6 +121,15 @@ export class WilField {
    */
   removeCharacter(x: number, y: number) {
     this.getCell(x, y).character = undefined;
+  }
+
+  /**
+   * 指定したモデルのキャラクターがフィールドに存在するか判定する
+   * @param model キャラクターのモデルID
+   * @returns 指定したモデルのキャラクターが存在する場合はtrue、それ以外はfalse
+   */
+  isExistCharacterModel(model: WIL_CHARACTER_ID): boolean {
+    return !!this.cells.find((cell) => cell.character?.isModel(model));
   }
 
   /**

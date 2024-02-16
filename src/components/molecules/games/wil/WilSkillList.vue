@@ -61,11 +61,12 @@ const onSelectSkill = (skill: WilSkill) => {
     height: 80%;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
     &__content {
       width: 100%;
       height: 25%;
       border-color: black;
-      transform: translateX(calc(-105% * var(--start)));
+      transform: translateY(calc(-98% * var(--start)));
       transition: transform 0.3s ease-out;
       background-color: black;
       border-color: white;

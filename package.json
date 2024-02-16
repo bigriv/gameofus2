@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --host ",
     "build": "vue-tsc && vite build --mode production",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check": "vue-tsc"
   },
   "dependencies": {
     "@sentry/vite-plugin": "^2.14.0",

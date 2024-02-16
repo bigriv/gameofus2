@@ -29,6 +29,7 @@
     border-color: black;
     margin: auto;
     border-width: 6px;
+    overflow: hidden;
   }
   &__description {
     padding-bottom: 20px;

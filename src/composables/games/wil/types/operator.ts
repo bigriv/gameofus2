@@ -1,9 +1,4 @@
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
-import {
-  ANIMATION_EASING_TYPE,
-  ANIMATION_TYPE,
-  GOUAnimation,
-} from "@/composables/types/animations/GOUAnimation";
 import { WIL_BATTLE_TEAM } from "@/composables/games/wil/enums/battle";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 import { WilField, WilFieldCell } from "@/composables/games/wil/types/field";
@@ -61,7 +56,7 @@ export abstract class WilOperator {
       results.push(processConditionTurnEndresult);
     }
 
-    if (this.moveCharacter.status.life > 0) {
+    if (this.moveCharacter.isAlive()) {
       // 生存している場合は状態異常の回復処理を行う
       let recoveryConditionResult = this.moveCharacter.recoveryCondition();
       if (recoveryConditionResult) {
@@ -72,12 +67,7 @@ export abstract class WilOperator {
       results.push(
         new WilBattleMoveResult({
           message: [`${this.moveCharacter.name}は力尽きた。`],
-          characterAnimation: new GOUAnimation(
-            ANIMATION_TYPE.FADEOUT,
-            ANIMATION_EASING_TYPE.EASE,
-            1
-          ),
-          character: moveCharacterCell.character,
+          dead: moveCharacterCell,
         })
       );
     }
@@ -113,7 +103,7 @@ export abstract class WilOperator {
     return [...this.getFieldCharacters()]
       .filter((character) => {
         // 生存しているキャラクターで絞込
-        return character.status.life > 0;
+        return character.isAlive();
       })
       .sort((a, b) => (WilCharacter.compareMoveSequense(a, b) ? -1 : 1));
   }
@@ -124,7 +114,7 @@ export abstract class WilOperator {
    */
   consumeStack(stack: number) {
     this.getFieldCharacters().forEach((character) => {
-      if (!character || character.status.life <= 0) {
+      if (!character.isAlive()) {
         return;
       }
       if (character.stack - stack < 0) {

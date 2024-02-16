@@ -97,14 +97,12 @@ export class WilPlayer extends WilOperator {
    * @returns 離脱したキャラクター
    */
   removeCharacter(id: WIL_CHARACTER_ID): WilCharacter | undefined {
-    const regexp = new RegExp(`^${id}_\\d+$`, "i");
     const character = this.allCharacters.find((character) => {
-      console.log(character.id, regexp.test(character.id));
-      return regexp.test(character.id);
+      return character.isModel(id);
     });
 
     this.allCharacters = this.allCharacters.filter(
-      (character) => !regexp.test(character.id)
+      (character) => !character.isModel(id)
     );
 
     return character;

@@ -7,15 +7,20 @@
       <template v-else-if="overallTimming == WIL_OVERALL_TIMMING.ENDING">
         <Ending v-if="ending" :ending="ending" @end="onBackTitle" />
       </template>
-      <template v-else-if="overallTimming == WIL_OVERALL_TIMMING.LOADING">
-        <div class="c-drawer">
+      <template
+        v-else-if="
+          overallTimming == WIL_OVERALL_TIMMING.FILE_LOADING ||
+          overallTimming == WIL_OVERALL_TIMMING.SAVE_LOADING
+        "
+      >
+        <div class="c-drawer u-d_flex--v_center">
           <div class="c-drawer__loading">Now Loading...</div>
         </div>
       </template>
       <template
         v-if="
-          overallTimming == WIL_OVERALL_TIMMING.LOADING ||
-          overallTimming == WIL_OVERALL_TIMMING.MAIN
+          overallTimming == WIL_OVERALL_TIMMING.MAIN ||
+          overallTimming == WIL_OVERALL_TIMMING.SAVE_LOADING
         "
       >
         <Main
@@ -29,68 +34,60 @@
     <template #description>
       <div class="c-game__description__block">
         <h2>説明</h2>
-        <p>ベータ版のため、プレイできるのは序盤のみとなります。</p>
         <p>操作方法はクリックのみです。</p>
-        <p>セーブは戦闘終了後、訓練終了後に任意で行えます。</p>
+        <p>セーブは一部の戦闘終了後及び訓練前後に任意で行えます。</p>
+        <p>エンディングは一種類のみです。</p>
       </div>
 
       <div class="c-game__description__block">
         <h2>推定プレイ時間</h2>
-        <p>10分（ベータ版）</p>
+        <p>1~2時間</p>
       </div>
 
       <div class="c-game__description__block">
-        <h2>素材</h2>
-        <p>
-          SE:
-          <a
-            href="https://soundeffect-lab.info/"
-            target="_blank"
-            rel="noopener noreferrer"
-            >効果音ラボ</a
-          >様
-        </p>
-        <p>
-          BGM:
-          <a
-            href="https://maou.audio/"
-            target="_blank"
-            rel="noopener noreferrer"
-            >魔王魂</a
-          >様
-        </p>
-        <p>キャラクターイラスト: よしを</p>
-        <p>背景イラスト: よしを</p>
+        <h2>仕様素材一覧</h2>
+        <p>エンドクレジットに記載</p>
       </div>
 
       <div class="c-game__description__block">
         <h2>リリースノート</h2>
-        <p>2024/01/07 ver 0.90 ベータ版リリース（一章のみ）</p>
+        <p>2024/02/17 ver 1.00 リリース</p>
+      </div>
+
+      <div class="c-game__description__block">
+        <h2><GameContactForm /></h2>
       </div>
     </template>
   </GameFrame>
 </template>
 
 <script setup lang="ts">
-import { Ref, ref } from "vue";
+import { Ref, onMounted, onUnmounted, ref, watch } from "vue";
+import { useGameStore } from "@/pinia/game";
 import GameFrame from "@/components/atoms/frames/GameFrame.vue";
 import Title from "@/components/templates/games/wil/01_Title.vue";
 import Main from "@/components/templates/games/wil/02_Main.vue";
 import Ending from "@/components/templates/games/wil/03_Ending.vue";
+import GameContactForm from "@/components/atoms/interfaces/GameContactForm.vue";
+import { useWilFile } from "@/composables/games/wil/file";
 import { WIL_OVERALL_TIMMING } from "@/composables/games/wil/enums/timming";
 import { WIL_ENDING_ID } from "@/composables/games/wil/enums/ending";
 
-const overallTimming = ref(WIL_OVERALL_TIMMING.TITLE);
+const gameStore = useGameStore();
+
+const { WIL_IMAGES, WIL_SOUNDS, isLoadedImages, loadImages } = useWilFile();
+
+const overallTimming = ref(WIL_OVERALL_TIMMING.FILE_LOADING);
 const needLoadingData = ref(false);
 const ending: Ref<WIL_ENDING_ID | undefined> = ref();
 
 const onStart = () => {
   needLoadingData.value = false;
-  overallTimming.value = WIL_OVERALL_TIMMING.LOADING;
+  overallTimming.value = WIL_OVERALL_TIMMING.MAIN;
 };
 const onContinue = () => {
   needLoadingData.value = true;
-  overallTimming.value = WIL_OVERALL_TIMMING.LOADING;
+  overallTimming.value = WIL_OVERALL_TIMMING.SAVE_LOADING;
 };
 const onShowEnding = (endingId: WIL_ENDING_ID) => {
   ending.value = endingId;
@@ -103,16 +100,29 @@ const onBackTitle = () => {
 const loaded = () => {
   overallTimming.value = WIL_OVERALL_TIMMING.MAIN;
 };
+
+onMounted(() => {
+  loadImages();
+  gameStore.setImages(WIL_IMAGES);
+  gameStore.setSounds(WIL_SOUNDS);
+});
+onUnmounted(() => {
+  gameStore.resetImages();
+  gameStore.resetSounds();
+});
+watch(
+  () => isLoadedImages.value,
+  () => {
+    overallTimming.value = WIL_OVERALL_TIMMING.TITLE;
+  }
+);
 </script>
 
 <style scoped lang="scss">
 :deep(.c-game__window) {
-  font-family: "DotGothic16";
+  font-family: "DotGothic16", sans-serif;
 }
 .c-drawer {
-  width: 100%;
-  height: 100%;
-  background-color: black;
   &__loading {
     display: flex;
     width: 100%;

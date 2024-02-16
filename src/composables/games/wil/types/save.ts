@@ -1,4 +1,4 @@
-import { WIL_CHAPTER_1_DEFINE, WilChapterDefine } from "@/composables/games/wil/defines/chapter";
+import { WilChapterDefine } from "@/composables/games/wil/defines/chapter";
 import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
 import { WIL_SKILL_ID } from "@/composables/games/wil/enums/skill";
 import { WilChapter } from "@/composables/games/wil/types/chapter";
@@ -7,10 +7,7 @@ import { WilPlayer } from "@/composables/games/wil/types/player";
 export class WilSaveUtil {
   private constructor() {}
 
-  static save(
-    chapter: WilChapter,
-    player: WilPlayer,
-  ) {
+  static save(chapter: WilChapter, player: WilPlayer) {
     const data = {
       chapter: 1,
       flow: -1,
@@ -34,7 +31,7 @@ export class WilSaveUtil {
       return {
         model: character.model,
         defaultStatus: character.defaultStatus.toJson(),
-        skills: character.skills.map((skill) => skill.id),
+        skills: character.skills,
       };
     });
 
@@ -68,11 +65,7 @@ export class WilSaveUtil {
 
     let chapter = undefined;
     if (typeof json.chapter === "number") {
-      switch (json.chapter) {
-        case 1:
-          chapter = WIL_CHAPTER_1_DEFINE;
-          break;
-      }
+      chapter = WilChapter.getChapterDefine(json.chapter);
     }
 
     let flow = -1;

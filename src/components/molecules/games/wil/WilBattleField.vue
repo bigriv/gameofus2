@@ -38,25 +38,26 @@
         </div>
       </template>
     </template>
-    <div
-      v-for="(event, index) in props.damageResults"
-      class="c-battle_field__damage a-fade"
-      :style="{
-        left: `${event.cell.x * 33}%`,
-        top: `${event.cell?.y * 20}%`,
-        '--delay': `${index * 0.3}s`,
-        '--duration': '1s',
-        '--iteration': '1',
-        '--easing': 'ease-in-out',
-      }"
-    >
-      {{ event?.damage }}
-    </div>
+    <template v-for="(event, index) in damageResults">
+      <div
+        class="c-battle_field__damage a-fade"
+        :style="{
+          left: `${event.cell.x * 33}%`,
+          top: `${event.cell.y * 20}%`,
+          '--delay': `${index * 0.3}s`,
+          '--duration': '1s',
+          '--iteration': '1',
+          '--easing': 'ease-in-out',
+        }"
+      >
+        {{ event?.damage }}
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { PropType, computed, watch } from "vue";
+import { PropType, Ref, computed, ref, watch } from "vue";
 import GOUVisualCanvas from "@/components/molecules/GOUVisualCanvas.vue";
 import { WIL_CELL_COLOR } from "@/composables/games/wil/enums/cell";
 import { WilBattleDamegeResult } from "@/composables/games/wil/types/battle";
@@ -79,6 +80,7 @@ const props = defineProps({
 const emits = defineEmits(["click", "hover", "leave"]);
 
 const field = computed(() => props.field);
+const damageResults: Ref<Array<WilBattleDamegeResult>> = ref([]);
 const onClickCell = (cell: WilFieldCell) => {
   if (cell.color !== WIL_CELL_COLOR.BLUE) {
     return;
@@ -91,13 +93,25 @@ const onHoverCharacter = (cell: WilFieldCell | undefined) => {
 const onLeave = () => {
   emits("leave");
 };
-// ダメージイベントが更新された時の処理
+
 watch(
   () => props.damageResults,
   () => {
-    props.damageResults.forEach((event) => {
-      event.process();
+    const temp = props.damageResults.filter((result) => {
+      return result.cell.team === props.field.team;
     });
+    if (!temp || temp.length <= 0) {
+      return;
+    }
+    damageResults.value = [];
+    // ダメージのアニメーションをリセットするために遅延させる
+    setTimeout(() => {
+      damageResults.value = temp;
+      // ダメージ表示
+      damageResults.value.forEach((event, index) => {
+        setTimeout(() => event.process(), index * 300);
+      });
+    }, 1);
   }
 );
 </script>
@@ -124,7 +138,7 @@ watch(
     border-left: 2px solid black;
     border-radius: 4px;
     &--WHITE {
-      background-color: rgba(255, 255,255, 0.5);
+      background-color: rgba(255, 255, 255, 0.5);
       border-color: white;
     }
     &--RED {
@@ -163,18 +177,18 @@ watch(
   }
 }
 @media screen and (max-width: 400px) {
-.c-battle_field__damage {
+  .c-battle_field__damage {
     font-size: 14px;
   }
 }
 
 @media screen and (max-width: 600px) and (min-width: 400px) {
-.c-battle_field__damage {
+  .c-battle_field__damage {
     font-size: 16px;
   }
 }
 @media screen and (min-width: 600px) {
-.c-battle_field__damage {
+  .c-battle_field__damage {
     font-size: 20px;
   }
 }

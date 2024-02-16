@@ -1,17 +1,28 @@
+import { useGameStore } from "@/pinia/game";
+import { generateUuid, uuidFormat } from "@/composables/utils/id";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import GOUImage from "@/composables/types/visuals/GOUImage";
 import { GOUFluidVisual } from "@/composables/types/visuals/GOUFluidVisual";
-import { WIL_SKILL_ID, WIL_SKILL_TYPE } from "@/composables/games/wil/enums/skill";
+import {
+  WIL_SKILL_ID,
+  WIL_SKILL_TYPE,
+} from "@/composables/games/wil/enums/skill";
 import { WIL_ELEMENT } from "@/composables/games/wil/enums/element";
-import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
 import { WIL_CONDITION_ID } from "@/composables/games/wil/enums/condition";
 import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
 import { WilStatus } from "@/composables/games/wil/types/status";
 import { WilSkill } from "@/composables/games/wil/types/skill";
-import { WilTrainingMenu, WilTrainingResult } from "@/composables/games/wil/types/training";
-import { WilBattleDamegeResult, WilBattleMoveResult } from "@/composables/games/wil/types/battle";
+import {
+  WilTrainingMenu,
+  WilTrainingResult,
+} from "@/composables/games/wil/types/training";
+import {
+  WilBattleDamegeResult,
+  WilBattleMoveResult,
+} from "@/composables/games/wil/types/battle";
 import { WilConditionUtil } from "@/composables/games/wil/types/condition";
 import { WilFieldCell } from "@/composables/games/wil/types/field";
+import { WilCharacterDefine } from "@/composables/games/wil/defines/character";
 
 export class WilCharacter {
   readonly model: WIL_CHARACTER_ID;
@@ -24,8 +35,8 @@ export class WilCharacter {
     shootPhisic: GOUFluidVisual;
     magic: GOUFluidVisual;
   };
-  skills: Array<WilSkill> = [];
-  skillType: Array<WIL_SKILL_TYPE>;
+  skills: Array<WIL_SKILL_ID> = [];
+  learnable: Array<WIL_SKILL_ID>;
   defaultStatus: WilStatus;
   status: WilStatus;
   condition: WIL_CONDITION_ID = WIL_CONDITION_ID.HEALTH;
@@ -33,52 +44,20 @@ export class WilCharacter {
   element: WIL_ELEMENT;
   stack: number = 0;
 
-  constructor(
-    sequence: number,
-    define: {
-      id: WIL_CHARACTER_ID;
-      name: string;
-      visual: {
-        standing: WIL_IMAGE_ID;
-        closePhisic?: Array<{
-          visual: WIL_IMAGE_ID;
-          duration: number;
-        }>;
-        shootPhisic?: Array<{
-          visual: WIL_IMAGE_ID;
-          duration: number;
-        }>;
-        magic?: Array<{
-          visual: WIL_IMAGE_ID;
-          duration: number;
-        }>;
-      };
-      status: {
-        life: number;
-        attack: number;
-        defense: number;
-        speed: number;
-        magic: number;
-      };
-      element: WIL_ELEMENT;
-      skills?: Array<WIL_SKILL_ID>;
-      skillType: Array<WIL_SKILL_TYPE>;
-    },
-    skills: { [key: string]: WilSkill },
-    images: { [key: string]: GOUVisual }
-  ) {
+  constructor(define: WilCharacterDefine) {
+    const gameStore = useGameStore();
     this.model = define.id;
-    this.id = `${define.id}_${sequence}`;
+    this.id = `${define.id}_${generateUuid()}`;
     this.name = define.name;
 
     let closePhisicVisual = new GOUFluidVisual([
-      { visual: images[define.visual.standing], duration: 1 },
+      { visual: gameStore.getImages[define.visual.standing], duration: 1 },
     ]);
     if (define.visual.closePhisic) {
       closePhisicVisual = new GOUFluidVisual(
         define.visual.closePhisic.map((v) => {
           return {
-            visual: images[v.visual],
+            visual: gameStore.getImages[v.visual],
             duration: v.duration,
           };
         })
@@ -86,27 +65,27 @@ export class WilCharacter {
     }
 
     let shootPhisicVisual = new GOUFluidVisual([
-      { visual: images[define.visual.standing], duration: 1 },
+      { visual: gameStore.getImages[define.visual.standing], duration: 1 },
     ]);
 
     if (define.visual.shootPhisic) {
       shootPhisicVisual = new GOUFluidVisual(
         define.visual.shootPhisic.map((v) => {
           return {
-            visual: images[v.visual],
+            visual: gameStore.getImages[v.visual],
             duration: v.duration,
           };
         })
       );
     }
     let magicVisual = new GOUFluidVisual([
-      { visual: images[define.visual.standing], duration: 1 },
+      { visual: gameStore.getImages[define.visual.standing], duration: 1 },
     ]);
     if (define.visual.magic) {
       magicVisual = new GOUFluidVisual(
         define.visual.magic.map((v) => {
           return {
-            visual: images[v.visual],
+            visual: gameStore.getImages[v.visual],
             duration: v.duration,
           };
         })
@@ -114,8 +93,10 @@ export class WilCharacter {
     }
 
     this.visual = {
-      current: (images[define.visual.standing] as GOUImage).deepCopy(),
-      standing: images[define.visual.standing],
+      current: (
+        gameStore.getImages[define.visual.standing] as GOUImage
+      ).deepCopy(),
+      standing: gameStore.getImages[define.visual.standing],
       closePhisic: closePhisicVisual,
       shootPhisic: shootPhisicVisual,
       magic: magicVisual,
@@ -123,8 +104,8 @@ export class WilCharacter {
     this.defaultStatus = new WilStatus(define.status);
     this.status = new WilStatus(define.status);
     this.element = define.element ?? WIL_ELEMENT.NONE;
-    this.skills = define.skills?.map((id) => skills[id]) ?? [];
-    this.skillType = define.skillType;
+    this.skills = define.skills;
+    this.learnable = define.learnable;
   }
 
   /**
@@ -133,7 +114,7 @@ export class WilCharacter {
    * @returns 指定したIDと同じモデルならtrue、それ以外はfalse
    */
   isModel(id: WIL_CHARACTER_ID): boolean {
-    return new RegExp(`^${id}_\\d+$`).test(this.id);
+    return new RegExp(`^${id}_${uuidFormat}$`).test(this.id);
   }
   /**
    * キャラクターのステータス等をリセットする
@@ -152,7 +133,7 @@ export class WilCharacter {
    * @returns 習得済みスキルのIDリスト
    */
   getSkillIdList(): Array<WIL_SKILL_ID> {
-    return this.skills.map((skill) => skill.id);
+    return this.skills;
   }
 
   /**
@@ -188,24 +169,12 @@ export class WilCharacter {
   ): WilSkill | undefined {
     const learnedSKillList = this.getSkillIdList();
     let candidateSkillList = [];
-    // 以下の条件で習得可能なスキルのリストを絞込む
-    // - スキルの属性が無属性またはキャラクターの属性とスキルの属性が一致している
-    // - キャラクターの持っているスキル種別に含まれている
-    // - 未習得
-    for (let key of Object.keys(skills)) {
-      if (
-        skills[key].element !== WIL_ELEMENT.NONE &&
-        skills[key].element !== this.element
-      ) {
+    // 未習得で習得可能なスキルリストを生成する
+    for (let candidate of this.learnable) {
+      if (learnedSKillList.includes(candidate)) {
         continue;
       }
-      if (!this.skillType.includes(skills[key].type)) {
-        continue;
-      }
-      if (learnedSKillList.includes(skills[key].id)) {
-        continue;
-      }
-      candidateSkillList.push(skills[key]);
+      candidateSkillList.push(skills[candidate]);
     }
 
     // スキル習得判定
@@ -230,7 +199,7 @@ export class WilCharacter {
         continue;
       }
 
-      this.skills.push(skill);
+      this.skills.push(skill.id);
       return skill;
     }
     return undefined;
@@ -241,8 +210,8 @@ export class WilCharacter {
    */
   migrate() {
     this.stack += WilStatus.MAX_STATUS + 1 - this.status.speed;
-    if (this.condition === WIL_CONDITION_ID.MUDDY) {
-      // 泥々の場合はスタック数中上昇
+    if (this.condition === WIL_CONDITION_ID.SLOW) {
+      // 鈍足の場合はスタック数中上昇
       this.stack += WilConditionUtil.calcIncreaseStack(
         this.stack,
         WilConditionUtil.MEDIUM_STACK_RATE
@@ -251,7 +220,13 @@ export class WilCharacter {
       // 麻痺の場合はスタック数弱上昇
       this.stack += WilConditionUtil.calcIncreaseStack(
         this.stack,
-        WilConditionUtil.LITTELE_DAMAGE_RATE
+        WilConditionUtil.LITTELE_STACK_RATE
+      );
+    } else if (this.condition === WIL_CONDITION_ID.FAST) {
+      // 加速の場合はスタック数中減少
+      this.stack -= WilConditionUtil.calcIncreaseStack(
+        this.stack,
+        WilConditionUtil.MEDIUM_STACK_RATE
       );
     }
   }
@@ -262,7 +237,7 @@ export class WilCharacter {
    * @returns 発動に成功すればtrue、失敗した場合はfalse
    */
   useSkill(skill: WilSkill) {
-    const cost = WilSkill.calcCost(this.condition, skill);
+    const cost = WilSkill.calcCost(this.status.speed, this.condition, skill);
     this.stack += cost;
   }
 
@@ -286,7 +261,7 @@ export class WilCharacter {
   /**
    * 状態異常を上書きし、経過ターン数をリセットする
    * @param condition 上書き後の状態異常
-   * @returns 上書きに成功した場合はtrue、失敗した場合はfalse
+   * @returns 上書き結果
    */
   overwriteCondition(condition: WIL_CONDITION_ID): WilBattleMoveResult {
     if (
@@ -301,14 +276,43 @@ export class WilCharacter {
         ],
       });
     }
+    // 上書き前に現在の状態異常の効果を取り消す
+    this.processConditionPassiveEnd();
+
+    const preCondition = this.condition;
     this.condition = condition;
     this.conditionCount = 0;
+    this.processConditionPassiveStart();
+
+    if (this.condition === preCondition) {
+      if (this.condition === WIL_CONDITION_ID.HEALTH) {
+        // 健康⇒健康の場合はすでに健康である旨のメッセージを返す
+        return new WilBattleMoveResult({
+          message: [
+            `${this.name}はすでに${WilConditionUtil.getLabel(
+              this.condition
+            )}状態だ。`,
+          ],
+        });
+      } else {
+        // 健康以外で同じ状態異常の上書きが行われた場合は引き延ばされた胸のメッセージを返す
+        return new WilBattleMoveResult({
+          message: [
+            `${this.name}の${WilConditionUtil.getLabel(
+              this.condition
+            )}状態が引き延ばされた。`,
+          ],
+        });
+      }
+    }
+
+    // 状態異常が変更された場合は変更された旨と効果を返す
     return new WilBattleMoveResult({
       message: [
         `${this.name}は${WilConditionUtil.getLabel(
           this.condition
         )}状態になった。`,
-        `（${WilConditionUtil.getDescription(this.condition)}）`,
+        `(${WilConditionUtil.getDescription(this.condition)})`,
       ],
     });
   }
@@ -441,6 +445,23 @@ export class WilCharacter {
           }),
         ],
       });
+    } else if (this.condition === WIL_CONDITION_ID.REGENERATION) {
+      const heal = WilConditionUtil.calcHeal(
+        this.defaultStatus.life,
+        WilConditionUtil.LITTELE_DAMAGE_RATE
+      );
+      this.status.life += heal;
+      if (this.status.life >= this.defaultStatus.life) {
+        this.status.life = this.defaultStatus.life;
+      }
+
+      return new WilBattleMoveResult({
+        message: [
+          `${this.name}は${WilConditionUtil.getLabel(
+            this.condition
+          )}によって${heal}回復した。`,
+        ],
+      });
     }
     return undefined;
   }
@@ -462,6 +483,7 @@ export class WilCharacter {
     const temp = this.condition;
     this.condition = WIL_CONDITION_ID.HEALTH;
     this.conditionCount = 0;
+    this.processConditionPassiveEnd();
     return new WilBattleMoveResult({
       message: [
         `${this.name}が受けていた${WilConditionUtil.getLabel(
@@ -493,5 +515,13 @@ export class WilCharacter {
     }
 
     return a.id.localeCompare(b.id) < 0;
+  }
+
+  /**
+   * 生存しているかを判定する
+   * @returns 生存している場合はtrue、それ以外はfalse
+   */
+  isAlive(): boolean {
+    return this.status.life > 0;
   }
 }

@@ -20,6 +20,7 @@ export default defineConfig({
           "Chakra Petch",
           "Yuji Mai",
           "Yuji Syuku",
+          "Kaisei Tokumin",
         ],
       },
     }),

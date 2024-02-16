@@ -1,6 +1,6 @@
+import { useGameStore } from "@/pinia/game";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
 import { GOUAudio } from "@/composables/types/audio/GOUAudio";
-import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import { WIL_CONDITION_ID } from "@/composables/games/wil/enums/condition";
 import {
   WIL_SKILL_RANGE,
@@ -8,13 +8,12 @@ import {
   WIL_SKILL_TYPE,
 } from "@/composables/games/wil/enums/skill";
 import { WIL_SKILL_ID } from "@/composables/games/wil/enums/skill";
-import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
-import { WIL_SOUND_ID } from "@/composables/games/wil/enums/sound";
 import { WIL_ELEMENT } from "@/composables/games/wil/enums/element";
 import { WilBattleMoveResult } from "@/composables/games/wil/types/battle";
 import { WilCharacter } from "@/composables/games/wil/types/character";
 import { WilConditionUtil } from "@/composables/games/wil/types/condition";
-import { WilFieldCell } from "@/composables/games/wil/types/field";
+import { WilField, WilFieldCell } from "@/composables/games/wil/types/field";
+import { WilSkillDefine } from "@/composables/games/wil/defines/skill";
 
 export class WilSkill {
   static readonly LOW_CONDITION_RATE = 20; // 状態異常にかかる確率（低）
@@ -30,40 +29,24 @@ export class WilSkill {
   readonly power?: number;
   readonly effect?: (
     __activest: WilCharacter,
-    __target: WilFieldCell
+    __target: WilFieldCell,
+    __allyField: WilField,
+    __enemyField: WilField
   ) => Array<WilBattleMoveResult>;
   readonly target: WIL_SKILL_TARGET;
   readonly range: WIL_SKILL_RANGE;
   readonly element: WIL_ELEMENT;
   readonly isLearnable: (__character: WilCharacter) => boolean;
 
-  constructor(
-    define: {
-      id: WIL_SKILL_ID;
-      name: string;
-      description: string;
-      animation?: WIL_IMAGE_ID;
-      sound?: WIL_SOUND_ID;
-      type: WIL_SKILL_TYPE;
-      cost: number;
-      power?: number;
-      effect?: (
-        __activest: WilCharacter,
-        __target: WilFieldCell
-      ) => Array<WilBattleMoveResult>;
-      target: WIL_SKILL_TARGET;
-      range: WIL_SKILL_RANGE;
-      element: WIL_ELEMENT;
-      isLearnable: (__character: WilCharacter) => boolean
-    },
-    images: { [key: string]: GOUVisual },
-    sounds: { [key: string]: GOUReadAudio }
-  ) {
+  constructor(define: WilSkillDefine) {
+    const gameStore = useGameStore();
     this.id = define.id;
     this.name = define.name;
     this.description = define.description;
-    this.animation = define.animation ? images[define.animation] : undefined;
-    this.sound = define.sound ? sounds[define.sound] : undefined;
+    this.animation = define.animation
+      ? gameStore.getImages[define.animation]
+      : undefined;
+    this.sound = define.sound ? gameStore.getSounds[define.sound] : undefined;
     this.type = define.type;
     this.cost = define.cost;
     this.power = define.power;
@@ -149,13 +132,13 @@ export class WilSkill {
     } else if (skill.type === WIL_SKILL_TYPE.SUPPORT_MAGIC) {
       damage = 0;
     }
-
+    damage = damage * 0.6;
     if (damage < 0) {
       damage = 0;
     }
     // 弱点判定
     if (WilSkill.isWeekness(skill.element, target.element)) {
-      damage *= 2;
+      damage *= 1.5;
     }
     // 抵抗判定
     if (WilSkill.isResistance(skill.element, target.element)) {
@@ -172,14 +155,37 @@ export class WilSkill {
   }
 
   /**
+   * 回復量の計算を行う
+   * 回復量が体力のデフォルト値を超える場合はデフォルトの体力と現在の体力の差を返す
+   * @param standard 回復基準値
+   * @param target 回復対象
+   * @returns 算出した回復量
+   */
+  static calcHeal(standard: number, target: WilCharacter): number {
+    const heal = Math.round(standard * 1.1);
+    if (target.status.life + heal > target.defaultStatus.life) {
+      return target.defaultStatus.life - target.status.life;
+    }
+
+    return heal;
+  }
+
+  /**
    * コストの計算を行う
    * @param condition スキル使用者の状態異常
    * @param skill 発動するスキル
    * @returns 必要コスト
    */
-  static calcCost(condition: WIL_CONDITION_ID, skill: WilSkill): number {
-    let cost = skill.cost;
-    if (condition === WIL_CONDITION_ID.MUDDY) {
+  static calcCost(
+    speed: number,
+    condition: WIL_CONDITION_ID,
+    skill: WilSkill
+  ): number {
+    let cost = skill.cost - Math.floor(speed / 2);
+    if (cost <= 0) {
+      cost = 1;
+    }
+    if (condition === WIL_CONDITION_ID.SLOW) {
       cost += WilConditionUtil.calcIncreaseStack(
         cost,
         WilConditionUtil.MEDIUM_STACK_RATE
@@ -188,6 +194,12 @@ export class WilSkill {
       cost += WilConditionUtil.calcIncreaseStack(
         cost,
         WilConditionUtil.LITTELE_DAMAGE_RATE
+      );
+    } else if (condition === WIL_CONDITION_ID.FAST) {
+      // 加速の場合はスタック数中減少
+      cost -= WilConditionUtil.calcIncreaseStack(
+        cost,
+        WilConditionUtil.MEDIUM_STACK_RATE
       );
     }
     return cost;
@@ -201,5 +213,56 @@ export class WilSkill {
    */
   static isSuccessOverwriteCondition(rate: number): boolean {
     return rate * 0.01 < Math.random();
+  }
+
+  /**
+   * 体力を回復するスキルかを判定する
+   * @param skill 判定するスキル
+   * @returns 体力を回復するスキルならtrue、それ以外ならfalse
+   */
+  static isHealSkill(skill: WIL_SKILL_ID): boolean {
+    return [
+      WIL_SKILL_ID.REGENERATION,
+      WIL_SKILL_ID.REPAIR,
+      WIL_SKILL_ID.HEAL,
+      WIL_SKILL_ID.CREATE_SACRED_SWORD,
+      WIL_SKILL_ID.HEAL_WATER,
+      WIL_SKILL_ID.SUPER_WATER,
+      WIL_SKILL_ID.LIGHT_FIRE,
+    ].includes(skill);
+  }
+
+  /**
+   * 状態異常を回復するスキルかを判定する
+   * @param skill 判定するスキル
+   * @returns 状態異常を悪影響以外にするスキルの場合はtrue、それ以外はfalse
+   */
+  static isClearSkill(skill: WIL_SKILL_ID): boolean {
+    return [
+      WIL_SKILL_ID.REGENERATION,
+      WIL_SKILL_ID.REPAIR,
+      WIL_SKILL_ID.SANCTUARY,
+      WIL_SKILL_ID.CREATE_SACRED_SWORD,
+      WIL_SKILL_ID.LIGHTNING,
+      WIL_SKILL_ID.HEAL_WATER,
+      WIL_SKILL_ID.CLEAR_WATER,
+      WIL_SKILL_ID.TAILWIND,
+      WIL_SKILL_ID.LIGHT_FIRE,
+    ].includes(skill);
+  }
+
+  /**
+   * 召喚を行うスキルかを判定する
+   * @param skill 判定するスキル
+   * @returns 召喚するスキルの場合はtrue、それ以外はfalse
+   */
+  static isSummonSkill(skill: WIL_SKILL_ID): boolean {
+    return [
+      WIL_SKILL_ID.PRODUCE,
+      WIL_SKILL_ID.SUMMON_FIRE_DEMON,
+      WIL_SKILL_ID.SUMMON_ICE_DEMON,
+      WIL_SKILL_ID.SUMMON_SOIL_DEMON,
+      WIL_SKILL_ID.SUMMON_WIND_DEMON,
+    ].includes(skill);
   }
 }

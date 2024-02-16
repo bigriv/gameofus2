@@ -6,8 +6,6 @@ import {
 } from "@/composables/types/animations/GOUAnimation";
 import { WrongImplementationError } from "@/composables/types/errors/WrongImplementationError";
 import GOUVisual from "@/composables/types/visuals/GOUVisual";
-import GOUImage from "@/composables/types/visuals/GOUImage";
-import { GOULottie } from "@/composables/types/visuals/GOULottie";
 import { GOUFluidVisual } from "@/composables/types/visuals/GOUFluidVisual";
 import {
   WIL_SKILL_RANGE,
@@ -35,10 +33,13 @@ export class WilBattle {
   winner?: WIL_BATTLE_TEAM;
   timming: WIL_BATTLE_TIMMING;
   moveResults: Array<WilBattleMoveResult> = [];
-  damageResults: Array<WilBattleDamegeResult> = [];
   log: Array<string> = [];
 
-  constructor(player: WilPlayer, event: WilBattleEvent) {
+  constructor(
+    player: WilPlayer,
+    event: WilBattleEvent,
+    skillDefines: { [key: string]: WilSkill }
+  ) {
     this.player = player;
     this.player.teamName = event.playerTeamName;
     this.player.deployableCharacters = [...this.player.allCharacters];
@@ -46,7 +47,8 @@ export class WilBattle {
 
     this.computer = new WilComputer(
       event.computerTeamName,
-      event.computerLevel
+      event.tactics,
+      skillDefines
     );
 
     this.turnOperator = this.player; // 便宜上デフォルトのターンプレイヤーはプレイヤーとする
@@ -106,7 +108,6 @@ export class WilBattle {
     this.player.resetMove();
     this.computer.resetMove();
     this.moveResults = [];
-    this.damageResults = [];
 
     // ターンキャラクターを取得し、ターンプレイヤーを決定
     const playerCharacter = this.player.getMoveSequense()[0];
@@ -171,10 +172,14 @@ export class WilBattle {
     this.moveResults = results;
     const log = new Array<string>();
     for (let result of results) {
-      if (!result.message || result.message.length <= 0) {
-        continue;
+      if (result.message && result.message.length > 0) {
+        log.push(...result.message);
       }
-      log.push(...result.message);
+      if (result.damage) {
+        result.damage.forEach((d) => {
+          log.push(`${d.character.name}は${d.damage}のダメージを受けた。`);
+        });
+      }
     }
     this.log.push(...log);
   }
@@ -245,39 +250,33 @@ export class WilBattle {
         animation = this.turnOperator.moveCharacter.visual.magic;
         break;
     }
-    moveResults.push(
-      new WilBattleMoveResult({
-        message: [
-          `${this.turnOperator.moveCharacter.name}は${this.turnOperator.selectSkill.name}を発動した。`,
-        ],
-        character: this.turnOperator.moveCharacter,
-        characterAnimation: animation,
-        cells: this.getTargets(),
-        cellAnimation: this.turnOperator.selectSkill.animation,
-        sound: this.turnOperator.selectSkill.sound,
-      })
-    );
 
-    let damageResults = new Array<WilBattleDamegeResult>();
-    // ダメージ処理
+    const targets = this.getTargets();
+
+    // ダメージが発生するスキルかを判定
     const isNeedCalcDamage =
       this.turnOperator.selectSkill.power !== undefined &&
       this.turnOperator.selectSkill.power > 0;
-    this.getTargets().forEach((targetCell) => {
-      if (!this.turnOperator.moveCharacter) {
-        // 行動キャラクターがいない場合は実装ミスとする
-        throw new WrongImplementationError("The move character is not exist.");
-      }
-      if (!this.turnOperator.selectSkill) {
-        // 発動するスキルがない場合は実装ミスとする
-        throw new WrongImplementationError("The use skill is empty.");
-      }
-      if (!targetCell.character || targetCell.character.status.life <= 0) {
-        // 対象となるマスに生存しているキャラクターがいなければ何もしない
-        return;
-      }
-      // ダメージが発生する場合はダメージの計算を行う
-      if (isNeedCalcDamage) {
+
+    let damageResults = new Array<WilBattleDamegeResult>();
+    if (isNeedCalcDamage) {
+      // ダメージ適用処理
+      targets.forEach((targetCell) => {
+        if (!this.turnOperator.moveCharacter) {
+          // 行動キャラクターがいない場合は実装ミスとする
+          throw new WrongImplementationError(
+            "The move character is not exist."
+          );
+        }
+        if (!this.turnOperator.selectSkill) {
+          // 発動するスキルがない場合は実装ミスとする
+          throw new WrongImplementationError("The use skill is empty.");
+        }
+        if (!targetCell.character || !targetCell.character.isAlive()) {
+          // 対象となるマスに生存しているキャラクターがいなければ何もしない
+          return;
+        }
+        // ダメージ計算処理
         let damage = WilSkill.calcDamage(
           this.turnOperator.moveCharacter,
           targetCell.character,
@@ -293,42 +292,74 @@ export class WilBattle {
             damage,
           })
         );
-        moveResults.push(
-          new WilBattleMoveResult({
-            message: [`${targetCell.character.name}に${damage}のダメージ！`],
-            damage: damageResults,
-          })
-        );
 
+        // ダメージ適用
         targetCell.character.status.life -= damage;
-        if (targetCell.character.status.life <= 0) {
-          targetCell.character.status.life = 0;
-          moveResults.push(
-            new WilBattleMoveResult({
-              message: [`${targetCell.character.name}は力尽きた。`],
-              characterAnimation: new GOUAnimation(
-                ANIMATION_TYPE.FADEOUT,
-                ANIMATION_EASING_TYPE.EASE,
-                1
-              ),
-              character: targetCell.character,
-            })
-          );
-          return;
-        }
-      }
+      });
+    }
 
-      // スキル効果の適用
-      if (this.turnOperator.selectSkill.effect) {
-        if (targetCell.character) {
-          moveResults.push(
-            ...this.turnOperator.selectSkill.effect(
-              this.turnOperator.moveCharacter,
-              targetCell
-            )
-          );
-        }
+    moveResults.push(
+      // ダメージの結果を行動結果リストに格納
+      new WilBattleMoveResult({
+        message: [
+          `${this.turnOperator.moveCharacter.name}は${this.turnOperator.selectSkill.name}を発動した。`,
+        ],
+        character: this.turnOperator.moveCharacter,
+        characterAnimation: animation,
+        cells: targets,
+        cellAnimation: this.turnOperator.selectSkill.animation,
+        sound: this.turnOperator.selectSkill.sound,
+        damage: damageResults,
+      })
+    );
+
+    // 戦闘不能処理
+    targets.forEach((targetCell) => {
+      if (!targetCell.character) {
+        return;
       }
+      if (targetCell.character.isAlive()) {
+        return;
+      }
+      targetCell.character.status.life = 0;
+      moveResults.push(
+        new WilBattleMoveResult({
+          message: [`${targetCell.character.name}は力尽きた。`],
+          dead: targetCell,
+        })
+      );
+    });
+
+    // スキル効果適用
+    targets.forEach((targetCell) => {
+      if (!this.turnOperator.moveCharacter) {
+        // 行動キャラクターがいない場合は実装ミスとする
+        throw new WrongImplementationError("The move character is not exist.");
+      }
+      if (!this.turnOperator.selectSkill) {
+        // 発動するスキルがない場合は実装ミスとする
+        throw new WrongImplementationError("The use skill is empty.");
+      }
+      if (!this.turnOperator.selectSkill.effect) {
+        return;
+      }
+      if (!targetCell.character || !targetCell.character.isAlive()) {
+        return;
+      }
+      // 生存しているキャラクターにのみスキル効果を適用
+      const enemyField =
+        this.turnOperator.team === WIL_BATTLE_TEAM.PLAYER
+          ? this.computer.field
+          : this.player.field;
+
+      moveResults.push(
+        ...this.turnOperator.selectSkill.effect(
+          this.turnOperator.moveCharacter,
+          targetCell,
+          this.turnOperator.field,
+          enemyField
+        )
+      );
     });
 
     this.setMoveResults(moveResults);
@@ -353,7 +384,7 @@ export class WilBattle {
     ]
       .filter((character) => {
         // 生存しているキャラクターで絞込
-        return character.status.life > 0;
+        return character.isAlive();
       })
       .sort((a, b) => (WilCharacter.compareMoveSequense(a, b) ? -1 : 1));
   }
@@ -641,7 +672,7 @@ export class WilBattle {
           cell.selectable = false;
           return;
         }
-        if (cell.character) {
+        if (cell.isExsistCharacter()) {
           cell.selectable = true;
           return;
         }
@@ -696,9 +727,10 @@ export class WilBattle {
 
       // スキル種別が近接以外の場合
       // ターンプレイヤーと違うフィールド内で、キャラクターがいるマスの場合は選択可能
-      updateFunction = (cell) =>
-        (cell.selectable =
-          this.turnOperator.team !== cell.team && !!cell.character);
+      updateFunction = (cell) => {
+        cell.selectable =
+          this.turnOperator.team !== cell.team && cell.isExsistCharacter();
+      };
       this.player.field.cells.forEach(updateFunction);
       this.computer.field.cells.forEach(updateFunction);
       return;
@@ -707,7 +739,7 @@ export class WilBattle {
     // スキル対象が全ての場合
     // キャラクターがいるマスすべてを選択可能にする
     if (this.turnOperator.selectSkill.target === WIL_SKILL_TARGET.ALL) {
-      updateFunction = (cell) => (cell.selectable = !!cell.character);
+      updateFunction = (cell) => (cell.selectable = cell.isExsistCharacter());
       this.player.field.cells.forEach(updateFunction);
       this.computer.field.cells.forEach(updateFunction);
     }
@@ -718,13 +750,14 @@ export class WilBattle {
  * 戦闘行動結果クラス
  */
 export class WilBattleMoveResult {
-  message?: Array<string>;
-  sound?: GOUAudio;
-  cells?: Array<WilFieldCell>;
-  cellAnimation?: GOUVisual;
-  character?: WilCharacter;
-  characterAnimation?: GOUVisual | GOUAnimation | GOUFluidVisual;
-  damage?: Array<WilBattleDamegeResult>;
+  readonly message?: Array<string>;
+  readonly sound?: GOUAudio;
+  readonly cells?: Array<WilFieldCell>;
+  readonly cellAnimation?: GOUVisual;
+  readonly character?: WilCharacter;
+  readonly characterAnimation?: GOUVisual | GOUAnimation | GOUFluidVisual;
+  readonly damage?: Array<WilBattleDamegeResult>;
+  readonly dead?: WilFieldCell;
 
   constructor(define: {
     message?: Array<string>;
@@ -734,6 +767,7 @@ export class WilBattleMoveResult {
     character?: WilCharacter;
     characterAnimation?: GOUVisual | GOUAnimation | GOUFluidVisual;
     damage?: Array<WilBattleDamegeResult>;
+    dead?: WilFieldCell;
   }) {
     this.message = define.message;
     this.sound = define.sound;
@@ -742,6 +776,7 @@ export class WilBattleMoveResult {
     this.character = define.character;
     this.characterAnimation = define.characterAnimation;
     this.damage = define.damage;
+    this.dead = define.dead;
   }
 
   /**
@@ -753,28 +788,20 @@ export class WilBattleMoveResult {
     }
     // マスに対するエフェクト
     if (this.cells && this.cellAnimation) {
-      this.cells.forEach((cell) => {
-        if (this.cellAnimation instanceof GOUImage) {
-          cell.animation = this.cellAnimation as GOUImage;
-          setTimeout(() => (cell.animation = undefined), 1000);
-        } else if (this.cellAnimation instanceof GOULottie) {
-          cell.animation = this.cellAnimation as GOULottie;
-          setTimeout(() => (cell.animation = undefined), 1000);
+      this.cells.forEach((cell, index) => {
+        if (this.cellAnimation instanceof GOUVisual) {
+          setTimeout(() => (cell.animation = this.cellAnimation), index * 150);
+          setTimeout(() => (cell.animation = undefined), 1000 + index * 150);
         }
       });
     }
 
     // キャラクターに対するエフェクト
     if (this.character && this.characterAnimation) {
-      if (this.characterAnimation instanceof GOUImage) {
+      if (this.characterAnimation instanceof GOUVisual) {
         const character = this.character;
         const temp = this.character.visual.current;
-        this.character.visual.current = this.characterAnimation as GOUImage;
-        setTimeout(() => (character.visual.current = temp), 1000);
-      } else if (this.characterAnimation instanceof GOULottie) {
-        const character = this.character;
-        const temp = this.character.visual.current;
-        this.character.visual.current = this.characterAnimation as GOULottie;
+        this.character.visual.current = this.characterAnimation;
         setTimeout(() => (character.visual.current = temp), 1000);
       } else if (this.characterAnimation instanceof GOUAnimation) {
         if (this.character.visual.current instanceof GOUVisual) {
@@ -792,6 +819,22 @@ export class WilBattleMoveResult {
         setTimeout(() => (character.visual.current = currentVisual), 1000);
       }
     }
+
+    if (this.dead && this.dead.character) {
+      const animation = new GOUAnimation(
+        ANIMATION_TYPE.FADEOUT,
+        ANIMATION_EASING_TYPE.EASE,
+        1
+      );
+
+      if (this.dead.character.visual.current instanceof GOUVisual) {
+        this.dead.character.visual.current.animation = animation;
+      }
+      setTimeout(() => {
+        // 戦闘不能時はキャラクターを盤面から取り除く
+        this.dead!.character = undefined;
+      }, animation.duration * 900);
+    }
   }
 }
 
@@ -799,10 +842,18 @@ export class WilBattleMoveResult {
  * 戦闘ダメージ結果クラス
  */
 export class WilBattleDamegeResult {
-  cell: WilFieldCell;
-  damage: number;
+  readonly character: WilCharacter;
+  readonly cell: WilFieldCell;
+  readonly damage: number;
 
   constructor(define: { cell: WilFieldCell; damage: number }) {
+    if (!define.cell.character) {
+      throw new WrongImplementationError(
+        "There is no character that should be damaged."
+      );
+    }
+    // 戦闘不能時にキャラクターがマスから削除されることを考慮して、キャラクターを保持しておく
+    this.character = define.cell.character;
     this.cell = define.cell;
     this.damage = define.damage;
   }
@@ -811,24 +862,18 @@ export class WilBattleDamegeResult {
    * 結果の処理（SEの発生、アニメーションの適用）を行う
    */
   process() {
-    if (this.cell.character) {
-      const character = this.cell.character;
+    if (this.character.visual.current instanceof GOUVisual) {
       const animation = new GOUAnimation(
         ANIMATION_TYPE.FLASH,
         ANIMATION_EASING_TYPE.EASE_IN_OUT,
-        0.5,
+        1,
         1
       );
-      if (character.visual.current instanceof GOUVisual) {
-        const currentVisual = character.visual.current;
-        currentVisual.animation = animation;
-        setTimeout(() => {
-          currentVisual.animation = undefined;
-          if (character.status.life <= 0) {
-            this.cell.character = undefined;
-          }
-        }, animation.duration * 1000);
-      }
+      const currentVisual = this.character.visual.current;
+      currentVisual.animation = animation;
+      setTimeout(() => {
+        currentVisual.animation = undefined;
+      }, animation.duration * 1000);
     }
   }
 }

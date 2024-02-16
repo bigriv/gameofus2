@@ -3,7 +3,8 @@ import { GOUReadAudio } from "@/composables/types/audio/GOUReadAudio";
 import { WIL_CHARACTER_ID } from "@/composables/games/wil/enums/character";
 import { WIL_SOUND_ID } from "@/composables/games/wil/enums/sound";
 import { WIL_IMAGE_ID } from "@/composables/games/wil/enums/image";
-import { WilTalkDefine } from "@/composables/games/wil/defines/talk";
+import { WIL_BATTLE_TACTICS } from "@/composables/games/wil/enums/battle";
+import { WilTalkDefine } from "@/composables/games/wil/defines/talks/index";
 import { WilFieldCell } from "@/composables/games/wil/types/field";
 import { WilTraining } from "@/composables/games/wil/types/training";
 import { WilBattle } from "@/composables/games/wil/types/battle";
@@ -67,7 +68,7 @@ export class WilTalkEvent {
 export class WilBattleEvent {
   playerTeamName: string;
   computerTeamName: string;
-  computerLevel: number;
+  tactics: WIL_BATTLE_TACTICS;
   background?: GOUVisual;
   battleBgm?: GOUReadAudio;
   deployBgm?: GOUReadAudio;
@@ -82,10 +83,10 @@ export class WilBattleEvent {
     define: {
       playerTeamName: string;
       computerTeamName: string;
-      computerLevel: number;
-      background?: GOUVisual;
-      battleBgm?: GOUReadAudio;
-      deployBgm?: GOUReadAudio;
+      tactics: WIL_BATTLE_TACTICS;
+      background?: WIL_IMAGE_ID;
+      battleBgm?: WIL_SOUND_ID;
+      deployBgm?: WIL_SOUND_ID;
       deploy: Array<WilFieldCell>;
       talks?: Array<{
         event: WilTalkDefine;
@@ -97,10 +98,10 @@ export class WilBattleEvent {
   ) {
     this.playerTeamName = define.playerTeamName;
     this.computerTeamName = define.computerTeamName;
-    this.computerLevel = define.computerLevel;
-    this.background = define.background;
-    this.deployBgm = define.deployBgm;
-    this.battleBgm = define.battleBgm;
+    this.tactics = define.tactics;
+    this.background = define.background ? images[define.background] : undefined;
+    this.deployBgm = define.deployBgm ? sounds[define.deployBgm] : undefined;
+    this.battleBgm = define.battleBgm ? sounds[define.battleBgm] : undefined;
     this.deploy = define.deploy;
     this.talks =
       define.talks?.map((talk) => {

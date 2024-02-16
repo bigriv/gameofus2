@@ -31,7 +31,9 @@ const props = defineProps({
     required: true,
   },
 });
-const emits = defineEmits(["click"]);
+const emits = defineEmits<{
+  (event: "click", character: WilCharacter): void;
+}>();
 
 const onClick = () => {
   emits("click", props.character);

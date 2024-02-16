@@ -123,6 +123,9 @@ watch(
   font-family: "DotGothic16", sans-serif;
 }
 .c-drawer {
+  width: 100%;
+  height: 100%;
+  background-color: black;
   &__loading {
     display: flex;
     width: 100%;

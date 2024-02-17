@@ -1,4 +1,3 @@
-t
 <template>
   <div v-if="isShow" class="c-dialog_backgrond"></div>
   <transition>
@@ -12,55 +11,17 @@ t
           <div v-if="props.character" class="c-result_dialog__cards__character">
             <WilCharacterCard :character="props.character" />
           </div>
-          <div v-if="props.menu" class="c-result_dialog__cards__training">
-            <WilTrainingCard :training="props.menu" />
+          <div v-if="menu" class="c-result_dialog__cards__training">
+            <WilTrainingCard :training="menu" />
           </div>
         </div>
         <div class="c-result_dialog__result">
-          <dl>
-            <dt>体力</dt>
-            <dd>{{ props.character.defaultStatus.life }}</dd>
-            <template v-if="props.menu">
-              <dd class="u-color--red">
-                <template v-if="props.menu.maxRise.life > 0">▲</template>
-              </dd>
-            </template>
-          </dl>
-          <dl>
-            <dt>攻撃力</dt>
-            <dd>{{ props.character.defaultStatus.attack }}</dd>
-            <template v-if="props.menu">
-              <dd class="u-color--red">
-                <template v-if="props.menu.maxRise.attack > 0">▲</template>
-              </dd>
-            </template>
-          </dl>
-          <dl>
-            <dt>防御力</dt>
-            <dd>{{ props.character.defaultStatus.defense }}</dd>
-            <template v-if="props.menu">
-              <dd class="u-color--red">
-                <template v-if="props.menu.maxRise.defense > 0">▲</template>
-              </dd>
-            </template>
-          </dl>
-          <dl>
-            <dt>魔力</dt>
-            <dd>{{ props.character.defaultStatus.magic }}</dd>
-            <template v-if="props.menu">
-              <dd class="u-color--red">
-                <template v-if="props.menu.maxRise.magic > 0">▲</template>
-              </dd>
-            </template>
-          </dl>
-          <dl>
-            <dt>敏捷力</dt>
-            <dd>{{ props.character.defaultStatus.speed }}</dd>
-            <template v-if="props.menu">
-              <dd class="u-color--red">
-                <template v-if="props.menu.maxRise.speed > 0">▲</template>
-              </dd>
-            </template>
+          <dl v-for="status in statusList">
+            <dt>{{ status.label }}</dt>
+            <dd>{{ status.before }}</dd>
+            <dd class="u-color--red">
+              <template v-if="status.rise">▲</template>
+            </dd>
           </dl>
         </div>
         <div class="c-result_dialog__button">
@@ -106,13 +67,42 @@ const props = defineProps({
     default: undefined,
   },
 });
-const emits = defineEmits(["submit", "cancel", "update:isShow"]);
+const emits = defineEmits(["submit", "update:isShow"]);
 
 const isShow = computed({
   get: () => props.isShow,
   set: (newValue: boolean) => emits("update:isShow", newValue),
 });
 
+const statusList = computed(() => {
+  return [
+    {
+      label: "体力",
+      before: props.character.defaultStatus.life,
+      rise: props.menu && props.menu.maxRise.life > 0,
+    },
+    {
+      label: "攻撃力",
+      before: props.character.defaultStatus.attack,
+      rise: props.menu && props.menu.maxRise.attack > 0,
+    },
+    {
+      label: "防御力",
+      before: props.character.defaultStatus.defense,
+      rise: props.menu && props.menu.maxRise.defense > 0,
+    },
+    {
+      label: "魔力",
+      before: props.character.defaultStatus.magic,
+      rise: props.menu && props.menu.maxRise.magic > 0,
+    },
+    {
+      label: "敏捷力",
+      before: props.character.defaultStatus.speed,
+      rise: props.menu && props.menu.maxRise.speed > 0,
+    },
+  ];
+});
 const onSubmit = () => {
   emits("submit");
 };

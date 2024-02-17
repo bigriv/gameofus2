@@ -4,7 +4,7 @@
       <WilCardList
         :selected="selectedCharacter?.id"
         :dataList="(training.selectableCharacters as Array<WilCharacter>)"
-        @selectCharacter="onSelectCharacter"
+        @selectCharacter="onSelectUnplanedCharacter"
       />
     </div>
     <div class="c-training__plan">
@@ -24,7 +24,9 @@
               <WilCharacterCard
                 :selected="plan.character.id === selectedCharacter?.id"
                 :character="(plan.character as WilCharacter)"
-                @click="onSelectCharacter"
+                @click="
+                  (character) => onSelectPlanedCharacter(character, plan.menu as WilTrainingMenu)
+                "
               />
             </div>
             <div class="c-training__plan__cards__content__button">
@@ -39,7 +41,7 @@
         </div>
       </div>
     </div>
-    <div class="c-training__log" @click="isShowLog = true">&gt;&gt;ログ</div>
+    <div class="c-training__log" @click="isShowLog = true">&lt;&lt;ログ</div>
     <div class="c-training__infomation">
       <div>残り日数 {{ training.lastDay - training.days + 1 }}日</div>
       <div class="c-training__infomation__buttons">
@@ -224,10 +226,16 @@ const confirmModal: {
   onClickCancel: undefined,
 });
 
-const onSelectCharacter = (character: WilCharacter) => {
+const onSelectUnplanedCharacter = (character: WilCharacter) => {
   selectedCharacter.value = character;
-  selectedPlan.value =
-    training.value.getTrainingPlanByCharacter(character)?.menu;
+  selectedPlan.value = undefined;
+};
+const onSelectPlanedCharacter = (
+  character: WilCharacter,
+  menu: WilTrainingMenu
+) => {
+  selectedCharacter.value = character;
+  selectedPlan.value = menu;
 };
 const onSelectTraining = (trainingId: WIL_TRAINING_ID) => {
   if (!selectedCharacter.value) {
@@ -238,9 +246,11 @@ const onSelectTraining = (trainingId: WIL_TRAINING_ID) => {
   }
   training.value.setCharacter(trainingId, selectedCharacter.value);
   selectedPlan.value = training.value.getTrainingPlan(trainingId).menu;
+  selectedCharacter.value = undefined;
 };
 const onRemoveCharacter = (trainingId: WIL_TRAINING_ID) => {
   training.value.resetTrainingPlan(trainingId);
+  selectedPlan.value = undefined;
 };
 const endDay = () => {
   // 最終日の場合は訓練自体を終わる

@@ -21,69 +21,16 @@
         </div>
         <template v-if="props.result">
           <div class="c-result_dialog__result">
-            <dl>
-              <dt>体力</dt>
-              <dd>{{ props.result.before.life }}</dd>
+            <dl v-for="result in resultList">
+              <dt>{{ result.label }}</dt>
+              <dd>{{ result.before }}</dd>
               <dd>⇒</dd>
               <dd
                 :class="{
-                  'u-color--red':
-                    props.result.before.life < props.result.after.life,
+                  'u-color--red': result.rise,
                 }"
               >
-                {{ props.result.after.life }}
-              </dd>
-            </dl>
-            <dl>
-              <dt>攻撃力</dt>
-              <dd>{{ props.result.before.attack }}</dd>
-              <dd>⇒</dd>
-              <dd
-                :class="{
-                  'u-color--red':
-                    props.result.before.attack < props.result.after.attack,
-                }"
-              >
-                {{ props.result.after.attack }}
-              </dd>
-            </dl>
-            <dl>
-              <dt>防御力</dt>
-              <dd>{{ props.result.before.defense }}</dd>
-              <dd>⇒</dd>
-              <dd
-                :class="{
-                  'u-color--red':
-                    props.result.before.defense < props.result.after.defense,
-                }"
-              >
-                {{ props.result.after.defense }}
-              </dd>
-            </dl>
-            <dl>
-              <dt>魔力</dt>
-              <dd>{{ props.result.before.magic }}</dd>
-              <dd>⇒</dd>
-              <dd
-                :class="{
-                  'u-color--red':
-                    props.result.before.magic < props.result.after.magic,
-                }"
-              >
-                {{ props.result.after.magic }}
-              </dd>
-            </dl>
-            <dl>
-              <dt>敏捷力</dt>
-              <dd>{{ props.result.before.speed }}</dd>
-              <dd>⇒</dd>
-              <dd
-                :class="{
-                  'u-color--red':
-                    props.result.before.speed < props.result.after.speed,
-                }"
-              >
-                {{ props.result.after.speed }}
+                {{ result.after }}
               </dd>
             </dl>
           </div>
@@ -137,6 +84,43 @@ const isShow = computed({
   set: (newValue: boolean) => emits("update:isShow", newValue),
 });
 
+const resultList = computed(() => {
+  if (!props.result) {
+    return [];
+  }
+  return [
+    {
+      label: "体力",
+      before: props.result.before.life,
+      after: props.result.after.life,
+      rise: props.result.before.life < props.result.after.life,
+    },
+    {
+      label: "攻撃力",
+      before: props.result.before.attack,
+      after: props.result.after.attack,
+      rise: props.result.before.attack < props.result.after.attack,
+    },
+    {
+      label: "防御力",
+      before: props.result.before.defense,
+      after: props.result.after.defense,
+      rise: props.result.before.defense < props.result.after.defense,
+    },
+    {
+      label: "魔力",
+      before: props.result.before.magic,
+      after: props.result.after.magic,
+      rise: props.result.before.magic < props.result.after.magic,
+    },
+    {
+      label: "敏捷力",
+      before: props.result.before.speed,
+      after: props.result.after.speed,
+      rise: props.result.before.speed < props.result.after.speed,
+    },
+  ];
+});
 const onSubmit = () => {
   emits("submit");
 };

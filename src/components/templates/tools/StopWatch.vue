@@ -33,72 +33,65 @@
 import { COLOR, GOUColor } from "@/composables/types/GOUColor";
 import { computed, onUnmounted, reactive } from "vue";
 
-
 const props = defineProps({
   bgColor: {
     type: String,
-    default: COLOR.WHITE
+    default: COLOR.WHITE,
   },
   bgOpacity: {
     type: Number,
-    default: 0
+    default: 0,
   },
   fontSize: {
     type: Number,
-    default: 10
+    default: 10,
   },
   fontColor: {
     type: String,
-    default: COLOR.BLACK
+    default: COLOR.BLACK,
   },
   fontWeight: {
     type: String,
-    default: "normal"
+    default: "normal",
   },
   fontFamily: {
     type: String,
-    default: "メイリオ"
+    default: "メイリオ",
   },
-})
+});
 
 const timmer: {
-  start: number | undefined;
-  current: number | undefined;
+  count: 0;
   isStop: boolean;
 } = reactive({
-  start: undefined,
-  current: undefined,
+  count: 0,
   isStop: true,
 });
+
+const ONE_SECOUND = 1000;
+const ONE_MINUTE = ONE_SECOUND * 60;
+const ONE_HOUR = ONE_MINUTE * 60;
 const time = computed(() => {
-  if (!timmer.start) {
-    return "00:00:00.00";
-  }
-  if (timmer.current) {
-    const diff = timmer.current - timmer.start;
-    const ms = Math.floor((diff % 1000) / 10)
-      .toString()
-      .padStart(2, "0");
-    const ss = Math.floor((diff / 1000) % 60)
-      .toString()
-      .padStart(2, "0");
-    const mm = Math.floor((diff / (60 * 1000)) % 60)
-      .toString()
-      .padStart(2, "0");
-    const hh = Math.floor(diff / (60 * 60 * 1000))
-      .toString()
-      .padStart(2, "0");
-    return `${hh}:${mm}:${ss}.${ms}`;
-  }
-  return "00:00:00.00";
+  // count = 60 * 60 * 1000 * hh + 60 * 1000 * mm + 1000 * ss + ms
+  const hh = Math.floor(timmer.count / ONE_HOUR);
+  const mm = Math.floor((timmer.count - ONE_HOUR * hh) / ONE_MINUTE);
+  const ss = Math.floor(
+    (timmer.count - ONE_HOUR * hh - ONE_MINUTE * mm) / ONE_SECOUND
+  );
+  const ms = Math.floor(
+    (timmer.count - ONE_HOUR * hh - ONE_MINUTE * mm - ONE_SECOUND * ss) / 10
+  );
+  return [
+    hh.toString().padStart(2, "0"),
+    mm.toString().padStart(2, "0"),
+    ss.toString().padStart(2, "0"),
+    ms.toString().padStart(2, "0"),
+  ].join(":");
 });
 
 const styles = computed(() => {
   return {
-    "--backgourndColor": new GOUColor(
-      props.bgColor,
-      props.bgOpacity
-    ).rgba(),
+    "--backgourndColor": new GOUColor(props.bgColor, props.bgOpacity).rgba(),
     "--fontSize": props.fontSize + "px",
     "--fontWeight": props.fontWeight,
     "--fontFamily": props.fontFamily,
@@ -106,31 +99,41 @@ const styles = computed(() => {
   };
 });
 
-let intervalId: NodeJS.Timer | undefined = undefined;
-const onStart = () => {
-  if (!timmer.start) {
-    timmer.start = Date.now();
+let stopInterval = () => {};
+const superInterval = (func: () => void, interval: number) => {
+  // タイマー実行時に別タブを見るとタイマーがずれるのでWorkerを使用
+  try {
+    const code = `self.addEventListener('message', msg=>{setInterval(()=>self.postMessage(null), msg.data)})`;
+    const worker = new Worker(`data:text/javascript;base64,${btoa(code)}`);
+    worker.onmessage = () => func();
+    worker.postMessage(interval);
+    return { stop: () => worker.terminate() };
+  } catch (_) {
+    // Worker が使えない場合は setInterval を使う
+    const id = setInterval(func, interval);
+    return { stop: () => clearInterval(id) };
   }
+};
+const onStart = () => {
   timmer.isStop = false;
-  intervalId = setInterval(() => {
+  const { stop } = superInterval(() => {
     if (timmer.isStop) {
-      clearInterval(intervalId);
+      stopInterval();
       return;
     }
-    timmer.current = Date.now();
+    timmer.count += 10;
   }, 10);
+  stopInterval = stop;
 };
 
 const onStop = () => {
   timmer.isStop = true;
-  timmer.current = Date.now();
 };
 const onReset = () => {
-  timmer.start = undefined;
-  timmer.current = undefined;
+  timmer.count = 0;
 };
 onUnmounted(() => {
-  clearInterval(intervalId);
+  stopInterval();
 });
 </script>
 

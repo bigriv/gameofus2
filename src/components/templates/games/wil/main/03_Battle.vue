@@ -325,7 +325,6 @@ const endSet = () => {
  * ターン開始時の処理
  */
 const startTurn = () => {
-  console.log("turn start");
   changeTimming(WIL_BATTLE_TIMMING.BATTLE_TURN_START, () => {
     battle.value.startTurn();
 
@@ -363,7 +362,6 @@ const skipTurn = () => {
  * ターン終了時の処理
  */
 const endTurn = () => {
-  console.log("turn end");
   battle.value.endTurn();
   moveSequence.value = battle.value.getMoveSequence();
   showBattleMoveResult(

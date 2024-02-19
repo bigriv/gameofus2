@@ -46,7 +46,10 @@ export class WilComputer extends WilOperator {
   /**
    * 発動するスキルを決定する
    */
-  private decideUseSkill(allyField: WilField, enemyField: WilField): WilSkill {
+  private decideUseSkill(
+    allyField: WilField,
+    enemyField: WilField
+  ): WilSkill | undefined {
     if (!this.moveCharacter) {
       throw new WrongImplementationError("Move character is not set.");
     }
@@ -90,12 +93,15 @@ export class WilComputer extends WilOperator {
    * @param allyField 味方のフィールド
    * @param enemyField 相手のフィールド
    */
-  private decideTarget(allyField: WilField, enemyField: WilField) {
+  private decideTarget(
+    allyField: WilField,
+    enemyField: WilField
+  ): WilFieldCell | undefined {
     if (!this.moveCharacter) {
       throw new WrongImplementationError("Move character is not set.");
     }
     if (!this.selectSkill) {
-      throw new WrongImplementationError("Activate skill is not selected.");
+      return undefined;
     }
 
     // サポートスキルならサポートが必要なキャラクターを選定する
@@ -140,7 +146,7 @@ export class WilComputer extends WilOperator {
     const targetCandidateList = enemyField.cells.filter(
       (cell) => cell.selectable && cell.isExsistCharacter()
     );
-    console.log("target candidate list", targetCandidateList);
+
     const cellRand = Math.floor(Math.random() * targetCandidateList.length);
     const target = targetCandidateList[cellRand];
 
@@ -157,8 +163,9 @@ export class WilComputer extends WilOperator {
       battle.computer.field,
       battle.player.field
     );
-    this.decideUseSkill(battle.computer.field, battle.player.field);
+
     battle.updateFieldSelectable();
+
     this.targetCell = this.decideTarget(
       battle.computer.field,
       battle.player.field
@@ -181,7 +188,7 @@ class WilAIUtil {
     moveCharacter: WilCharacter,
     allyField: WilField,
     candidateList: Array<WilSkill>
-  ): WilSkill {
+  ): WilSkill | undefined {
     // 相手が対象となるスキルのみを候補とする
     let skillCandidateList = candidateList.filter(
       (skill) => skill.target === WIL_SKILL_TARGET.ENEMY
@@ -192,6 +199,10 @@ class WilAIUtil {
       allyField,
       skillCandidateList
     );
+
+    if (skillCandidateList.length <= 0) {
+      return undefined;
+    }
 
     // スキルをランダムに選択
     return this.selectRandom(skillCandidateList);
@@ -208,7 +219,7 @@ class WilAIUtil {
     moveCharacter: WilCharacter,
     allyField: WilField,
     candidateList: Array<WilSkill>
-  ) {
+  ): WilSkill | undefined {
     // 味方を対象にしたスキルを優先して選択する
     const allyCharacters = allyField.getCharacters();
     let skillCandidateList = this.getSkillCandidateListFilterTarget(
@@ -264,7 +275,7 @@ class WilAIUtil {
     allyField: WilField,
     enemyField: WilField,
     candidateList: Array<WilSkill>
-  ) {
+  ): WilSkill | undefined {
     const allyCharacters = allyField.getCharacters();
     // 味方を対象にするスキルを取得
     let allyTargetSkills = this.getSkillCandidateListFilterTarget(
@@ -307,6 +318,10 @@ class WilAIUtil {
       ...enemyTargetSkills,
     ].sort((a, b) => a.cost - b.cost);
 
+    if (newCandidateList.length <= 0) {
+      return undefined;
+    }
+
     // 最小コストのスキルが次の行動キャラクターのスタック数より少なければそれを選定
     const nextMoveCharacter = enemyField
       .getCharacters()
@@ -337,7 +352,7 @@ class WilAIUtil {
     allyField: WilField,
     enemyField: WilField,
     candidateList: Array<WilSkill>
-  ): WilSkill {
+  ): WilSkill | undefined {
     // 魔人の召喚可否を判定する関数を定義
     const isSummonableDemon = (id: WIL_CHARACTER_ID, x: number, y: number) => {
       const targetCell = allyField.getCell(x, y);
@@ -416,7 +431,7 @@ class WilAIUtil {
     moveCharacter: WilCharacter,
     allyField: WilField,
     skillCandidateList: Array<WilSkill>
-  ) {
+  ): Array<WilSkill> {
     const moveCharacterCell = allyField.getCharacterCell(moveCharacter);
     if (!moveCharacterCell) {
       return skillCandidateList;
@@ -451,7 +466,7 @@ class WilAIUtil {
   private static getSkillCandidateFilterSupportSkill(
     skillCandidateList: Array<WilSkill>,
     targetCandidateList: Array<WilCharacter>
-  ) {
+  ): Array<WilSkill> {
     // 味方を対象にしたスキルを優先して選択する
     return skillCandidateList.filter((skill) => {
       if (WilSkill.isSummonSkill(skill.id)) {
@@ -461,25 +476,12 @@ class WilAIUtil {
 
       if (WilSkill.isHealSkill(skill.id)) {
         // 体力回復スキルなら体力が一定以上が減っているキャラクターが存在する場合に候補とする
-        console.log(
-          "heal skill",
-          targetCandidateList.find(
-            (character) =>
-              character.status.life < 0.7 * character.defaultStatus.life
-          )
-        );
         return targetCandidateList.find(
           (character) =>
             character.status.life < 0.7 * character.defaultStatus.life
         );
       }
       if (WilSkill.isClearSkill(skill.id)) {
-        console.log(
-          "clear skill",
-          targetCandidateList.find((character) =>
-            WilConditionUtil.isBadCondition(character.condition)
-          )
-        );
         // 状態異常回復スキルなら悪影響の状態異常のキャラクターが存在する場合に候補とする
         return targetCandidateList.find((character) =>
           WilConditionUtil.isBadCondition(character.condition)

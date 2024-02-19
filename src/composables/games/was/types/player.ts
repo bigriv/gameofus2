@@ -102,7 +102,6 @@ export class WasPlayer extends WasCharacter {
    * ステータスを上昇させる
    */
   riseStatus() {
-    console.log("before", this.defaultStatus);
     this.defaultStatus.life += this.calcRiseStatusValue(3, 5);
     this.defaultStatus.attack += this.calcRiseStatusValue(0.4, 0.6);
     this.defaultStatus.defense += this.calcRiseStatusValue(0.4, 0.6);
@@ -111,7 +110,6 @@ export class WasPlayer extends WasCharacter {
     this.resetStatus();
 
     this.exploreCount = 0;
-    console.log("after", this.defaultStatus);
   }
 
   /**

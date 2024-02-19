@@ -392,7 +392,11 @@ export const WIL_CHARACTER_DEFINES: {
     element: WIL_ELEMENT.SOIL,
     status: { life: 100, attack: 15, defense: 15, speed: 20, magic: 25 },
     learnable: [],
-    skills: [WIL_SKILL_ID.PRODUCE, WIL_SKILL_ID.REPAIR],
+    skills: [
+      WIL_SKILL_ID.PRODUCE,
+      WIL_SKILL_ID.REPAIR,
+      WIL_SKILL_ID.ROCK_BUSTER,
+    ],
   },
   SMOG_LABORATORY_ANDROID: {
     id: WIL_CHARACTER_ID.SMOG_LABORATORY_ANDROID,

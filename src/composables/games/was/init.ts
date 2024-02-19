@@ -348,7 +348,6 @@ export const useWasInit = (loadData?: any) => {
   };
 
   const loadSaveData = () => {
-    console.log("load", loadData);
     if (!loadData) {
       return;
     }
@@ -362,7 +361,6 @@ export const useWasInit = (loadData?: any) => {
         (loadData.player.items as Array<{ amount: number; id: WAS_ITEM_ID }>) ??
         [];
     }
-    console.log("player", state.player);
     state.timming =
       (loadData.timming as WAS_EVENT_TIMMING) ?? WAS_EVENT_TIMMING.OPENING;
     state.player.healed = loadData.healed ?? false;
@@ -394,7 +392,6 @@ export const useWasInit = (loadData?: any) => {
         CHARACTERS[key].status = new WasStatus(loadData.characters[key].status);
         CHARACTERS[key].isPersuaded = loadData.characters[key].isPersuaded;
       }
-      console.log(CHARACTERS);
     }
 
     if (loadData.areas) {

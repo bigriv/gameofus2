@@ -194,9 +194,8 @@ export class WilBattle {
       );
     }
     if (!this.turnOperator.targetCell) {
-      throw new WrongImplementationError(
-        "The operator's target cell is empty."
-      );
+      this.skipTurn();
+      return;
     }
 
     if (!this.turnOperator.selectSkill) {

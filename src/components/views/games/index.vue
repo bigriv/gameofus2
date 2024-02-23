@@ -29,38 +29,37 @@
 
 <script setup lang="ts">
 import LinkCardList from "@/components/atoms/lists/LinkCardList.vue";
+import { CONTENTS_TITLE } from "@/composables/const/title";
+import { CONTENTS_DESCRIPTION } from "@/composables/const/description";
 
 const games = [
   {
-    path: "Tbh",
-    title: "ヒーローになろう",
-    tags: ["育成", "短時間"],
-    playtime: "10分",
-    description:
-      "ヒーローを目指すフリーターの主人公を育成するゲーム。独特なSEも見どころだが、実は多すぎるエンディングも見どころの一つ。",
-  },
-  {
-    path: "Was",
-    title: "僕が魔王！？",
-    tags: ["RPG", "短時間", "スマホ対応"],
-    playtime: "30分",
-    description:
-      "人間である主人公が魔王を目指して世界を支配していくゲーム。ゴブリンやエルフなど個性豊かなキャラクターたちとの戦闘・会話をお楽しみください。",
+    path: "Wil",
+    title: CONTENTS_TITLE.GAMES_WIL,
+    tags: ["RPG", "スマホ対応"],
+    playtime: "1~2時間",
+    description: CONTENTS_DESCRIPTION.GAMES_WIL,
   },
   {
     path: "Mp",
-    title: "守銭奴の壺",
+    title: CONTENTS_TITLE.GAMES_MP,
     tags: ["ミニゲーム", "短時間", "スマホ対応"],
     playtime: "1分",
-    description: "壺にお金を貯めるゲームです。",
+    description: CONTENTS_DESCRIPTION.GAMES_MP,
   },
   {
-    path: "Wil",
-    title: "世界平和はその聖騎士が導く",
-    tags: ["RPG", "スマホ対応"],
-    playtime: "1~2時間",
-    description:
-      "田舎育ちの青年が聖騎士団に入り、世界を救うゲーム。キャラクターの配置が戦闘の勝敗を分ける！？キャラクター同士の掛け合いもお楽しみください。",
+    path: "Was",
+    title: CONTENTS_TITLE.GAMES_WAS,
+    tags: ["RPG", "短時間", "スマホ対応"],
+    playtime: "30分",
+    description: CONTENTS_DESCRIPTION.GAMES_WAS,
+  },
+  {
+    path: "Tbh",
+    title: CONTENTS_TITLE.GAMES_TBH,
+    tags: ["育成", "短時間"],
+    playtime: "10分",
+    description: CONTENTS_DESCRIPTION.GAMES_TBH,
   },
 ];
 </script>

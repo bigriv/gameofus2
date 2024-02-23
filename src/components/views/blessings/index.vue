@@ -26,14 +26,15 @@
 
 <script setup lang="ts">
 import LinkCardList from "@/components/atoms/lists/LinkCardList.vue";
+import { CONTENTS_TITLE } from "@/composables/const/title";
+import { CONTENTS_DESCRIPTION } from "@/composables/const/description";
 
 const blessings = [
   {
     path: "CustomeNewyear",
-    title: "年賀状",
+    title: CONTENTS_TITLE.BLESSINGS_NEWYEAR,
     tags: [],
-    description:
-      "カスタムした年賀状を高速、簡単に作成！新年の挨拶にご利用ください。",
+    description: CONTENTS_DESCRIPTION.BLESSINGS_NEWYEAR,
   },
 ];
 </script>

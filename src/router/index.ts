@@ -5,6 +5,8 @@ import {
 } from "vue-router";
 import { pageview } from "vue-gtag";
 import BasicLayout from "@/components/templates/layouts/BasicLayout.vue";
+import { CONTENTS_TITLE } from "@/composables/const/title";
+import { CONTENTS_DESCRIPTION } from "@/composables/const/description";
 
 const routes = [
   {
@@ -42,25 +44,34 @@ const routes = [
             path: "was",
             name: "Was",
             component: () => import("@/components/views/games/was.vue"),
-            meta: { title: "僕が魔王！？" },
+            meta: {
+              title: CONTENTS_TITLE.GAMES_WAS,
+              description: CONTENTS_DESCRIPTION.GAMES_WAS,
+            },
           },
           {
             path: "tbh",
             name: "Tbh",
             component: () => import("@/components/views/games/tbh.vue"),
-            meta: { title: "ヒーローになろう" },
+            meta: {
+              title: CONTENTS_TITLE.GAMES_TBH,
+              description: CONTENTS_DESCRIPTION.GAMES_TBH,
+            },
           },
           {
             path: "mp",
             name: "Mp",
             component: () => import("@/components/views/games/mp.vue"),
-            meta: { title: "守銭奴の壺" },
+            meta: { title: CONTENTS_TITLE.GAMES_MP },
           },
           {
             path: "wil",
             name: "Wil",
             component: () => import("@/components/views/games/wil.vue"),
-            meta: { title: "世界平和はその聖騎士が導く" },
+            meta: {
+              title: CONTENTS_TITLE.GAMES_WIL,
+              description: CONTENTS_DESCRIPTION.GAMES_WIL,
+            },
           },
         ],
       },
@@ -81,7 +92,10 @@ const routes = [
                 name: "CustomeNewyear",
                 component: () =>
                   import("@/components/views/blessings/newyear/custome.vue"),
-                meta: { title: "年賀状" },
+                meta: {
+                  title: CONTENTS_TITLE.BLESSINGS_NEWYEAR,
+                  description: CONTENTS_DESCRIPTION.BLESSINGS_NEWYEAR,
+                },
               },
             ],
           },
@@ -112,7 +126,7 @@ const routes = [
             }),
             component: () =>
               import("@/components/views/blessings/newyear/view.vue"),
-            meta: { title: "年賀状" },
+            meta: { title: CONTENTS_TITLE.BLESSINGS_NEWYEAR },
           },
         ],
       },
@@ -130,7 +144,10 @@ const routes = [
             name: "CustomeStopwatch",
             component: () =>
               import("@/components/views/tools/stopwatch/custome.vue"),
-            meta: { title: "ストップウォッチ" },
+            meta: {
+              title: CONTENTS_TITLE.TOOLS_STOPWATCH,
+              description: CONTENTS_DESCRIPTION.TOOLS_STOPWATCH,
+            },
           },
         ],
       },
@@ -143,13 +160,18 @@ const routes = [
         path: "stopwatch",
         name: "ViewStopwatch",
         component: () => import("@/components/views/tools/stopwatch/view.vue"),
-        meta: { title: "ストップウォッチ" },
+        meta: {
+          title: CONTENTS_TITLE.TOOLS_STOPWATCH,
+        },
       },
       {
         path: "translate",
         name: "ViewTranslate",
         component: () => import("@/components/views/tools/translate.vue"),
-        meta: { title: "翻訳機" },
+        meta: {
+          title: CONTENTS_TITLE.TOOLS_TRANSLATE,
+          description: CONTENTS_DESCRIPTION.TOOLS_TRANSLATE,
+        },
       },
     ],
   },
@@ -175,4 +197,32 @@ router.beforeEach((to, __from, next) => {
   next();
 });
 
+router.afterEach((to, __from) => {
+  // ページタイトルの書き換え
+  if (to.meta.title) {
+    document.title = to.meta.title + "- Game of us";
+  } else {
+    document.title = "Game of us";
+  }
+
+  // ページ説明の書き換え
+  const description = document.querySelector('meta[name="description"]');
+  if (description) {
+    if (to.meta.description) {
+      description.setAttribute("content", String(to.meta.description));
+    } else {
+      description.setAttribute("content", CONTENTS_DESCRIPTION.DEFAULT);
+    }
+  }
+  const og_description = document.querySelector(
+    'meta[property="og:description"]'
+  );
+  if (og_description) {
+    if (to.meta.description) {
+      og_description.setAttribute("content", String(to.meta.description));
+    } else {
+      og_description.setAttribute("content", CONTENTS_DESCRIPTION.DEFAULT);
+    }
+  }
+});
 export default router;

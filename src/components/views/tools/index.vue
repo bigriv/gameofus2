@@ -26,18 +26,20 @@
 
 <script setup lang="ts">
 import LinkCardList from "@/components/atoms/lists/LinkCardList.vue";
+import { CONTENTS_TITLE } from "@/composables/const/title";
+import { CONTENTS_DESCRIPTION } from "@/composables/const/description";
 
 const tools = [
   {
     path: "CustomeStopwatch",
-    title: "ストップウォッチ",
-    description: "時間を計れます。",
+    title: CONTENTS_TITLE.TOOLS_STOPWATCH,
+    description: CONTENTS_DESCRIPTION.TOOLS_STOPWATCH,
     tags: ["OBS対応"],
   },
   {
     path: "ViewTranslate",
-    title: "翻訳機",
-    description: "いくつかの言語の翻訳ができます。",
+    title: CONTENTS_TITLE.TOOLS_TRANSLATE,
+    description: CONTENTS_DESCRIPTION.TOOLS_TRANSLATE,
     tags: [],
   },
 ];

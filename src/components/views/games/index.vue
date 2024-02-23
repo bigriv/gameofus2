@@ -47,13 +47,13 @@ const games = [
     playtime: "1分",
     description: CONTENTS_DESCRIPTION.GAMES_MP,
   },
-  {
-    path: "Was",
-    title: CONTENTS_TITLE.GAMES_WAS,
-    tags: ["RPG", "短時間", "スマホ対応"],
-    playtime: "30分",
-    description: CONTENTS_DESCRIPTION.GAMES_WAS,
-  },
+  // {
+  //   path: "Was",
+  //   title: CONTENTS_TITLE.GAMES_WAS,
+  //   tags: ["RPG", "短時間", "スマホ対応"],
+  //   playtime: "30分",
+  //   description: CONTENTS_DESCRIPTION.GAMES_WAS,
+  // },
   {
     path: "Tbh",
     title: CONTENTS_TITLE.GAMES_TBH,

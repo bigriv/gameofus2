@@ -16,6 +16,7 @@
         style="z-index: 4"
       >
         <MessageFrame
+          v-model:complete="isEndMessage"
           :fontColor="COLOR.WHITE"
           :messages="displayMessage"
           :speed="2"
@@ -178,6 +179,7 @@ const currentArea = ref(props.map.areas[props.player.currentArea]);
 const skillEffect: Ref<GOULottie | undefined> = ref();
 const timming = ref(WAS_AREA_TIMMING.SELECT_MOVE);
 
+const isEndMessage = ref(false)
 const displayMessage: Ref<Array<string>> = ref([]);
 const buttonList = computed(() => {
   if (displayMessage.value.length > 0) {

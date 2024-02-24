@@ -40,15 +40,15 @@ const routes = [
             name: "Game",
             component: () => import("@/components/views/games/index.vue"),
           },
-          // {
-          //   path: "was",
-          //   name: "Was",
-          //   component: () => import("@/components/views/games/was.vue"),
-          //   meta: {
-          //     title: CONTENTS_TITLE.GAMES_WAS,
-          //     description: CONTENTS_DESCRIPTION.GAMES_WAS,
-          //   },
-          // },
+          {
+            path: "was",
+            name: "Was",
+            component: () => import("@/components/views/games/was.vue"),
+            meta: {
+              title: CONTENTS_TITLE.GAMES_WAS,
+              description: CONTENTS_DESCRIPTION.GAMES_WAS,
+            },
+          },
           {
             path: "tbh",
             name: "Tbh",
